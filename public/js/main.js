@@ -125,8 +125,6 @@
     });
   });
 
-})();
-
   // ─── Reading Progress Bar ───
   const progressBar = document.getElementById('reading-progress');
   if (progressBar) {
@@ -173,6 +171,27 @@
     } else {
       revealEls.forEach(function (el) { el.classList.add('revealed'); });
     }
+  }
+
+  // ─── Page Loader ───
+  var loader = document.getElementById('page-loader');
+  var wrapper = document.getElementById('site-wrapper');
+  function hideLoader() {
+    if (loader) {
+      loader.classList.add('fade-out');
+      setTimeout(function () {
+        loader.style.display = 'none';
+      }, 500);
+    }
+    if (wrapper) {
+      wrapper.style.opacity = '1';
+      wrapper.style.transition = 'opacity 0.4s ease-in';
+    }
+  }
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', hideLoader);
+  } else {
+    hideLoader();
   }
 
 })();

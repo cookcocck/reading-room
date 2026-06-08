@@ -5,14 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="<%= typeof summary !== 'undefined' ? summary.totalBooks : 0 %> 本书，<%= typeof summary !== 'undefined' ? summary.finishedCount : 0 %> 本已读 · 个人阅读书房">
   <title><%= title %> · 阅读书房</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="/css/main.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
 </head>
 <body>
+  <!-- Page Loader -->
+  <div class="page-loader" id="page-loader">
+    <div class="loader-spinner">
+      <div class="loader-ring"></div>
+      <span class="loader-text">阅读书房</span>
+    </div>
+  </div>
+
   <!-- Reading Progress Bar -->
   <div class="reading-progress-bar" id="reading-progress"></div>
 
-  <div class="site-wrapper">
+  <div class="site-wrapper" id="site-wrapper" style="opacity:0;">
     <!-- Navigation -->
     <nav class="nav" id="main-nav">
       <div class="nav-inner">
@@ -57,9 +67,9 @@
     </footer>
   </div>
 
-  <script src="/js/main.js"></script>
+  <script src="/js/main.js" defer></script>
   <% if (typeof heatmap !== 'undefined') { %>
-  <script src="/js/heatmap.js"></script>
+  <script src="/js/heatmap.js" defer></script>
   <% } %>
 </body>
 </html>
