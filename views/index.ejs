@@ -53,6 +53,15 @@ for (var w = 0; w < totalWeeks; w++) {
   }
 }
 
+// Build month label row for GitHub-style horizontal heatmap
+var monthLabelRow = [];
+for (var w = 0; w < totalWeeks; w++) { monthLabelRow[w] = null; }
+for (var m = 0; m < 12; m++) {
+  if (monthPositions[m] !== undefined) {
+    monthLabelRow[monthPositions[m]] = MONTHS[m];
+  }
+}
+
 // Total 2026 reading time
 var total2026Seconds = heatmapData.reduce(function(sum, d) { return sum + (d.seconds || 0); }, 0);
 var total2026Hours = Math.round(total2026Seconds / 3600);
@@ -136,34 +145,38 @@ var maxWeekday = Math.max.apply(null, weekdayCounts) || 1;
         </div>
       </div>
 
-      <!-- Day-of-week labels -->
-      <div class="heatmap-week-labels" style="display: flex; margin-bottom: 4px; padding-left: 8px;">
-        <% for (var di = 0; di < 7; di++) { %>
-          <span style="width: 12px; text-align: center; font-family: var(--font-sans); font-size: 9px; color: var(--color-text-muted);"><%= WEEKD[di] %></span>
+      <!-- Month labels (top) -->
+      <div style="display: flex; gap: 3px; margin-bottom: 4px; padding-left: 28px;">
+        <% for (var w = 0; w < totalWeeks; w++) { %>
+          <% if (monthLabelRow[w]) { %>
+            <span class="heatmap-month-label" style="width: 12px; text-align: center; overflow: visible; white-space: nowrap; position: relative; left: -8px;"><%= monthLabelRow[w] %></span>
+          <% } else { %>
+            <div style="width: 12px;"></div>
+          <% } %>
         <% } %>
       </div>
 
-      <!-- Heatmap Grid -->
+      <!-- Heatmap Grid: 7 rows (Mon-Sun), 53 columns (weeks) -->
       <div class="heatmap-grid">
-        <div style="display: flex; gap: 3px;">
-          <% for (var d = 0; d < 7; d++) { %>
-            <div class="heatmap-week-column">
-              <% for (var w = 0; w < totalWeeks; w++) { 
-                var idx = w * 7 + d;
-                var cell = cells[idx];
-                if (!cell || !cell.inYear || cell.isAfter) { %>
-                  <div class="heatmap-cell level-0" style="visibility: hidden;"></div>
-                <% } else { %>
-                  <div class="heatmap-cell level-<%= cell.level %>" data-date="<%= cell.date %>">
-                    <div class="heatmap-tooltip">
-                      <%= cell.date %> · <%= cell.seconds > 0 ? helpers.formatTime(cell.seconds) : '未阅读' %>
-                    </div>
+        <% for (var d = 0; d < 7; d++) { %>
+          <div style="display: flex; gap: 3px; align-items: center; height: 12px;">
+            <!-- Day-of-week label -->
+            <span style="width: 20px; text-align: right; font-family: var(--font-sans); font-size: 9px; color: var(--color-text-muted); flex-shrink: 0; margin-right: 5px;"><%= WEEKD[d] %></span>
+            <% for (var w = 0; w < totalWeeks; w++) { 
+              var idx = w * 7 + d;
+              var cell = cells[idx];
+              if (!cell || !cell.inYear || cell.isAfter) { %>
+                <div class="heatmap-cell level-0" style="visibility: hidden;"></div>
+              <% } else { %>
+                <div class="heatmap-cell level-<%= cell.level %>" data-date="<%= cell.date %>">
+                  <div class="heatmap-tooltip">
+                    <%= cell.date %> · <%= cell.seconds > 0 ? helpers.formatTime(cell.seconds) : '未阅读' %>
                   </div>
-                <% } %>
+                </div>
               <% } %>
-            </div>
-          <% } %>
-        </div>
+            <% } %>
+          </div>
+        <% } %>
       </div>
 
       <!-- Legend -->

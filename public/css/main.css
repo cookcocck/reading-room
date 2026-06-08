@@ -1104,24 +1104,8 @@ a:hover { color: oklch(72% 0.14 55); }
 }
 .heatmap-grid {
   display: flex;
-  gap: 3px;
-}
-.heatmap-week-column {
-  display: flex;
   flex-direction: column;
   gap: 3px;
-}
-.heatmap-week-labels {
-  display: flex;
-  gap: 3px;
-  margin-bottom: 4px;
-  padding-left: 12px;
-}
-.heatmap-week-label {
-  font-family: var(--font-sans);
-  font-size: 9px;
-  color: var(--color-text-muted);
-  text-align: center;
 }
 .heatmap-month-labels {
   display: flex;
@@ -1526,7 +1510,6 @@ a:hover { color: oklch(72% 0.14 55); }
     height: 9px;
   }
   .heatmap-grid { gap: 2px; }
-  .heatmap-week-column { gap: 2px; }
   .trend-cards {
     grid-template-columns: 1fr;
   }
