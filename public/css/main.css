@@ -51,8 +51,9 @@
   --space-16: 7rem;
 
   /* Layout */
-  --col-width: 44rem;     /* ~700px optimal reading */
-  --col-wide: 56rem;      /* ~900px for wider content */
+  --col-width: 44rem;        /* ~700px — prose reading */
+  --col-wide: 68rem;         /* ~1090px — stats, heatmap, lists */
+  --col-bookshelf: 76rem;    /* ~1220px — book card grids */
   --nav-height: 3.5rem;
   --radius: 0;            /* editorial: no rounded corners */
 
@@ -125,7 +126,7 @@ img { max-width: 100%; display: block; }
 .nav-inner {
   max-width: var(--col-wide);
   margin: 0 auto;
-  padding: 0 var(--space-8);
+  padding: 0 var(--space-6);
   height: var(--nav-height);
   display: flex;
   align-items: center;
@@ -202,7 +203,13 @@ img { max-width: 100%; display: block; }
 .container-wide {
   max-width: var(--col-wide);
   margin: 0 auto;
-  padding: 0 var(--space-8);
+  padding: 0 var(--space-6);
+}
+
+.container-bookshelf {
+  max-width: var(--col-bookshelf);
+  margin: 0 auto;
+  padding: 0 var(--space-6);
 }
 
 main {
@@ -535,6 +542,81 @@ h3 {
 }
 .highlight-source::before {
   content: '— ';
+}
+
+/* Book Card Grid — masonry-style card layout for bookshelf & highlights */
+.book-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: var(--space-5);
+  margin: var(--space-6) 0;
+}
+
+.book-card {
+  cursor: pointer;
+  transition: transform 0.25s var(--ease-out);
+}
+.book-card:hover {
+  transform: translateY(-3px);
+}
+
+.book-card-cover {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background: var(--rule-thin);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: var(--ink-faint);
+  margin-bottom: var(--space-3);
+  border: 1px solid var(--rule-thin);
+  overflow: hidden;
+  transition: border-color 0.2s var(--ease);
+}
+.book-card:hover .book-card-cover {
+  border-color: var(--ink-faint);
+}
+
+.book-card-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.book-card-body {
+  padding: 0 var(--space-1);
+}
+
+.book-card-title {
+  font-family: var(--font-display);
+  font-size: var(--text-body);
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.35;
+  margin-bottom: 2px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.book-card-author {
+  font-family: var(--font-body);
+  font-size: var(--text-subhead);
+  color: var(--ink-muted);
+  line-height: 1.3;
+}
+
+.book-card-badge {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  color: var(--accent);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-top: 4px;
 }
 
 /* ─── Bookshelf — Editorial Catalog ─── */
@@ -1088,7 +1170,7 @@ h3 {
 .footer-inner {
   max-width: var(--col-wide);
   margin: 0 auto;
-  padding: 0 var(--space-8);
+  padding: 0 var(--space-6);
   display: flex;
   justify-content: space-between;
   font-family: var(--font-body);
@@ -1307,6 +1389,7 @@ h3 {
 
   .container { padding: 0 var(--space-5); }
   .container-wide { padding: 0 var(--space-5); }
+  .container-bookshelf { padding: 0 var(--space-5); }
 
   .nav-inner { padding: 0 var(--space-5); }
   .nav-links { gap: var(--space-4); }
@@ -1317,6 +1400,11 @@ h3 {
   }
 
   .hero { padding: var(--space-10) 0 var(--space-6); }
+
+  .book-card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: var(--space-4);
+  }
 
   .highlights-list { columns: 1; }
 

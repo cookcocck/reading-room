@@ -275,23 +275,21 @@ var maxWeekday = Math.max.apply(null, weekdayCounts) || 1;
 
 <!-- ═══ Top Books ═══ -->
 <% if (annual.topBooks && annual.topBooks.length > 0) { %>
-<div class="container">
+<div class="container-wide">
   <hr class="section-rule">
   <div class="section-kicker">V. 年度之书</div>
 
-  <div class="book-list">
+  <div class="book-card-grid">
     <% annual.topBooks.slice(0, 8).forEach(function(b) { %>
-    <div class="book-list-item" onclick="window.location.href='/bookshelf'">
-      <div class="book-list-cover">
+    <div class="book-card" onclick="window.location.href='/bookshelf'">
+      <div class="book-card-cover">
         <% if (b.cover) { %><img src="<%= b.cover %>" alt="" loading="lazy" onerror="this.style.display='none'"><% } else { %>📖<% } %>
       </div>
-      <div>
-        <div class="book-list-title"><%= b.title %></div>
-        <div class="book-list-author"><%= b.author %></div>
-      </div>
-      <div class="book-list-meta">
+      <div class="book-card-body">
+        <div class="book-card-title"><%= b.title %></div>
+        <div class="book-card-author"><%= b.author %></div>
         <% if (b.tags && b.tags.length > 0) { %>
-          <span class="book-list-badge"><%= b.tags[0] %></span>
+          <span class="book-card-badge"><%= b.tags[0] %></span>
         <% } %>
       </div>
     </div>
