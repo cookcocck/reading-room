@@ -46,6 +46,17 @@ def create_schema(conn):
         CREATE INDEX IF NOT EXISTS idx_highlights_book ON highlights(book_id);
         CREATE INDEX IF NOT EXISTS idx_highlights_time ON highlights(create_time);
 
+        -- Reviews (想法/点评) from notes_detail.json
+        CREATE TABLE IF NOT EXISTS reviews (
+            review_id TEXT PRIMARY KEY,
+            book_id TEXT NOT NULL,
+            content TEXT DEFAULT '',
+            chapter_name TEXT DEFAULT '',
+            star INTEGER DEFAULT -1,
+            create_time INTEGER NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_reviews_book ON reviews(book_id);
+
         -- Daily reading seconds
         CREATE TABLE IF NOT EXISTS reading_sessions (
             date TEXT PRIMARY KEY,
@@ -242,6 +253,35 @@ def migrate_highlights(conn, notes_detail):
     return total
 
 
+def migrate_reviews(conn, notes_detail):
+    """Insert all reviews (想法/点评) from notes_detail.json."""
+    cur = conn.cursor()
+    cur.execute("DELETE FROM reviews")
+    total = 0
+    for book_id, detail in notes_detail.items():
+        reviews = detail.get('reviews', [])
+        for r in reviews:
+            try:
+                cur.execute(
+                    'INSERT INTO reviews (review_id, book_id, content, chapter_name, star, create_time) '
+                    'VALUES (?, ?, ?, ?, ?, ?)',
+                    (
+                        r.get('reviewId', '') or f"{book_id}_rv_{r.get('createTime', 0)}",
+                        book_id,
+                        r.get('content', '') or '',
+                        r.get('chapterName', '') or '',
+                        int(r.get('star', -1) or -1),
+                        int(r.get('createTime', 0) or 0),
+                    )
+                )
+                total += 1
+            except Exception as e:
+                print(f"  skip review {r.get('reviewId', '?')}: {e}")
+    conn.commit()
+    print(f"  {total} reviews inserted")
+    return total
+
+
 def migrate_reading_sessions(conn, heatmap):
     """Insert daily reading data."""
     cur = conn.cursor()
@@ -385,6 +425,7 @@ def main():
     n_books = migrate_books(conn, data['books'])
     n_extra_books = add_books_from_notes(conn, data['notes_detail'])
     n_highlights = migrate_highlights(conn, data['notes_detail'])
+    n_reviews = migrate_reviews(conn, data['notes_detail'])
     n_sessions = migrate_reading_sessions(conn, data['heatmap'])
     n_trends = migrate_trends(conn, data['trends'])
     n_notebooks = migrate_notebooks(conn, data['notebooks'])
@@ -397,6 +438,7 @@ def main():
     print(f"\n=== Done ===")
     print(f"  Books:      {n_books} (+{n_extra_books} from notes)")
     print(f"  Highlights: {n_highlights}")
+    print(f"  Reviews:    {n_reviews}")
     print(f"  Sessions:   {n_sessions}")
     print(f"  Trends:     {n_trends}")
     print(f"  Notebooks:  {n_notebooks}")

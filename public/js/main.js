@@ -76,18 +76,19 @@
         '<div class="modal-title">' + (book.title || '') + '</div>' +
         '<div class="modal-author">' + (book.author || '佚名') + '</div>' +
         (metaHtml ? '<div class="modal-meta">' + metaHtml + '</div>' : '') +
-        '<div class="modal-highlights"><div class="modal-hl-placeholder">载入划线...</div></div>';
+        '<div class="modal-highlights"><div class="modal-hl-placeholder">载入划线...</div></div>' +
+        '<div class="modal-reviews"><div class="modal-hl-placeholder">载入想法...</div></div>';
 
       // Re-bind close
       var closeBtn = content.querySelector('.modal-close');
       if (closeBtn) closeBtn.addEventListener('click', closeModal);
 
       // Fetch highlights asynchronously
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', '/api/book/' + book.id + '/highlights');
-      xhr.onload = function() {
-        if (xhr.status === 200) {
-          var data = JSON.parse(xhr.responseText);
+      var xhrHL = new XMLHttpRequest();
+      xhrHL.open('GET', '/api/book/' + book.id + '/highlights');
+      xhrHL.onload = function() {
+        if (xhrHL.status === 200) {
+          var data = JSON.parse(xhrHL.responseText);
           var hlContainer = content.querySelector('.modal-highlights');
           if (hlContainer && data.highlights && data.highlights.length > 0) {
             hlContainer.innerHTML = renderHighlightsHTML(data.highlights);
@@ -96,7 +97,23 @@
           }
         }
       };
-      xhr.send();
+      xhrHL.send();
+
+      // Fetch reviews asynchronously
+      var xhrRV = new XMLHttpRequest();
+      xhrRV.open('GET', '/api/book/' + book.id + '/reviews');
+      xhrRV.onload = function() {
+        if (xhrRV.status === 200) {
+          var data = JSON.parse(xhrRV.responseText);
+          var rvContainer = content.querySelector('.modal-reviews');
+          if (rvContainer && data.reviews && data.reviews.length > 0) {
+            rvContainer.innerHTML = renderReviewsHTML(data.reviews);
+          } else if (rvContainer) {
+            rvContainer.innerHTML = '<div class="modal-hl-empty">本书暂无想法</div>';
+          }
+        }
+      };
+      xhrRV.send();
     }
 
     function renderHighlightsHTML(highlights) {
@@ -109,6 +126,20 @@
           html += '<cite class="modal-hl-chapter">— ' + escapeHTML(h.chapter) + '</cite>';
         }
         html += '</blockquote>';
+      }
+      return html;
+    }
+
+    function renderReviewsHTML(reviews) {
+      var html = '<hr class="modal-hl-rule"><div class="modal-hl-kicker modal-rv-kicker">我的想法</div>';
+      for (var i = 0; i < reviews.length; i++) {
+        var r = reviews[i];
+        html += '<div class="modal-review">';
+        html += '<p class="modal-rv-text">' + escapeHTML(r.content) + '</p>';
+        if (r.chapter) {
+          html += '<cite class="modal-hl-chapter">— ' + escapeHTML(r.chapter) + '</cite>';
+        }
+        html += '</div>';
       }
       return html;
     }

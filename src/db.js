@@ -312,6 +312,26 @@ function getBookHighlights(bookTitle, limitHighlights = 5) {
   }));
 }
 
+function getBookReviews(bookTitle, limitReviews = 5) {
+  const d = getDb();
+  // Match reviews to book by joining on book_id = books.id
+  const rows = d.prepare(`
+    SELECT r.content, r.chapter_name, r.create_time, r.star
+    FROM reviews r
+    JOIN books b ON r.book_id = b.id
+    WHERE b.title = ?
+    ORDER BY RANDOM()
+    LIMIT ?
+  `).all(bookTitle, limitReviews);
+
+  return rows.map(r => ({
+    content: r.content || '',
+    chapter: r.chapter_name || '',
+    time: r.create_time || 0,
+    star: r.star != null ? r.star : -1,
+  }));
+}
+
 // ─── Exports ───
 
 module.exports = {
@@ -332,6 +352,7 @@ module.exports = {
   getReadingStats,
   getBookReadTimes,
   getBookHighlights,
+  getBookReviews,
   // helpers
   formatTime,
   formatTimestamp,

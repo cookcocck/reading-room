@@ -232,6 +232,16 @@ app.get('/api/book/:id/highlights', (req, res) => {
   res.json({ highlights });
 });
 
+// API: Book reviews (想法) for modal enrichment
+app.get('/api/book/:id/reviews', (req, res) => {
+  const { getBookById, getBookReviews } = db;
+  const book = getBookById(req.params.id);
+  if (!book) return res.status(404).json({ error: 'Not found' });
+
+  const reviews = getBookReviews(book.title, 5);
+  res.json({ reviews });
+});
+
 // ─── Start (async: await DB init) ───
 let server;
 

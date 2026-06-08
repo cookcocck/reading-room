@@ -18,8 +18,10 @@
   --ink-faint: #c5c5bf;
   --accent: #1a2744;
   --accent-bright: #2c5282;
+  --accent-secondary: #e07a5f;
   --rule: #e0ded8;
   --rule-thin: #ece9e2;
+  --bg-soft: #f7f5f0;
 
   /* Typography */
   --font-display: 'Noto Serif SC', 'Times New Roman', serif;
@@ -72,8 +74,10 @@
   --ink-faint: #404040;
   --accent: #7ba5d6;
   --accent-bright: #93bfec;
+  --accent-secondary: #d4846e;
   --rule: #2a2a26;
   --rule-thin: #1f1f1c;
+  --bg-soft: #1a1a17;
 }
 
 /* ─── Reset ─── */
@@ -1225,6 +1229,31 @@ h3 {
   font-size: var(--text-subhead);
   color: var(--ink-faint);
   font-style: normal;
+}
+
+/* ─── Modal Reviews (想法) ─── */
+.modal-reviews {
+  margin-top: var(--space-4);
+}
+
+.modal-rv-kicker {
+  color: var(--accent-secondary);
+}
+
+.modal-review {
+  margin: 0 0 var(--space-4) 0;
+  padding: var(--space-3) var(--space-4);
+  border-left: 2px solid var(--accent-secondary);
+  background: var(--bg-soft);
+  border-radius: 0 4px 4px 0;
+}
+
+.modal-rv-text {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  color: var(--ink-soft);
+  line-height: 1.65;
+  margin: 0 0 var(--space-1) 0;
 }
 
 /* ─── Footer ─── */
