@@ -293,6 +293,25 @@ function getBookReadTimes() {
   return map;
 }
 
+function getBookHighlights(bookTitle, limitHighlights = 5) {
+  const d = getDb();
+  // Match highlights to book by joining on book_id = books.id (works for ~160 books)
+  const rows = d.prepare(`
+    SELECT h.mark_text, h.chapter_title, h.create_time
+    FROM highlights h
+    JOIN books b ON h.book_id = b.id
+    WHERE b.title = ?
+    ORDER BY RANDOM()
+    LIMIT ?
+  `).all(bookTitle, limitHighlights);
+
+  return rows.map(r => ({
+    text: r.mark_text || '',
+    chapter: r.chapter_title || '',
+    time: r.create_time || 0,
+  }));
+}
+
 // ─── Exports ───
 
 module.exports = {
@@ -312,6 +331,7 @@ module.exports = {
   getAllCategories,
   getReadingStats,
   getBookReadTimes,
+  getBookHighlights,
   // helpers
   formatTime,
   formatTimestamp,

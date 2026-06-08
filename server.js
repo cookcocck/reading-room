@@ -222,6 +222,16 @@ app.get('/api/book/:id', (req, res) => {
   res.json(book);
 });
 
+// API: Book highlights for modal enrichment
+app.get('/api/book/:id/highlights', (req, res) => {
+  const { getBookById, getBookHighlights } = db;
+  const book = getBookById(req.params.id);
+  if (!book) return res.status(404).json({ error: 'Not found' });
+
+  const highlights = getBookHighlights(book.title, 5);
+  res.json({ highlights });
+});
+
 // ─── Start (async: await DB init) ───
 let server;
 

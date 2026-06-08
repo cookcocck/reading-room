@@ -1170,6 +1170,63 @@ h3 {
   color: var(--ink-soft);
 }
 
+/* ─── Modal Highlights ─── */
+.modal-highlights {
+  margin-top: var(--space-5);
+}
+
+.modal-hl-placeholder {
+  font-family: var(--font-body);
+  font-size: var(--text-subhead);
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+.modal-hl-empty {
+  font-family: var(--font-body);
+  font-size: var(--text-subhead);
+  color: var(--ink-faint);
+  font-style: italic;
+  padding: var(--space-4) 0;
+}
+
+.modal-hl-rule {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin: 0 0 var(--space-4) 0;
+}
+
+.modal-hl-kicker {
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  color: var(--accent);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-4);
+}
+
+.modal-highlight {
+  margin: 0 0 var(--space-4) 0;
+  padding: 0 0 0 var(--space-4);
+  border-left: 2px solid var(--rule);
+}
+
+.modal-hl-text {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  color: var(--ink-soft);
+  line-height: 1.65;
+  margin: 0 0 var(--space-1) 0;
+}
+
+.modal-hl-chapter {
+  font-family: var(--font-body);
+  font-size: var(--text-subhead);
+  color: var(--ink-faint);
+  font-style: normal;
+}
+
 /* ─── Footer ─── */
 .footer {
   border-top: 1px solid var(--rule);

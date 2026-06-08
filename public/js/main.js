@@ -75,11 +75,48 @@
         '</div>' +
         '<div class="modal-title">' + (book.title || '') + '</div>' +
         '<div class="modal-author">' + (book.author || '佚名') + '</div>' +
-        (metaHtml ? '<div class="modal-meta">' + metaHtml + '</div>' : '');
+        (metaHtml ? '<div class="modal-meta">' + metaHtml + '</div>' : '') +
+        '<div class="modal-highlights"><div class="modal-hl-placeholder">载入划线...</div></div>';
 
       // Re-bind close
       var closeBtn = content.querySelector('.modal-close');
       if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+      // Fetch highlights asynchronously
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', '/api/book/' + book.id + '/highlights');
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          var data = JSON.parse(xhr.responseText);
+          var hlContainer = content.querySelector('.modal-highlights');
+          if (hlContainer && data.highlights && data.highlights.length > 0) {
+            hlContainer.innerHTML = renderHighlightsHTML(data.highlights);
+          } else if (hlContainer) {
+            hlContainer.innerHTML = '<div class="modal-hl-empty">本书暂无划线摘录</div>';
+          }
+        }
+      };
+      xhr.send();
+    }
+
+    function renderHighlightsHTML(highlights) {
+      var html = '<hr class="modal-hl-rule"><div class="modal-hl-kicker">划线摘录</div>';
+      for (var i = 0; i < highlights.length; i++) {
+        var h = highlights[i];
+        html += '<blockquote class="modal-highlight">';
+        html += '<p class="modal-hl-text">' + escapeHTML(h.text) + '</p>';
+        if (h.chapter) {
+          html += '<cite class="modal-hl-chapter">— ' + escapeHTML(h.chapter) + '</cite>';
+        }
+        html += '</blockquote>';
+      }
+      return html;
+    }
+
+    function escapeHTML(str) {
+      var div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
     }
 
     overlay.addEventListener('click', function(e) {
