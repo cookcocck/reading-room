@@ -1,16 +1,16 @@
 /** db.js — SQLite database interface for Reading Room
  *
- *  Replaces all src/data/*.json loading with direct DB queries.
- *  Uses better-sqlite3 (sync) for compatibility with EJS.
+ *  Uses sql.js (pure JS / WASM SQLite) — zero native dependencies.
+ *  Works on all platforms including servers with old glibc.
  */
 
-const Database = require('better-sqlite3');
+const initSqlJs = require('sql.js');
 const path = require('path');
 const fs = require('fs');
 
 const DB_PATH = path.join(__dirname, '..', 'db', 'reading-room.db');
 
-// ─── Helpers (same as old server.js helpers) ───
+// ─── Helpers ───
 
 function formatTime(seconds) {
   const h = Math.floor(seconds / 3600);
@@ -34,22 +34,61 @@ function heatmapLevel(seconds) {
   return 5;
 }
 
+// ─── sql.js wrapper — mimics better-sqlite3 API ───
+
+/**
+ * Wrap a sql.js Database to expose .prepare(sql).all(...) / .get(...) API.
+ */
+function createWrapper(sqlDb) {
+  return {
+    prepare(sql) {
+      return {
+        all(...params) {
+          const stmt = sqlDb.prepare(sql);
+          try {
+            if (params.length > 0) stmt.bind(params);
+            const results = [];
+            while (stmt.step()) results.push(stmt.getAsObject());
+            return results;
+          } finally {
+            stmt.free();
+          }
+        },
+        get(...params) {
+          const stmt = sqlDb.prepare(sql);
+          try {
+            if (params.length > 0) stmt.bind(params);
+            if (stmt.step()) return stmt.getAsObject();
+            return undefined;
+          } finally {
+            stmt.free();
+          }
+        }
+      };
+    }
+  };
+}
+
 // ─── Database connection ───
 
 let db = null;
+let sqlDb = null;
 
-function getDb() {
-  if (db !== null) return db;
+async function initDb() {
+  if (db) return db;
+
   if (!fs.existsSync(DB_PATH)) {
     console.error(`[db] WARNING: Database not found at ${DB_PATH}`);
     console.error('[db] Run "python scripts/create_db.py" to create it.');
     return null;
   }
+
   try {
-    db = new Database(DB_PATH);
-    db.pragma('journal_mode = WAL');
-    db.pragma('foreign_keys = ON');
-    console.log('[db] Connected to reading-room.db');
+    const SQL = await initSqlJs();
+    const fileBuffer = fs.readFileSync(DB_PATH);
+    sqlDb = new SQL.Database(fileBuffer);
+    db = createWrapper(sqlDb);
+    console.log(`[db] Connected to reading-room.db (sql.js, ${(fileBuffer.length / 1024 / 1024).toFixed(1)} MB)`);
     return db;
   } catch (err) {
     console.error(`[db] Failed to open database: ${err.message}`);
@@ -57,20 +96,21 @@ function getDb() {
   }
 }
 
+function getDb() {
+  return db;
+}
+
 function closeDb() {
-  if (db) {
-    db.close();
+  if (sqlDb) {
+    sqlDb.close();
+    sqlDb = null;
     db = null;
     console.log('[db] Connection closed');
   }
 }
 
-// ─── Query Functions ───
+// ─── Query Functions (unchanged API, now backed by sql.js) ───
 
-/**
- * Get all books joined with notebook stats.
- * Returns array of objects: { id, title, author, cover, category, finished, update_time, reviewCount, ... }
- */
 function getAllBooks(filter, category) {
   const d = getDb();
   let query = `
@@ -98,9 +138,6 @@ function getAllBooks(filter, category) {
   return d.prepare(query).all(...params);
 }
 
-/**
- * Get a single book with notebook stats.
- */
 function getBookById(bookId) {
   const d = getDb();
   const book = d.prepare(`
@@ -114,10 +151,9 @@ function getBookById(bookId) {
 
   if (!book) return null;
 
-  // Format as the old API expected
   return {
     ...book,
-    finished: !!book.finished,  // convert int to bool
+    finished: !!book.finished,
     notebook: book.noteCount != null ? {
       reviewCount: book.reviewCount || 0,
       noteCount: book.noteCount || 0,
@@ -127,9 +163,6 @@ function getBookById(bookId) {
   };
 }
 
-/**
- * Get notebook list with pagination.
- */
 function getNotebooks(page = 1, perPage = 30) {
   const d = getDb();
   const offset = (page - 1) * perPage;
@@ -146,12 +179,8 @@ function getNotebooks(page = 1, perPage = 30) {
   return { notebooks, total, page, perPage, totalPages: Math.ceil(total / perPage) };
 }
 
-/**
- * Get random recent highlights with book title.
- */
 function getRecentHighlights(limit = 8) {
   const d = getDb();
-  // Get highlights ordered randomly, limited
   const highlights = d.prepare(`
     SELECT h.*, b.title AS book_title, b.author AS book_author
     FROM highlights h
@@ -168,30 +197,21 @@ function getRecentHighlights(limit = 8) {
   }));
 }
 
-/**
- * Get reading heatmap data for a year.
- */
 function getHeatmap() {
   const d = getDb();
   return d.prepare('SELECT date, seconds FROM reading_sessions ORDER BY date').all();
 }
 
-/**
- * Get monthly reading trends for a year.
- */
 function getTrends() {
   const d = getDb();
   return d.prepare('SELECT year, month, total_seconds AS totalSeconds, read_days AS readDays FROM reading_trends ORDER BY year, month').all();
 }
 
-/**
- * Get weekday distribution from heatmap data.
- */
 function getWeekdayDistribution() {
   const d = getDb();
   const rows = d.prepare("SELECT date, seconds FROM reading_sessions WHERE date >= '2026-01-01'").all();
 
-  const counts = [0, 0, 0, 0, 0, 0, 0]; // Mon=0 ... Sun=6 in JS getDay()
+  const counts = [0, 0, 0, 0, 0, 0, 0];
   rows.forEach(r => {
     const date = new Date(r.date);
     counts[date.getDay()] += r.seconds;
@@ -199,9 +219,6 @@ function getWeekdayDistribution() {
   return counts;
 }
 
-/**
- * Get summary stats.
- */
 function getSummary() {
   const d = getDb();
   const row = d.prepare('SELECT * FROM summary WHERE id = 1').get();
@@ -217,25 +234,17 @@ function getSummary() {
   };
 }
 
-/**
- * Get overall stats. Falls back to JSON file if not in DB.
- */
 function getOverall() {
   const d = getDb();
-  const row = d.prepare("SELECT name, value FROM kv_store WHERE name IN ('overall', 'annual')").all();
+  const rows = d.prepare("SELECT name, value FROM kv_store WHERE name IN ('overall', 'annual')").all();
 
   const result = {};
-  row.forEach(r => {
+  rows.forEach(r => {
     try { result[r.name] = JSON.parse(r.value); } catch(e) {}
   });
   return result;
 }
 
-/**
- * Get currently reading books (progress > 0, unfinished).
- * Note: Since books.json doesn't have progress field, we use update_time
- * to identify recently active books that aren't finished.
- */
 function getCurrentlyReading(limit = 6) {
   const d = getDb();
   return d.prepare(`
@@ -248,9 +257,6 @@ function getCurrentlyReading(limit = 6) {
   `).all(limit);
 }
 
-/**
- * Get all unique categories.
- */
 function getAllCategories() {
   const d = getDb();
   return d.prepare("SELECT DISTINCT category FROM books WHERE category != '' ORDER BY category")
@@ -258,9 +264,6 @@ function getAllCategories() {
     .map(r => r.category);
 }
 
-/**
- * Get total reading time and reading days.
- */
 function getReadingStats() {
   const d = getDb();
   const row = d.prepare('SELECT COALESCE(SUM(seconds), 0) AS total_sec, COUNT(*) AS days FROM reading_sessions').get();
@@ -273,6 +276,7 @@ function getReadingStats() {
 // ─── Exports ───
 
 module.exports = {
+  initDb,
   getDb,
   closeDb,
   getAllBooks,
