@@ -1107,12 +1107,13 @@ h3 {
 
 .modal {
   background: var(--paper);
-  max-width: 36rem;
-  width: 90%;
+  max-width: 52rem;
+  width: 92%;
   max-height: 85vh;
   overflow-y: auto;
   padding: var(--space-8);
   border: 1px solid var(--rule);
+  position: relative;
 }
 
 .modal-close {
