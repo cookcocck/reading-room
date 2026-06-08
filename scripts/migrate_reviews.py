@@ -108,7 +108,7 @@ def main():
     conn.row_factory = sqlite3.Row
     create_reviews_table(conn)
 
-    # Get books with reviewCount > 0
+    # Try notebooks first; if empty, fallback to all books with highlights
     rows = conn.execute('''
         SELECT n.book_id, b.title, n.review_count
         FROM notebooks n
@@ -118,7 +118,16 @@ def main():
     ''').fetchall()
 
     if not rows:
-        print("[*] No books with reviews found.")
+        print("[!] notebooks table is empty — falling back to books with highlights")
+        rows = conn.execute('''
+            SELECT DISTINCT h.book_id, b.title, 0 AS review_count
+            FROM highlights h
+            LEFT JOIN books b ON h.book_id = b.id
+            ORDER BY b.title
+        ''').fetchall()
+
+    if not rows:
+        print("[*] No books found to query for reviews.")
         conn.close()
         return
 
@@ -131,7 +140,8 @@ def main():
         book_id = row["book_id"]
         title = row["title"] or book_id
         expected = row["review_count"]
-        print(f"    [{i+1}/{len(remaining)}] {title} (expected {expected} reviews)")
+        expected_hint = f" (expected ~{expected})" if expected > 0 else ""
+        print(f"    [{i+1}/{len(remaining)}] {title}{expected_hint}")
 
         try:
             reviews = fetch_reviews(book_id)
