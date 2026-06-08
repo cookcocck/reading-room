@@ -273,6 +273,26 @@ function getReadingStats() {
   };
 }
 
+function getBookReadTimes() {
+  const d = getDb();
+  const map = {};
+  ['overall', 'annual'].forEach(name => {
+    const row = d.prepare("SELECT value FROM kv_store WHERE name = ?").get(name);
+    if (!row) return;
+    try {
+      const v = JSON.parse(row.value);
+      if (v.topBooks && Array.isArray(v.topBooks)) {
+        v.topBooks.forEach(b => {
+          if (b.title && b.readTime) {
+            map[b.title] = Math.max(map[b.title] || 0, b.readTime);
+          }
+        });
+      }
+    } catch (e) {}
+  });
+  return map;
+}
+
 // ─── Exports ───
 
 module.exports = {
@@ -291,6 +311,7 @@ module.exports = {
   getCurrentlyReading,
   getAllCategories,
   getReadingStats,
+  getBookReadTimes,
   // helpers
   formatTime,
   formatTimestamp,

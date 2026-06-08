@@ -288,6 +288,7 @@ var maxWeekday = Math.max.apply(null, weekdayCounts) || 1;
       <div class="book-card-body">
         <div class="book-card-title"><%= b.title %></div>
         <div class="book-card-author"><%= b.author %></div>
+        <% if (b.readTime) { %><div class="book-card-duration"><%= helpers.formatTime(b.readTime) %></div><% } %>
         <% if (b.tags && b.tags.length > 0) { %>
           <span class="book-card-badge"><%= b.tags[0] %></span>
         <% } %>

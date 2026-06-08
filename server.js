@@ -99,13 +99,20 @@ app.get('/', (req, res) => {
 
 // Bookshelf page
 app.get('/bookshelf', (req, res) => {
-  const { getAllBooks, getAllCategories, getSummary } = db;
+  const { getAllBooks, getAllCategories, getSummary, getBookReadTimes } = db;
   const filter = req.query.filter || 'all';
   const category = req.query.category || '';
 
   const books = getAllBooks(filter, category);
   const allCategories = getAllCategories();
   const summary = getSummary();
+  const bookReadTimes = getBookReadTimes();
+
+  // Merge readTime into each book by title match
+  books.forEach(b => {
+    const rt = bookReadTimes[b.title];
+    if (rt) b.readTimeSec = rt;
+  });
 
   res.render('bookshelf', {
     title: '书架',

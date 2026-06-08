@@ -38,6 +38,7 @@
       <div class="book-card-body">
         <div class="book-card-title"><%= b.title %></div>
         <div class="book-card-author"><%= b.author || '佚名' %></div>
+        <% if (b.readTimeSec) { %><div class="book-card-duration"><%= helpers.formatTime(b.readTimeSec) %></div><% } %>
         <% if (b.finished) { %><span class="book-card-badge">已读完</span><% } %>
       </div>
     </div>
