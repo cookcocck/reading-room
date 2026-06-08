@@ -39,15 +39,22 @@ function heatmapLevel(seconds) {
 let db = null;
 
 function getDb() {
-  if (db) return db;
+  if (db !== null) return db;
   if (!fs.existsSync(DB_PATH)) {
-    throw new Error(`Database not found at ${DB_PATH}. Run "python scripts/create_db.py" first.`);
+    console.error(`[db] WARNING: Database not found at ${DB_PATH}`);
+    console.error('[db] Run "python scripts/create_db.py" to create it.');
+    return null;
   }
-  db = new Database(DB_PATH);
-  db.pragma('journal_mode = WAL');
-  db.pragma('foreign_keys = ON');
-  console.log('[db] Connected to reading-room.db');
-  return db;
+  try {
+    db = new Database(DB_PATH);
+    db.pragma('journal_mode = WAL');
+    db.pragma('foreign_keys = ON');
+    console.log('[db] Connected to reading-room.db');
+    return db;
+  } catch (err) {
+    console.error(`[db] Failed to open database: ${err.message}`);
+    return null;
+  }
 }
 
 function closeDb() {

@@ -13,6 +13,26 @@ app.set('layout extractStyles', true);
 // ─── DB ───
 const db = require('./src/db');
 
+// Middleware: check DB availability before serving pages
+app.use((req, res, next) => {
+  // Allow static assets through even without DB
+  if (req.path.startsWith('/css/') || req.path.startsWith('/js/') || req.path.startsWith('/images/') || req.path === '/favicon.ico') {
+    return next();
+  }
+  if (!db.getDb()) {
+    return res.status(503).send(`
+      <!DOCTYPE html><html><head><meta charset="utf-8"><title>数据库不可用</title>
+      <style>body{font-family:system-ui,sans-serif;max-width:600px;margin:80px auto;padding:24px;line-height:1.6;color:#333}
+      h1{color:#c00}code{background:#f5f5f5;padding:2px 6px;border-radius:4px;font-size:0.9em}</style></head>
+      <body><h1>503 - 数据库不可用</h1>
+      <p>数据库文件不存在或无法读取。请在服务器上运行以下命令创建数据库：</p>
+      <pre><code>cd /home/admin/reading-site && python scripts/create_db.py</code></pre>
+      <p>创建完成后重启服务：<code>pm2 restart reading-room</code></p></body></html>
+    `);
+  }
+  next();
+});
+
 // ─── View engine ───
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
