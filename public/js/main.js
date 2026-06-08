@@ -1,67 +1,50 @@
 /* ═══════════════════════════════════════════
    READING ROOM — Client Scripts
+   Editorial edition. Minimal. Confident.
    ═══════════════════════════════════════════ */
 
 (function() {
   'use strict';
 
   // ─── Theme ───
-  const STORAGE_KEY = 'reading-room-theme';
-  const html = document.documentElement;
+  var STORAGE_KEY = 'reading-room-theme';
+  var html = document.documentElement;
 
   function getTheme() {
-    const stored = localStorage.getItem(STORAGE_KEY);
+    var stored = localStorage.getItem(STORAGE_KEY);
     if (stored) return stored;
-    return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    return 'light'; // editorial defaults to light
   }
 
   function setTheme(theme) {
     html.setAttribute('data-theme', theme);
     localStorage.setItem(STORAGE_KEY, theme);
-    updateToggleLabel(theme);
-  }
-
-  function updateToggleLabel(theme) {
-    const btn = document.getElementById('theme-toggle');
-    if (btn) {
-      btn.innerHTML = theme === 'light' ? '☀️ 浅色' : '🌙 深色';
-    }
   }
 
   function toggleTheme() {
-    const current = html.getAttribute('data-theme') || 'dark';
+    var current = html.getAttribute('data-theme') || 'light';
     setTheme(current === 'dark' ? 'light' : 'dark');
   }
 
-  // Initialize
   setTheme(getTheme());
 
-  // Bind toggle
-  const toggleBtn = document.getElementById('theme-toggle');
+  var toggleBtn = document.getElementById('theme-toggle');
   if (toggleBtn) {
     toggleBtn.addEventListener('click', toggleTheme);
   }
 
-  // Listen for system preference changes
-  window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
-    if (!localStorage.getItem(STORAGE_KEY)) {
-      setTheme(e.matches ? 'light' : 'dark');
-    }
-  });
-
   // ─── Book Modal ───
-  const modal = document.getElementById('book-modal');
+  var modal = document.getElementById('book-modal');
   if (modal) {
-    const overlay = modal.querySelector('.modal-overlay');
-    const closeBtn = modal.querySelector('.modal-close');
+    var overlay = modal.querySelector('.modal-overlay');
+    var content = modal.querySelector('.modal-content');
 
     function openModal(bookId) {
-      const xhr = new XMLHttpRequest();
+      var xhr = new XMLHttpRequest();
       xhr.open('GET', '/api/book/' + bookId);
       xhr.onload = function() {
         if (xhr.status === 200) {
-          const book = JSON.parse(xhr.responseText);
-          renderModal(book);
+          renderModal(JSON.parse(xhr.responseText));
           overlay.classList.add('open');
           document.body.style.overflow = 'hidden';
         }
@@ -75,33 +58,30 @@
     }
 
     function renderModal(book) {
-      const content = modal.querySelector('.modal-content');
-      const nb = book.notebook;
-
-      let metaHtml = '';
-      if (book.category) metaHtml += `<div>📂 ${book.category}</div>`;
-      if (book.finished) metaHtml += `<div>✅ 已读完</div>`;
-      if (book.updateTime) {
-        const d = new Date(book.updateTime * 1000);
-        metaHtml += `<div>📖 最近阅读: ${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}</div>`;
-      }
+      var nb = book.notebook;
+      var metaHtml = '';
+      if (book.category) metaHtml += '<span>' + book.category + '</span>';
+      if (book.finished) metaHtml += '<span>已读完</span>';
       if (nb) {
-        metaHtml += `<div>📝 划线 ${nb.noteCount} · 想法 ${nb.reviewCount} · 书签 ${nb.bookmarkCount}</div>`;
+        metaHtml += '<span><strong>' + nb.noteCount + '</strong> 划线</span>';
+        metaHtml += '<span><strong>' + nb.reviewCount + '</strong> 想法</span>';
+        metaHtml += '<span><strong>' + nb.bookmarkCount + '</strong> 书签</span>';
       }
 
-      content.innerHTML = `
-        <div class="modal-header">
-          <img class="modal-cover" src="${book.cover || '/img/placeholder.svg'}" alt="${book.title}" onerror="this.style.display='none'">
-          <div class="modal-info">
-            <h3>${book.title}</h3>
-            <div class="modal-author">${book.author || '佚名'}</div>
-            <div class="modal-meta">${metaHtml}</div>
-          </div>
-        </div>
-      `;
+      content.innerHTML =
+        '<button class="modal-close" onclick="closeBookModal()">&times;</button>' +
+        '<div class="modal-cover">' +
+          (book.cover ? '<img src="' + book.cover + '" alt="" onerror="this.style.display=\'none\';this.parentElement.innerHTML=\'&#128218;\'">' : '&#128218;') +
+        '</div>' +
+        '<div class="modal-title">' + (book.title || '') + '</div>' +
+        '<div class="modal-author">' + (book.author || '佚名') + '</div>' +
+        (metaHtml ? '<div class="modal-meta">' + metaHtml + '</div>' : '');
+
+      // Re-bind close
+      var closeBtn = content.querySelector('.modal-close');
+      if (closeBtn) closeBtn.addEventListener('click', closeModal);
     }
 
-    closeBtn.addEventListener('click', closeModal);
     overlay.addEventListener('click', function(e) {
       if (e.target === overlay) closeModal();
     });
@@ -109,37 +89,24 @@
       if (e.key === 'Escape' && overlay.classList.contains('open')) closeModal();
     });
 
-    // Expose to global
     window.openBookModal = openModal;
     window.closeBookModal = closeModal;
   }
 
-  // ─── Bookshelf filter ───
-  const filterBtns = document.querySelectorAll('.filter-btn[data-filter]');
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', function() {
-      const filter = this.dataset.filter;
-      const url = new URL(window.location);
-      url.searchParams.set('filter', filter);
-      window.location = url.toString();
-    });
-  });
-
   // ─── Reading Progress Bar ───
-  const progressBar = document.getElementById('reading-progress');
+  var progressBar = document.getElementById('reading-progress');
   if (progressBar) {
-    window.addEventListener('scroll', function () {
+    window.addEventListener('scroll', function() {
       var scrollTop = window.scrollY;
       var docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      var pct = docHeight > 0 ? Math.min((scrollTop / docHeight) * 100, 100) : 0;
-      progressBar.style.width = pct + '%';
+      progressBar.style.width = docHeight > 0 ? Math.min((scrollTop / docHeight) * 100, 100) + '%' : '0%';
     }, { passive: true });
   }
 
-  // ─── Nav Scroll Shadow ───
+  // ─── Nav Scroll ───
   var nav = document.getElementById('main-nav');
   if (nav) {
-    window.addEventListener('scroll', function () {
+    window.addEventListener('scroll', function() {
       nav.classList.toggle('scrolled', window.scrollY > 10);
     }, { passive: true });
   }
@@ -147,30 +114,12 @@
   // ─── Back to Top ───
   var backToTop = document.getElementById('back-to-top');
   if (backToTop) {
-    window.addEventListener('scroll', function () {
+    window.addEventListener('scroll', function() {
       backToTop.classList.toggle('visible', window.scrollY > 400);
     }, { passive: true });
-    backToTop.addEventListener('click', function () {
+    backToTop.addEventListener('click', function() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
-  }
-
-  // ─── Scroll Reveal ───
-  var revealEls = document.querySelectorAll('.scroll-reveal');
-  if (revealEls.length > 0) {
-    if ('IntersectionObserver' in window) {
-      var revealObserver = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('revealed');
-            revealObserver.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-      revealEls.forEach(function (el) { revealObserver.observe(el); });
-    } else {
-      revealEls.forEach(function (el) { el.classList.add('revealed'); });
-    }
   }
 
   // ─── Page Loader ───
@@ -179,13 +128,11 @@
   function hideLoader() {
     if (loader) {
       loader.classList.add('fade-out');
-      setTimeout(function () {
-        loader.style.display = 'none';
-      }, 500);
+      setTimeout(function() { loader.style.display = 'none'; }, 400);
     }
     if (wrapper) {
       wrapper.style.opacity = '1';
-      wrapper.style.transition = 'opacity 0.4s ease-in';
+      wrapper.style.transition = 'opacity 0.3s ease-in';
     }
   }
   if (document.readyState === 'loading') {

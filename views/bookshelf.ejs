@@ -1,66 +1,54 @@
 <!-- ═══════════════════════════════════════════
-   BOOKSHELF — Browseable book grid
+   BOOKSHELF — Editorial Book Catalog
    ═══════════════════════════════════════════ -->
 
-<div class="section animate-in">
-  <div class="container">
-    <div class="section-header">
-      <h1 class="section-title" style="font-size: var(--text-2xl);">书架</h1>
-      <span class="font-sans" style="color: var(--color-text-muted); font-size: var(--text-sm);">
-        <%= books.length %> 本
-      </span>
-    </div>
+<div class="container-wide">
+  <div class="catalog-header">
+    <h1>书架</h1>
+    <div class="catalog-count"><%= books.length %> 册藏书 · <%= summary.finishedCount %> 册已读完</div>
+  </div>
 
-    <!-- Filters -->
-    <div class="filters">
-      <a href="/bookshelf" class="filter-btn <%= filter === 'all' && !category ? 'active' : '' %>">全部</a>
-      <a href="/bookshelf?filter=reading" class="filter-btn <%= filter === 'reading' ? 'active' : '' %>">在读</a>
-      <a href="/bookshelf?filter=finished" class="filter-btn <%= filter === 'finished' ? 'active' : '' %>">已读完</a>
-
-      <% if (category) { %>
-      <span class="filter-btn active">
-        📂 <%= category %>
-        <a href="/bookshelf?filter=<%= filter %>" style="margin-left:8px;color:inherit;opacity:0.6;">&times;</a>
-      </span>
-      <% } %>
-    </div>
-
-    <!-- Category tags -->
-    <% if (!category && allCategories.length > 0) { %>
-    <div class="filters" style="margin-top: calc(-1 * var(--space-sm));">
-      <% allCategories.slice(0, 12).forEach(function(c) { %>
-      <a href="/bookshelf?category=<%= encodeURIComponent(c) %>" class="filter-btn" style="font-size:11px;padding:3px 12px;">
-        <%= c %>
-      </a>
-      <% }); %>
-    </div>
-    <% } %>
-
-    <!-- Book Grid -->
-    <% if (books.length > 0) { %>
-    <div class="book-grid stagger">
-      <% books.forEach(function(b) { %>
-      <div class="book-card" onclick="openBookModal('<%= b.id %>')">
-        <% if (b.cover) { %>
-        <img class="book-cover" src="<%= b.cover %>" alt="<%= b.title %>" loading="lazy" onerror="this.style.background='var(--color-bg-alt)';this.style.display='flex';this.style.alignItems='center';this.style.justifyContent='center';this.outerHTML='<div class=%27book-cover%27 style=%27display:flex;align-items:center;justify-content:center;color:var(--color-text-muted);font-size:2rem;%27>📖</div>'">
-        <% } else { %>
-        <div class="book-cover" style="display:flex;align-items:center;justify-content:center;color:var(--color-text-muted);font-size:2rem;">📖</div>
-        <% } %>
-        <div class="book-info">
-          <div class="book-title"><%= b.title %></div>
-          <div class="book-author"><%= b.author || '佚名' %></div>
-        </div>
-        <% if (b.finished) { %>
-        <span class="book-badge finished">已读</span>
-        <% } %>
-      </div>
-      <% }); %>
-    </div>
-    <% } else { %>
-    <div class="empty-state">
-      <div class="empty-state-icon">📚</div>
-      <p class="empty-state-text">没有符合条件的书籍</p>
-    </div>
+  <!-- Filters — editorial text links -->
+  <div class="catalog-filters">
+    <a href="/bookshelf" class="filter-option <%= filter === 'all' && !category ? 'active' : '' %>">全部</a>
+    <a href="/bookshelf?filter=reading" class="filter-option <%= filter === 'reading' ? 'active' : '' %>">在读</a>
+    <a href="/bookshelf?filter=finished" class="filter-option <%= filter === 'finished' ? 'active' : '' %>">已读完</a>
+    <% if (category) { %>
+      <span class="filter-option active"><%= category %> <a href="/bookshelf?filter=<%= filter %>" style="margin-left: 4px; font-size: 0.75rem;">×</a></span>
     <% } %>
   </div>
+
+  <!-- Category tags (when no specific category selected) -->
+  <% if (!category && allCategories.length > 0) { %>
+  <div class="category-filters">
+    <% allCategories.slice(0, 12).forEach(function(c) { %>
+    <a href="/bookshelf?category=<%= encodeURIComponent(c) %>" class="category-tag"><%= c %></a>
+    <% }); %>
+  </div>
+  <% } %>
+
+  <!-- Book List — editorial catalog -->
+  <% if (books.length > 0) { %>
+  <div class="book-list">
+    <% books.forEach(function(b) { %>
+    <div class="book-list-item" onclick="openBookModal('<%= b.id %>')">
+      <div class="book-list-cover">
+        <% if (b.cover) { %><img src="<%= b.cover %>" alt="" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='📖'"><% } else { %>📖<% } %>
+      </div>
+      <div>
+        <div class="book-list-title"><%= b.title %></div>
+        <div class="book-list-author"><%= b.author || '佚名' %></div>
+      </div>
+      <div class="book-list-meta">
+        <% if (b.finished) { %><span class="book-list-badge">已读完</span><% } %>
+      </div>
+    </div>
+    <% }); %>
+  </div>
+  <% } else { %>
+  <div class="empty-state">
+    <div class="empty-state-icon">—</div>
+    <p class="empty-state-text">没有符合条件的藏书</p>
+  </div>
+  <% } %>
 </div>
