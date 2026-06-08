@@ -1,0 +1,74 @@
+[
+  {
+    "year": 2025,
+    "month": 1,
+    "totalSeconds": 154327,
+    "readDays": 30
+  },
+  {
+    "year": 2025,
+    "month": 2,
+    "totalSeconds": 214841,
+    "readDays": 28
+  },
+  {
+    "year": 2025,
+    "month": 3,
+    "totalSeconds": 167337,
+    "readDays": 31
+  },
+  {
+    "year": 2025,
+    "month": 4,
+    "totalSeconds": 269844,
+    "readDays": 29
+  },
+  {
+    "year": 2025,
+    "month": 5,
+    "totalSeconds": 231998,
+    "readDays": 26
+  },
+  {
+    "year": 2025,
+    "month": 6,
+    "totalSeconds": 247082,
+    "readDays": 29
+  },
+  {
+    "year": 2025,
+    "month": 7,
+    "totalSeconds": 259263,
+    "readDays": 30
+  },
+  {
+    "year": 2025,
+    "month": 8,
+    "totalSeconds": 205903,
+    "readDays": 31
+  },
+  {
+    "year": 2025,
+    "month": 9,
+    "totalSeconds": 100251,
+    "readDays": 26
+  },
+  {
+    "year": 2025,
+    "month": 10,
+    "totalSeconds": 132871,
+    "readDays": 22
+  },
+  {
+    "year": 2025,
+    "month": 11,
+    "totalSeconds": 113087,
+    "readDays": 29
+  },
+  {
+    "year": 2025,
+    "month": 12,
+    "totalSeconds": 114742,
+    "readDays": 26
+  }
+]

@@ -9,9 +9,12 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
 </head>
 <body>
+  <!-- Reading Progress Bar -->
+  <div class="reading-progress-bar" id="reading-progress"></div>
+
   <div class="site-wrapper">
     <!-- Navigation -->
-    <nav class="nav">
+    <nav class="nav" id="main-nav">
       <div class="nav-inner">
         <a href="/" class="nav-brand">阅读书房</a>
         <div class="nav-links">
@@ -19,7 +22,10 @@
           <a href="/stats" class="nav-link <%= path === '/stats' ? 'active' : '' %>">统计</a>
           <a href="/notebooks" class="nav-link <%= path === '/notebooks' ? 'active' : '' %>">笔记</a>
           <a href="/about" class="nav-link <%= path === '/about' ? 'active' : '' %>">关于</a>
-          <button id="theme-toggle" class="theme-toggle">🌙 深色</button>
+          <button id="theme-toggle" class="theme-toggle" aria-label="切换主题">
+            <span class="theme-icon">🌙</span>
+            <span class="theme-text">深色</span>
+          </button>
         </div>
       </div>
     </nav>
@@ -39,6 +45,9 @@
       </div>
     </div>
 
+    <!-- Back to Top -->
+    <button class="back-to-top" id="back-to-top" aria-label="回到顶部" title="回到顶部">↑</button>
+
     <!-- Footer -->
     <footer class="footer">
       <p class="footer-text">
@@ -49,5 +58,8 @@
   </div>
 
   <script src="/js/main.js"></script>
+  <% if (typeof heatmap !== 'undefined') { %>
+  <script src="/js/heatmap.js"></script>
+  <% } %>
 </body>
 </html>

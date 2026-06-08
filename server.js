@@ -29,6 +29,10 @@ const annual = loadJSON('annual.json') || {};
 const overall = loadJSON('overall.json') || {};
 const notebooks = loadJSON('notebooks.json') || [];
 const summary = loadJSON('summary.json') || {};
+const heatmap = loadJSON('reading-heatmap.json') || [];
+const trends = loadJSON('reading-trends.json') || [];
+const annual2026 = loadJSON('annual-2026.json') || {};
+const notesDetail = loadJSON('notes_detail.json') || {};
 
 // ─── View engine ───
 app.set('view engine', 'ejs');
@@ -52,10 +56,62 @@ const formatTimestamp = (ts) => {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 };
 
+const heatmapLevel = (seconds) => {
+  if (!seconds || seconds <= 0) return 0;
+  if (seconds < 1800) return 1;       // < 30min
+  if (seconds < 3600) return 2;       // 30-60min
+  if (seconds < 7200) return 3;       // 1-2h
+  if (seconds < 10800) return 4;      // 2-3h
+  return 5;                            // > 3h
+};
+
 // ─── Routes ───
 
 // Home page
 app.get('/', (req, res) => {
+  // Currently reading books (progress > 0 and unfinished)
+  const currentlyReading = books
+    .filter(b => b.progress > 0 && !b.finished)
+    .sort((a, b) => b.progress - a.progress)
+    .slice(0, 6);
+
+  // Recent highlights (from notes_detail.json)
+  const recentHighlights = [];
+  for (const [bookId, detail] of Object.entries(notesDetail)) {
+    if (!detail.highlights || detail.highlights.length === 0) continue;
+    // Take the 3 most recent highlights per book (assuming they're in order)
+    const latest = detail.highlights.slice(-3).map(h => ({
+      ...h,
+      bookTitle: detail.title,
+      bookCover: detail.cover || '',
+      bookId,
+    }));
+    recentHighlights.push(...latest);
+  }
+  // Shuffle and take 8
+  const shuffled = recentHighlights.sort(() => Math.random() - 0.5).slice(0, 8);
+
+  // Year progress
+  const now = new Date();
+  const yearStart = new Date(now.getFullYear(), 0, 1);
+  const yearEnd = new Date(now.getFullYear() + 1, 0, 1);
+  const yearProgress = ((now - yearStart) / (yearEnd - yearStart) * 100).toFixed(1);
+  const daysInYear = ((yearEnd - yearStart) / 86400000);
+  const dayOfYear = Math.floor((now - yearStart) / 86400000) + 1;
+
+  // Monthly trend data for sparklines
+  const monthlyLabels = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  const monthly2025 = trends.filter(t => t.year === 2025).sort((a,b) => a.month - b.month);
+  const maxMonthly = Math.max(...monthly2025.map(m => m.totalSeconds), 1);
+
+  // Weekday distribution (from heatmap data)
+  const weekdayMap = ['日','一','二','三','四','五','六'];
+  const weekdayCounts = [0,0,0,0,0,0,0];
+  heatmap.forEach(d => {
+    const date = new Date(d.date);
+    weekdayCounts[date.getDay()] += d.seconds;
+  });
+
   res.render('index', {
     title: '阅读书房',
     summary,
@@ -63,15 +119,26 @@ app.get('/', (req, res) => {
     overall,
     formatTime,
     formatTimestamp,
-    helpers: { formatTime, formatTimestamp },
+    heatmapLevel,
+    helpers: { formatTime, formatTimestamp, heatmapLevel },
     path: '/',
+    heatmap: JSON.stringify(heatmap),
+    monthly2025: JSON.stringify(monthly2025),
+    maxMonthly,
+    currentlyReading,
+    recentHighlights,
+    yearProgress,
+    dayOfYear,
+    daysInYear,
+    weekdayCounts,
+    weekdayMap,
   });
 });
 
 // Bookshelf page
 app.get('/bookshelf', (req, res) => {
-  const filter = req.query.filter || 'all'; // all | finished | reading
-  const sort = req.query.sort || 'recent'; // recent | title | author
+  const filter = req.query.filter || 'all';
+  const sort = req.query.sort || 'recent';
   const category = req.query.category || '';
 
   let filtered = [...books];
@@ -104,7 +171,6 @@ app.get('/bookshelf', (req, res) => {
 
 // Stats page
 app.get('/stats', (req, res) => {
-  // Yearly reading data
   const yearlyTimes = overall.yearlyReadTimes || {};
   const years = Object.entries(yearlyTimes)
     .map(([ts, secs]) => ({
@@ -114,8 +180,6 @@ app.get('/stats', (req, res) => {
     }))
     .sort((a, b) => a.year - b.year);
 
-  // Monthly data from annual
-  const monthlyRaw = annual.monthlyReadTimes || {};
   const monthly = Object.entries(annual.readTimes || {})
     .map(([ts, secs]) => {
       const d = new Date(parseInt(ts) * 1000);
@@ -139,6 +203,7 @@ app.get('/stats', (req, res) => {
     formatTimestamp,
     helpers: { formatTime, formatTimestamp },
     path: '/stats',
+    trends: JSON.stringify(trends),
   });
 });
 
