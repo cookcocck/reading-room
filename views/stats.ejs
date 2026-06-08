@@ -1,0 +1,139 @@
+<!-- ═══════════════════════════════════════════
+   STATS — Reading statistics & charts
+   ═══════════════════════════════════════════ -->
+
+<div class="section animate-in">
+  <div class="container">
+    <h1 class="section-title" style="font-size: var(--text-2xl); margin-bottom: var(--space-lg);">阅读统计</h1>
+
+    <!-- Overview -->
+    <div class="time-overview stagger">
+      <div class="time-card">
+        <div class="time-card-label">累计阅读</div>
+        <div class="time-card-value"><%= Math.round((overall.totalReadTimeSec || 0) / 3600).toLocaleString() %>h</div>
+        <div class="time-card-sub"><%= helpers.formatTime(overall.totalReadTimeSec || 0) %></div>
+      </div>
+      <div class="time-card">
+        <div class="time-card-label">阅读天数</div>
+        <div class="time-card-value"><%= (overall.readDays || 0).toLocaleString() %></div>
+        <div class="time-card-sub">日均 <%= helpers.formatTime(overall.dayAvgReadTimeSec || 0) %></div>
+      </div>
+      <div class="time-card">
+        <div class="time-card-label">本年度</div>
+        <div class="time-card-value"><%= Math.round((annual.totalReadTimeSec || 0) / 3600).toLocaleString() %>h</div>
+        <div class="time-card-sub"><%= annual.readDays || 0 %> 天 · <%= helpers.formatTime(annual.totalReadTimeSec || 0) %></div>
+      </div>
+      <div class="time-card">
+        <div class="time-card-label">图书总量</div>
+        <div class="time-card-value"><%= summary.totalBooks %></div>
+        <div class="time-card-sub">已读完 <%= summary.finishedCount %> 本 (<%= Math.round(summary.finishedCount / Math.max(summary.totalBooks, 1) * 100) %>%)</div>
+      </div>
+    </div>
+
+    <!-- Completion Progress -->
+    <div class="chart-container stagger" style="animation-delay: 200ms;">
+      <div class="chart-title">阅读完成度</div>
+      <div style="display:flex;align-items:center;gap:var(--space-md);">
+        <div class="progress-bar" style="flex:1;">
+          <div class="progress-bar-fill" style="width: <%= Math.round(summary.finishedCount / Math.max(summary.totalBooks, 1) * 100) %>%"></div>
+        </div>
+        <span class="font-sans" style="font-size: var(--text-sm); color: var(--color-text-secondary); white-space: nowrap;">
+          <%= summary.finishedCount %> / <%= summary.totalBooks %> (<%= Math.round(summary.finishedCount / Math.max(summary.totalBooks, 1) * 100) %>%)
+        </span>
+      </div>
+    </div>
+
+    <!-- Yearly Distribution -->
+    <% if (yearsData && yearsData.length > 0) { %>
+    <div class="chart-container stagger" style="animation-delay: 300ms;">
+      <div class="chart-title">年度阅读时长分布</div>
+      <div class="bar-chart">
+        <% var maxY = Math.max(...yearsData.map(y => y.hours)); %>
+        <% yearsData.forEach(function(y) { %>
+        <% var pct = maxY > 0 ? (y.hours / maxY * 100) : 0; %>
+        <div class="bar-item">
+          <div class="bar-value"><%= Math.round(y.hours) %>h</div>
+          <div class="bar" style="height: <%= Math.max(pct, 6) %>%"></div>
+          <div class="bar-label"><%= y.year %></div>
+        </div>
+        <% }); %>
+      </div>
+    </div>
+    <% } %>
+
+    <!-- Preference Categories -->
+    <% if (overall.preferCategories && overall.preferCategories.length > 0) { %>
+    <div class="chart-container stagger" style="animation-delay: 400ms;">
+      <div class="chart-title">偏好分类（累计）</div>
+      <div class="bar-chart">
+        <% var maxCat = Math.max(...overall.preferCategories.map(c => c.time)); %>
+        <% overall.preferCategories.slice(0, 12).forEach(function(c) { %>
+        <% var pct = maxCat > 0 ? (c.time / maxCat * 100) : 0; %>
+        <div class="bar-item">
+          <div class="bar-value"><%= c.count %>本</div>
+          <div class="bar" style="height: <%= Math.max(pct, 8) %>%"></div>
+          <div class="bar-label"><%= c.title.length > 6 ? c.title.substring(0, 5) + '…' : c.title %></div>
+        </div>
+        <% }); %>
+      </div>
+    </div>
+    <% } %>
+
+    <!-- Top Books All Time -->
+    <% if (overall.topBooks && overall.topBooks.length > 0) { %>
+    <div class="section-header stagger" style="animation-delay: 500ms; margin-top: var(--space-xl);">
+      <h2 class="section-title">累计最久阅读</h2>
+    </div>
+    <div class="book-grid stagger" style="animation-delay: 520ms;">
+      <% overall.topBooks.slice(0, 12).forEach(function(b) { %>
+      <div class="book-card">
+        <% if (b.cover) { %>
+        <img class="book-cover" src="<%= b.cover %>" alt="<%= b.title %>" loading="lazy" onerror="this.style.display='none'">
+        <% } else { %>
+        <div class="book-cover" style="display:flex;align-items:center;justify-content:center;color:var(--color-text-muted);font-size:2rem;">📖</div>
+        <% } %>
+        <div class="book-info">
+          <div class="book-title"><%= b.title %></div>
+          <div class="book-author"><%= b.author %></div>
+          <div class="book-author" style="margin-top:2px;color:var(--color-accent);"><%= helpers.formatTime(b.readTime) %></div>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+    <% } %>
+
+    <!-- Prefer Authors All Time -->
+    <% if (overall.preferAuthors && overall.preferAuthors.length > 0) { %>
+    <div class="section-header stagger" style="animation-delay: 600ms; margin-top: var(--space-xl);">
+      <h2 class="section-title">偏好作者（累计）</h2>
+    </div>
+    <div class="book-grid stagger" style="animation-delay: 620ms; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));">
+      <% overall.preferAuthors.forEach(function(a) { %>
+      <div class="stat-card">
+        <span class="stat-value" style="font-size: var(--text-xl);"><%= a.name %></span>
+        <span class="stat-label"><%= a.count %> 本 · <%= a.readTime %></span>
+      </div>
+      <% }); %>
+    </div>
+    <% } %>
+
+    <!-- Annual Distribution -->
+    <% if (annual.preferTime && annual.preferTime.length > 0) { %>
+    <div class="chart-container stagger" style="animation-delay: 700ms; margin-top: var(--space-xl);">
+      <div class="chart-title">今年阅读时段分布 <% if (annual.preferTimeWord) { %><span style="font-weight:400;opacity:0.7;">· <%= annual.preferTimeWord %></span><% } %></div>
+      <div class="bar-chart">
+        <% var maxT = Math.max(...annual.preferTime.filter(function(x){return x>0}).length>0 ? annual.preferTime : [1]); %>
+        <% var labels = ['6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','0','1','2','3','4','5']; %>
+        <% annual.preferTime.forEach(function(t, i) { %>
+        <% var p = maxT > 0 ? (t / maxT * 100) : 0; %>
+        <div class="bar-item">
+          <div class="bar-value" style="font-size:9px;min-height:16px;"><%= Math.round(t/60) %>m</div>
+          <div class="bar" style="height: <%= Math.max(p, 4) %>%"></div>
+          <div class="bar-label"><%= labels[i] %></div>
+        </div>
+        <% }); %>
+      </div>
+    </div>
+    <% } %>
+  </div>
+</div>

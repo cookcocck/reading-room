@@ -1,0 +1,66 @@
+<!-- ═══════════════════════════════════════════
+   BOOKSHELF — Browseable book grid
+   ═══════════════════════════════════════════ -->
+
+<div class="section animate-in">
+  <div class="container">
+    <div class="section-header">
+      <h1 class="section-title" style="font-size: var(--text-2xl);">书架</h1>
+      <span class="font-sans" style="color: var(--color-text-muted); font-size: var(--text-sm);">
+        <%= books.length %> 本
+      </span>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <a href="/bookshelf" class="filter-btn <%= filter === 'all' && !category ? 'active' : '' %>">全部</a>
+      <a href="/bookshelf?filter=reading" class="filter-btn <%= filter === 'reading' ? 'active' : '' %>">在读</a>
+      <a href="/bookshelf?filter=finished" class="filter-btn <%= filter === 'finished' ? 'active' : '' %>">已读完</a>
+
+      <% if (category) { %>
+      <span class="filter-btn active">
+        📂 <%= category %>
+        <a href="/bookshelf?filter=<%= filter %>" style="margin-left:8px;color:inherit;opacity:0.6;">&times;</a>
+      </span>
+      <% } %>
+    </div>
+
+    <!-- Category tags -->
+    <% if (!category && allCategories.length > 0) { %>
+    <div class="filters" style="margin-top: calc(-1 * var(--space-sm));">
+      <% allCategories.slice(0, 12).forEach(function(c) { %>
+      <a href="/bookshelf?category=<%= encodeURIComponent(c) %>" class="filter-btn" style="font-size:11px;padding:3px 12px;">
+        <%= c %>
+      </a>
+      <% }); %>
+    </div>
+    <% } %>
+
+    <!-- Book Grid -->
+    <% if (books.length > 0) { %>
+    <div class="book-grid stagger">
+      <% books.forEach(function(b) { %>
+      <div class="book-card" onclick="openBookModal('<%= b.id %>')">
+        <% if (b.cover) { %>
+        <img class="book-cover" src="<%= b.cover %>" alt="<%= b.title %>" loading="lazy" onerror="this.style.background='var(--color-bg-alt)';this.style.display='flex';this.style.alignItems='center';this.style.justifyContent='center';this.outerHTML='<div class=%27book-cover%27 style=%27display:flex;align-items:center;justify-content:center;color:var(--color-text-muted);font-size:2rem;%27>📖</div>'">
+        <% } else { %>
+        <div class="book-cover" style="display:flex;align-items:center;justify-content:center;color:var(--color-text-muted);font-size:2rem;">📖</div>
+        <% } %>
+        <div class="book-info">
+          <div class="book-title"><%= b.title %></div>
+          <div class="book-author"><%= b.author || '佚名' %></div>
+        </div>
+        <% if (b.finished) { %>
+        <span class="book-badge finished">已读</span>
+        <% } %>
+      </div>
+      <% }); %>
+    </div>
+    <% } else { %>
+    <div class="empty-state">
+      <div class="empty-state-icon">📚</div>
+      <p class="empty-state-text">没有符合条件的书籍</p>
+    </div>
+    <% } %>
+  </div>
+</div>

@@ -1,0 +1,175 @@
+<!-- ═══════════════════════════════════════════
+   HOME — Reading identity + key stats
+   ═══════════════════════════════════════════ -->
+
+<div class="hero animate-in">
+  <span class="hero-badge">私人阅读书房</span>
+  <h1 class="hero-title">
+    在书中，<br>寻找<em>灵魂的秩序</em>
+  </h1>
+  <p class="hero-subtitle">
+    始于陀思妥耶夫斯基，在叔本华的意志与庄子的逍遥间漫游。
+    不是在读书，是在建造一座对抗虚无的图书馆。
+  </p>
+</div>
+
+<!-- Key Stats -->
+<div class="content-container stagger">
+  <div class="stats-row">
+    <div class="stat-card">
+      <span class="stat-value"><%= summary.totalBooks %></span>
+      <span class="stat-label">书架藏书</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value"><%= summary.finishedCount %></span>
+      <span class="stat-label">已读完</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value"><%= summary.totalNoteCount.toLocaleString() %></span>
+      <span class="stat-label">笔记条数</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value"><%= Math.round((overall.totalReadTimeSec || 0) / 3600).toLocaleString() %>h</span>
+      <span class="stat-label">累计阅读</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value"><%= (overall.readDays || 0).toLocaleString() %></span>
+      <span class="stat-label">阅读天数</span>
+    </div>
+  </div>
+</div>
+
+<!-- This Year -->
+<div class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">今年阅读</h2>
+      <a href="/stats" class="section-more font-sans">查看完整统计 →</a>
+    </div>
+
+    <div class="time-overview stagger">
+      <div class="time-card">
+        <div class="time-card-label">年度总时长</div>
+        <div class="time-card-value"><%= Math.round((annual.totalReadTimeSec || 0) / 3600).toLocaleString() %>h</div>
+        <div class="time-card-sub"><%= helpers.formatTime(annual.totalReadTimeSec || 0) %></div>
+      </div>
+      <div class="time-card">
+        <div class="time-card-label">阅读天数</div>
+        <div class="time-card-value"><%= annual.readDays || 0 %></div>
+        <div class="time-card-sub">日均 <%= helpers.formatTime(annual.dayAvgReadTimeSec || 0) %></div>
+      </div>
+      <div class="time-card">
+        <div class="time-card-label">偏好时段</div>
+        <div class="time-card-value" style="font-size: var(--text-lg);"><%= annual.preferTimeWord || '全天候' %></div>
+        <div class="time-card-sub">阅读习惯</div>
+      </div>
+    </div>
+
+    <!-- Daily time distribution -->
+    <% if (annual.preferTime && annual.preferTime.length > 0) { %>
+    <div class="chart-container">
+      <div class="chart-title">阅读时段分布</div>
+      <div class="bar-chart">
+        <% var maxTime = Math.max(...annual.preferTime.filter(t => t > 0).length > 0 ? annual.preferTime : [1]); %>
+        <% var hours = ['6时','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','0','1','2','3','4','5']; %>
+        <% for (var i = 0; i < annual.preferTime.length; i++) { %>
+        <% var pct = maxTime > 0 ? (annual.preferTime[i] / maxTime * 100) : 0; %>
+        <div class="bar-item">
+          <div class="bar-value" style="font-size:9px;min-height:16px;"><%= Math.round(annual.preferTime[i] / 60) %>m</div>
+          <div class="bar" style="height: <%= Math.max(pct, 4) %>%"></div>
+          <div class="bar-label"><%= hours[i] || '' %></div>
+        </div>
+        <% } %>
+      </div>
+    </div>
+    <% } %>
+  </div>
+</div>
+
+<!-- Top Authors -->
+<% if (annual.preferAuthors && annual.preferAuthors.length > 0) { %>
+<div class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">偏好作者</h2>
+    </div>
+    <div class="book-grid stagger" style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));">
+      <% annual.preferAuthors.forEach(function(a) { %>
+      <div class="stat-card">
+        <span class="stat-value" style="font-size: var(--text-xl);"><%= a.name %></span>
+        <span class="stat-label"><%= a.count %> 本 · <%= a.readTime %></span>
+      </div>
+      <% }); %>
+    </div>
+  </div>
+</div>
+<% } %>
+
+<!-- Top Books This Year -->
+<% if (annual.topBooks && annual.topBooks.length > 0) { %>
+<div class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">今年读得最多的书</h2>
+      <a href="/bookshelf" class="section-more font-sans">查看完整书架 →</a>
+    </div>
+    <div class="book-grid stagger">
+      <% annual.topBooks.slice(0, 12).forEach(function(b) { %>
+      <div class="book-card" onclick="window.location.href='/bookshelf'">
+        <% if (b.cover) { %>
+        <img class="book-cover" src="<%= b.cover %>" alt="<%= b.title %>" loading="lazy" onerror="this.style.display='none'">
+        <% } else { %>
+        <div class="book-cover" style="display:flex;align-items:center;justify-content:center;color:var(--color-text-muted);font-size:2rem;">📖</div>
+        <% } %>
+        <div class="book-info">
+          <div class="book-title"><%= b.title %></div>
+          <div class="book-author"><%= b.author %></div>
+          <% if (b.tags && b.tags.length > 0) { %>
+          <div class="book-author" style="margin-top:2px;">
+            <% b.tags.forEach(function(t) { %><span class="category-tag" style="font-size:10px;padding:1px 8px;"><%= t %></span> <% }); %>
+          </div>
+          <% } %>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+  </div>
+</div>
+<% } %>
+
+<!-- Categories -->
+<% if (summary.categories && summary.categories.length > 0) { %>
+<div class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">藏书分类</h2>
+    </div>
+    <div class="filters stagger">
+      <% summary.categories.slice(0, 10).forEach(function(c) { %>
+      <a href="/bookshelf?category=<%= encodeURIComponent(c.name) %>" class="filter-btn">
+        <%= c.name %> <span style="opacity:0.5;margin-left:4px;"><%= c.count %></span>
+      </a>
+      <% }); %>
+    </div>
+  </div>
+</div>
+<% } %>
+
+<!-- Archived Book Lists -->
+<% if (summary.archives && summary.archives.length > 0) { %>
+<div class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">书单合集</h2>
+    </div>
+    <div class="stagger" style="display:flex;flex-wrap:wrap;gap:var(--space-md);">
+      <% summary.archives.forEach(function(arc) { %>
+      <div class="stat-card" style="flex:1;min-width:180px;">
+        <span class="stat-value" style="font-size: var(--text-xl);"><%= arc.name %></span>
+        <span class="stat-label"><%= arc.count %> 本书</span>
+      </div>
+      <% }); %>
+    </div>
+  </div>
+</div>
+<% } %>

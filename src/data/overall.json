@@ -1,0 +1,177 @@
+{
+  "读过": "203本",
+  "读完": "75本",
+  "阅读": "623天",
+  "笔记": "5927条",
+  "totalReadTimeSec": 3356290,
+  "readDays": 623,
+  "registTime": 1550720221,
+  "preferAuthors": [
+    {
+      "name": "陀思妥耶夫斯基",
+      "count": 8,
+      "readTime": "108小时2分钟"
+    },
+    {
+      "name": "伊塔洛·卡尔维诺",
+      "count": 5,
+      "readTime": "32小时40分钟"
+    },
+    {
+      "name": "加西亚·马尔克斯",
+      "count": 4,
+      "readTime": "37小时14分钟"
+    },
+    {
+      "name": "毛姆",
+      "count": 4,
+      "readTime": "34小时22分钟"
+    },
+    {
+      "name": "三岛由纪夫",
+      "count": 4,
+      "readTime": "17小时25分钟"
+    },
+    {
+      "name": "奥斯卡·王尔德",
+      "count": 4,
+      "readTime": "17小时9分钟"
+    },
+    {
+      "name": "豪尔赫·路易斯·博尔赫斯",
+      "count": 4,
+      "readTime": "10小时49分钟"
+    },
+    {
+      "name": "叔本华",
+      "count": 3,
+      "readTime": "23小时53分钟"
+    },
+    {
+      "name": "阿兰·德波顿",
+      "count": 3,
+      "readTime": "12小时31分钟"
+    },
+    {
+      "name": "阿尔贝·加缪",
+      "count": 3,
+      "readTime": "10小时21分钟"
+    }
+  ],
+  "preferCategories": [
+    {
+      "title": "文学",
+      "time": 2135640,
+      "count": 111
+    },
+    {
+      "title": "社会小说",
+      "time": 1401096,
+      "count": 53
+    },
+    {
+      "title": "哲学宗教",
+      "time": 684833,
+      "count": 39
+    },
+    {
+      "title": "人物传记",
+      "time": 161020,
+      "count": 4
+    },
+    {
+      "title": "政治军事",
+      "time": 116496,
+      "count": 3
+    },
+    {
+      "title": "年代小说",
+      "time": 91762,
+      "count": 3
+    },
+    {
+      "title": "情感小说",
+      "time": 74707,
+      "count": 5
+    },
+    {
+      "title": "历史",
+      "time": 74187,
+      "count": 7
+    }
+  ],
+  "yearlyReadTimes": {
+    "1514736000": 0,
+    "1546272000": 0,
+    "1577808000": 0,
+    "1609430400": 0,
+    "1640966400": 0,
+    "1672502400": 48134,
+    "1704038400": 508033,
+    "1735660800": 2211546,
+    "1767196800": 588577
+  },
+  "topBooks": [
+    {
+      "title": "西方哲学史讲演录",
+      "author": "赵林",
+      "cover": "https://cdn.weread.qq.com/weread/cover/67/YueWen_42724927/s_YueWen_42724927.jpg",
+      "readTime": 87181
+    },
+    {
+      "title": "幻灭（人文社外国文学名著经典·网格本）",
+      "author": "[法]巴尔扎克",
+      "cover": "https://wfqqreader-1252317822.image.myqcloud.com/cover/311/33820311/s_33820311.jpg",
+      "readTime": 86949
+    },
+    {
+      "title": "白痴（陀思妥耶夫斯基文集2015）",
+      "author": "陀思妥耶夫斯基",
+      "cover": "https://wfqqreader-1252317822.image.myqcloud.com/cover/223/31808223/s_31808223.jpg",
+      "readTime": 85805
+    },
+    {
+      "title": "卡拉马佐夫兄弟（套装上下册）（陀思妥耶夫斯基文集2015）",
+      "author": "陀思妥耶夫斯基",
+      "cover": "https://cdn.weread.qq.com/weread/cover/28/YueWen_31808219/s_YueWen_31808219.jpg",
+      "readTime": 84686
+    },
+    {
+      "title": "德国古典哲学讲演录",
+      "author": "邓晓芒",
+      "cover": "https://cdn.weread.qq.com/weread/cover/33/cpplatform_vj9tybqkzue1oaqhueqxur/s_cpplatform_vj9tybqkzue1oaqhueqxur1687682069.jpg",
+      "readTime": 78013
+    },
+    {
+      "title": "群魔（全集）",
+      "author": "陀思妥耶夫斯基",
+      "cover": "https://cdn.weread.qq.com/weread/cover/36/yuewen_41077542/s_yuewen_410775421677481318.jpg",
+      "readTime": 77930
+    },
+    {
+      "title": "拿破仑传（果麦经典）",
+      "author": "[德]路德维希",
+      "cover": "https://cdn.weread.qq.com/weread/cover/38/YueWen_24987279/s_YueWen_24987279.jpg",
+      "readTime": 76823
+    },
+    {
+      "title": "百年孤独",
+      "author": "[哥]加西亚•马尔克斯",
+      "cover": "https://cdn.weread.qq.com/weread/cover/49/yuewen_935536/s_yuewen_9355361682243599.jpg",
+      "readTime": 68468
+    },
+    {
+      "title": "庄子（中华经典指掌文库）",
+      "author": "孙通海译注",
+      "cover": "https://cdn.weread.qq.com/weread/cover/97/YueWen_23358839/s_YueWen_23358839.jpg",
+      "readTime": 66436
+    },
+    {
+      "title": "卡拉马佐夫兄弟",
+      "author": "陀思妥耶夫斯基",
+      "cover": "https://cdn.weread.qq.com/weread/cover/55/YueWen_38818166/s_YueWen_38818166.jpg",
+      "readTime": 65520
+    }
+  ],
+  "yearReports": []
+}

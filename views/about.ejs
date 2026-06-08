@@ -1,0 +1,84 @@
+<!-- ═══════════════════════════════════════════
+   ABOUT — Reading identity & site info
+   ═══════════════════════════════════════════ -->
+
+<div class="section animate-in">
+  <div class="about-section">
+    <h1 class="section-title" style="font-size: var(--text-2xl); margin-bottom: var(--space-lg);">关于这个书房</h1>
+
+    <p class="about-lede">
+      "阅读不是逃避，是在词语中寻找与自身深渊对应的回响。"
+    </p>
+
+    <div class="about-grid stagger">
+      <div class="stat-card">
+        <span class="stat-value"><%= summary.totalBooks %></span>
+        <span class="stat-label">书架藏书</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value"><%= summary.finishedCount %></span>
+        <span class="stat-label">已读完</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value"><%= Math.round((overall.totalReadTimeSec || 0) / 3600).toLocaleString() %>h</span>
+        <span class="stat-label">累计阅读</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value"><%= (overall.readDays || 0).toLocaleString() %>天</span>
+        <span class="stat-label">阅读天数</span>
+      </div>
+    </div>
+
+    <div style="margin-bottom: var(--space-xl);">
+      <h3 style="margin-bottom: var(--space-sm);">阅读之路</h3>
+      <p style="color: var(--color-text-secondary); line-height: 1.8;">
+        <% if (overall.registTime) { %>
+        注册于微信读书 <%= new Date(overall.registTime * 1000).getFullYear() %> 年，但真正的严肃阅读始于 2024 年。
+        <% } %>
+        从陀思妥耶夫斯基开始，一上来就读最沉重的东西——<em>罪与罚</em>、<em>卡拉马佐夫兄弟</em>、<em>白痴</em>，像是在跑步的第一天就冲刺马拉松。
+      </p>
+      <p style="color: var(--color-text-secondary); line-height: 1.8;">
+        然后慢慢铺开：叔本华的意志哲学、庄子的逍遥、屠格涅夫与托尔斯泰、马尔克斯与博尔赫斯、康德与休谟。
+        不是在读一本书，而是在搭建一座属于自己的思想体系。
+      </p>
+      <p style="color: var(--color-text-secondary); line-height: 1.8;">
+        阅读很慢，因为生活和工作占据了大半时间。但每本打开的书都在等着合适的时刻，书不会跑。
+      </p>
+    </div>
+
+    <div style="margin-bottom: var(--space-xl);">
+      <h3 style="margin-bottom: var(--space-sm);">藏书构成</h3>
+      <div class="filters" style="margin-top: var(--space-sm);">
+        <% if (summary.categories) { %>
+        <% summary.categories.slice(0, 15).forEach(function(c) { %>
+        <span class="filter-btn"><%= c.name %> (<%= c.count %>)</span>
+        <% }); %>
+        <% } %>
+      </div>
+    </div>
+
+    <% if (summary.archives && summary.archives.length > 0) { %>
+    <div style="margin-bottom: var(--space-xl);">
+      <h3 style="margin-bottom: var(--space-sm);">书单合集</h3>
+      <% summary.archives.forEach(function(arc) { %>
+      <div style="margin-bottom: var(--space-sm); color: var(--color-text-secondary);">
+        <strong style="color: var(--color-text);"><%= arc.name %></strong> — <%= arc.count %> 本书
+      </div>
+      <% }); %>
+    </div>
+    <% } %>
+
+    <div style="margin-bottom: var(--space-xl); padding: var(--space-lg); background: var(--color-surface); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-lg);">
+      <h3 style="margin-bottom: var(--space-sm);">技术说明</h3>
+      <p style="color: var(--color-text-muted); font-size: var(--text-sm); line-height: 1.6;">
+        本站数据来自微信读书（<a href="https://weread.qq.com" target="_blank" rel="noopener">weread.qq.com</a>），
+        通过官方 Agent API Gateway 获取。
+        数据更新频率取决于微信读书接口返回，书架与笔记为实时数据，统计为周期汇总数据。
+      </p>
+      <p style="color: var(--color-text-muted); font-size: var(--text-sm); margin-top: var(--space-sm);">
+        构建于: 2026-06-08 · Node.js + Express + EJS · 
+        <a href="https://github.com/hsueh-pei/reading-room" target="_blank" rel="noopener">GitHub</a>
+      </p>
+    </div>
+  </div>
+</div>

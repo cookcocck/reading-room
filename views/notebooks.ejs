@@ -1,0 +1,79 @@
+<!-- ═══════════════════════════════════════════
+   NOTEBOOKS — Book notes & highlights
+   ═══════════════════════════════════════════ -->
+
+<div class="section animate-in">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <h1 class="section-title" style="font-size: var(--text-2xl);">笔记概览</h1>
+        <p class="font-sans" style="color: var(--color-text-muted); font-size: var(--text-sm); margin-top: 4px;">
+          <%= totalNotebooks %> 本书有笔记 · 共 <%= summary.totalNoteCount.toLocaleString() %> 条
+        </p>
+      </div>
+    </div>
+
+    <% if (notebooks.length > 0) { %>
+    <div class="notebook-list stagger">
+      <% notebooks.forEach(function(nb) { %>
+      <a href="/bookshelf" class="notebook-item">
+        <% if (nb.cover) { %>
+        <img class="notebook-cover" src="<%= nb.cover %>" alt="<%= nb.title %>" loading="lazy" onerror="this.style.display='none'">
+        <% } else { %>
+        <div class="notebook-cover" style="display:flex;align-items:center;justify-content:center;background:var(--color-bg-alt);color:var(--color-text-muted);font-size:1.2rem;">📖</div>
+        <% } %>
+        <div class="notebook-info">
+          <div class="notebook-title"><%= nb.title %></div>
+          <div class="notebook-author"><%= nb.author || '佚名' %></div>
+        </div>
+        <div class="notebook-stats">
+          <div class="notebook-stat">
+            <span class="notebook-stat-value"><%= nb.totalNotes %></span>
+            <span class="notebook-stat-label">笔记</span>
+          </div>
+          <div class="notebook-stat">
+            <span class="notebook-stat-value"><%= nb.noteCount %></span>
+            <span class="notebook-stat-label">划线</span>
+          </div>
+          <div class="notebook-stat">
+            <span class="notebook-stat-value"><%= nb.reviewCount %></span>
+            <span class="notebook-stat-label">想法</span>
+          </div>
+          <div class="notebook-stat">
+            <span class="notebook-stat-value"><%= nb.bookmarkCount %></span>
+            <span class="notebook-stat-label">书签</span>
+          </div>
+        </div>
+      </a>
+      <% }); %>
+    </div>
+
+    <!-- Pagination -->
+    <% if (totalPages > 1) { %>
+    <div class="pagination font-sans">
+      <% if (currentPage > 1) { %>
+      <a href="/notebooks?page=<%= currentPage - 1 %>" class="page-btn">← 上一页</a>
+      <% } else { %>
+      <button class="page-btn" disabled>← 上一页</button>
+      <% } %>
+
+      <% for (var p = 1; p <= totalPages; p++) { %>
+      <a href="/notebooks?page=<%= p %>" class="page-btn <%= p === currentPage ? 'active' : '' %>"><%= p %></a>
+      <% } %>
+
+      <% if (currentPage < totalPages) { %>
+      <a href="/notebooks?page=<%= currentPage + 1 %>" class="page-btn">下一页 →</a>
+      <% } else { %>
+      <button class="page-btn" disabled>下一页 →</button>
+      <% } %>
+    </div>
+    <% } %>
+
+    <% } else { %>
+    <div class="empty-state">
+      <div class="empty-state-icon">📝</div>
+      <p class="empty-state-text">暂无笔记数据</p>
+    </div>
+    <% } %>
+  </div>
+</div>
