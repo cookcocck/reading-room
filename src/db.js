@@ -88,6 +88,20 @@ async function initDb() {
     const fileBuffer = fs.readFileSync(DB_PATH);
     sqlDb = new SQL.Database(fileBuffer);
     db = createWrapper(sqlDb);
+
+    // ─── Auto-migration: ensure new tables exist ───
+    sqlDb.run(`
+      CREATE TABLE IF NOT EXISTS reviews (
+          review_id TEXT PRIMARY KEY,
+          book_id TEXT NOT NULL,
+          content TEXT DEFAULT '',
+          chapter_name TEXT DEFAULT '',
+          star INTEGER DEFAULT -1,
+          create_time INTEGER NOT NULL
+      )
+    `);
+    sqlDb.run('CREATE INDEX IF NOT EXISTS idx_reviews_book ON reviews(book_id)');
+
     console.log(`[db] Connected to reading-room.db (sql.js, ${(fileBuffer.length / 1024 / 1024).toFixed(1)} MB)`);
     return db;
   } catch (err) {
