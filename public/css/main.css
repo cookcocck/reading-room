@@ -53,9 +53,9 @@
   --space-16: 7rem;
 
   /* Layout */
-  --col-width: 56rem;        /* ~896px — prose reading */
-  --col-wide: 68rem;         /* ~1090px — stats, heatmap, lists */
-  --col-bookshelf: 76rem;    /* ~1220px — book card grids */
+  --col-width: 72rem;        /* ~1152px — prose reading */
+  --col-wide: 82rem;         /* ~1312px — stats, heatmap, lists */
+  --col-bookshelf: 90rem;    /* ~1440px — book card grids */
   --nav-height: 3.5rem;
   --radius: 0;            /* editorial: no rounded corners */
 
