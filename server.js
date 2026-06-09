@@ -156,7 +156,7 @@ app.get('/bookshelf', (req, res) => {
 
 // Stats page
 app.get('/stats', (req, res) => {
-  const { getOverall, getSummary, getTrends } = db;
+  const { getOverall, getSummary, getTrends, getDeepThinking, getBookTimeline, getYearlyIntensity, getMilestones } = db;
 
   const overall_kv = getOverall();
   const overall = overall_kv.overall || {};
@@ -176,11 +176,19 @@ app.get('/stats', (req, res) => {
   const monthly = trends.map(t => ({
     month: `${t.year}-${String(t.month).padStart(2,'0')}`,
     label: `${t.month}月`,
+    year: t.year,
     seconds: t.totalSeconds,
     hours: Math.round(t.totalSeconds / 3600 * 10) / 10,
+    readDays: t.readDays || 0,
   }));
 
   const summary = getSummary();
+
+  // New sections
+  const deepThinking = getDeepThinking(10);
+  const bookTimeline = upgradeCovers(getBookTimeline());
+  const yearlyIntensity = getYearlyIntensity();
+  const milestones = getMilestones();
 
   res.render('stats', {
     title: '阅读统计',
@@ -195,6 +203,12 @@ app.get('/stats', (req, res) => {
     helpers: { formatTime, formatTimestamp },
     path: '/stats',
     trends: JSON.stringify(trends),
+    deepThinking,
+    bookTimeline,
+    yearlyIntensity,
+    milestones,
+    timelineJson: JSON.stringify(bookTimeline).replace(/</g, '\\u003c'),
+    intensityJson: JSON.stringify(yearlyIntensity),
   });
 });
 

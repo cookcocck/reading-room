@@ -368,6 +368,137 @@ function saveBookIntro(bookId, intro) {
   d.prepare('UPDATE books SET intro = ? WHERE id = ?').all(intro, bookId);
 }
 
+// ─── Stats Page — Deep Thinking Ranking ───
+function getDeepThinking(limit = 10) {
+  const d = getDb();
+  return d.prepare(`
+    SELECT b.id, b.title, b.author, b.cover, b.category,
+      COALESCE(n.note_count, 0) AS noteCount,
+      COALESCE(n.review_count, 0) AS reviewCount,
+      COALESCE(n.bookmark_count, 0) AS bookmarkCount,
+      COALESCE(n.total_notes, 0) AS totalNotes
+    FROM books b
+    LEFT JOIN notebooks n ON b.id = n.book_id
+    WHERE COALESCE(n.total_notes, 0) > 0
+    ORDER BY n.total_notes DESC
+    LIMIT ?
+  `).all(limit);
+}
+
+// ─── Stats Page — Book Timeline (when each book entered the shelf) ───
+function getBookTimeline() {
+  const d = getDb();
+  return d.prepare(`
+    SELECT id, title, author, category, create_time AS addedAt
+    FROM books WHERE create_time > 0
+    ORDER BY create_time
+  `).all();
+}
+
+// ─── Stats Page — Yearly Reading Intensity ───
+function getYearlyIntensity() {
+  const d = getDb();
+  return d.prepare(`
+    SELECT year,
+      SUM(total_seconds) AS totalSec,
+      SUM(read_days) AS totalDays
+    FROM reading_trends
+    GROUP BY year
+    ORDER BY year
+  `).all();
+}
+
+// ─── Stats Page — Reading Milestones ───
+function getMilestones() {
+  const d = getDb();
+  const milestones = [];
+
+  // First book
+  const fb = d.prepare(
+    'SELECT title, author, create_time FROM books WHERE create_time > 0 ORDER BY create_time LIMIT 1'
+  ).get();
+  if (fb) milestones.push({
+    label: '阅读起点', detail: `收藏《${fb.title}》`,
+    ts: fb.create_time, icon: '📖'
+  });
+
+  // Nth book milestones
+  const total = d.prepare('SELECT COUNT(*) AS c FROM books').get().c;
+  [10, 50, 100, 150, 200].forEach(n => {
+    if (total < n) return;
+    const b = d.prepare(
+      'SELECT title, create_time FROM books WHERE create_time > 0 ORDER BY create_time LIMIT 1 OFFSET ?'
+    ).get(n - 1);
+    if (b) milestones.push({
+      label: `第 ${n} 本书`, detail: `《${b.title}》`,
+      ts: b.create_time, icon: '📚'
+    });
+  });
+
+  // Cumulative reading hour milestones
+  const sessions = d.prepare('SELECT date, seconds FROM reading_sessions ORDER BY date').all();
+  [100, 500, 1000, 2000, 3000, 5000].forEach(h => {
+    let cum = 0;
+    const hit = sessions.find(s => { cum += s.seconds; return cum >= h * 3600; });
+    if (hit) milestones.push({
+      label: `累计 ${h} 小时`, detail: '阅读时长里程碑',
+      ts: Math.floor(new Date(hit.date + 'T00:00:00').getTime() / 1000),
+      icon: '⏱️'
+    });
+  });
+
+  // First highlight
+  const fh = d.prepare(`
+    SELECT h.mark_text, h.create_time, b.title
+    FROM highlights h LEFT JOIN books b ON h.book_id = b.id
+    WHERE h.create_time > 0 ORDER BY h.create_time LIMIT 1
+  `).get();
+  if (fh) milestones.push({
+    label: '第一条划线', detail: `《${fh.title || '?'}》：${(fh.mark_text || '').substring(0, 24)}…`,
+    ts: fh.create_time, icon: '✍️'
+  });
+
+  // First review
+  const fr = d.prepare(`
+    SELECT r.content, r.create_time, b.title
+    FROM reviews r LEFT JOIN books b ON r.book_id = b.id
+    WHERE r.create_time > 0 ORDER BY r.create_time LIMIT 1
+  `).get();
+  if (fr) milestones.push({
+    label: '第一条想法', detail: `《${fr.title || '?'}》：${(fr.content || '').substring(0, 24)}…`,
+    ts: fr.create_time, icon: '💭'
+  });
+
+  // Longest consecutive reading streak
+  const dates = [...new Set(sessions.map(s => s.date))].sort();
+  if (dates.length > 0) {
+    let maxStreak = 1, curStreak = 1;
+    let maxStart = dates[0], maxEnd = dates[0], curStart = dates[0];
+    for (let i = 1; i < dates.length; i++) {
+      const diff = (new Date(dates[i]) - new Date(dates[i - 1])) / 86400000;
+      if (diff === 1) {
+        curStreak++;
+        if (curStreak > maxStreak) {
+          maxStreak = curStreak;
+          maxStart = curStart;
+          maxEnd = dates[i];
+        }
+      } else {
+        curStreak = 1;
+        curStart = dates[i];
+      }
+    }
+    if (maxStreak > 1) milestones.push({
+      label: `最长连续 ${maxStreak} 天`, detail: `${maxStart} → ${maxEnd}`,
+      ts: Math.floor(new Date(maxEnd + 'T00:00:00').getTime() / 1000),
+      icon: '🔥'
+    });
+  }
+
+  milestones.sort((a, b) => a.ts - b.ts);
+  return milestones;
+}
+
 // ─── Exports ───
 
 module.exports = {
@@ -391,6 +522,11 @@ module.exports = {
   getBookReviews,
   getBookIntro,
   saveBookIntro,
+  // stats page additions
+  getDeepThinking,
+  getBookTimeline,
+  getYearlyIntensity,
+  getMilestones,
   // helpers
   formatTime,
   formatTimestamp,

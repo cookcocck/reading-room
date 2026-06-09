@@ -2,7 +2,7 @@
    STATS — Editorial Infographics
    ═══════════════════════════════════════════ -->
 
-<div class="container">
+<div class="container-wide">
   <h1 style="margin-top: var(--space-8);">统计</h1>
 
   <!-- Time Masthead -->
@@ -52,40 +52,158 @@
   </div>
   <% } %>
 
-  <!-- Category Preferences -->
-  <% if (overall.preferCategories && overall.preferCategories.length > 0) { %>
-  <div class="chart-block">
-    <div class="chart-title">偏好分类</div>
-    <div class="bar-chart">
-      <% var maxCat = Math.max(...overall.preferCategories.map(function(c){return c.time;})); %>
-      <% overall.preferCategories.slice(0, 12).forEach(function(c) { %>
-      <% var pct = maxCat > 0 ? (c.time / maxCat * 100) : 0; %>
+  <!-- ═══════════════════ 1. 月度阅读时长 ═══════════════════ -->
+  <% if (monthly && monthly.length > 0) { %>
+  <hr class="section-rule">
+  <div class="section-kicker">01 · 月度阅读时长</div>
+  <% var years = [...new Set(monthly.map(function(m){return m.year;}))].sort(); %>
+  <% years.forEach(function(yr) { %>
+  <% var ym = monthly.filter(function(m){return m.year===yr;}); %>
+  <% if (ym.length===0) return; %>
+  <% var maxM = Math.max(...ym.map(function(m){return m.hours;}), 1); %>
+  <% var totalH = ym.reduce(function(s,m){return s+m.hours;}, 0); %>
+  <div class="chart-block" style="margin-top: var(--space-6);">
+    <div class="chart-title" style="font-size: var(--text-body); color: var(--ink-soft);"><%= yr %> 年 · <%= Math.round(totalH) %>h</div>
+    <div class="bar-chart" style="height: 100px;">
+      <% ym.forEach(function(m) { %>
+      <% var pct = (m.hours / maxM * 100); %>
       <div class="bar-column">
-        <div class="bar-value"><%= c.count %>册</div>
-        <div class="bar-fill" style="height: <%= Math.max(pct, 8) %>%"></div>
-        <div class="bar-label"><%= c.title.length > 6 ? c.title.substring(0, 5) + '…' : c.title %></div>
+        <div class="bar-value"><%= m.hours %>h</div>
+        <div class="bar-fill month-fill" style="height: <%= Math.max(pct, 4) %>%"></div>
+        <div class="bar-label"><%= m.label %></div>
       </div>
       <% }); %>
     </div>
+  </div>
+  <% }); %>
+  <% } %>
+
+  <!-- Category Preferences -->
+  <% if (overall.preferCategories && overall.preferCategories.length > 0) { %>
+  <hr class="section-rule">
+  <div class="section-kicker">偏好分类</div>
+  <div class="bar-chart">
+    <% var maxCat = Math.max(...overall.preferCategories.map(function(c){return c.time;})); %>
+    <% overall.preferCategories.slice(0, 12).forEach(function(c) { %>
+    <% var pct = maxCat > 0 ? (c.time / maxCat * 100) : 0; %>
+    <div class="bar-column">
+      <div class="bar-value"><%= c.count %>册</div>
+      <div class="bar-fill" style="height: <%= Math.max(pct, 8) %>%"></div>
+      <div class="bar-label"><%= c.title.length > 6 ? c.title.substring(0, 5) + '…' : c.title %></div>
+    </div>
+    <% }); %>
+  </div>
+  <% } %>
+
+  <!-- ═══════════════════ 2. 分类雷达图 ═══════════════════ -->
+  <% if (overall.preferCategories && overall.preferCategories.length >= 3) { %>
+  <hr class="section-rule">
+  <div class="section-kicker">02 · 分类雷达图</div>
+  <%
+    var radarCats = overall.preferCategories.slice(0, 8);
+    var radarMax = Math.max(...radarCats.map(function(c){return c.time;}), 1);
+    var n = radarCats.length;
+    var cx = 340, cy = 280, r = 220;
+    var angleStep = (2 * Math.PI) / n;
+    var startAngle = -Math.PI / 2;
+  %>
+  <div class="radar-wrap">
+    <svg viewBox="0 0 680 560" class="radar-chart" xmlns="http://www.w3.org/2000/svg">
+      <!-- concentric reference rings -->
+      <% for (var lvl = 1; lvl <= 4; lvl++) { %>
+      <polygon points="<%
+        for (var i = 0; i < n; i++) {
+          var a = startAngle + i * angleStep;
+          var rr = r * lvl / 4;
+          var px = cx + rr * Math.cos(a);
+          var py = cy + rr * Math.sin(a);
+          %><%= px.toFixed(1) %>,<%= py.toFixed(1) %> <%
+        } %>"
+        fill="none" stroke="var(--rule-thin)" stroke-width="1"/>
+      <% } %>
+      <!-- axis lines -->
+      <% for (var i = 0; i < n; i++) { %>
+      <% var aa = startAngle + i * angleStep; %>
+      <line x1="<%= cx %>" y1="<%= cy %>" x2="<%= (cx + r * Math.cos(aa)).toFixed(1) %>" y2="<%= (cy + r * Math.sin(aa)).toFixed(1) %>" stroke="var(--rule)" stroke-width="0.5"/>
+      <% } %>
+      <!-- data polygon -->
+      <polygon points="<%
+        for (var i = 0; i < n; i++) {
+          var a = startAngle + i * angleStep;
+          var scale = radarMax > 0 ? radarCats[i].time / radarMax : 0;
+          var rr = r * Math.max(scale, 0.04);
+          var px = cx + rr * Math.cos(a);
+          var py = cy + rr * Math.sin(a);
+          %><%= px.toFixed(1) %>,<%= py.toFixed(1) %> <%
+        } %>"
+        fill="var(--accent)" fill-opacity="0.12" stroke="var(--accent)" stroke-width="1.5"/>
+      <!-- data dots -->
+      <% for (var i = 0; i < n; i++) { %>
+      <% var a = startAngle + i * angleStep;
+         var scale = radarMax > 0 ? radarCats[i].time / radarMax : 0;
+         var rr = r * Math.max(scale, 0.04); %>
+      <circle cx="<%= (cx + rr * Math.cos(a)).toFixed(1) %>" cy="<%= (cy + rr * Math.sin(a)).toFixed(1) %>" r="3" fill="var(--accent)"/>
+      <% } %>
+      <!-- labels -->
+      <% for (var i = 0; i < n; i++) { %>
+      <% var a = startAngle + i * angleStep;
+         var lx = cx + (r + 36) * Math.cos(a);
+         var ly = cy + (r + 36) * Math.sin(a);
+         var ta = '';
+         if (Math.abs(lx - cx) < 10) ta = 'middle';
+         else if (lx > cx) ta = 'start';
+         else ta = 'end';
+      %>
+      <text x="<%= lx.toFixed(1) %>" y="<%= (ly + 4).toFixed(1) %>" text-anchor="<%= ta %>" font-family="Inter, sans-serif" font-size="11" fill="var(--ink-muted)"><%= radarCats[i].title.length > 8 ? radarCats[i].title.substring(0,7)+'…' : radarCats[i].title %></text>
+      <% } %>
+    </svg>
   </div>
   <% } %>
 
   <!-- Annual Time Distribution -->
   <% if (annual.preferTime && annual.preferTime.length > 0) { %>
-  <div class="chart-block">
-    <div class="chart-title">今年阅读时段<% if (annual.preferTimeWord) { %> · <span style="font-weight: 400; color: var(--ink-muted);"><%= annual.preferTimeWord %></span><% } %></div>
-    <div class="bar-chart">
-      <% var maxT = Math.max.apply(null, annual.preferTime.filter(function(x){return x>0}).length>0 ? annual.preferTime : [1]); %>
-      <% var labels = ['6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','0','1','2','3','4','5']; %>
-      <% annual.preferTime.forEach(function(t, i) { %>
-      <% var p = maxT > 0 ? (t / maxT * 100) : 0; %>
-      <div class="bar-column">
-        <div class="bar-value" style="font-size: 9px;"><%= Math.round(t/60) %>m</div>
-        <div class="bar-fill" style="height: <%= Math.max(p, 4) %>%"></div>
-        <div class="bar-label"><%= labels[i] %></div>
-      </div>
-      <% }); %>
+  <hr class="section-rule">
+  <div class="section-kicker">今年阅读时段<% if (annual.preferTimeWord) { %> · <span style="font-weight: 400; color: var(--ink-muted);"><%= annual.preferTimeWord %></span><% } %></div>
+  <div class="bar-chart">
+    <% var maxT = Math.max.apply(null, annual.preferTime.filter(function(x){return x>0}).length>0 ? annual.preferTime : [1]); %>
+    <% var labels = ['6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','0','1','2','3','4','5']; %>
+    <% annual.preferTime.forEach(function(t, i) { %>
+    <% var p = maxT > 0 ? (t / maxT * 100) : 0; %>
+    <div class="bar-column">
+      <div class="bar-value" style="font-size: 9px;"><%= Math.round(t/60) %>m</div>
+      <div class="bar-fill" style="height: <%= Math.max(p, 4) %>%"></div>
+      <div class="bar-label"><%= labels[i] %></div>
     </div>
+    <% }); %>
+  </div>
+  <% } %>
+
+  <!-- ═══════════════════ 3. 深度思考榜 ═══════════════════ -->
+  <% if (deepThinking && deepThinking.length > 0) { %>
+  <hr class="section-rule">
+  <div class="section-kicker">03 · 深度思考榜</div>
+  <p style="font-family: var(--font-body); font-size: var(--text-subhead); color: var(--ink-muted); margin-bottom: var(--space-6);">
+    按笔记（划线+想法）总数排名 — 不是读得最久的，是读的时候写得最多的。
+  </p>
+  <div class="deep-think-list">
+    <% var maxNotes = Math.max(...deepThinking.map(function(d){return d.totalNotes;}), 1); %>
+    <% deepThinking.forEach(function(d, idx) { %>
+    <% var pct = (d.totalNotes / maxNotes * 100); %>
+    <a href="/book/<%= d.id %>" class="deep-think-item">
+      <span class="deep-rank"><%= idx + 1 %></span>
+      <span class="deep-cover">
+        <% if (d.cover) { %><img src="<%= d.cover %>" alt="" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='📖'"><% } else { %>📖<% } %>
+      </span>
+      <span class="deep-info">
+        <span class="deep-title"><%= d.title %></span>
+        <span class="deep-author"><%= d.author %></span>
+      </span>
+      <span class="deep-bar-wrap">
+        <span class="deep-bar" style="width: <%= pct %>%"></span>
+        <span class="deep-count"><%= d.totalNotes %> 条</span>
+      </span>
+    </a>
+    <% }); %>
   </div>
   <% } %>
 
@@ -109,7 +227,110 @@
   </div>
   <% } %>
 
-  <!-- Reading Streak (长文分析待实现) -->
+  <!-- ═══════════════════ 4. 阅读强度趋势 ═══════════════════ -->
+  <% if (yearlyIntensity && yearlyIntensity.length > 0) { %>
+  <hr class="section-rule">
+  <div class="section-kicker">04 · 阅读强度趋势</div>
+  <p style="font-family: var(--font-body); font-size: var(--text-subhead); color: var(--ink-muted); margin-bottom: var(--space-5);">
+    每年总阅读时长 ÷ 阅读天数 = 平均每次阅读强度
+  </p>
+  <div class="intensity-grid">
+    <% var maxHrs = Math.max(...yearlyIntensity.map(function(y){return y.totalDays>0 ? Math.round(y.totalSec/y.totalDays/36)/100 : 0;}), 1); %>
+    <% yearlyIntensity.forEach(function(y) { %>
+    <% var hrs = y.totalSec / 3600;
+       var avgMin = y.totalDays > 0 ? Math.round(y.totalSec / y.totalDays / 60) : 0;
+       var intensity = y.totalDays > 0 ? Math.round(y.totalSec / y.totalDays / 36) / 100 : 0;
+       var ipct = maxHrs > 0 ? (intensity / maxHrs * 100) : 0;
+    %>
+    <div class="intensity-item">
+      <div class="intensity-year"><%= y.year %></div>
+      <div class="intensity-hrs"><%= Math.round(hrs) %>h · <%= y.totalDays %>天</div>
+      <div class="intensity-bar-track">
+        <div class="intensity-bar-fill" style="width: <%= Math.max(ipct, 4) %>%"></div>
+      </div>
+      <div class="intensity-avg"><%= avgMin %> 分钟/天</div>
+    </div>
+    <% }); %>
+  </div>
+  <% } %>
+
+  <!-- ═══════════════════ 5. 阅读时间线 ═══════════════════ -->
+  <% if (bookTimeline && bookTimeline.length > 0) { %>
+  <hr class="section-rule">
+  <div class="section-kicker">05 · 阅读时间线</div>
+  <p style="font-family: var(--font-body); font-size: var(--text-subhead); color: var(--ink-muted); margin-bottom: var(--space-5);">
+    每本书进入书架的时间 — 一个点就是一次相遇。
+  </p>
+  <%
+    var catColors = {};
+    var palette = ['var(--accent)','var(--accent-secondary)','var(--accent-bright)','var(--ink-soft)','#8b5cf6','#10b981','#f59e0b','#ef4444','#6366f1','#14b8a6'];
+    var ci = 0;
+  %>
+  <div class="timeline-wrap">
+    <svg viewBox="0 0 960 180" class="timeline-chart" xmlns="http://www.w3.org/2000/svg">
+      <% var tMin = Infinity, tMax = -Infinity;
+         bookTimeline.forEach(function(b){
+           if (b.addedAt < tMin) tMin = b.addedAt;
+           if (b.addedAt > tMax) tMax = b.addedAt;
+         });
+         var pad = (tMax - tMin) * 0.05 || 86400 * 30;
+         tMin -= pad; tMax += pad;
+         var pxW = 920, pxL = 40;
+         function tx(ts) { return pxL + ((ts - tMin) / (tMax - tMin)) * pxW; }
+         // year ticks
+         var yrStart = new Date(tMin*1000).getFullYear();
+         var yrEnd = new Date(tMax*1000).getFullYear();
+      %>
+      <!-- year grid lines -->
+      <% for (var y = yrStart; y <= yrEnd; y++) { %>
+      <% var yts = Math.floor(new Date(y,0,1).getTime()/1000); %>
+      <line x1="<%= tx(yts).toFixed(1) %>" y1="10" x2="<%= tx(yts).toFixed(1) %>" y2="170" stroke="var(--rule-thin)" stroke-width="0.5"/>
+      <text x="<%= tx(yts).toFixed(1) %>" y="8" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" fill="var(--ink-muted)"><%= y %></text>
+      <% } %>
+      <!-- dots -->
+      <% var rowY = [60, 90, 120, 150];
+         bookTimeline.forEach(function(b, i) {
+           var cKey = b.category || '其他';
+           if (!catColors[cKey]) { catColors[cKey] = palette[ci % palette.length]; ci++; }
+           var row = i % 4;
+           var bx = tx(b.addedAt);
+           if (bx >= pxL && bx <= pxL + pxW) {
+      %>
+      <circle cx="<%= bx.toFixed(1) %>" cy="<%= rowY[row] %>" r="3.5" fill="<%= catColors[cKey] %>" opacity="0.7">
+        <title><%= b.title %> · <%= b.author %> · <%= formatTimestamp(b.addedAt) %></title>
+      </circle>
+      <% } }); %>
+    </svg>
+  </div>
+  <!-- legend -->
+  <% var cKeys = Object.keys(catColors).sort(); if (cKeys.length > 0) { %>
+  <div class="timeline-legend">
+    <% cKeys.forEach(function(k) { %>
+    <span class="tl-legend-item"><span class="tl-dot" style="background:<%= catColors[k] %>"></span><%= k %></span>
+    <% }); %>
+  </div>
+  <% } %>
+  <% } %>
+
+  <!-- ═══════════════════ 6. 阅读里程碑 ═══════════════════ -->
+  <% if (milestones && milestones.length > 0) { %>
+  <hr class="section-rule">
+  <div class="section-kicker">06 · 阅读里程碑</div>
+  <div class="milestone-timeline">
+    <% milestones.forEach(function(m) { %>
+    <div class="milestone-item">
+      <div class="milestone-dot"><span class="milestone-icon"><%= m.icon %></span></div>
+      <div class="milestone-body">
+        <div class="milestone-label"><%= m.label %></div>
+        <div class="milestone-detail"><%= m.detail %></div>
+        <div class="milestone-date"><%= formatTimestamp(m.ts) %></div>
+      </div>
+    </div>
+    <% }); %>
+  </div>
+  <% } %>
+
+  <!-- Prefer Authors -->
   <% if (overall.preferAuthors && overall.preferAuthors.length > 0) { %>
   <hr class="section-rule">
   <div class="section-kicker">偏好作者</div>

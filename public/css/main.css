@@ -1422,6 +1422,9 @@ h3 {
 [data-theme="dark"] .detail-highlight { background: var(--paper-warm); }
 [data-theme="dark"] .detail-review { background: var(--paper-warm); }
 [data-theme="dark"] .book-detail-cover { box-shadow: 0 2px 16px rgba(0,0,0,0.40); }
+[data-theme="dark"] .milestone-dot { background: var(--bg-soft); border-color: var(--rule); }
+[data-theme="dark"] .deep-think-item:hover { background: var(--bg-soft); }
+[data-theme="dark"] .radar-chart polygon[fill-opacity] { fill-opacity: 0.18; }
 
 /* ─── Footer ─── */
 .footer {
@@ -1461,6 +1464,260 @@ h3 {
   font-family: var(--font-display);
   font-size: var(--text-body-lg);
   color: var(--ink-muted);
+}
+
+/* ─── Monthly bar (distinct from yearly) ─── */
+.month-fill {
+  background: var(--accent-secondary);
+}
+
+/* ─── Radar Chart ─── */
+.radar-wrap {
+  display: flex;
+  justify-content: center;
+  margin: var(--space-4) 0;
+}
+.radar-chart {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+}
+
+/* ─── Deep Thinking Ranking ─── */
+.deep-think-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.deep-think-item {
+  display: grid;
+  grid-template-columns: 32px 48px 1fr 160px;
+  gap: var(--space-4);
+  align-items: center;
+  padding: var(--space-4) 0;
+  border-top: 1px solid var(--rule-thin);
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.15s var(--ease), padding 0.15s var(--ease);
+}
+.deep-think-item:hover {
+  background: var(--paper-warm);
+  padding-left: var(--space-2);
+  padding-right: var(--space-2);
+  margin-left: calc(-1 * var(--space-2));
+  margin-right: calc(-1 * var(--space-2));
+}
+.deep-rank {
+  font-family: var(--font-display);
+  font-size: var(--text-h3);
+  font-weight: 700;
+  color: var(--ink-muted);
+  text-align: center;
+}
+.deep-think-item:nth-child(1) .deep-rank { color: var(--accent); }
+.deep-think-item:nth-child(2) .deep-rank { color: var(--accent-secondary); }
+.deep-think-item:nth-child(3) .deep-rank { color: var(--accent-bright); }
+
+.deep-cover {
+  width: 40px;
+  height: 56px;
+  background: var(--rule-thin);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  color: var(--ink-faint);
+  flex-shrink: 0;
+}
+.deep-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.deep-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.deep-title {
+  font-family: var(--font-display);
+  font-size: var(--text-body);
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.deep-author {
+  font-family: var(--font-body);
+  font-size: var(--text-subhead);
+  color: var(--ink-muted);
+}
+.deep-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.deep-bar {
+  height: 4px;
+  background: var(--accent);
+  opacity: 0.4;
+  min-width: 0;
+  border-radius: 2px;
+  transition: width 0.6s var(--ease-out);
+}
+.deep-count {
+  font-family: var(--font-mono);
+  font-size: var(--text-caption);
+  color: var(--ink-muted);
+  white-space: nowrap;
+  min-width: 3.5em;
+  text-align: right;
+}
+
+/* ─── Intensity Trend ─── */
+.intensity-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: var(--space-5) 0;
+}
+.intensity-item {
+  display: grid;
+  grid-template-columns: 60px 120px 1fr 100px;
+  gap: var(--space-4);
+  align-items: center;
+  padding: var(--space-2) 0;
+}
+.intensity-year {
+  font-family: var(--font-display);
+  font-size: var(--text-body-lg);
+  font-weight: 700;
+  color: var(--ink);
+}
+.intensity-hrs {
+  font-family: var(--font-mono);
+  font-size: var(--text-caption);
+  color: var(--ink-muted);
+}
+.intensity-bar-track {
+  height: 6px;
+  background: var(--rule-thin);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.intensity-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  transition: width 0.6s var(--ease-out);
+}
+.intensity-avg {
+  font-family: var(--font-mono);
+  font-size: var(--text-caption);
+  color: var(--ink-soft);
+  font-weight: 500;
+  text-align: right;
+}
+
+/* ─── Reading Timeline Scatter ─── */
+.timeline-wrap {
+  margin: var(--space-4) 0;
+  overflow-x: auto;
+}
+.timeline-chart {
+  width: 100%;
+  min-width: 600px;
+  height: auto;
+}
+.timeline-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-top: var(--space-3);
+  padding-left: 40px;
+}
+.tl-legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  color: var(--ink-muted);
+}
+.tl-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ─── Milestone Timeline ─── */
+.milestone-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: var(--space-5) 0;
+  position: relative;
+}
+.milestone-item {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: var(--space-5);
+  padding: var(--space-4) 0;
+  position: relative;
+}
+.milestone-item::before {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--rule);
+}
+.milestone-item:first-child::before { top: 50%; }
+.milestone-item:last-child::before { bottom: 50%; }
+.milestone-dot {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--paper-warm);
+  border: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  flex-shrink: 0;
+}
+.milestone-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+.milestone-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  justify-content: center;
+}
+.milestone-label {
+  font-family: var(--font-display);
+  font-size: var(--text-body);
+  font-weight: 600;
+  color: var(--ink);
+}
+.milestone-detail {
+  font-family: var(--font-body);
+  font-size: var(--text-subhead);
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+.milestone-date {
+  font-family: var(--font-mono);
+  font-size: var(--text-caption);
+  color: var(--ink-muted);
+  margin-top: var(--space-1);
 }
 
 /* ─── Top Authors & Categories ─── */
@@ -1687,6 +1944,24 @@ h3 {
 
   .trend-grid { grid-template-columns: repeat(3, 1fr); }
 
+  .deep-think-item {
+    grid-template-columns: 28px 36px 1fr 100px;
+    gap: var(--space-3);
+  }
+
+  .intensity-item {
+    grid-template-columns: 50px 90px 1fr 70px;
+    gap: var(--space-3);
+  }
+
+  .milestone-item {
+    grid-template-columns: 32px 1fr;
+    gap: var(--space-3);
+  }
+  .milestone-item::before { left: 15px; }
+
+  .timeline-wrap { margin-left: -1rem; margin-right: -1rem; }
+
   .year-marker {
     flex-direction: column;
     align-items: flex-start;
@@ -1703,6 +1978,19 @@ h3 {
   .nav-link { font-size: 0.6875rem; }
 
   .hero-title { font-size: 1.75rem; }
+
+  .deep-think-item {
+    grid-template-columns: 24px 32px 1fr 80px;
+    gap: var(--space-2);
+  }
+  .intensity-item {
+    grid-template-columns: 40px 70px 1fr 60px;
+    gap: var(--space-2);
+  }
+  .milestone-item {
+    grid-template-columns: 28px 1fr;
+    gap: var(--space-2);
+  }
 }
 
 /* ─── Custom Scrollbar — editorial, understated ─── */
