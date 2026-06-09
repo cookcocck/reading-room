@@ -208,6 +208,7 @@ function getRecentHighlights(limit = 8) {
     ...h,
     bookTitle: h.book_title || '未知',
     bookAuthor: h.book_author || '',
+    markText: h.mark_text || h.content || '',
   }));
 }
 
