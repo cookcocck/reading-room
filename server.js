@@ -244,6 +244,14 @@ app.get('/about', (req, res) => {
   });
 });
 
+// API: Random highlight for hero section
+app.get('/api/hero-highlight', (req, res) => {
+  const { getRecentHighlights } = db;
+  const highlights = getRecentHighlights(1);
+  if (highlights.length === 0) return res.json({ text: '', bookTitle: '' });
+  res.json({ text: highlights[0].markText, bookTitle: highlights[0].bookTitle });
+});
+
 // API: Full book detail (for modals) — single request with highlights + reviews
 app.get('/api/book/:id', (req, res) => {
   const { getBookById, getBookHighlights, getBookReviews } = db;

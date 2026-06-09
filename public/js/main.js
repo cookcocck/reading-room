@@ -79,6 +79,23 @@
     hideLoader();
   }
 
+  // ─── Hero highlight → random highlight each visit ───
+  var heroTitle = document.getElementById('hero-title');
+  var heroSource = document.getElementById('hero-source');
+  if (heroTitle && heroSource) {
+    fetch('/api/hero-highlight')
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data.text && data.text.length > 3) {
+          heroTitle.textContent = data.text;
+          if (data.bookTitle) {
+            heroSource.textContent = '\u2014 \u300A' + data.bookTitle + '\u300B';
+          }
+        }
+      })
+      .catch(function() { /* keep default */ });
+  }
+
   // ─── Prefetch nav links on hover → instant page transitions ───
   document.querySelectorAll('.nav-link').forEach(function(link) {
     link.addEventListener('mouseenter', function() {
