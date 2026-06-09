@@ -43,6 +43,29 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ─── Helpers ───
 const { formatTime, formatTimestamp, heatmapLevel } = db;
 
+/** Replace WeRead t<N>_ thumbnail URLs with t7_ (~400px) for sharp rendering. */
+function upgradeCoverURL(url) {
+  if (!url || typeof url !== 'string') return url;
+  return url.replace(/\/t\d+_/g, '/t7_');
+}
+
+/** Recursively upgrade all `cover` properties in objects/arrays. */
+function upgradeCovers(obj) {
+  if (!obj) return obj;
+  if (Array.isArray(obj)) {
+    obj.forEach(item => upgradeCovers(item));
+  } else if (typeof obj === 'object') {
+    for (const key of Object.keys(obj)) {
+      if (key === 'cover' && typeof obj[key] === 'string') {
+        obj[key] = upgradeCoverURL(obj[key]);
+      } else if (typeof obj[key] === 'object') {
+        upgradeCovers(obj[key]);
+      }
+    }
+  }
+  return obj;
+}
+
 // ─── Routes ───
 
 // Home page
@@ -52,10 +75,10 @@ app.get('/', (req, res) => {
   const summary = getSummary();
   const overall_kv = getOverall();
   const overall = overall_kv.overall || {};
-  const annual = overall_kv.annual || {};
-  const annual2026 = overall_kv['annual-2026'] || {};
+  const annual = upgradeCovers(overall_kv.annual || {});
+  const annual2026 = upgradeCovers(overall_kv['annual-2026'] || {});
 
-  const currentlyReading = getCurrentlyReading(6);
+  const currentlyReading = upgradeCovers(getCurrentlyReading(6));
   const recentHighlights = getRecentHighlights(8);
 
   const now = new Date();
@@ -107,7 +130,7 @@ app.get('/bookshelf', (req, res) => {
   const hasExplicitParam = req.query.filter || req.query.category;
   const category = req.query.category || (!hasExplicitParam && allCategories.length > 0 ? allCategories[0] : '');
 
-  const books = getAllBooks(filter, category);
+  const books = upgradeCovers(getAllBooks(filter, category));
   const summary = getSummary();
   const bookReadTimes = getBookReadTimes();
 
@@ -136,7 +159,7 @@ app.get('/stats', (req, res) => {
 
   const overall_kv = getOverall();
   const overall = overall_kv.overall || {};
-  const annual = overall_kv.annual || {};
+  const annual = upgradeCovers(overall_kv.annual || {});
 
   const trends = getTrends();
 
@@ -182,11 +205,12 @@ app.get('/notebooks', (req, res) => {
   const perPage = 30;
 
   const result = getNotebooks(page, perPage);
+  const notebooks = upgradeCovers(result.notebooks);
   const summary = getSummary();
 
   res.render('notebooks', {
     title: '笔记',
-    notebooks: result.notebooks,
+    notebooks,
     totalNotebooks: result.total,
     currentPage: page,
     totalPages: result.totalPages,
@@ -202,7 +226,7 @@ app.get('/about', (req, res) => {
 
   const overall_kv = getOverall();
   const overall = overall_kv.overall || {};
-  const annual = overall_kv.annual || {};
+  const annual = upgradeCovers(overall_kv.annual || {});
 
   const summary = getSummary();
 

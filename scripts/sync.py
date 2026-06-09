@@ -21,6 +21,7 @@ import sqlite3
 import subprocess
 import sys
 import time
+import re
 import requests
 from datetime import datetime
 from pathlib import Path
@@ -67,6 +68,15 @@ def call_api(api_name: str, params: dict = None) -> dict:
             f"API error {result.get('errcode')}: {result.get('errmsg', '')}"
         )
     return result
+
+
+# ─── Cover URL upgrade ────────────────────────────────────────────────────────
+
+def upgrade_cover_url(url: str) -> str:
+    """Replace WeRead t<N>_ thumbnail with t7_ (~400px) for sharp rendering."""
+    if not url:
+        return url
+    return re.sub(r"/t\d+_", "/t7_", url)
 
 
 # ─── Logging ─────────────────────────────────────────────────────────────────
@@ -200,7 +210,7 @@ def sync_shelf(conn) -> int:
                 book_id,
                 b.get("title", "") or "",
                 b.get("author", "") or "",
-                b.get("cover", "") or "",
+                upgrade_cover_url(b.get("cover", "") or ""),
                 b.get("category", "") or "",
                 1 if b.get("finishReading") else 0,
                 int(b.get("updateTime", 0)),
