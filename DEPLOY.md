@@ -3,7 +3,7 @@
 ## 日常更新
 
 ```bash
-cd ~/reading-room
+cd ~/reading-site
 git pull origin main
 pm2 restart reading-room
 ```
@@ -12,22 +12,80 @@ pm2 restart reading-room
 
 ---
 
-## 补充最新想法数据
-
-当微信读书有新的想法（点评）需要同步到网站时：
+## 首次部署
 
 ```bash
-cd ~/reading-room
-export WEREAD_API_KEY=wrk-xxxxxxxx
-python scripts/migrate_reviews.py
-```
+# 1. 克隆仓库
+cd ~
+git clone <repo-url> reading-site
+cd reading-site
 
-脚本支持断点续跑，已有数据不会重复。
+# 2. 安装依赖
+npm install
+
+# 3. 设置环境变量
+export WEREAD_API_KEY=wrk-xxxxxxxx
+
+# 4. 初始化数据库（首次需要从 JSON 构建）
+python scripts/create_db.py
+
+# 5. 启动服务
+pm2 start ecosystem.config.json
+pm2 save
+```
 
 ---
 
-## 备份数据库（建议定期执行）
+## 自动同步微信读书数据（每 4 小时）
+
+使用 `scripts/sync.py` 通过 API 增量拉取书架、划线和想法，更新到数据库。
 
 ```bash
-cp ~/reading-room/db/reading-room.db ~/reading-room/db/reading-room.db.bak.$(date +%Y%m%d)
+# 设置环境变量（写入 ~/.bashrc 使其持久化）
+echo 'export WEREAD_API_KEY=wrk-xxxxxxxx' >> ~/.bashrc
+source ~/.bashrc
+```
+
+### 设置 crontab
+
+```bash
+crontab -e
+```
+
+添加以下行（每 4 小时执行一次，同步完成后重启服务）：
+
+```
+0 */4 * * * . $HOME/.bashrc; cd $HOME/reading-site && python3 scripts/sync.py --quick --restart >> logs/sync.log 2>&1
+```
+
+### 手动运行
+
+```bash
+# 完整同步（首次或强制刷新所有数据）
+cd ~/reading-site
+python3 scripts/sync.py --restart
+
+# 增量同步（仅同步笔记数变化的书，日常用）
+python3 scripts/sync.py --quick --restart
+```
+
+参数说明：
+- `--quick`：增量模式，只刷新笔记计数有变化的书籍（日常推荐）
+- `--restart`：同步完成后自动 `pm2 restart reading-room` 使服务加载新数据
+
+### 查看同步日志
+
+```bash
+tail -f ~/reading-site/logs/sync.log
+
+# 查看数据库中的同步历史
+sqlite3 ~/reading-site/db/reading-room.db "SELECT * FROM sync_log ORDER BY id DESC LIMIT 5;"
+```
+
+---
+
+## 备份数据库（建议每天执行）
+
+```bash
+cp ~/reading-site/db/reading-room.db ~/reading-site/db/reading-room.db.bak.$(date +%Y%m%d)
 ```
