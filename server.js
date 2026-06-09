@@ -101,10 +101,13 @@ app.get('/', (req, res) => {
 app.get('/bookshelf', (req, res) => {
   const { getAllBooks, getAllCategories, getSummary, getBookReadTimes } = db;
   const filter = req.query.filter || 'all';
-  const category = req.query.category || '';
+  const allCategories = getAllCategories();
+
+  // Default to the first category when no explicit params provided
+  const hasExplicitParam = req.query.filter || req.query.category;
+  const category = req.query.category || (!hasExplicitParam && allCategories.length > 0 ? allCategories[0] : '');
 
   const books = getAllBooks(filter, category);
-  const allCategories = getAllCategories();
   const summary = getSummary();
   const bookReadTimes = getBookReadTimes();
 

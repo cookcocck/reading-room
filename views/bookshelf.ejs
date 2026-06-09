@@ -8,22 +8,31 @@
     <div class="catalog-count"><%= books.length %> 册藏书 · <%= summary.finishedCount %> 册已读完</div>
   </div>
 
-  <!-- Filters — editorial text links -->
+  <!-- Status filter — pill toggle group -->
   <div class="catalog-filters">
-    <a href="/bookshelf" class="filter-option <%= filter === 'all' && !category ? 'active' : '' %>">全部</a>
-    <a href="/bookshelf?filter=reading" class="filter-option <%= filter === 'reading' ? 'active' : '' %>">在读</a>
-    <a href="/bookshelf?filter=finished" class="filter-option <%= filter === 'finished' ? 'active' : '' %>">已读完</a>
+    <div class="filter-pill-group">
+      <a href="/bookshelf" class="filter-pill <%= filter === 'all' && !category ? 'active' : '' %>">全部</a>
+      <a href="/bookshelf?filter=reading" class="filter-pill <%= filter === 'reading' ? 'active' : '' %>">在读</a>
+      <a href="/bookshelf?filter=finished" class="filter-pill <%= filter === 'finished' ? 'active' : '' %>">已读完</a>
+    </div>
     <% if (category) { %>
-      <span class="filter-option active"><%= category %> <a href="/bookshelf?filter=<%= filter %>" style="margin-left: 4px; font-size: 0.75rem;">×</a></span>
+    <span class="filter-breadcrumb">
+      <span class="filter-breadcrumb-label"><%= category %></span>
+      <a href="/bookshelf?filter=<%= filter %>" class="filter-breadcrumb-clear" title="清除分类">×</a>
+    </span>
     <% } %>
   </div>
 
-  <!-- Category tags (when no specific category selected) -->
-  <% if (!category && allCategories.length > 0) { %>
-  <div class="category-filters">
-    <% allCategories.slice(0, 12).forEach(function(c) { %>
-    <a href="/bookshelf?category=<%= encodeURIComponent(c) %>" class="category-tag"><%= c %></a>
+  <!-- Category chips -->
+  <% if (allCategories.length > 0) { %>
+  <div class="category-chips">
+    <% allCategories.forEach(function(c) { %>
+    <a href="/bookshelf?category=<%= encodeURIComponent(c) %>&filter=<%= filter %>"
+       class="category-chip <%= category === c ? 'active' : '' %>">
+      <%= c %>
+    </a>
     <% }); %>
+    <a href="/bookshelf?filter=<%= filter %>" class="category-chip category-chip-all <%= !category ? 'active' : '' %>">全部分类</a>
   </div>
   <% } %>
 

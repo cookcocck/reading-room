@@ -648,11 +648,114 @@ h3 {
 
 .catalog-filters {
   display: flex;
-  gap: var(--space-5);
-  margin-bottom: var(--space-8);
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
   flex-wrap: wrap;
 }
 
+/* ─── Pill toggle group (全部 / 在读 / 已读完) ─── */
+.filter-pill-group {
+  display: inline-flex;
+  background: var(--rule-thin);
+  border-radius: 999px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.filter-pill {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--ink-muted);
+  padding: 5px 16px;
+  border-radius: 999px;
+  transition: background 0.18s var(--ease), color 0.18s var(--ease), box-shadow 0.18s var(--ease);
+  white-space: nowrap;
+}
+.filter-pill:hover {
+  color: var(--ink-soft);
+  background: rgba(255,255,255,0.6);
+}
+.filter-pill.active {
+  background: var(--paper);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+}
+
+/* ─── Breadcrumb when a category is selected ─── */
+.filter-breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  color: var(--ink-soft);
+  background: var(--accent);
+  color: #fff;
+  padding: 4px 10px 4px 14px;
+  border-radius: 999px;
+}
+.filter-breadcrumb-label {
+  max-width: 18em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.filter-breadcrumb-clear {
+  color: rgba(255,255,255,0.7);
+  font-size: 1rem;
+  line-height: 1;
+  transition: color 0.15s;
+}
+.filter-breadcrumb-clear:hover { color: #fff; }
+
+/* ─── Category chips ─── */
+.category-chips {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-8);
+  align-items: center;
+}
+
+.category-chip {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--ink-muted);
+  background: transparent;
+  border: 1px solid var(--rule);
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s var(--ease), color 0.15s var(--ease), border-color 0.15s var(--ease), transform 0.15s var(--ease);
+  white-space: nowrap;
+}
+.category-chip:hover {
+  color: var(--ink);
+  background: var(--rule-thin);
+  border-color: var(--ink-faint);
+  transform: translateY(-1px);
+}
+.category-chip.active {
+  color: var(--paper);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.category-chip-all {
+  font-style: italic;
+  color: var(--ink-faint);
+  border-style: dashed;
+}
+.category-chip-all.active {
+  font-style: normal;
+  color: var(--paper);
+  background: var(--ink-soft);
+  border-color: var(--ink-soft);
+}
+
+/* Legacy — keep for any stray references */
 .filter-option {
   font-family: var(--font-body);
   font-size: var(--text-body);
@@ -661,12 +764,8 @@ h3 {
   transition: color 0.2s var(--ease);
 }
 .filter-option:hover,
-.filter-option.active {
-  color: var(--ink);
-}
-.filter-option.active {
-  font-weight: 600;
-}
+.filter-option.active { color: var(--ink); }
+.filter-option.active { font-weight: 600; }
 
 .category-filters {
   display: flex;
@@ -674,7 +773,6 @@ h3 {
   flex-wrap: wrap;
   margin-bottom: var(--space-8);
 }
-
 .category-tag {
   font-family: var(--font-body);
   font-size: var(--text-subhead);
