@@ -123,7 +123,7 @@ app.get('/', (req, res) => {
 // Bookshelf page
 app.get('/bookshelf', (req, res) => {
   const { getAllBooks, getAllCategories, getSummary, getBookReadTimes } = db;
-  const filter = req.query.filter || 'all';
+  const filter = req.query.filter || 'finished';
   const allCategories = getAllCategories();
 
   // Default to the first category when no explicit params provided
@@ -137,8 +137,11 @@ app.get('/bookshelf', (req, res) => {
   // Merge readTime into each book by title match
   books.forEach(b => {
     const rt = bookReadTimes[b.title];
-    if (rt) b.readTimeSec = rt;
+    b.readTimeSec = rt || 0;
   });
+
+  // Sort by total reading time descending (unread books sink to bottom)
+  books.sort((a, b) => b.readTimeSec - a.readTimeSec);
 
   res.render('bookshelf', {
     title: '书架',

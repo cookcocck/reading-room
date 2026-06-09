@@ -11,7 +11,7 @@
   <!-- Status filter — pill toggle group -->
   <div class="catalog-filters">
     <div class="filter-pill-group">
-      <a href="/bookshelf" class="filter-pill <%= filter === 'all' && !category ? 'active' : '' %>">全部</a>
+      <a href="/bookshelf?filter=all" class="filter-pill <%= filter === 'all' && !category ? 'active' : '' %>">全部</a>
       <a href="/bookshelf?filter=reading" class="filter-pill <%= filter === 'reading' ? 'active' : '' %>">在读</a>
       <a href="/bookshelf?filter=finished" class="filter-pill <%= filter === 'finished' ? 'active' : '' %>">已读完</a>
     </div>
