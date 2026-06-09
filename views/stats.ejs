@@ -111,21 +111,46 @@
 
   <!-- Author Word Cloud -->
   <% if (overall.preferAuthors && overall.preferAuthors.length > 0) { %>
-  <% var authorCounts = overall.preferAuthors.map(function(a){ return a.count; }); %>
-  <% var maxAC = Math.max.apply(null, authorCounts); %>
-  <% var minAC = Math.min.apply(null, authorCounts); %>
   <div class="chart-block">
     <div class="chart-title">作者词云</div>
-    <div class="word-cloud" id="author-wordcloud">
-      <% overall.preferAuthors.forEach(function(a) { %>
-      <% var weight = maxAC > minAC ? (a.count - minAC) / (maxAC - minAC) : 0.5; %>
-      <% var fontSize = 0.875 + weight * 1.625; %>
-      <span class="word-cloud-item" data-count="<%= a.count %>" style="font-size:<%= fontSize.toFixed(3) %>rem">
-        <%= a.name %>
-      </span>
-      <% }); %>
-    </div>
+    <canvas id="author-wordcloud-canvas" width="960" height="500" style="width:100%; max-width:960px; display:block; margin:var(--space-4) auto;"></canvas>
   </div>
+  <script id="wordcloud-data" type="application/json"><%= JSON.stringify(overall.preferAuthors.map(function(a) { return [a.name, a.count]; })).replace(/</g, '\\u003c') %></script>
+  <script src="https://cdn.jsdelivr.net/npm/wordcloud@1.2.7/src/wordcloud2.min.js"></script>
+  <script>
+  (function() {
+    var raw = JSON.parse(document.getElementById('wordcloud-data').textContent);
+    if (!raw.length) return;
+    var counts = raw.map(function(r) { return r[1]; });
+    var maxC = Math.max.apply(null, counts);
+    var minC = Math.min.apply(null, counts);
+    var list = raw.map(function(r) {
+      var w = maxC > minC ? (r[1] - minC) / (maxC - minC) : 0.5;
+      return [r[0], 16 + Math.round(w * 48)];
+    });
+    var canvas = document.getElementById('author-wordcloud-canvas');
+    var ac = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#c7512e';
+    WordCloud(canvas, {
+      list: list,
+      gridSize: 10,
+      weightFactor: 1,
+      fontFamily: "'Noto Serif SC', 'Source Han Serif SC', serif",
+      color: function(word, weight) {
+        var shades = ['#222', '#555', ac, '#666', '#333'];
+        return shades[Math.floor(Math.random() * shades.length)];
+      },
+      rotateRatio: 0.35,
+      minRotation: -Math.PI / 4,
+      maxRotation: Math.PI / 4,
+      backgroundColor: 'transparent',
+      shape: 'circle',
+      ellipticity: 0.8,
+      clearCanvas: true,
+      shuffle: true,
+      wait: 30
+    });
+  })();
+  </script>
   <% } %>
 
   <!-- Top Authors All Time -->
