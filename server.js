@@ -256,6 +256,30 @@ app.get('/api/book/:id', (req, res) => {
   res.json({ ...book, highlights, reviews });
 });
 
+// Book detail page
+app.get('/book/:id', (req, res) => {
+  const { getBookById, getBookHighlights, getBookReviews, getBookReadTimes, getSummary } = db;
+  const book = getBookById(req.params.id);
+  if (!book) return res.status(404).send('未找到此书');
+
+  const highlights = getBookHighlights(book.title, 12);
+  const reviews = getBookReviews(book.title, 12);
+  const bookReadTimes = getBookReadTimes();
+  const readTimeSec = bookReadTimes[book.title] || 0;
+
+  res.render('book', {
+    title: book.title,
+    book: upgradeCovers(book),
+    highlights,
+    reviews,
+    readTimeSec,
+    formatTimestamp,
+    helpers: { formatTime, formatTimestamp },
+    path: '/bookshelf',
+    summary: getSummary(),
+  });
+});
+
 // ─── Start (async: await DB init) ───
 let server;
 
