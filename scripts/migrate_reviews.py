@@ -108,23 +108,30 @@ def main():
     conn.row_factory = sqlite3.Row
     create_reviews_table(conn)
 
-    # Try notebooks first; if empty, fallback to all books with highlights
-    rows = conn.execute('''
-        SELECT n.book_id, b.title, n.review_count
-        FROM notebooks n
-        LEFT JOIN books b ON n.book_id = b.id
-        WHERE n.review_count > 0
-        ORDER BY n.sort DESC
-    ''').fetchall()
+    # Try notebooks first; if table is missing or empty, fallback to all books with highlights
+    rows = None
+    try:
+        rows = conn.execute('''
+            SELECT n.book_id, b.title, n.review_count
+            FROM notebooks n
+            LEFT JOIN books b ON n.book_id = b.id
+            WHERE n.review_count > 0
+            ORDER BY n.sort DESC
+        ''').fetchall()
+    except sqlite3.OperationalError as e:
+        print(f"[!] notebooks table not found ({e}) — falling back to books with highlights")
 
     if not rows:
         print("[!] notebooks table is empty — falling back to books with highlights")
-        rows = conn.execute('''
-            SELECT DISTINCT h.book_id, b.title, 0 AS review_count
-            FROM highlights h
-            LEFT JOIN books b ON h.book_id = b.id
-            ORDER BY b.title
-        ''').fetchall()
+        try:
+            rows = conn.execute('''
+                SELECT DISTINCT h.book_id, b.title, 0 AS review_count
+                FROM highlights h
+                LEFT JOIN books b ON h.book_id = b.id
+                ORDER BY b.title
+            ''').fetchall()
+        except sqlite3.OperationalError as e:
+            print(f"[!] fallsback query also failed ({e})")
 
     if not rows:
         print("[*] No books found to query for reviews.")
