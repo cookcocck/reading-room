@@ -76,47 +76,18 @@
         '<div class="modal-title">' + (book.title || '') + '</div>' +
         '<div class="modal-author">' + (book.author || '佚名') + '</div>' +
         (metaHtml ? '<div class="modal-meta">' + metaHtml + '</div>' : '') +
-        '<div class="modal-highlights"><div class="modal-hl-placeholder">载入划线...</div></div>' +
-        '<div class="modal-reviews"><div class="modal-hl-placeholder">载入想法...</div></div>';
+        '<div class="modal-highlights">' + renderHighlightsHTML(book.highlights || []) + '</div>' +
+        '<div class="modal-reviews">' + renderReviewsHTML(book.reviews || []) + '</div>';
 
       // Re-bind close
       var closeBtn = content.querySelector('.modal-close');
       if (closeBtn) closeBtn.addEventListener('click', closeModal);
-
-      // Fetch highlights asynchronously
-      var xhrHL = new XMLHttpRequest();
-      xhrHL.open('GET', '/api/book/' + book.id + '/highlights');
-      xhrHL.onload = function() {
-        if (xhrHL.status === 200) {
-          var data = JSON.parse(xhrHL.responseText);
-          var hlContainer = content.querySelector('.modal-highlights');
-          if (hlContainer && data.highlights && data.highlights.length > 0) {
-            hlContainer.innerHTML = renderHighlightsHTML(data.highlights);
-          } else if (hlContainer) {
-            hlContainer.innerHTML = '<div class="modal-hl-empty">本书暂无划线摘录</div>';
-          }
-        }
-      };
-      xhrHL.send();
-
-      // Fetch reviews asynchronously
-      var xhrRV = new XMLHttpRequest();
-      xhrRV.open('GET', '/api/book/' + book.id + '/reviews');
-      xhrRV.onload = function() {
-        if (xhrRV.status === 200) {
-          var data = JSON.parse(xhrRV.responseText);
-          var rvContainer = content.querySelector('.modal-reviews');
-          if (rvContainer && data.reviews && data.reviews.length > 0) {
-            rvContainer.innerHTML = renderReviewsHTML(data.reviews);
-          } else if (rvContainer) {
-            rvContainer.innerHTML = '<div class="modal-hl-empty">本书暂无想法</div>';
-          }
-        }
-      };
-      xhrRV.send();
     }
 
     function renderHighlightsHTML(highlights) {
+      if (!highlights || highlights.length === 0) {
+        return '<div class="modal-hl-empty">本书暂无划线摘录</div>';
+      }
       var html = '<hr class="modal-hl-rule"><div class="modal-hl-kicker">划线摘录</div>';
       for (var i = 0; i < highlights.length; i++) {
         var h = highlights[i];
@@ -131,6 +102,9 @@
     }
 
     function renderReviewsHTML(reviews) {
+      if (!reviews || reviews.length === 0) {
+        return '<div class="modal-hl-empty">本书暂无想法</div>';
+      }
       var html = '<hr class="modal-hl-rule"><div class="modal-hl-kicker modal-rv-kicker">我的想法</div>';
       for (var i = 0; i < reviews.length; i++) {
         var r = reviews[i];
@@ -195,12 +169,10 @@
   var wrapper = document.getElementById('site-wrapper');
   function hideLoader() {
     if (loader) {
-      loader.classList.add('fade-out');
-      setTimeout(function() { loader.style.display = 'none'; }, 400);
+      loader.style.display = 'none';
     }
     if (wrapper) {
       wrapper.style.opacity = '1';
-      wrapper.style.transition = 'opacity 0.3s ease-in';
     }
   }
   if (document.readyState === 'loading') {
@@ -208,5 +180,15 @@
   } else {
     hideLoader();
   }
+
+  // ─── Prefetch nav links on hover → instant page transitions ───
+  document.querySelectorAll('.nav-link').forEach(function(link) {
+    link.addEventListener('mouseenter', function() {
+      var prefetch = document.createElement('link');
+      prefetch.rel = 'prefetch';
+      prefetch.href = link.href;
+      document.head.appendChild(prefetch);
+    }, { once: true });
+  });
 
 })();

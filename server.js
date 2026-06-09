@@ -241,32 +241,16 @@ app.get('/about', (req, res) => {
   });
 });
 
-// API: Full book detail (for modals)
+// API: Full book detail (for modals) — single request with highlights + reviews
 app.get('/api/book/:id', (req, res) => {
-  const { getBookById } = db;
-  const book = getBookById(req.params.id);
-  if (!book) return res.status(404).json({ error: 'Not found' });
-  res.json(book);
-});
-
-// API: Book highlights for modal enrichment
-app.get('/api/book/:id/highlights', (req, res) => {
-  const { getBookById, getBookHighlights } = db;
+  const { getBookById, getBookHighlights, getBookReviews } = db;
   const book = getBookById(req.params.id);
   if (!book) return res.status(404).json({ error: 'Not found' });
 
+  // Bundle highlights + reviews in same response to save 2 RTTs
   const highlights = getBookHighlights(book.title, 5);
-  res.json({ highlights });
-});
-
-// API: Book reviews (想法) for modal enrichment
-app.get('/api/book/:id/reviews', (req, res) => {
-  const { getBookById, getBookReviews } = db;
-  const book = getBookById(req.params.id);
-  if (!book) return res.status(404).json({ error: 'Not found' });
-
   const reviews = getBookReviews(book.title, 5);
-  res.json({ reviews });
+  res.json({ ...book, highlights, reviews });
 });
 
 // ─── Start (async: await DB init) ───
