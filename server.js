@@ -256,6 +256,26 @@ app.get('/api/book/:id', (req, res) => {
   res.json({ ...book, highlights, reviews });
 });
 
+// API: Random refresh of highlights or reviews for a book
+app.get('/api/book/:id/:section', (req, res) => {
+  const { getBookById, getBookHighlights, getBookReviews } = db;
+  const book = getBookById(req.params.id);
+  if (!book) return res.status(404).json({ error: 'Not found' });
+
+  const n = parseInt(req.query.n) || 12;
+  const section = req.params.section;
+
+  if (section === 'highlights') {
+    const highlights = getBookHighlights(book.title, n);
+    return res.json({ highlights });
+  } else if (section === 'reviews') {
+    const reviews = getBookReviews(book.title, n);
+    return res.json({ reviews });
+  } else {
+    return res.status(400).json({ error: 'Invalid section. Use "highlights" or "reviews".' });
+  }
+});
+
 // Book detail page
 app.get('/book/:id', (req, res) => {
   const { getBookById, getBookHighlights, getBookReviews, getBookReadTimes, getSummary } = db;

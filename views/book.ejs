@@ -59,8 +59,11 @@
     <!-- Highlights -->
     <% if (highlights.length > 0) { %>
     <hr class="section-rule">
-    <div class="section-kicker">划线摘录</div>
-    <div class="book-highlights">
+    <div class="section-head-row">
+      <div class="section-kicker">划线摘录</div>
+      <button class="shuffle-btn" data-section="highlights" data-book="<%= book.id %>" title="随机换一批">⟳</button>
+    </div>
+    <div class="book-highlights" id="book-highlights">
       <% highlights.forEach(function(h) { %>
       <blockquote class="detail-highlight">
         <p><%= h.text %></p>
@@ -73,8 +76,11 @@
     <!-- Reviews -->
     <% if (reviews.length > 0) { %>
     <hr class="section-rule">
-    <div class="section-kicker">我的想法</div>
-    <div class="book-reviews">
+    <div class="section-head-row">
+      <div class="section-kicker">我的想法</div>
+      <button class="shuffle-btn" data-section="reviews" data-book="<%= book.id %>" title="随机换一批">⟳</button>
+    </div>
+    <div class="book-reviews" id="book-reviews">
       <% reviews.forEach(function(r) { %>
       <div class="detail-review">
         <p><%= r.content %></p>

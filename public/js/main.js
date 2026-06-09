@@ -89,4 +89,54 @@
     }, { once: true });
   });
 
+  // ─── Shuffle highlights / reviews on book detail page ───
+  function escapeHTML(str) {
+    var div = document.createElement('div');
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
+  }
+
+  document.querySelectorAll('.shuffle-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var section = btn.dataset.section;
+      var bookId = btn.dataset.book;
+      var container = document.getElementById('book-' + section);
+      if (!container) return;
+
+      // Spin animation
+      btn.classList.add('spinning');
+      btn.addEventListener('animationend', function() { btn.classList.remove('spinning'); }, { once: true });
+
+      // Build HTML for a single item
+      function buildHighlight(h) {
+        var html = '<blockquote class="detail-highlight"><p>' + escapeHTML(h.text) + '</p>';
+        if (h.chapter) html += '<cite>\u2014 ' + escapeHTML(h.chapter) + '</cite>';
+        html += '</blockquote>';
+        return html;
+      }
+
+      function buildReview(r) {
+        var html = '<div class="detail-review"><p>' + escapeHTML(r.content) + '</p>';
+        if (r.chapter) html += '<cite>\u2014 ' + escapeHTML(r.chapter) + '</cite>';
+        html += '</div>';
+        return html;
+      }
+
+      fetch('/api/book/' + bookId + '/' + section + '?n=12')
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          var items = section === 'highlights' ? (data.highlights || []) : (data.reviews || []);
+          if (!items.length) { container.innerHTML = ''; return; }
+
+          var builder = section === 'highlights' ? buildHighlight : buildReview;
+          container.innerHTML = items.map(builder).join('');
+
+          // Trigger fade-in
+          container.classList.add('inserting');
+          container.addEventListener('animationend', function() { container.classList.remove('inserting'); }, { once: true });
+        })
+        .catch(function() { /* silent — retry on next click */ });
+    });
+  });
+
 })();

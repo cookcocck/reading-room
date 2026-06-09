@@ -268,6 +268,61 @@ h3 {
   margin-bottom: var(--space-4);
 }
 
+.section-head-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.section-head-row .section-kicker {
+  margin-bottom: 0;
+}
+
+/* Shuffle / refresh button */
+.shuffle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink-muted);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: color 0.15s var(--ease), border-color 0.15s var(--ease), transform 0.35s var(--ease-out);
+  line-height: 1;
+  padding: 0;
+}
+.shuffle-btn:hover {
+  color: var(--ink);
+  border-color: var(--ink-faint);
+}
+.shuffle-btn.spinning {
+  animation: shuffle-spin 0.5s var(--ease-out);
+  pointer-events: none;
+}
+
+@keyframes shuffle-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Freshly inserted items — subtle fade-in */
+.book-highlights.inserting .detail-highlight,
+.book-reviews.inserting .detail-review {
+  animation: fadeIn 0.35s var(--ease-out) both;
+}
+.book-highlights.inserting .detail-highlight:nth-child(1) { animation-delay: 0s; }
+.book-highlights.inserting .detail-highlight:nth-child(2) { animation-delay: 0.04s; }
+.book-highlights.inserting .detail-highlight:nth-child(3) { animation-delay: 0.08s; }
+.book-highlights.inserting .detail-highlight:nth-child(4) { animation-delay: 0.12s; }
+.book-reviews.inserting .detail-review:nth-child(1) { animation-delay: 0s; }
+.book-reviews.inserting .detail-review:nth-child(2) { animation-delay: 0.04s; }
+.book-reviews.inserting .detail-review:nth-child(3) { animation-delay: 0.08s; }
+.book-reviews.inserting .detail-review:nth-child(4) { animation-delay: 0.12s; }
+
 .section-head {
   font-family: var(--font-display);
   font-size: var(--text-h2);
