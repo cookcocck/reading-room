@@ -109,60 +109,7 @@
   </div>
   <% } %>
 
-  <!-- Author Word Cloud -->
-  <% if (overall.preferAuthors && overall.preferAuthors.length > 0) { %>
-  <div class="chart-block">
-    <div class="chart-title">作者词云</div>
-    <canvas id="author-wordcloud-canvas" width="960" height="500" style="width:100%; max-width:960px; display:block; margin:var(--space-4) auto;"></canvas>
-  </div>
-  <script id="wordcloud-data" type="application/json"><%- JSON.stringify(overall.preferAuthors.map(function(a) { return [a.name, a.count]; })).replace(/</g, '\\u003c') %></script>
-  <script src="/js/wordcloud.js?v=2"></script>
-  <script>
-  (function() {
-    console.log('[WordCloud Init] script running');
-    try {
-      var dataEl = document.getElementById('wordcloud-data');
-      if (!dataEl) { console.error('[WordCloud] #wordcloud-data not found'); return; }
-      var rawText = dataEl.textContent;
-      console.log('[WordCloud] raw data text:', rawText);
-      var raw = JSON.parse(rawText);
-      console.log('[WordCloud] parsed raw:', raw);
-      if (!raw.length) { console.log('[WordCloud] raw is empty, skipping'); return; }
-      var counts = raw.map(function(r) { return r[1]; });
-      var maxC = Math.max.apply(null, counts);
-      var minC = Math.min.apply(null, counts);
-      console.log('[WordCloud] counts:', counts, 'max:', maxC, 'min:', minC);
-      var list = raw.map(function(r) {
-        var w = maxC > minC ? (r[1] - minC) / (maxC - minC) : 0.5;
-        return [r[0], 16 + Math.round(w * 48)];
-      });
-      console.log('[WordCloud] list:', list);
-      var canvas = document.getElementById('author-wordcloud-canvas');
-      if (!canvas) { console.error('[WordCloud] #author-wordcloud-canvas not found'); return; }
-      console.log('[WordCloud] canvas:', canvas, 'size:', canvas.width, 'x', canvas.height);
-      var ac = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#c7512e';
-      console.log('[WordCloud] calling WordCloud with list length:', list.length);
-      WordCloud(canvas, {
-        list: list,
-        gridSize: 8,
-        fontFamily: "'Noto Serif SC', 'Source Han Serif SC', serif",
-        color: function(word, weight) {
-          var shades = ['#222', '#555', ac, '#666', '#333'];
-          return shades[Math.floor(Math.random() * shades.length)];
-        },
-        rotateRatio: 0.35,
-        ellipticity: 0.8,
-        shuffle: true
-      });
-      console.log('[WordCloud] WordCloud call returned');
-    } catch(e) {
-      console.error('[WordCloud] Error:', e);
-    }
-  })();
-  </script>
-  <% } %>
-
-  <!-- Top Authors All Time -->
+  <!-- Reading Streak (长文分析待实现) -->
   <% if (overall.preferAuthors && overall.preferAuthors.length > 0) { %>
   <hr class="section-rule">
   <div class="section-kicker">偏好作者</div>
