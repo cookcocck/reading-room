@@ -389,9 +389,9 @@ function getDeepThinking(limit = 10) {
 function getBookTimeline() {
   const d = getDb();
   return d.prepare(`
-    SELECT id, title, author, category, create_time AS addedAt
-    FROM books WHERE create_time > 0
-    ORDER BY create_time
+    SELECT id, title, author, category, update_time AS addedAt
+    FROM books WHERE update_time > 0
+    ORDER BY update_time
   `).all();
 }
 
@@ -415,11 +415,11 @@ function getMilestones() {
 
   // First book
   const fb = d.prepare(
-    'SELECT title, author, create_time FROM books WHERE create_time > 0 ORDER BY create_time LIMIT 1'
+    'SELECT title, author, update_time FROM books WHERE update_time > 0 ORDER BY update_time LIMIT 1'
   ).get();
   if (fb) milestones.push({
     label: '阅读起点', detail: `收藏《${fb.title}》`,
-    ts: fb.create_time, icon: '📖'
+    ts: fb.update_time, icon: '📖'
   });
 
   // Nth book milestones
@@ -427,11 +427,11 @@ function getMilestones() {
   [10, 50, 100, 150, 200].forEach(n => {
     if (total < n) return;
     const b = d.prepare(
-      'SELECT title, create_time FROM books WHERE create_time > 0 ORDER BY create_time LIMIT 1 OFFSET ?'
+      'SELECT title, update_time FROM books WHERE update_time > 0 ORDER BY update_time LIMIT 1 OFFSET ?'
     ).get(n - 1);
     if (b) milestones.push({
       label: `第 ${n} 本书`, detail: `《${b.title}》`,
-      ts: b.create_time, icon: '📚'
+      ts: b.update_time, icon: '📚'
     });
   });
 
