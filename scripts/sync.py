@@ -144,6 +144,11 @@ def ensure_tables(conn):
             errors TEXT
         );
     """)
+    # ── Schema migration: add missing columns to existing tables ──
+    existing_cols = {r[1] for r in conn.execute("PRAGMA table_info(sync_log)").fetchall()}
+    if "reviews_updated" not in existing_cols:
+        conn.execute("ALTER TABLE sync_log ADD COLUMN reviews_updated INTEGER DEFAULT 0")
+        log("  [migration] Added missing column sync_log.reviews_updated")
     conn.commit()
 
 
