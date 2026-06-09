@@ -1463,6 +1463,37 @@ h3 {
   color: var(--ink-muted);
 }
 
+/* ─── Word Cloud ─── */
+.word-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-3) var(--space-5);
+  margin: var(--space-6) 0;
+  line-height: 1.4;
+}
+
+.word-cloud-item {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--ink);
+  cursor: default;
+  transition: color 0.2s var(--ease), transform 0.2s var(--ease);
+  white-space: nowrap;
+}
+
+.word-cloud-item:nth-child(5n+1) { color: var(--ink); }
+.word-cloud-item:nth-child(5n+2) { color: var(--ink-soft); }
+.word-cloud-item:nth-child(5n+3) { color: var(--accent); }
+.word-cloud-item:nth-child(5n+4) { color: var(--ink-muted); }
+.word-cloud-item:nth-child(5n+5) { color: var(--ink); opacity: 0.75; }
+
+.word-cloud-item:hover {
+  color: var(--accent) !important;
+  opacity: 1 !important;
+  transform: translateY(-2px);
+}
+
 /* ─── Top Authors & Categories ─── */
 .author-list {
   display: grid;
