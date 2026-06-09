@@ -144,11 +144,27 @@ def ensure_tables(conn):
             errors TEXT
         );
     """)
-    # ── Schema migration: add missing columns to existing tables ──
-    existing_cols = {r[1] for r in conn.execute("PRAGMA table_info(sync_log)").fetchall()}
-    if "reviews_updated" not in existing_cols:
-        conn.execute("ALTER TABLE sync_log ADD COLUMN reviews_updated INTEGER DEFAULT 0")
-        log("  [migration] Added missing column sync_log.reviews_updated")
+    # ── Schema migration: add missing columns to existing sync_log table ──
+    # Older sync_log tables may be missing columns added in later versions.
+    # Check PRAGMA table_info and ALTER TABLE ADD COLUMN for any gaps.
+    expected = {
+        "id":                None,
+        "started_at":        None,
+        "finished_at":       None,
+        "status":            None,
+        "books_updated":     "INTEGER DEFAULT 0",
+        "highlights_updated":"INTEGER DEFAULT 0",
+        "reviews_updated":   "INTEGER DEFAULT 0",
+        "errors":            "TEXT",
+    }
+    existing_cols = {r[1] for r in conn.execute("PRAGMA table_info(sync_log)")}
+    for col, col_type in expected.items():
+        if col_type is not None and col not in existing_cols:
+            try:
+                conn.execute(f"ALTER TABLE sync_log ADD COLUMN {col} {col_type}")
+                log(f"  [migration] Added missing column sync_log.{col}")
+            except sqlite3.OperationalError:
+                pass
     conn.commit()
 
 
