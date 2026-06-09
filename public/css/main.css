@@ -1468,7 +1468,7 @@ h3 {
 
 /* ─── Monthly bar (distinct from yearly) ─── */
 .month-fill {
-  background: var(--accent-secondary);
+  background: var(--accent);
 }
 
 /* ─── Radar Chart ─── */
