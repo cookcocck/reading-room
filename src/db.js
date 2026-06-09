@@ -102,6 +102,14 @@ async function initDb() {
     `);
     sqlDb.run('CREATE INDEX IF NOT EXISTS idx_reviews_book ON reviews(book_id)');
 
+    // ─── Schema migration: add intro column to books table ───
+    try {
+      sqlDb.run('ALTER TABLE books ADD COLUMN intro TEXT DEFAULT \'\'');
+      console.log('[db] Migration: added books.intro column');
+    } catch (e) {
+      // Column already exists — ignore
+    }
+
     console.log(`[db] Connected to reading-room.db (sql.js, ${(fileBuffer.length / 1024 / 1024).toFixed(1)} MB)`);
     return db;
   } catch (err) {
@@ -347,6 +355,19 @@ function getBookReviews(bookTitle, limitReviews = 5) {
   }));
 }
 
+// ─── Book Intro (cached from WeRead API) ───
+
+function getBookIntro(bookId) {
+  const d = getDb();
+  const row = d.prepare('SELECT intro FROM books WHERE id = ?').get(bookId);
+  return row ? row.intro || '' : '';
+}
+
+function saveBookIntro(bookId, intro) {
+  const d = getDb();
+  d.prepare('UPDATE books SET intro = ? WHERE id = ?').all(intro, bookId);
+}
+
 // ─── Exports ───
 
 module.exports = {
@@ -368,6 +389,8 @@ module.exports = {
   getBookReadTimes,
   getBookHighlights,
   getBookReviews,
+  getBookIntro,
+  saveBookIntro,
   // helpers
   formatTime,
   formatTimestamp,

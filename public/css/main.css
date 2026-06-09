@@ -1352,6 +1352,25 @@ h3 {
   letter-spacing: 0.06em;
 }
 
+/* Book Intro — editorial paragraph style */
+.book-intro {
+  margin-bottom: var(--space-6);
+}
+.book-intro p {
+  font-family: var(--font-display);
+  font-size: var(--text-body);
+  color: var(--ink-soft);
+  line-height: 1.9;
+  margin: 0;
+}
+.book-intro .intro-placeholder {
+  font-family: var(--font-body);
+  font-size: var(--text-subhead);
+  color: var(--ink-muted);
+  font-style: italic;
+  opacity: 0.6;
+}
+
 /* Highlights — pull-quote style with left accent bar */
 .book-highlights {
 }
