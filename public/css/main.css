@@ -1205,13 +1205,15 @@ h3 {
 
 .modal {
   background: var(--paper);
-  max-width: 52rem;
-  width: 92%;
-  max-height: 85vh;
+  max-width: 64rem;
+  width: 95%;
+  max-height: 88vh;
   overflow-y: auto;
   padding: var(--space-8);
   border: 1px solid var(--rule);
   position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-faint) transparent;
 }
 
 .modal-close {
@@ -1636,4 +1638,20 @@ h3 {
   .nav-link { font-size: 0.6875rem; }
 
   .hero-title { font-size: 1.75rem; }
+}
+
+/* ─── Custom Scrollbar — editorial, understated ─── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--ink-faint);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--ink-muted); }
+::-webkit-scrollbar-corner { background: transparent; }
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-faint) transparent;
 }
