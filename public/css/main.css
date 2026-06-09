@@ -1252,7 +1252,26 @@ h3 {
 .back-link:hover { color: var(--ink); }
 
 .book-detail {
-  max-width: 42rem; /* comfortable reading measure */
+  max-width: var(--col-wide);
+}
+
+/* Two-column grid for highlights + reviews */
+.detail-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-10);
+  align-items: start;
+}
+
+.detail-col {
+  min-width: 0;
+}
+
+.empty-state-col {
+  padding: var(--space-8) 0;
+  text-align: center;
+  border: 1px dashed var(--rule);
+  border-radius: 6px;
 }
 
 .book-detail-cover {
@@ -1335,7 +1354,6 @@ h3 {
 
 /* Highlights — pull-quote style with left accent bar */
 .book-highlights {
-  margin-top: var(--space-6);
 }
 .detail-highlight {
   border-left: 3px solid var(--accent-bright);
@@ -1361,7 +1379,6 @@ h3 {
 
 /* Reviews — card style, warm tint, with chapter label */
 .book-reviews {
-  margin-top: var(--space-6);
 }
 .detail-review {
   padding: var(--space-5) var(--space-5);
@@ -1639,6 +1656,10 @@ h3 {
 
   .about-grid { grid-template-columns: repeat(2, 1fr); }
 
+  .detail-columns {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
   .book-list-item,
   .notebook-item {
     grid-template-columns: 36px 1fr;

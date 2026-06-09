@@ -56,42 +56,59 @@
     </div>
     <% } %>
 
-    <!-- Highlights -->
-    <% if (highlights.length > 0) { %>
+    <!-- Highlights & Reviews — side by side -->
+    <% if (highlights.length > 0 || reviews.length > 0) { %>
     <hr class="section-rule">
-    <div class="section-head-row">
-      <div class="section-kicker">划线摘录</div>
-      <button class="shuffle-btn" data-section="highlights" data-book="<%= book.id %>" title="随机换一批">⟳</button>
-    </div>
-    <div class="book-highlights" id="book-highlights">
-      <% highlights.forEach(function(h) { %>
-      <blockquote class="detail-highlight">
-        <p><%= h.text %></p>
-        <% if (h.chapter) { %><cite>— <%= h.chapter %></cite><% } %>
-      </blockquote>
-      <% }); %>
-    </div>
-    <% } %>
-
-    <!-- Reviews -->
-    <% if (reviews.length > 0) { %>
-    <hr class="section-rule">
-    <div class="section-head-row">
-      <div class="section-kicker">我的想法</div>
-      <button class="shuffle-btn" data-section="reviews" data-book="<%= book.id %>" title="随机换一批">⟳</button>
-    </div>
-    <div class="book-reviews" id="book-reviews">
-      <% reviews.forEach(function(r) { %>
-      <div class="detail-review">
-        <p><%= r.content %></p>
-        <% if (r.chapter) { %><cite>— <%= r.chapter %></cite><% } %>
+    <div class="detail-columns">
+      <!-- Left: Highlights -->
+      <div class="detail-col">
+        <div class="section-head-row">
+          <div class="section-kicker">划线摘录</div>
+          <% if (highlights.length > 0) { %>
+          <button class="shuffle-btn" data-section="highlights" data-book="<%= book.id %>" title="随机换一批">⟳</button>
+          <% } %>
+        </div>
+        <% if (highlights.length > 0) { %>
+        <div class="book-highlights" id="book-highlights">
+          <% highlights.forEach(function(h) { %>
+          <blockquote class="detail-highlight">
+            <p><%= h.text %></p>
+            <% if (h.chapter) { %><cite>— <%= h.chapter %></cite><% } %>
+          </blockquote>
+          <% }); %>
+        </div>
+        <% } else { %>
+        <div class="empty-state empty-state-col">
+          <p class="empty-state-text">暂无摘录</p>
+        </div>
+        <% } %>
       </div>
-      <% }); %>
-    </div>
-    <% } %>
 
-    <!-- Empty state -->
-    <% if (highlights.length === 0 && reviews.length === 0) { %>
+      <!-- Right: Reviews -->
+      <div class="detail-col">
+        <div class="section-head-row">
+          <div class="section-kicker">我的想法</div>
+          <% if (reviews.length > 0) { %>
+          <button class="shuffle-btn" data-section="reviews" data-book="<%= book.id %>" title="随机换一批">⟳</button>
+          <% } %>
+        </div>
+        <% if (reviews.length > 0) { %>
+        <div class="book-reviews" id="book-reviews">
+          <% reviews.forEach(function(r) { %>
+          <div class="detail-review">
+            <p><%= r.content %></p>
+            <% if (r.chapter) { %><cite>— <%= r.chapter %></cite><% } %>
+          </div>
+          <% }); %>
+        </div>
+        <% } else { %>
+        <div class="empty-state empty-state-col">
+          <p class="empty-state-text">暂无想法</p>
+        </div>
+        <% } %>
+      </div>
+    </div>
+    <% } else { %>
     <hr class="section-rule">
     <div class="empty-state">
       <p class="empty-state-text">暂无笔记摘录</p>
