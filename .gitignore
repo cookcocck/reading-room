@@ -4,6 +4,4 @@ node_modules/
 .DS_Store
 __pycache__/
 src/data/
-# Database is managed on the server; not tracked in git to prevent data loss on pull
-db/reading-room.db
-db/review_progress.json
+scripts/migrate_reviews_progress.json
