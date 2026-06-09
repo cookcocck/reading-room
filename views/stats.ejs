@@ -115,7 +115,7 @@
     <div class="chart-title">作者词云</div>
     <canvas id="author-wordcloud-canvas" width="960" height="500" style="width:100%; max-width:960px; display:block; margin:var(--space-4) auto;"></canvas>
   </div>
-  <script id="wordcloud-data" type="application/json"><%= JSON.stringify(overall.preferAuthors.map(function(a) { return [a.name, a.count]; })).replace(/</g, '\\u003c') %></script>
+  <script id="wordcloud-data" type="application/json"><%- JSON.stringify(overall.preferAuthors.map(function(a) { return [a.name, a.count]; })).replace(/</g, '\\u003c') %></script>
   <script src="/js/wordcloud.js"></script>
   <script>
   (function() {
