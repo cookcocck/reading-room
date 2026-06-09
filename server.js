@@ -7,8 +7,6 @@ const PORT = process.env.PORT || 3000;
 
 app.use(expressLayouts);
 app.set('layout', 'layout');
-app.set('layout extractScripts', true);
-app.set('layout extractStyles', true);
 
 // ─── DB (async init) ───
 const db = require('./src/db');
