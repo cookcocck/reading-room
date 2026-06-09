@@ -296,45 +296,6 @@ app.get('/api/book/:id/:section', (req, res) => {
   }
 });
 
-// API: Fetch book intro from WeRead (with DB cache)
-app.get('/api/book/:id/intro', async (req, res) => {
-  const { getBookById, getBookIntro, saveBookIntro } = db;
-  const book = getBookById(req.params.id);
-  if (!book) return res.status(404).json({ error: 'Not found' });
-
-  // Check DB cache first
-  const cached = getBookIntro(req.params.id);
-  if (cached) return res.json({ intro: cached });
-
-  // Fetch from WeRead API
-  const apiKey = process.env.WEREAD_API_KEY;
-  if (!apiKey) return res.json({ intro: '' });
-
-  try {
-    const resp = await fetch('https://i.weread.qq.com/api/agent/gateway', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        api_name: '/book/info',
-        bookId: req.params.id,
-        skill_version: '1.0.5',
-      }),
-    });
-    const data = await resp.json();
-    const intro = (data && data.intro) ? data.intro : '';
-    if (intro) {
-      saveBookIntro(req.params.id, intro);
-    }
-    res.json({ intro });
-  } catch (err) {
-    console.error('[intro] Fetch failed:', err.message);
-    res.json({ intro: '' });
-  }
-});
-
 // Book detail page
 app.get('/book/:id', (req, res) => {
   const { getBookById, getBookHighlights, getBookReviews, getBookReadTimes, getSummary, getBookIntro } = db;
@@ -346,16 +307,12 @@ app.get('/book/:id', (req, res) => {
   const bookReadTimes = getBookReadTimes();
   const readTimeSec = bookReadTimes[book.title] || 0;
 
-  // Check for cached intro; if empty, client-side AJAX will fetch
-  const intro = getBookIntro(req.params.id);
-
   res.render('book', {
     title: book.title,
     book: upgradeCovers(book),
     highlights,
     reviews,
     readTimeSec,
-    intro,
     formatTimestamp,
     helpers: { formatTime, formatTimestamp },
     path: '/bookshelf',

@@ -89,25 +89,6 @@
     }, { once: true });
   });
 
-  // ─── Fetch book intro from WeRead API (if not cached server-side) ───
-  var placeholder = document.getElementById('intro-placeholder');
-  if (placeholder) {
-    var bookId = window.location.pathname.split('/').pop();
-    fetch('/api/book/' + bookId + '/intro')
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        if (data.intro) {
-          placeholder.className = '';
-          placeholder.textContent = data.intro;
-        } else {
-          placeholder.textContent = '暂无简介';
-        }
-      })
-      .catch(function() {
-        placeholder.textContent = '暂无简介';
-      });
-  }
-
   // ─── Shuffle highlights / reviews on book detail page ───
   function escapeHTML(str) {
     var div = document.createElement('div');
