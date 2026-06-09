@@ -43,10 +43,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ─── Helpers ───
 const { formatTime, formatTimestamp, heatmapLevel } = db;
 
-/** Replace WeRead t<N>_ thumbnail URLs with t7_ (~400px) for sharp rendering. */
+/** Replace WeRead t<N>_ or s_ thumbnail URLs with t7_ (~400px) for sharp rendering. */
 function upgradeCoverURL(url) {
   if (!url || typeof url !== 'string') return url;
-  return url.replace(/\/t\d+_/g, '/t7_');
+  return url.replace(/\/[st]\d*_/g, '/t7_');
 }
 
 /** Recursively upgrade all `cover` properties in objects/arrays. */

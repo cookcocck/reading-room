@@ -73,10 +73,10 @@ def call_api(api_name: str, params: dict = None) -> dict:
 # ─── Cover URL upgrade ────────────────────────────────────────────────────────
 
 def upgrade_cover_url(url: str) -> str:
-    """Replace WeRead t<N>_ thumbnail with t7_ (~400px) for sharp rendering."""
+    """Replace WeRead t<N>_ or s_ thumbnail with t7_ (~400px) for sharp rendering."""
     if not url:
         return url
-    return re.sub(r"/t\d+_", "/t7_", url)
+    return re.sub(r"/[st]\d*_", "/t7_", url)
 
 
 # ─── Logging ─────────────────────────────────────────────────────────────────
