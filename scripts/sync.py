@@ -450,7 +450,8 @@ def restart_pm2():
     try:
         result = subprocess.run(
             ["pm2", "restart", PM2_APP_NAME],
-            capture_output=True, text=True, timeout=30,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            universal_newlines=True, timeout=30,
         )
         if result.returncode == 0:
             log(f"  [+] PM2 restart OK: {result.stdout.strip()}")
