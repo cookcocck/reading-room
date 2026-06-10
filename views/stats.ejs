@@ -17,7 +17,7 @@
     </div>
     <div class="stat-item">
       <div class="stat-number"><%= Math.round((annual.totalReadTimeSec || 0) / 3600).toLocaleString() %><span class="unit">h</span></div>
-      <div class="stat-label">本年度</div>
+      <div class="stat-label">本年度 <% if (yoyChange !== null) { %><span class="yoy-indicator <%= yoyChange >= 0 ? 'up' : 'down' %>"><%= yoyChange >= 0 ? '↑' : '↓' %><%= Math.abs(yoyChange) %>%</span><% } %></div>
     </div>
     <div class="stat-item">
       <div class="stat-number"><%= summary.totalBooks %></div>
@@ -344,3 +344,29 @@
   </div>
   <% } %>
 </div>
+
+<!-- Author Distribution -->
+<div class="container-wide">
+  <div class="section-kicker">作者阅读分布</div>
+  <div class="author-chart" id="author-chart"></div>
+</div>
+
+<script>
+(function() {
+  var authorData = JSON.parse('<%- authorStats %>');
+  if (!authorData || !authorData.length) return;
+  var maxTime = Math.max.apply(null, authorData.map(function(a) { return a.totalTime || 0; }));
+  if (!maxTime) return;
+  var container = document.getElementById('author-chart');
+  authorData.forEach(function(a) {
+    var pct = Math.max(2, (a.totalTime || 0) / maxTime * 100);
+    var h = Math.floor((a.totalTime || 0) / 3600);
+    var bar = document.createElement('div');
+    bar.className = 'author-bar';
+    bar.innerHTML = '<span class="author-bar-label">' + (a.author || '佚名') + '</span>' +
+      '<span class="author-bar-track"><span class="author-bar-fill" style="width:' + pct.toFixed(0) + '%"></span></span>' +
+      '<span class="author-bar-val">' + h + 'h (' + a.bookCount + '册)</span>';
+    container.appendChild(bar);
+  });
+})();
+</script>

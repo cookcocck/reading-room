@@ -1,0 +1,57 @@
+<section class="page-section">
+  <div class="calendar-header">
+    <h2 class="calendar-title"><%= year %> 阅读日历</h2>
+    <div class="calendar-year-nav">
+      <a href="/calendar?year=<%= year - 1 %>" class="cal-year-btn">&larr; <%= year - 1 %></a>
+      <span class="cal-year-current"><%= year %></span>
+      <% if (year < new Date().getFullYear()) { %>
+      <a href="/calendar?year=<%= year + 1 %>" class="cal-year-btn"><%= year + 1 %> &rarr;</a>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Stats Summary -->
+  <div class="cal-stats">
+    <div class="cal-stat">
+      <div class="cal-stat-value"><%= totalDays %></div>
+      <div class="cal-stat-label">阅读天数</div>
+    </div>
+    <div class="cal-stat">
+      <div class="cal-stat-value"><%= totalHours %>h</div>
+      <div class="cal-stat-label">总时长</div>
+    </div>
+    <div class="cal-stat">
+      <div class="cal-stat-value"><%= avgDaily %>m</div>
+      <div class="cal-stat-label">日均</div>
+    </div>
+    <div class="cal-stat">
+      <div class="cal-stat-value"><%= streak %>天</div>
+      <div class="cal-stat-label">当前连续</div>
+    </div>
+  </div>
+
+  <!-- Month grids -->
+  <div class="cal-grid">
+    <% months.forEach(m => { %>
+    <div class="cal-month">
+      <div class="cal-month-name"><%= m.name %></div>
+      <div class="cal-month-header">
+        <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+      </div>
+      <% m.weeks.forEach(w => { %>
+      <div class="cal-week">
+        <% w.forEach(d => { %>
+          <% if (d === null) { %>
+            <div class="cal-day empty"></div>
+          <% } else { %>
+            <div class="cal-day lvl-<%= d.level %>" title="<%= d.date %> | <%= d.hours %>h">
+              <span class="cal-day-num"><%= d.day %></span>
+            </div>
+          <% } %>
+        <% }) %>
+      </div>
+      <% }) %>
+    </div>
+    <% }) %>
+  </div>
+</section>

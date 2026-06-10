@@ -1,0 +1,103 @@
+<section class="page-section">
+  <div class="report-header">
+    <h2 class="report-year"><%= year %> 阅读年报</h2>
+    <div class="report-year-nav">
+      <a href="/report?year=<%= year - 1 %>" class="cal-year-btn">&larr; <%= year - 1 %></a>
+    </div>
+  </div>
+
+  <div class="report-hero">
+    <div class="report-big-num"><%= report.totalHours %>h</div>
+    <div class="report-hero-sub">总阅读时长</div>
+  </div>
+
+  <div class="report-cards">
+    <div class="report-card">
+      <div class="report-num"><%= report.finished %></div>
+      <div class="report-label">读完</div>
+    </div>
+    <div class="report-card">
+      <div class="report-num"><%= report.totalBooks %></div>
+      <div class="report-label">加入书架</div>
+    </div>
+    <div class="report-card">
+      <div class="report-num"><%= report.readDays %></div>
+      <div class="report-label">阅读天数</div>
+    </div>
+    <div class="report-card">
+      <div class="report-num"><%= report.totalHighlights %></div>
+      <div class="report-label">划线</div>
+    </div>
+    <div class="report-card">
+      <div class="report-num"><%= report.totalReviews %></div>
+      <div class="report-label">想法</div>
+    </div>
+    <% if (report.yoyChange !== null) { %>
+    <div class="report-card">
+      <div class="report-num"><%= report.yoyChange > 0 ? '+' : '' %><%= report.yoyChange %>%</div>
+      <div class="report-label">同比</div>
+    </div>
+    <% } %>
+  </div>
+
+  <!-- Top Book -->
+  <% if (report.topBook) { %>
+  <div class="report-section">
+    <h3 class="report-section-title">最用心之书</h3>
+    <div class="report-topbook">
+      <% if (report.topBook.cover) { %><img src="<%= report.topBook.cover %>" alt="" class="report-topbook-cover"><% } %>
+      <div class="report-topbook-info">
+        <div class="report-topbook-title"><%= report.topBook.title %></div>
+        <div class="report-topbook-author"><%= report.topBook.author %></div>
+        <div class="report-topbook-notes"><%= report.topBook.totalNotes %> 条笔记</div>
+      </div>
+    </div>
+  </div>
+  <% } %>
+
+  <!-- Longest Book -->
+  <% if (report.longest) { %>
+  <div class="report-section">
+    <h3 class="report-section-title">最耗时之书</h3>
+    <div class="report-longest">
+      <span class="report-longest-title"><%= report.longest.title %></span>
+      <span class="report-longest-author"><%= report.longest.author %></span>
+      <span class="report-longest-time"><%= helpers.formatTime(report.longest.read_time) %></span>
+    </div>
+  </div>
+  <% } %>
+
+  <!-- Category Distribution -->
+  <% if (report.categories.length > 0) { %>
+  <div class="report-section">
+    <h3 class="report-section-title">类型分布</h3>
+    <div class="report-cats">
+      <% const maxCat = Math.max(...report.categories.map(c => c.cnt)); %>
+      <% report.categories.forEach(c => { %>
+      <div class="report-cat-bar">
+        <div class="report-cat-label"><%= c.category || '未分类' %> (<%= c.cnt %>)</div>
+        <div class="report-cat-track"><div class="report-cat-fill" style="width:<%= Math.max(3, c.cnt / maxCat * 100) %>%"></div></div>
+      </div>
+      <% }) %>
+    </div>
+  </div>
+  <% } %>
+
+  <!-- Monthly Trend -->
+  <% if (report.trends.length > 0) { %>
+  <div class="report-section">
+    <h3 class="report-section-title">月度趋势</h3>
+    <div class="report-months">
+      <% const maxSec = Math.max(...report.trends.map(t => t.totalSec), 1); %>
+      <% report.trends.forEach(t => { %>
+      <div class="report-month-bar">
+        <div class="report-month-label"><%= t.month %>月</div>
+        <div class="report-month-track"><div class="report-month-fill" style="width:<%= Math.max(2, t.totalSec / maxSec * 100) %>%"></div></div>
+        <div class="report-month-val"><%= t.hours %>h</div>
+      </div>
+      <% }) %>
+    </div>
+  </div>
+  <% } %>
+
+</section>

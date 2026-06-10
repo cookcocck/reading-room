@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 3000;
 app.use(compression());
 
 app.use(expressLayouts);
+app.use(express.json());  // for POST /api/* endpoints
 app.set('layout', 'layout');
 
 // ─── DB (async init) ───
@@ -82,7 +83,7 @@ function upgradeCovers(obj) {
 
 // Home page
 app.get('/', (req, res) => {
-  const { getSummary, getOverall, getHeatmap, getTrends, getCurrentlyReading, getRecentHighlights, getWeekdayDistribution } = db;
+  const { getSummary, getOverall, getHeatmap, getTrends, getCurrentlyReading, getRecentHighlights, getWeekdayDistribution, getHomepageStats } = db;
 
   const summary = getSummary();
   const overall_kv = getOverall();
@@ -108,6 +109,9 @@ app.get('/', (req, res) => {
 
   const weekdayCounts = getWeekdayDistribution();
 
+  // Homepage quick stats
+  const hps = getHomepageStats();
+
   res.render('index', {
     title: '阅读书房',
     summary,
@@ -129,24 +133,32 @@ app.get('/', (req, res) => {
     weekdayCounts,
     weekdayMap: ['日','一','二','三','四','五','六'],
     annual2026,
+    hpStats: hps,
   });
 });
 
 // Bookshelf page
 app.get('/bookshelf', (req, res) => {
-  const { getAllBooks, getAllCategories, getSummary, getBookReadTimes } = db;
+  const { getAllBooks, getAllCategories, getSummary, getBookReadTimes, getBooksSorted } = db;
   const filter = req.query.filter || 'finished';
+  const sortBy = req.query.sort || 'readtime';
   const allCategories = getAllCategories();
 
   // Default to the first category when no explicit params provided
   const hasExplicitParam = req.query.filter || req.query.category;
   const category = req.query.category || (!hasExplicitParam && allCategories.length > 0 ? allCategories[0] : '');
 
-  const books = upgradeCovers(getAllBooks(filter, category));
+  // Use sorted query if available
+  let books;
+  try {
+    books = getBooksSorted(filter, category, sortBy);
+  } catch (e) {
+    books = upgradeCovers(getAllBooks(filter, category));
+  }
   const summary = getSummary();
   const bookReadTimes = getBookReadTimes();
 
-  // Merge readTime into each book: prefer DB read_time, fall back to legacy title match
+  // Merge readTime into each book
   books.forEach(b => {
     b.readTimeSec = (b.read_time || 0);
     if (!b.readTimeSec) {
@@ -154,15 +166,13 @@ app.get('/bookshelf', (req, res) => {
     }
   });
 
-  // Sort by total reading time descending (unread books sink to bottom)
-  books.sort((a, b) => b.readTimeSec - a.readTimeSec);
-
   res.render('bookshelf', {
     title: '书架',
     books,
     allCategories,
     filter,
     category,
+    sortBy,
     summary,
     formatTimestamp,
     helpers: { formatTime, formatTimestamp },
@@ -172,7 +182,7 @@ app.get('/bookshelf', (req, res) => {
 
 // Stats page
 app.get('/stats', (req, res) => {
-  const { getOverall, getSummary, getTrends, getDeepThinking, getBookTimeline, getYearlyIntensity, getMilestones } = db;
+  const { getOverall, getSummary, getTrends, getDeepThinking, getBookTimeline, getYearlyIntensity, getMilestones, getAuthorStats } = db;
 
   const overall_kv = getOverall();
   const overall = overall_kv.overall || {};
@@ -205,6 +215,15 @@ app.get('/stats', (req, res) => {
   const bookTimeline = upgradeCovers(getBookTimeline());
   const yearlyIntensity = getYearlyIntensity();
   const milestones = getMilestones();
+  const authorStats = getAuthorStats();
+
+  // Year-over-year comparison
+  const nowYr = new Date().getFullYear();
+  const thisYearTrend = trends.filter(t => t.year === nowYr);
+  const lastYearTrend = trends.filter(t => t.year === nowYr - 1);
+  const thisYearTotal = thisYearTrend.reduce((s, t) => s + t.totalSeconds, 0);
+  const lastYearTotal = lastYearTrend.reduce((s, t) => s + t.totalSeconds, 0);
+  const yoyChange = lastYearTotal > 0 ? Math.round(((thisYearTotal - lastYearTotal) / lastYearTotal) * 100) : null;
 
   res.render('stats', {
     title: '阅读统计',
@@ -225,6 +244,8 @@ app.get('/stats', (req, res) => {
     milestones,
     timelineJson: JSON.stringify(bookTimeline).replace(/</g, '\\u003c'),
     intensityJson: JSON.stringify(yearlyIntensity),
+    authorStats: JSON.stringify(authorStats),
+    yoyChange,
   });
 });
 
@@ -244,6 +265,152 @@ app.get('/notebooks', (req, res) => {
     helpers: { formatTime, formatTimestamp },
     path: '/notebooks',
   });
+});
+
+// ─── Search ───
+app.get('/search', (req, res) => {
+  const q = (req.query.q || '').trim();
+  if (!q) {
+    return res.render('search', {
+      title: '搜索',
+      query: '',
+      results: null,
+      helpers: { formatTime, formatTimestamp },
+      path: '/search',
+    });
+  }
+
+  const { searchAll, getSummary } = db;
+  const results = searchAll(q);
+  const summary = getSummary();
+
+  res.render('search', {
+    title: `搜索：${q}`,
+    query: q,
+    results,
+    totalResults: results.books.length + results.highlights.length + results.reviews.length,
+    summary,
+    formatTimestamp,
+    helpers: { formatTime, formatTimestamp },
+    path: '/search',
+  });
+});
+
+// ─── Reading Calendar ───
+app.get('/calendar', (req, res) => {
+  const { getCalendarData, getSummary } = db;
+  const year = parseInt(req.query.year) || new Date().getFullYear();
+  const sessions = getCalendarData(year);
+  const summary = getSummary();
+
+  const dateSet = new Set(sessions.map(s => s.date));
+  const totalDays = sessions.length;
+  const totalHours = Math.round(sessions.reduce((s, r) => s + r.seconds, 0) / 3600 * 10) / 10;
+  const avgDaily = totalDays > 0 ? Math.round(totalHours / totalDays * 60) : 0;
+
+  // Current streak
+  const today = new Date();
+  let streak = 0, check = new Date(today);
+  while (dateSet.has(`${check.getFullYear()}-${String(check.getMonth()+1).padStart(2,'0')}-${String(check.getDate()).padStart(2,'0')}`)) {
+    streak++; check.setDate(check.getDate() - 1);
+  }
+  if (streak === 0) { check = new Date(today); check.setDate(check.getDate() - 1);
+    while (dateSet.has(`${check.getFullYear()}-${String(check.getMonth()+1).padStart(2,'0')}-${String(check.getDate()).padStart(2,'0')}`)) {
+      streak++; check.setDate(check.getDate() - 1);
+    }
+  }
+
+  // Build calendar months
+  const months = [];
+  for (let m = 0; m < 12; m++) {
+    const firstDay = new Date(year, m, 1);
+    const daysInMonth = new Date(year, m + 1, 0).getDate();
+    const startDow = firstDay.getDay();
+    const weeks = [];
+    let day = 1;
+    const maxWeeks = Math.ceil((daysInMonth + startDow) / 7);
+    for (let w = 0; w < maxWeeks; w++) {
+      const week = [];
+      for (let d = 0; d < 7; d++) {
+        if ((w === 0 && d < startDow) || day > daysInMonth) {
+          week.push(null);
+        } else {
+          const dateStr = `${year}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+          const session = sessions.find(s => s.date === dateStr);
+          week.push({ day, date: dateStr, level: session ? session.level : 0, hours: session ? session.hours : 0 });
+          day++;
+        }
+      }
+      weeks.push(week);
+    }
+    months.push({ name: `${m+1}月`, weeks });
+  }
+
+  const allSessionsJson = JSON.stringify(sessions);
+
+  res.render('calendar', {
+    title: '阅读日历', year, months, totalDays, totalHours, avgDaily, streak,
+    summary, helpers: { formatTime, formatTimestamp }, path: '/calendar',
+    allSessionsJson,
+  });
+});
+
+// ─── Annual Report ───
+app.get('/report', (req, res) => {
+  const { getReportData, getSummary } = db;
+  const year = parseInt(req.query.year) || new Date().getFullYear();
+  const report = getReportData(year);
+  const summary = getSummary();
+
+  res.render('report', {
+    title: `${year} 阅读年报`, report, year, summary,
+    formatTime, formatTimestamp, helpers: { formatTime, formatTimestamp }, path: '/report',
+  });
+});
+
+// ─── API: Want-to-read toggle ───
+app.post('/api/want-to-read', (req, res) => {
+  const { setWantToRead } = db;
+  const { bookId, want } = req.body;
+  if (!bookId) return res.status(400).json({ error: 'bookId required' });
+  setWantToRead(bookId, !!want);
+  res.json({ ok: true });
+});
+
+// ─── API: Book rating ───
+app.post('/api/rating', (req, res) => {
+  const { setBookRating } = db;
+  const { bookId, rating } = req.body;
+  if (!bookId) return res.status(400).json({ error: 'bookId required' });
+  setBookRating(bookId, parseInt(rating) || 0);
+  res.json({ ok: true });
+});
+
+// ─── Tags API ───
+app.get('/api/tags', (req, res) => {
+  const { getAllTags } = db;
+  res.json(getAllTags());
+});
+
+app.post('/api/tags', (req, res) => {
+  const { createTag } = db;
+  const { name, color } = req.body;
+  if (!name) return res.status(400).json({ error: 'name required' });
+  res.json(createTag(name, color));
+});
+
+app.delete('/api/tags/:id', (req, res) => {
+  const { deleteTag } = db;
+  deleteTag(parseInt(req.params.id));
+  res.json({ ok: true });
+});
+
+app.post('/api/note-tags', (req, res) => {
+  const { setNoteTags } = db;
+  const { noteId, noteType, tagIds } = req.body;
+  if (!noteId || !noteType) return res.status(400).json({ error: 'noteId and noteType required' });
+  setNoteTags(noteId, noteType, tagIds || []);
+  res.json({ ok: true });
 });
 
 // API: Random highlight for hero section
@@ -288,7 +455,7 @@ app.get('/api/book/:id/:section', (req, res) => {
 
 // Book detail page
 app.get('/book/:id', (req, res) => {
-  const { getBookById, getBookHighlights, getBookReviews, getBookReadTimes, getSummary, getBookMonthlyActivity, getBookChapterActivity, getBookIntro } = db;
+  const { getBookById, getBookHighlights, getBookReviews, getBookReadTimes, getSummary, getBookMonthlyActivity, getBookChapterActivity, getBookIntro, getBookAllNotes, getBookRating } = db;
   const book = getBookById(req.params.id);
   if (!book) return res.status(404).send('未找到此书');
 
@@ -338,6 +505,10 @@ app.get('/book/:id', (req, res) => {
   const chapterActivity = getBookChapterActivity(book.title);
   const maxChapterTotal = Math.max(...chapterActivity.map(c => c.total), 1);
 
+  // All notes + rating
+  const { all: allNotes, grouped: notesByChapter } = getBookAllNotes(book.title);
+  const userRating = getBookRating(req.params.id);
+
   res.render('book', {
     title: book.title,
     book: upgradeCovers(book),
@@ -354,6 +525,9 @@ app.get('/book/:id', (req, res) => {
     chapterActivity: chapterActivity.slice(0, 8),
     maxChapterTotal,
     needsHtml2Canvas: true,
+    allNotes: allNotes.slice(0, 50),
+    notesByChapter: Object.entries(notesByChapter).slice(0, 8).map(([ch, notes]) => ({ chapter: ch, count: notes.length })),
+    userRating,
   });
 });
 

@@ -153,3 +153,37 @@
   });
 
 })();
+
+// ─── Toggle Want-To-Read ───
+function toggleWish(btn, bookId) {
+  var isActive = btn.classList.contains('active');
+  var svg = btn.querySelector('svg');
+  var fillColor = isActive ? 'none' : 'var(--accent-bright)';
+  var strokeColor = isActive ? 'var(--ink-muted)' : 'var(--accent-bright)';
+  var want = !isActive;
+
+  fetch('/api/want-to-read', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ bookId: bookId, want: want })
+  }).then(function(r) { return r.json(); })
+    .then(function() {
+      btn.classList.toggle('active', want);
+      btn.title = want ? '取消想读' : '标记为想读';
+      svg.setAttribute('fill', fillColor);
+      svg.setAttribute('stroke', strokeColor);
+    });
+}
+
+// ─── Star Rating ───
+function rateBook(bookId, rating) {
+  var stars = document.querySelectorAll('.star-rating-btn');
+  stars.forEach(function(s, i) {
+    s.classList.toggle('active', i < rating);
+  });
+  fetch('/api/rating', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ bookId: bookId, rating: rating })
+  });
+}

@@ -11,9 +11,18 @@
   <!-- Status filter — pill toggle group -->
   <div class="catalog-filters">
     <div class="filter-pill-group">
-      <a href="/bookshelf?filter=all" class="filter-pill <%= filter === 'all' && !category ? 'active' : '' %>">全部</a>
-      <a href="/bookshelf?filter=reading" class="filter-pill <%= filter === 'reading' ? 'active' : '' %>">在读</a>
-      <a href="/bookshelf?filter=finished" class="filter-pill <%= filter === 'finished' ? 'active' : '' %>">已读完</a>
+      <a href="/bookshelf?filter=all&sort=<%= sortBy %>" class="filter-pill <%= filter === 'all' && !category ? 'active' : '' %>">全部</a>
+      <a href="/bookshelf?filter=reading&sort=<%= sortBy %>" class="filter-pill <%= filter === 'reading' ? 'active' : '' %>">在读</a>
+      <a href="/bookshelf?filter=finished&sort=<%= sortBy %>" class="filter-pill <%= filter === 'finished' ? 'active' : '' %>">已读完</a>
+      <a href="/bookshelf?filter=want_to_read&sort=<%= sortBy %>" class="filter-pill <%= filter === 'want_to_read' ? 'active' : '' %>">想读</a>
+    </div>
+    <div class="sort-select-wrap">
+      <select class="sort-select" onchange="window.location.href='/bookshelf?filter=<%= filter %>&sort='+this.value<% if (category) { %>+'&category=<%= encodeURIComponent(category) %>'<% } %>">
+        <option value="readtime" <%= sortBy === 'readtime' ? 'selected' : '' %>>按阅读时长</option>
+        <option value="recent" <%= sortBy === 'recent' ? 'selected' : '' %>>按最近阅读</option>
+        <option value="title" <%= sortBy === 'title' ? 'selected' : '' %>>按书名</option>
+        <option value="author" <%= sortBy === 'author' ? 'selected' : '' %>>按作者</option>
+      </select>
     </div>
     <% if (category) { %>
     <span class="filter-breadcrumb">
@@ -40,15 +49,20 @@
   <% if (books.length > 0) { %>
   <div class="book-card-grid">
     <% books.forEach(function(b) { %>
-    <div class="book-card" onclick="window.location.href='/book/<%= b.id %>'">
-      <div class="book-card-cover">
+    <div class="book-card" data-book-id="<%= b.id %>">
+      <div class="book-card-cover" onclick="window.location.href='/book/<%= b.id %>'">
         <% if (b.cover) { %><img src="<%= b.cover %>" alt="" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='📖'"><% } else { %>📖<% } %>
       </div>
       <div class="book-card-body">
-        <div class="book-card-title"><%= b.title %></div>
+        <div class="book-card-title"><a href="/book/<%= b.id %>"><%= b.title %></a></div>
         <div class="book-card-author"><%= b.author || '佚名' %></div>
         <% if (b.readTimeSec) { %><div class="book-card-duration"><%= helpers.formatTime(b.readTimeSec) %></div><% } %>
-        <% if (b.finished) { %><span class="book-card-badge">已读完</span><% } %>
+        <div class="book-card-footer">
+          <% if (b.finished) { %><span class="book-card-badge">已读完</span><% } %>
+          <button class="wish-btn <%= b.want_to_read ? 'active' : '' %>" onclick="event.stopPropagation();toggleWish(this,'<%= b.id %>')" title="<%= b.want_to_read ? '取消想读' : '标记为想读' %>">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="<%= b.want_to_read ? 'var(--accent-bright)' : 'none' %>" stroke="<%= b.want_to_read ? 'var(--accent-bright)' : 'var(--ink-muted)' %>" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+        </div>
       </div>
     </div>
     <% }); %>

@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
   <!-- Main stylesheet -->
-  <link rel="stylesheet" href="/css/main.css?v=25">
+  <link rel="stylesheet" href="/css/main.css?v=26">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='2' fill='%231a2744'/><text x='16' y='22' text-anchor='middle' font-size='16' fill='white'>读</text></svg>">
 </head>
 <body>
@@ -37,6 +37,9 @@
           <a href="/bookshelf" class="nav-link <%= path === '/bookshelf' ? 'active' : '' %>">书架</a>
           <a href="/stats" class="nav-link <%= path === '/stats' ? 'active' : '' %>">统计</a>
           <a href="/notebooks" class="nav-link <%= path === '/notebooks' ? 'active' : '' %>">笔记</a>
+          <a href="/calendar" class="nav-link <%= path === '/calendar' ? 'active' : '' %>">日历</a>
+          <a href="/report" class="nav-link <%= path === '/report' ? 'active' : '' %>">年报</a>
+          <a href="/search" class="nav-link <%= path === '/search' ? 'active' : '' %>" title="搜索">🔍</a>
           <button id="theme-toggle" class="theme-toggle" aria-label="切换主题">◐</button>
         </div>
       </div>
@@ -59,7 +62,7 @@
     </footer>
   </div>
 
-  <script src="/js/main.js?v=6" defer></script>
+  <script src="/js/main.js?v=7" defer></script>
   <% if (typeof needsHtml2Canvas !== 'undefined' && needsHtml2Canvas) { %>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
   <% } %>

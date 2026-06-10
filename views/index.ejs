@@ -71,6 +71,42 @@ var maxWeekday = Math.max.apply(null, weekdayCounts) || 1;
   </div>
 </div>
 
+<!-- ═══ Quick Stats + Streak ═══ -->
+<div class="container-wide">
+  <div class="quick-stats">
+    <div class="qstat-card">
+      <div class="qstat-icon">📅</div>
+      <div class="qstat-num"><%= hpStats.monthDays %></div>
+      <div class="qstat-label">本月阅读天数</div>
+    </div>
+    <div class="qstat-card">
+      <div class="qstat-icon">📖</div>
+      <div class="qstat-num"><%= hpStats.readingCount %></div>
+      <div class="qstat-label">在读</div>
+    </div>
+    <div class="qstat-card">
+      <div class="qstat-icon">✍️</div>
+      <div class="qstat-num"><%= hpStats.newNotes %></div>
+      <div class="qstat-label">近七日笔记</div>
+    </div>
+    <div class="qstat-card">
+      <div class="qstat-icon"><%= hpStats.todayRead ? '✅' : '🔥' %></div>
+      <% if (hpStats.currentStreak > 0) { %>
+      <div class="qstat-num"><%= hpStats.currentStreak %>天</div>
+      <div class="qstat-label">连续阅读</div>
+      <% } else { %>
+      <div class="qstat-num qstat-warn">今天还没读</div>
+      <div class="qstat-label">最长连读 <%= hpStats.maxStreak %> 天</div>
+      <% } %>
+    </div>
+  </div>
+  <% if (!hpStats.todayRead && hpStats.currentStreak > 0) { %>
+  <div class="streak-alert">⚠️ 连续 <%= hpStats.currentStreak %> 天在读书，今天还没打开书</div>
+  <% } else if (!hpStats.todayRead && hpStats.currentStreak === 0) { %>
+  <div class="streak-alert">📚 今天记得打开一本书</div>
+  <% } %>
+</div>
+
 <!-- ═══ Stats Strip ═══ -->
 <div class="container-wide">
   <div class="stats-hed">

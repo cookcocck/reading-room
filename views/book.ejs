@@ -23,6 +23,17 @@
         <% if (book.finished) { %><span class="book-detail-tag done">已读完</span><% } else { %><span class="book-detail-tag reading">在读</span><% } %>
       </div>
 
+      <!-- Rating -->
+      <div class="book-rating-row">
+        <span class="star-rating" id="star-rating">
+          <% for (var s = 1; s <= 5; s++) { %>
+          <button class="star-rating-btn <%= s <= userRating ? 'active' : '' %>" onclick="rateBook('<%= book.id %>',<%= s %>)" title="<%= s %>星">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="<%= s <= userRating ? 'currentColor' : 'none' %>" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </button>
+          <% } %>
+        </span>
+      </div>
+
       <!-- Reading Stats — always show -->
       <div class="book-detail-stats">
         <div class="detail-stat">
@@ -202,6 +213,19 @@
     </div>
     <% } %>
   </div>
+
+  <!-- Notes by Chapter -->
+  <% if (notesByChapter && notesByChapter.length > 0) { %>
+  <div class="book-notes-toc">
+    <h4>全书笔记分布</h4>
+    <% notesByChapter.forEach(function(c) { %>
+    <div class="toc-chapter">
+      <span class="toc-chapter-name"><%= c.chapter %></span>
+      <span class="toc-chapter-count"><%= c.count %> 条</span>
+    </div>
+    <% }); %>
+  </div>
+  <% } %>
 </div>
 
 <!-- Share Quote Card — hidden, used by html2canvas -->
