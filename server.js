@@ -246,27 +246,6 @@ app.get('/notebooks', (req, res) => {
   });
 });
 
-// About page
-app.get('/about', (req, res) => {
-  const { getSummary, getOverall } = db;
-
-  const overall_kv = getOverall();
-  const overall = overall_kv.overall || {};
-  const annual = upgradeCovers(overall_kv.annual || {});
-
-  const summary = getSummary();
-
-  res.render('about', {
-    title: '关于',
-    summary,
-    annual,
-    overall,
-    formatTimestamp,
-    helpers: { formatTime, formatTimestamp },
-    path: '/about',
-  });
-});
-
 // API: Random highlight for hero section
 app.get('/api/hero-highlight', (req, res) => {
   const { getRecentHighlights } = db;
