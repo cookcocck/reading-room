@@ -276,7 +276,7 @@ h3 {
 /* Section header — numbered, editorial style */
 .section-kicker {
   font-family: var(--font-body);
-  font-size: var(--text-subhead);
+  font-size: 0.875rem;
   font-weight: 500;
   color: var(--ink-muted);
   text-transform: uppercase;
