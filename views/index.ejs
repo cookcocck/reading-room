@@ -280,7 +280,7 @@ var maxWeekday = Math.max.apply(null, weekdayCounts) || 1;
       <div class="reading-item-info">
         <div class="reading-item-title"><%= b.title %></div>
         <div class="reading-item-author"><%= b.author %></div>
-        <div class="reading-item-progress"><%= b.progress || 0 %>% completed</div>
+        <% if (b.progress && b.progress > 0) { %><div class="reading-item-progress"><%= b.progress %>% completed</div><% } %>
       </div>
     </div>
     <% }); %>
