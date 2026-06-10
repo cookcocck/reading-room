@@ -111,6 +111,7 @@
       function buildHighlight(h) {
         var html = '<blockquote class="detail-highlight"><p>' + escapeHTML(h.text) + '</p>';
         if (h.chapter) html += '<cite>\u2014 ' + escapeHTML(h.chapter) + '</cite>';
+        html += '<button class="highlight-share-btn" data-text="' + escapeHTML(h.text) + '" data-chapter="' + (h.chapter ? escapeHTML(h.chapter) : '') + '" title="\u751f\u6210\u5206\u4eab\u56fe" aria-label="\u751f\u6210\u5206\u4eab\u56fe">\u2934</button>';
         html += '</blockquote>';
         return html;
       }
