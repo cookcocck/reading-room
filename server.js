@@ -293,7 +293,7 @@ app.get('/api/book/:id/:section', (req, res) => {
 
 // Book detail page
 app.get('/book/:id', (req, res) => {
-  const { getBookById, getBookHighlights, getBookReviews, getBookReadTimes, getSummary, getBookIntro } = db;
+  const { getBookById, getBookHighlights, getBookReviews, getBookReadTimes, getSummary, getBookMonthlyActivity } = db;
   const book = getBookById(req.params.id);
   if (!book) return res.status(404).send('未找到此书');
 
@@ -301,6 +301,34 @@ app.get('/book/:id', (req, res) => {
   const reviews = getBookReviews(book.title, 12);
   const bookReadTimes = getBookReadTimes();
   const readTimeSec = bookReadTimes[book.title] || 0;
+
+  // Monthly reading activity bars
+  const { months: monthlyActivity, totalItems } = getBookMonthlyActivity(req.params.id);
+  // Estimate monthly reading time by distributing total read time
+  // proportionally across months based on highlight+review activity
+  const monthlyBars = monthlyActivity.map(m => {
+    const items = m.highlights + m.reviews;
+    const estimatedSec = totalItems > 0 ? Math.round(readTimeSec * (items / totalItems)) : 0;
+    const h = Math.floor(estimatedSec / 3600);
+    const min = Math.floor((estimatedSec % 3600) / 60);
+    let timeLabel = '';
+    if (h > 0) timeLabel += `${h}小时`;
+    if (min > 0) timeLabel += `${min}分钟`;
+    if (!timeLabel) timeLabel = '不足1分钟';
+    const now = new Date();
+    const isCurrentMonth = m.year === now.getFullYear() && m.month === now.getMonth() + 1;
+    const monthLabel = isCurrentMonth ? `${m.month}月` : `${m.year}年${m.month}月`;
+    return {
+      year: m.year,
+      month: m.month,
+      label: monthLabel,
+      timeLabel,
+      estimatedSec,
+      highlights: m.highlights,
+      reviews: m.reviews,
+    };
+  });
+  const maxMonthlySec = Math.max(...monthlyBars.map(m => m.estimatedSec), 1);
 
   res.render('book', {
     title: book.title,
@@ -312,6 +340,8 @@ app.get('/book/:id', (req, res) => {
     helpers: { formatTime, formatTimestamp },
     path: '/bookshelf',
     summary: getSummary(),
+    monthlyBars,
+    maxMonthlySec,
   });
 });
 

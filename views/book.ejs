@@ -56,6 +56,26 @@
     </div>
     <% } %>
 
+    <!-- Monthly Reading Activity -->
+    <% if (monthlyBars && monthlyBars.length > 0) { %>
+    <div class="book-monthly-activity">
+      <div class="section-kicker">阅读足迹</div>
+      <div class="monthly-bars">
+        <% monthlyBars.forEach(function(m) { %>
+        <div class="monthly-bar-row">
+          <div class="monthly-bar-label"><%= m.label %></div>
+          <div class="monthly-bar-track">
+            <div class="monthly-bar-fill" style="width: <%= Math.round((m.estimatedSec / maxMonthlySec) * 100) %>%;">
+              <span class="monthly-bar-time"><%= m.timeLabel %></span>
+            </div>
+          </div>
+          <div class="monthly-bar-arrow">&#9662;</div>
+        </div>
+        <% }); %>
+      </div>
+    </div>
+    <% } %>
+
     <!-- Highlights & Reviews — side by side -->
     <% if (highlights.length > 0 || reviews.length > 0) { %>
     <hr class="section-rule">

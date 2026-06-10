@@ -365,6 +365,59 @@ function getBookReadTimes() {
   return map;
 }
 
+// ─── Book Detail — Monthly Reading Activity ───
+function getBookMonthlyActivity(bookId) {
+  const d = getDb();
+
+  // Get monthly highlight counts
+  const hRows = d.prepare(`
+    SELECT
+      CAST(strftime('%Y', datetime(create_time, 'unixepoch')) AS INTEGER) AS year,
+      CAST(strftime('%m', datetime(create_time, 'unixepoch')) AS INTEGER) AS month,
+      COUNT(*) AS cnt
+    FROM highlights
+    WHERE book_id = ? AND create_time > 0
+    GROUP BY year, month
+    ORDER BY year DESC, month DESC
+  `).all(bookId);
+
+  // Get monthly review counts
+  const rRows = d.prepare(`
+    SELECT
+      CAST(strftime('%Y', datetime(create_time, 'unixepoch')) AS INTEGER) AS year,
+      CAST(strftime('%m', datetime(create_time, 'unixepoch')) AS INTEGER) AS month,
+      COUNT(*) AS cnt
+    FROM reviews
+    WHERE book_id = ? AND create_time > 0
+    GROUP BY year, month
+    ORDER BY year DESC, month DESC
+  `).all(bookId);
+
+  // Merge into a map
+  const monthMap = new Map();
+  hRows.forEach(r => {
+    const key = `${r.year}-${String(r.month).padStart(2, '0')}`;
+    monthMap.set(key, { year: r.year, month: r.month, highlights: r.cnt, reviews: 0 });
+  });
+  rRows.forEach(r => {
+    const key = `${r.year}-${String(r.month).padStart(2, '0')}`;
+    if (monthMap.has(key)) {
+      monthMap.get(key).reviews = r.cnt;
+    } else {
+      monthMap.set(key, { year: r.year, month: r.month, highlights: 0, reviews: r.cnt });
+    }
+  });
+
+  // Convert to array and sort descending (newest first)
+  const months = Array.from(monthMap.values())
+    .sort((a, b) => (b.year - a.year) || (b.month - a.month));
+
+  // Calculate total activity items for proportional time estimation
+  const totalItems = months.reduce((sum, m) => sum + m.highlights + m.reviews, 0);
+
+  return { months, totalItems };
+}
+
 function getBookHighlights(bookTitle, limitHighlights = 5) {
   const d = getDb();
   // Match highlights to book by joining on book_id = books.id (works for ~160 books)
@@ -571,6 +624,7 @@ module.exports = {
   getBookReviews,
   getBookIntro,
   saveBookIntro,
+  getBookMonthlyActivity,
   // stats page additions
   getDeepThinking,
   getBookTimeline,
