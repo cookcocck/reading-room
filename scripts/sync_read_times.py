@@ -68,14 +68,34 @@ def call_api(api_name, **params):
         return {"errcode": -1, "errmsg": str(e)}
 
 
-def get_book_progress(book_id):
+def get_book_progress(book_id, debug=False):
     """Fetch reading progress for a single book."""
     result = call_api("/book/getprogress", bookId=book_id)
+    if debug:
+        print(f"    [DEBUG] Raw response keys: {sorted(result.keys())}")
+        for k in result:
+            v = result[k]
+            if isinstance(v, dict):
+                print(f"    [DEBUG]   {k}: dict with keys {sorted(v.keys())}")
+                for sk in v:
+                    print(f"    [DEBUG]     {k}.{sk} = {json.dumps(v[sk], ensure_ascii=False)[:120]}")
+            elif isinstance(v, list):
+                print(f"    [DEBUG]   {k}: list of {len(v)} items")
+            else:
+                print(f"    [DEBUG]   {k} = {json.dumps(v, ensure_ascii=False)[:120]}")
     if result.get("errcode") and result["errcode"] != 0:
         return None, result.get("errmsg", f"errcode={result['errcode']}")
-    book = result.get("book", {})
+    # Try multiple possible nesting paths
+    book = result.get("book")
+    if book is None and isinstance(result.get("data"), dict):
+        book = result["data"].get("book")
+    if not isinstance(book, dict):
+        if debug:
+            print(f"    [DEBUG] WARNING: 'book' not found as dict in response! book={type(book).__name__}")
+        return 0, None
     record_time = book.get("recordReadingTime", 0)
-    progress = book.get("progress", -1)
+    if debug:
+        print(f"    [DEBUG] book.recordReadingTime = {record_time}")
     return record_time, None
 
 
@@ -109,6 +129,7 @@ def main():
         book_ids = [r["id"] for r in rows]
         print(f"[INFO] Found {len(book_ids)} books to sync")
 
+    debug = "--debug" in sys.argv
     synced = 0
     skipped = 0
     errors = 0
@@ -118,7 +139,7 @@ def main():
         title_row = cur.execute("SELECT title FROM books WHERE id = ?", (book_id,)).fetchone()
         title = title_row["title"] if title_row else book_id
 
-        record_time, err = get_book_progress(book_id)
+        record_time, err = get_book_progress(book_id, debug=(debug and i < 3))
 
         if err:
             print(f"  [{i+1}/{len(book_ids)}] {title}: ERROR — {err}")
