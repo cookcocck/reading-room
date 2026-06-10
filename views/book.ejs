@@ -1,8 +1,7 @@
-<!-- ═══════════════════════════════════════════
+<!-- ═══════════════════════════════════════
    BOOK DETAIL — Full-page book view
-   ═══════════════════════════════════════════ -->
-
-<div class="container-wide">
+   ═══════════════════════════════════════ -->
+<div class="container-wide" data-book-title="<%= book.title.replace(/"/g, '&quot;') %>" data-book-author="<%= (book.author || '').replace(/"/g, '&quot;') %>">
   <a href="/bookshelf" class="back-link">&larr; 返回书架</a>
 
   <div class="book-detail-top">
@@ -152,6 +151,7 @@
           <blockquote class="detail-highlight">
             <p><%= h.text %></p>
             <% if (h.chapter) { %><cite>— <%= h.chapter %></cite><% } %>
+            <button class="highlight-share-btn" data-text="<%= h.text.replace(/"/g, '&quot;') %>" data-chapter="<%= (h.chapter || '').replace(/"/g, '&quot;') %>" title="生成分享图" aria-label="生成分享图">⤴</button>
           </blockquote>
           <% }); %>
         </div>
@@ -199,3 +199,240 @@
     <% } %>
   </div>
 </div>
+
+<!-- Share Quote Card — hidden, used by html2canvas -->
+<div id="share-card-host" style="position:fixed;left:-9999px;top:0;z-index:0;"></div>
+
+<!-- Share Preview Modal -->
+<div id="share-modal" class="share-modal" aria-hidden="true">
+  <div class="share-modal-backdrop"></div>
+  <div class="share-modal-body">
+    <div class="share-modal-header">
+      <span class="share-modal-title">分享卡片预览</span>
+      <button class="share-modal-close" id="share-modal-close" aria-label="关闭">&times;</button>
+    </div>
+    <div class="share-modal-preview">
+      <img id="share-preview-img" src="" alt="分享卡片预览">
+    </div>
+    <div class="share-modal-actions">
+      <button class="share-modal-btn" id="share-download-btn">下载图片</button>
+      <button class="share-modal-btn share-modal-btn-outline" id="share-copy-btn">复制图片</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  "use strict";
+
+  function waitForHtml2Canvas() {
+    return new Promise(function(resolve, reject) {
+      if (window.html2canvas) return resolve();
+      var tries = 0;
+      var timer = setInterval(function() {
+        tries++;
+        if (window.html2canvas) { clearInterval(timer); resolve(); }
+        else if (tries > 30) { clearInterval(timer); reject(new Error("html2canvas timeout")); }
+      }, 200);
+    });
+  }
+
+  function themeColor(light, dark) {
+    return document.documentElement.getAttribute("data-theme") === "dark" ? dark : light;
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/&/g, "&amp;")
+           .replace(/</g, "&lt;")
+           .replace(/>/g, "&gt;")
+           .replace(/"/g, "&quot;")
+           .replace(/'/g, "&#39;");
+  }
+
+  function buildShareCard(text, chapter, bookTitle, bookAuthor) {
+    var paper    = themeColor("#faf9f5", "#161615");
+    var ink      = themeColor("#171717", "#e8e6e0");
+    var inkSoft  = themeColor("#3d3d3d", "#b0aea8");
+    var inkMuted = themeColor("#8a8a85", "#706e68");
+    var rule     = themeColor("#e0ded8", "#2a2a26");
+    var accent   = themeColor("#2c5282", "#93bfec");
+
+    var QL = "\u201C";
+    var MD = "\u2014";
+    var LS = "\u300A";
+    var RS = "\u300B";
+    var DOT = "\u00B7";
+
+    return (
+      '<div id="share-card-inner" style="' +
+      "width:1200px;height:800px;" +
+      "background:" + paper + ";" +
+      "display:flex;flex-direction:column;justify-content:center;align-items:center;" +
+      "padding:80px 100px;box-sizing:border-box;position:relative;" +
+      "font-family:serif;overflow:hidden;" +
+      '">' +
+
+      // Top-left large quote
+      '<div style="' +
+      "position:absolute;top:60px;left:80px;" +
+      "font-size:140px;line-height:1;" +
+      "color:" + accent + ";opacity:0.07;font-family:serif;user-select:none;" +
+      '">' + QL + "</div>" +
+
+      // Bottom-right mirrored quote
+      '<div style="' +
+      "position:absolute;bottom:60px;right:80px;" +
+      "font-size:100px;line-height:1;" +
+      "color:" + accent + ";opacity:0.05;font-family:serif;user-select:none;" +
+      "transform:scaleX(-1);" +
+      '">' + QL + "</div>" +
+
+      // Top rule
+      '<div style="' +
+      "position:absolute;top:0;left:80px;right:80px;" +
+      "height:2px;background:" + accent + ";opacity:0.3;" +
+      '"></div>' +
+
+      // Bottom rule
+      '<div style="' +
+      "position:absolute;bottom:0;left:80px;right:80px;" +
+      "height:2px;background:" + accent + ";opacity:0.3;" +
+      '"></div>' +
+
+      // Central content
+      '<div style="' +
+      "max-width:900px;text-align:center;position:relative;z-index:1;" +
+      '">' +
+
+      // Quote text
+      "<p style=\"" +
+      "font-family:serif;font-size:32px;line-height:1.7;color:" + ink + ";" +
+      "margin:0 0 28px 0;letter-spacing:0.02em;" +
+      "\">" + escapeHtml(text) + "</p>" +
+
+      // Chapter
+      (chapter ? "<p style=\"" +
+      "font-size:15px;color:" + inkMuted + ";margin:0 0 24px 0;letter-spacing:0.08em;" +
+      "\">" + MD + " " + escapeHtml(chapter) + "</p>" : "") +
+
+      // Divider
+      '<div style="' +
+      "width:60px;height:1px;background:" + rule + ";margin:0 auto 24px auto;" +
+      '"></div>' +
+
+      // Book title + author
+      "<p style=\"" +
+      "font-size:16px;color:" + inkSoft + ";margin:0;font-weight:600;letter-spacing:0.04em;" +
+      "\">" + LS + escapeHtml(bookTitle) + RS +
+      (bookAuthor ? " " + DOT + " " + escapeHtml(bookAuthor) : "") +
+      "</p>" +
+
+      // Branding
+      "<p style=\"" +
+      "font-size:12px;color:" + inkMuted + ";margin:10px 0 0 0;letter-spacing:0.1em;opacity:0.6;" +
+      "\">\u9605\u8BFB\u623F \u00B7 reading room</p>" +
+
+      "</div>" +
+      "</div>"
+    );
+  }
+
+  // Click handler for share buttons
+  document.addEventListener("click", function(e) {
+    var btn = e.target.closest(".highlight-share-btn");
+    if (!btn) return;
+    e.preventDefault();
+    var text = btn.getAttribute("data-text") || "";
+    var chapter = btn.getAttribute("data-chapter") || "";
+    var container = document.querySelector(".container-wide");
+    var bookTitle = container ? (container.getAttribute("data-book-title") || "") : "";
+    var bookAuthor = container ? (container.getAttribute("data-book-author") || "") : "";
+    generateAndShow(text, chapter, bookTitle, bookAuthor);
+  });
+
+  function generateAndShow(text, chapter, bookTitle, bookAuthor) {
+    var host = document.getElementById("share-card-host");
+    if (!host) return;
+    host.innerHTML = buildShareCard(text, chapter, bookTitle, bookAuthor);
+
+    var card = document.getElementById("share-card-inner");
+    if (!card) { host.innerHTML = ""; return; }
+
+    Promise.all([
+      waitForHtml2Canvas(),
+      document.fonts ? document.fonts.ready : Promise.resolve()
+    ]).then(function() {
+      return html2canvas(card, {
+        backgroundColor: null,
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        onclone: function(clonedDoc) {
+          var link = clonedDoc.createElement("link");
+          link.rel = "stylesheet";
+          link.href = "https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap";
+          clonedDoc.head.appendChild(link);
+        }
+      });
+    }).then(function(canvas) {
+      showModal(canvas);
+      host.innerHTML = "";
+    }).catch(function(err) {
+      console.error("[share] error:", err);
+      alert("生成分享图失败：" + (err.message || err));
+      host.innerHTML = "";
+    });
+  }
+
+  function showModal(canvas) {
+    var modal = document.getElementById("share-modal");
+    var img = document.getElementById("share-preview-img");
+    if (!modal || !img) return;
+
+    var dataUrl = canvas.toDataURL("image/png");
+    img.src = dataUrl;
+    modal.setAttribute("aria-hidden", "false");
+    modal.classList.add("is-open");
+
+    var dlBtn = document.getElementById("share-download-btn");
+    if (dlBtn) {
+      dlBtn.onclick = function() {
+        var a = document.createElement("a");
+        a.href = dataUrl;
+        a.download = "quote-share.png";
+        a.click();
+      };
+    }
+
+    var cpBtn = document.getElementById("share-copy-btn");
+    if (cpBtn) {
+      cpBtn.onclick = function() {
+        canvas.toBlob(function(blob) {
+          if (!blob) { alert("复制失败"); return; }
+          navigator.clipboard.write([
+            new ClipboardItem({ "image/png": blob })
+          ]).then(function() {
+            cpBtn.textContent = "已复制 ✓";
+            setTimeout(function() { cpBtn.textContent = "复制图片"; }, 1500);
+          }).catch(function() {
+            alert("复制失败，请尝试下载图片");
+          });
+        }, "image/png");
+      };
+    }
+  }
+
+  function closeModal() {
+    var modal = document.getElementById("share-modal");
+    if (modal) {
+      modal.setAttribute("aria-hidden", "true");
+      modal.classList.remove("is-open");
+    }
+  }
+
+  var closeBtn = document.getElementById("share-modal-close");
+  if (closeBtn) closeBtn.addEventListener("click", closeModal);
+  var backdrop = document.querySelector(".share-modal-backdrop");
+  if (backdrop) backdrop.addEventListener("click", closeModal);
+})();
+</script>
