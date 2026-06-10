@@ -1,53 +1,71 @@
 <!-- ═══════════════════════════════════════════
-   NOTEBOOKS — Literary Review
+   NOTEBOOKS — Redesigned
    ═══════════════════════════════════════════ -->
 
 <div class="container-wide">
-  <div class="catalog-header">
-    <h1>笔记</h1>
-    <div class="catalog-count"><%= totalNotebooks %> 册有笔记 · 共 <%= summary.totalNoteCount.toLocaleString() %> 条</div>
+  <!-- Header -->
+  <div class="notes-header">
+    <div class="notes-header-left">
+      <h1>笔记</h1>
+      <p class="notes-header-desc">藏书中那些被划亮的思想片段</p>
+    </div>
+    <div class="notes-header-stats">
+      <div class="notes-stat">
+        <span class="notes-stat-value"><%= notebooks.length %></span>
+        <span class="notes-stat-label">册有笔记</span>
+      </div>
+      <div class="notes-stat">
+        <span class="notes-stat-value"><%= summary.totalNoteCount.toLocaleString() %></span>
+        <span class="notes-stat-label">条笔记</span>
+      </div>
+    </div>
   </div>
 
-  <% if (notebooks.length > 0) { %>
-  <div class="notebook-list">
-    <% notebooks.forEach(function(nb) { %>
-    <a href="/bookshelf" class="notebook-item">
-      <div class="notebook-cover">
-        <% if (nb.cover) { %><img src="<%= nb.cover %>" alt="" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='📖'"><% } else { %>📖<% } %>
-      </div>
-      <div>
-        <div class="notebook-title"><%= nb.title %></div>
-        <div class="notebook-author"><%= nb.author || '佚名' %></div>
-      </div>
-      <div class="notebook-stats">
-        <span><strong><%= nb.totalNotes %></strong> 笔记</span>
-        <span><strong><%= nb.noteCount %></strong> 划线</span>
-        <span><strong><%= nb.reviewCount %></strong> 想法</span>
-        <span><strong><%= nb.bookmarkCount %></strong> 书签</span>
-      </div>
-    </a>
-    <% }); %>
+  <!-- Books Grid -->
+  <div class="notes-books-section">
+    <h2 class="notes-section-title">有笔记的藏书</h2>
+    <div class="notes-books-grid">
+      <% notebooks.forEach(function(nb) { %>
+      <a href="/book/<%= nb.book_id %>" class="notes-book-card">
+        <div class="notes-book-cover">
+          <% if (nb.cover) { %><img src="<%= nb.cover %>" alt="" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='&#128218;'"><% } else { %>&#128218;<% } %>
+        </div>
+        <div class="notes-book-info">
+          <div class="notes-book-title"><%= nb.title %></div>
+          <div class="notes-book-author"><%= nb.author || '佚名' %></div>
+          <div class="notes-book-meta">
+            <span class="notes-meta-dot">&#9679;</span>
+            <span><%= nb.note_count %> 划线</span>
+            <span class="notes-meta-dot">&#9679;</span>
+            <span><%= nb.review_count %> 想法</span>
+          </div>
+        </div>
+        <div class="notes-book-badge"><%= nb.total_notes %></div>
+      </a>
+      <% }); %>
+    </div>
   </div>
 
-  <!-- Pagination -->
-  <% if (totalPages > 1) { %>
-  <div class="pagination">
-    <% if (currentPage > 1) { %>
-    <a href="/notebooks?page=<%= currentPage - 1 %>" class="page-btn">←</a>
-    <% } %>
-    <% for (var p = 1; p <= totalPages; p++) { %>
-    <a href="/notebooks?page=<%= p %>" class="page-btn <%= p === currentPage ? 'active' : '' %>"><%= p %></a>
-    <% } %>
-    <% if (currentPage < totalPages) { %>
-    <a href="/notebooks?page=<%= currentPage + 1 %>" class="page-btn">→</a>
-    <% } %>
+  <!-- Recent Notes Feed -->
+  <hr class="section-rule">
+  <div class="notes-feed-section">
+    <h2 class="notes-section-title">最近笔记</h2>
+    <div class="notes-feed">
+      <% recentNotes.forEach(function(note) { %>
+      <div class="notes-feed-item notes-feed-<%= note.type %>">
+        <div class="notes-feed-icon">
+          <%= note.type === 'highlight' ? '💡' : '💭' %>
+        </div>
+        <div class="notes-feed-body">
+          <div class="notes-feed-text"><%= note.text.length > 100 ? note.text.substring(0, 100) + '…' : note.text %></div>
+          <div class="notes-feed-meta">
+            <a href="/book/<%= note.book_id %>" class="notes-feed-book"><%= note.book_title %></a>
+            <span class="notes-feed-chapter"><%= note.chapter || '' %></span>
+            <span class="notes-feed-date"><%= helpers.formatTimestamp(note.create_time) %></span>
+          </div>
+        </div>
+      </div>
+      <% }); %>
+    </div>
   </div>
-  <% } %>
-
-  <% } else { %>
-  <div class="empty-state">
-    <div class="empty-state-icon">—</div>
-    <p class="empty-state-text">暂无笔记</p>
-  </div>
-  <% } %>
 </div>

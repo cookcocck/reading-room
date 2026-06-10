@@ -214,21 +214,16 @@ app.get('/stats', (req, res) => {
 
 // Notebooks page
 app.get('/notebooks', (req, res) => {
-  const { getNotebooks, getSummary } = db;
+  const { getAllNotebooks, getRecentNotes, getSummary } = db;
 
-  const page = parseInt(req.query.page) || 1;
-  const perPage = 30;
-
-  const result = getNotebooks(page, perPage);
-  const notebooks = upgradeCovers(result.notebooks);
+  const notebooks = upgradeCovers(getAllNotebooks());
+  const recentNotes = getRecentNotes(30);
   const summary = getSummary();
 
   res.render('notebooks', {
     title: '笔记',
     notebooks,
-    totalNotebooks: result.total,
-    currentPage: page,
-    totalPages: result.totalPages,
+    recentNotes,
     summary,
     helpers: { formatTime, formatTimestamp },
     path: '/notebooks',

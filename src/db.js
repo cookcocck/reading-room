@@ -220,6 +220,55 @@ function getRecentHighlights(limit = 8) {
   }));
 }
 
+function getAllNotebooks() {
+  const d = getDb();
+  return d.prepare(`
+    SELECT n.*, b.title, b.author, b.cover
+    FROM notebooks n
+    LEFT JOIN books b ON n.book_id = b.id
+    ORDER BY n.sort DESC
+  `).all();
+}
+
+function getRecentNotes(limit = 30) {
+  const d = getDb();
+  return d.prepare(`
+    SELECT * FROM (
+      SELECT
+        h.bookmark_id AS id,
+        'highlight' AS type,
+        h.mark_text AS text,
+        h.chapter_title AS chapter,
+        h.create_time,
+        h.book_id,
+        b.title AS book_title,
+        b.author AS book_author,
+        b.cover AS book_cover
+      FROM highlights h
+      LEFT JOIN books b ON h.book_id = b.id
+      WHERE h.mark_text IS NOT NULL AND h.mark_text != ''
+
+      UNION ALL
+
+      SELECT
+        r.review_id AS id,
+        'review' AS type,
+        r.content AS text,
+        r.chapter_name AS chapter,
+        r.create_time,
+        r.book_id,
+        b.title AS book_title,
+        b.author AS book_author,
+        b.cover AS book_cover
+      FROM reviews r
+      LEFT JOIN books b ON r.book_id = b.id
+      WHERE r.content IS NOT NULL AND r.content != ''
+    )
+    ORDER BY create_time DESC
+    LIMIT ?
+  `).all(limit);
+}
+
 function getHeatmap() {
   const d = getDb();
   return d.prepare('SELECT date, seconds FROM reading_sessions ORDER BY date').all();
@@ -527,6 +576,9 @@ module.exports = {
   getBookTimeline,
   getYearlyIntensity,
   getMilestones,
+  // notebooks page
+  getAllNotebooks,
+  getRecentNotes,
   // helpers
   formatTime,
   formatTimestamp,

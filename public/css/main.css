@@ -910,69 +910,273 @@ h3 {
   text-transform: uppercase;
 }
 
-/* ─── Notebooks — Literary Review ─── */
-.notebook-list {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0;
+/* ═══════════════════════════════════════════
+   NOTEBOOKS — Redesigned
+   ═══════════════════════════════════════════ */
+
+/* ─── Header ─── */
+.notes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-6);
+  border-bottom: 1px solid var(--rule);
 }
 
-.notebook-item {
+.notes-header-left h1 {
+  font-family: var(--font-display);
+  font-size: var(--text-display);
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.notes-header-desc {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  color: var(--ink-muted);
+  margin-top: var(--space-2);
+}
+
+.notes-header-stats {
+  display: flex;
+  gap: var(--space-6);
+  flex-shrink: 0;
+}
+
+.notes-stat {
+  text-align: right;
+}
+
+.notes-stat-value {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-headline);
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.notes-stat-label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  color: var(--ink-muted);
+  margin-top: var(--space-1);
+}
+
+/* ─── Section Title ─── */
+.notes-section-title {
+  font-family: var(--font-display);
+  font-size: var(--text-body-lg);
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-bottom: var(--space-6);
+}
+
+/* ─── Books Grid ─── */
+.notes-books-section {
+  margin-bottom: var(--space-10);
+}
+
+.notes-books-grid {
   display: grid;
-  grid-template-columns: 48px 1fr auto;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: var(--space-5);
-  align-items: center;
-  padding: var(--space-5) 0;
-  border-top: 1px solid var(--rule-thin);
-  transition: background 0.15s var(--ease);
-}
-.notebook-item:hover {
-  background: var(--paper-warm);
 }
 
-.notebook-cover {
-  width: 40px;
-  height: 56px;
+.notes-book-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border-radius: 12px;
+  border: 1px solid var(--rule-thin);
+  background: var(--paper);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease), transform 0.2s var(--ease);
+  position: relative;
+}
+
+.notes-book-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+  text-decoration: none;
+  color: inherit;
+}
+
+.notes-book-cover {
+  width: 48px;
+  height: 66px;
   background: var(--rule-thin);
+  border-radius: 4px;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
-  color: var(--ink-faint);
+  font-size: 1.5rem;
   flex-shrink: 0;
 }
-.notebook-cover img {
+
+.notes-book-cover img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.notebook-title {
-  font-family: var(--font-display);
-  font-size: var(--text-body-lg);
-  font-weight: 600;
-  color: var(--ink);
+.notes-book-info {
+  flex: 1;
+  min-width: 0;
 }
 
-.notebook-author {
+.notes-book-title {
+  font-family: var(--font-display);
+  font-size: var(--text-body);
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.notes-book-author {
   font-family: var(--font-body);
-  font-size: var(--text-subhead);
+  font-size: var(--text-caption);
   color: var(--ink-muted);
   margin-top: var(--space-1);
 }
 
-.notebook-stats {
+.notes-book-meta {
   display: flex;
-  gap: var(--space-4);
+  align-items: center;
+  gap: var(--space-2);
   font-family: var(--font-mono);
-  font-size: var(--text-caption);
-  color: var(--ink-muted);
-  text-align: right;
+  font-size: 0.7rem;
+  color: var(--ink-faint);
+  margin-top: var(--space-2);
 }
 
-.notebook-stats span strong {
+.notes-meta-dot {
+  font-size: 0.4rem;
+  vertical-align: middle;
+}
+
+.notes-book-badge {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 10px;
+  line-height: 1.4;
+}
+
+/* ═══════════════════════════════════════════
+   NOTES FEED — Recent Notes Timeline
+   ═══════════════════════════════════════════ */
+
+.notes-feed-section {
+  margin-bottom: var(--space-10);
+}
+
+.notes-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.notes-feed-item {
+  display: flex;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+  border-top: 1px solid var(--rule-thin);
+  transition: background 0.15s var(--ease);
+}
+
+.notes-feed-item:hover {
+  background: var(--paper-warm);
+}
+
+.notes-feed-icon {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  background: var(--rule-thin);
+  border-radius: 6px;
+  margin-top: 2px;
+}
+
+.notes-feed-highlight .notes-feed-icon {
+  background: rgba(253, 179, 50, 0.15);
+}
+
+.notes-feed-review .notes-feed-icon {
+  background: rgba(66, 135, 245, 0.12);
+}
+
+.notes-feed-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.notes-feed-text {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  color: var(--ink);
+  line-height: 1.7;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.notes-feed-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-caption);
+  color: var(--ink-faint);
+}
+
+.notes-feed-book {
+  color: var(--accent);
+  text-decoration: none;
   font-weight: 500;
-  color: var(--ink-soft);
+}
+
+.notes-feed-book:hover {
+  text-decoration: underline;
+}
+
+.notes-feed-chapter {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+}
+
+.notes-feed-date {
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
 /* ─── Pagination ─── */
@@ -1871,6 +2075,15 @@ h3 {
 .stagger > *:nth-child(7) { animation-delay: 0.18s; }
 .stagger > *:nth-child(8) { animation-delay: 0.21s; }
 
+/* ─── Dark: Notes Page ─── */
+[data-theme="dark"] .notes-header { border-color: var(--rule); }
+[data-theme="dark"] .notes-book-card { background: var(--paper); border-color: var(--rule); }
+[data-theme="dark"] .notes-book-card:hover { border-color: var(--accent); box-shadow: 0 4px 20px rgba(0,0,0,0.40); }
+[data-theme="dark"] .notes-book-cover { background: var(--rule); }
+[data-theme="dark"] .notes-feed-item { border-color: var(--rule-thin); }
+[data-theme="dark"] .notes-feed-item:hover { background: var(--paper-warm); }
+[data-theme="dark"] .notes-feed-icon { background: var(--rule); }
+
 /* ─── Responsive ─── */
 @media (max-width: 720px) {
   :root {
@@ -1911,17 +2124,24 @@ h3 {
     grid-template-columns: 1fr;
     gap: var(--space-6);
   }
-  .book-list-item,
-  .notebook-item {
+  .book-list-item {
     grid-template-columns: 36px 1fr;
     gap: var(--space-3);
   }
-  .book-list-meta,
-  .notebook-stats {
+  .book-list-meta {
     grid-column: 2;
     text-align: left;
     margin-top: var(--space-1);
   }
+
+  /* Notes page */
+  .notes-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+  .notes-header-stats { flex-direction: row; }
+  .notes-books-grid { grid-template-columns: 1fr; }
 
   .trend-grid { grid-template-columns: repeat(3, 1fr); }
 
