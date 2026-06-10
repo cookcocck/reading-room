@@ -144,9 +144,7 @@ app.get('/bookshelf', (req, res) => {
   const sortBy = req.query.sort || 'readtime';
   const allCategories = getAllCategories();
 
-  // Default to the first category when no explicit params provided
-  const hasExplicitParam = req.query.filter || req.query.category;
-  const category = req.query.category || (!hasExplicitParam && allCategories.length > 0 ? allCategories[0] : '');
+  const category = req.query.category || '';
 
   // Use sorted query if available
   let books;
