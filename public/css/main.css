@@ -1453,6 +1453,24 @@ h3 {
   max-width: var(--col-wide);
 }
 
+/* ─── Book Detail — Two-column top section ─── */
+.book-detail-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-10);
+  align-items: start;
+  margin-bottom: var(--space-8);
+}
+
+.book-detail-left {
+  min-width: 0;
+}
+
+.book-detail-right {
+  min-width: 0;
+  padding-top: var(--space-2);
+}
+
 /* Two-column grid for highlights + reviews */
 .detail-columns {
   display: grid;
@@ -1661,10 +1679,36 @@ h3 {
    ═══════════════════════════════════════════ */
 
 .book-monthly-activity {
-  margin: var(--space-10) 0;
-  padding: var(--space-8) 0;
-  border-top: 1px solid var(--rule);
-  border-bottom: 1px solid var(--rule);
+  margin: 0;
+  padding: var(--space-6);
+  background: var(--paper-warm);
+  border-radius: 8px;
+  border: 1px solid var(--rule-thin);
+}
+
+/* Empty state for books with no monthly data */
+.book-monthly-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  text-align: center;
+}
+
+.monthly-empty-total {
+  font-family: var(--font-display);
+  font-size: var(--text-h2);
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.monthly-empty-hint {
+  font-family: var(--font-body);
+  font-size: var(--text-subhead);
+  color: var(--ink-muted);
+  margin: 0;
 }
 
 .monthly-bars {
@@ -1737,6 +1781,22 @@ h3 {
 
 [data-theme="dark"] .monthly-bar-fill {
   background: var(--accent);
+}
+
+[data-theme="dark"] .book-monthly-activity {
+  background: var(--bg-soft);
+  border-color: var(--rule);
+}
+
+/* Book detail top section — collapse to single column */
+@media (max-width: 860px) {
+  .book-detail-top {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+  .book-detail-right {
+    padding-top: 0;
+  }
 }
 
 /* Responsive */
