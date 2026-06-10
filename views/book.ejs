@@ -265,71 +265,71 @@
 
     return (
       '<div id="share-card-inner" style="' +
-      "width:1200px;height:800px;" +
+      "width:1400px;height:900px;" +
       "background:" + paper + ";" +
       "display:flex;flex-direction:column;justify-content:center;align-items:center;" +
-      "padding:80px 100px;box-sizing:border-box;position:relative;" +
+      "padding:90px 110px;box-sizing:border-box;position:relative;" +
       "font-family:serif;overflow:hidden;" +
       '">' +
 
       // Top-left large quote
       '<div style="' +
-      "position:absolute;top:60px;left:80px;" +
-      "font-size:140px;line-height:1;" +
+      "position:absolute;top:70px;left:90px;" +
+      "font-size:160px;line-height:1;" +
       "color:" + accent + ";opacity:0.07;font-family:serif;user-select:none;" +
       '">' + QL + "</div>" +
 
       // Bottom-right mirrored quote
       '<div style="' +
-      "position:absolute;bottom:60px;right:80px;" +
-      "font-size:100px;line-height:1;" +
+      "position:absolute;bottom:70px;right:90px;" +
+      "font-size:120px;line-height:1;" +
       "color:" + accent + ";opacity:0.05;font-family:serif;user-select:none;" +
       "transform:scaleX(-1);" +
       '">' + QL + "</div>" +
 
       // Top rule
       '<div style="' +
-      "position:absolute;top:0;left:80px;right:80px;" +
+      "position:absolute;top:0;left:90px;right:90px;" +
       "height:2px;background:" + accent + ";opacity:0.3;" +
       '"></div>' +
 
       // Bottom rule
       '<div style="' +
-      "position:absolute;bottom:0;left:80px;right:80px;" +
+      "position:absolute;bottom:0;left:90px;right:90px;" +
       "height:2px;background:" + accent + ";opacity:0.3;" +
       '"></div>' +
 
       // Central content
       '<div style="' +
-      "max-width:900px;text-align:center;position:relative;z-index:1;" +
+      "max-width:1050px;text-align:center;position:relative;z-index:1;" +
       '">' +
 
       // Quote text
       "<p style=\"" +
-      "font-family:serif;font-size:32px;line-height:1.7;color:" + ink + ";" +
-      "margin:0 0 28px 0;letter-spacing:0.02em;" +
+      "font-family:serif;font-size:36px;line-height:1.7;color:" + ink + ";" +
+      "margin:0 0 32px 0;letter-spacing:0.02em;" +
       "\">" + escapeHtml(text) + "</p>" +
 
       // Chapter
       (chapter ? "<p style=\"" +
-      "font-size:15px;color:" + inkMuted + ";margin:0 0 24px 0;letter-spacing:0.08em;" +
+      "font-size:17px;color:" + inkMuted + ";margin:0 0 28px 0;letter-spacing:0.08em;" +
       "\">" + MD + " " + escapeHtml(chapter) + "</p>" : "") +
 
       // Divider
       '<div style="' +
-      "width:60px;height:1px;background:" + rule + ";margin:0 auto 24px auto;" +
+      "width:70px;height:1px;background:" + rule + ";margin:0 auto 28px auto;" +
       '"></div>' +
 
       // Book title + author
       "<p style=\"" +
-      "font-size:16px;color:" + inkSoft + ";margin:0;font-weight:600;letter-spacing:0.04em;" +
+      "font-size:18px;color:" + inkSoft + ";margin:0;font-weight:600;letter-spacing:0.04em;" +
       "\">" + LS + escapeHtml(bookTitle) + RS +
       (bookAuthor ? " " + DOT + " " + escapeHtml(bookAuthor) : "") +
       "</p>" +
 
       // Branding
       "<p style=\"" +
-      "font-size:12px;color:" + inkMuted + ";margin:10px 0 0 0;letter-spacing:0.1em;opacity:0.6;" +
+      "font-size:14px;color:" + inkMuted + ";margin:12px 0 0 0;letter-spacing:0.1em;opacity:0.6;" +
       "\">\u9605\u8BFB\u623F \u00B7 reading room</p>" +
 
       "</div>" +
