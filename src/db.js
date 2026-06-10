@@ -110,6 +110,14 @@ async function initDb() {
       // Column already exists — ignore
     }
 
+    // ─── Schema migration: add read_time column to books table ───
+    try {
+      sqlDb.run('ALTER TABLE books ADD COLUMN read_time INTEGER DEFAULT 0');
+      console.log('[db] Migration: added books.read_time column');
+    } catch (e) {
+      // Column already exists — ignore
+    }
+
     console.log(`[db] Connected to reading-room.db (sql.js, ${(fileBuffer.length / 1024 / 1024).toFixed(1)} MB)`);
     return db;
   } catch (err) {
@@ -176,6 +184,7 @@ function getBookById(bookId) {
   return {
     ...book,
     finished: !!book.finished,
+    readTime: book.read_time || 0,
     notebook: book.noteCount != null ? {
       reviewCount: book.reviewCount || 0,
       noteCount: book.noteCount || 0,
@@ -470,6 +479,19 @@ function saveBookIntro(bookId, intro) {
   d.prepare('UPDATE books SET intro = ? WHERE id = ?').all(intro, bookId);
 }
 
+// ─── Book Read Time (from /book/getprogress API) ───
+
+function setBookReadTime(bookId, readTimeSec) {
+  const d = getDb();
+  d.prepare('UPDATE books SET read_time = ? WHERE id = ?').all(readTimeSec, bookId);
+}
+
+function getBookReadTimeFromDB(bookId) {
+  const d = getDb();
+  const row = d.prepare('SELECT read_time FROM books WHERE id = ?').get(bookId);
+  return row ? row.read_time || 0 : 0;
+}
+
 // ─── Stats Page — Deep Thinking Ranking ───
 function getDeepThinking(limit = 10) {
   const d = getDb();
@@ -624,6 +646,8 @@ module.exports = {
   getBookReviews,
   getBookIntro,
   saveBookIntro,
+  setBookReadTime,
+  getBookReadTimeFromDB,
   getBookMonthlyActivity,
   // stats page additions
   getDeepThinking,

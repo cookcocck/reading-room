@@ -132,10 +132,12 @@ app.get('/bookshelf', (req, res) => {
   const summary = getSummary();
   const bookReadTimes = getBookReadTimes();
 
-  // Merge readTime into each book by title match
+  // Merge readTime into each book: prefer DB read_time, fall back to legacy title match
   books.forEach(b => {
-    const rt = bookReadTimes[b.title];
-    b.readTimeSec = rt || 0;
+    b.readTimeSec = (b.read_time || 0);
+    if (!b.readTimeSec) {
+      b.readTimeSec = bookReadTimes[b.title] || 0;
+    }
   });
 
   // Sort by total reading time descending (unread books sink to bottom)
@@ -299,8 +301,14 @@ app.get('/book/:id', (req, res) => {
 
   const highlights = getBookHighlights(book.title, 12);
   const reviews = getBookReviews(book.title, 12);
-  const bookReadTimes = getBookReadTimes();
-  const readTimeSec = bookReadTimes[book.title] || 0;
+
+  // Prefer per-book read_time from database (populated by sync_read_times.py)
+  // Fall back to getBookReadTimes() title match (legacy, only covers top N books)
+  let readTimeSec = book.readTime || 0;
+  if (!readTimeSec) {
+    const bookReadTimes = getBookReadTimes();
+    readTimeSec = bookReadTimes[book.title] || 0;
+  }
 
   // Monthly reading activity bars
   const { months: monthlyActivity, totalItems } = getBookMonthlyActivity(req.params.id);
