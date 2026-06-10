@@ -13,7 +13,12 @@ trap "rm -rf $TMP" EXIT
 
 call() {
   local label="$1" api="$2" extra="${3:-{}}"
-  local body=$(python3 -c "import json; d={'api_name':'$api','skill_version':'$SKILL'}; d.update($extra); print(json.dumps(d,ensure_ascii=False))")
+  local body=$(python3 -c "
+import json, sys
+d = {'api_name': sys.argv[1], 'skill_version': sys.argv[2]}
+d.update(json.loads(sys.argv[3]))
+print(json.dumps(d, ensure_ascii=False))
+" "$api" "$SKILL" "$extra")
   curl -sS -X POST "$GATEWAY" -H "Authorization: Bearer $API_KEY" -H "Content-Type: application/json" -d "$body" > "$TMP/resp.json"
   echo "=== $label ==="
   echo "  POST $api"
