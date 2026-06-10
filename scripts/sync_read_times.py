@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
 """sync_read_times.py — Fetch per-book reading time from WeRead API.
 
-Calls /book/getprogress for every book in the database and stores
-recordReadingTime (seconds) as books.read_time.
+Uses /readdata/detail?mode=overall to get readLongest[] which contains
+accurate per-book readTime (NOT the broken recordReadingTime from
+/book/getprogress which always returns 0 via the Gateway).
+
+Limitation: readLongest only returns top ~10 books (minimum 5 min each).
+Books not in this list will keep read_time=0; the web UI falls back to
+the legacy getBookReadTimes() title-matching from overall.json.
 
 Usage:
-    python scripts/sync_read_times.py          # sync all books
-    python scripts/sync_read_times.py --book BOOK_ID  # sync single book
+    python scripts/sync_read_times.py          # sync from API
+    python scripts/sync_read_times.py --debug  # show raw API response
 
 Requires:
     - WEREAD_API_KEY environment variable (format: wrk-xxxxxxxx)
@@ -15,7 +20,6 @@ Requires:
 
 import os
 import sys
-import time
 import json
 import sqlite3
 import urllib.request
@@ -26,21 +30,16 @@ from pathlib import Path
 
 API_URL = "https://i.weread.qq.com/api/agent/gateway"
 SKILL_VERSION = "1.0.3"
-DELAY_SEC = 1.0  # rate limit: delay between API calls
-BATCH_SIZE = 10  # log progress every N books
 
 DB_PATH = Path(__file__).resolve().parent.parent / "db" / "reading-room.db"
+API_KEY = os.environ.get("WEREAD_API_KEY", "")
 
-
-def get_api_key():
-    key = os.environ.get("WEREAD_API_KEY", "")
-    if not key:
-        print("[ERROR] WEREAD_API_KEY environment variable not set.")
-        print("  export WEREAD_API_KEY=wrk-xxxxxxxx")
-        sys.exit(1)
-    if not key.startswith("wrk-"):
-        print("[WARN] WEREAD_API_KEY should start with 'wrk-', got:", key[:8] + "...")
-    return key
+if not API_KEY:
+    print("[ERROR] WEREAD_API_KEY environment variable not set.")
+    print("  export WEREAD_API_KEY=wrk-xxxxxxxx")
+    sys.exit(1)
+if not API_KEY.startswith("wrk-"):
+    print("[WARN] WEREAD_API_KEY should start with 'wrk-', got:", API_KEY[:8] + "...")
 
 
 def call_api(api_name, **params):
@@ -53,7 +52,7 @@ def call_api(api_name, **params):
         API_URL,
         data=data,
         headers={
-            "Authorization": f"Bearer {get_api_key()}",
+            "Authorization": f"Bearer {API_KEY}",
             "Content-Type": "application/json",
         },
     )
@@ -68,35 +67,38 @@ def call_api(api_name, **params):
         return {"errcode": -1, "errmsg": str(e)}
 
 
-def get_book_progress(book_id, debug=False):
-    """Fetch reading progress for a single book."""
-    result = call_api("/book/getprogress", bookId=book_id)
+def fetch_read_longest(mode="overall", debug=False):
+    """Fetch readLongest[] from /readdata/detail for a given mode.
+
+    Returns list of {bookId, title, readTime_sec}.
+    """
+    result = call_api("/readdata/detail", mode=mode)
     if debug:
-        print(f"    [DEBUG] Raw response keys: {sorted(result.keys())}")
-        for k in result:
-            v = result[k]
-            if isinstance(v, dict):
-                print(f"    [DEBUG]   {k}: dict with keys {sorted(v.keys())}")
-                for sk in v:
-                    print(f"    [DEBUG]     {k}.{sk} = {json.dumps(v[sk], ensure_ascii=False)[:120]}")
-            elif isinstance(v, list):
-                print(f"    [DEBUG]   {k}: list of {len(v)} items")
-            else:
-                print(f"    [DEBUG]   {k} = {json.dumps(v, ensure_ascii=False)[:120]}")
+        print(f"\n  [DEBUG] /readdata/detail?mode={mode} response:")
+        top_keys = sorted(result.keys())
+        print(f"    Top-level keys: {top_keys}")
     if result.get("errcode") and result["errcode"] != 0:
-        return None, result.get("errmsg", f"errcode={result['errcode']}")
-    # Try multiple possible nesting paths
-    book = result.get("book")
-    if book is None and isinstance(result.get("data"), dict):
-        book = result["data"].get("book")
-    if not isinstance(book, dict):
-        if debug:
-            print(f"    [DEBUG] WARNING: 'book' not found as dict in response! book={type(book).__name__}")
-        return 0, None
-    record_time = book.get("recordReadingTime", 0)
+        print(f"  [ERROR] API error for mode={mode}: errcode={result.get('errcode')}, msg={result.get('errmsg')}")
+        return []
+    items = result.get("readLongest", [])
     if debug:
-        print(f"    [DEBUG] book.recordReadingTime = {record_time}")
-    return record_time, None
+        print(f"    readLongest: {len(items)} items")
+        for i, item in enumerate(items):
+            book = item.get("book", item.get("albumInfo", {}))
+            rt = item.get("readTime", 0)
+            tags = item.get("tags", [])
+            print(f"      [{i+1}] {book.get('title', '?')} | bookId={book.get('bookId', '?')} | readTime={rt}s ({rt//3600}h{(rt%3600)//60}m) | tags={tags}")
+    books = []
+    for item in items:
+        rt = item.get("readTime", 0)
+        if rt < 300:  # skip under 5 min (API already filters, but be safe)
+            continue
+        book_info = item.get("book") or item.get("albumInfo") or {}
+        book_id = book_info.get("bookId", "")
+        title = book_info.get("title", "?")
+        if book_id:
+            books.append({"bookId": book_id, "title": title, "readTime": rt})
+    return books
 
 
 def main():
@@ -104,11 +106,13 @@ def main():
         print(f"[ERROR] Database not found: {DB_PATH}")
         sys.exit(1)
 
+    debug = "--debug" in sys.argv
+
     conn = sqlite3.connect(str(DB_PATH))
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
 
-    # Check column exists
+    # Ensure read_time column exists
     col_check = cur.execute("PRAGMA table_info(books)").fetchall()
     has_read_time = any(c[1] == "read_time" for c in col_check)
     if not has_read_time:
@@ -116,58 +120,65 @@ def main():
         cur.execute("ALTER TABLE books ADD COLUMN read_time INTEGER DEFAULT 0")
         conn.commit()
 
-    # Get book IDs to sync
-    if "--book" in sys.argv:
-        idx = sys.argv.index("--book")
-        if idx + 1 < len(sys.argv):
-            book_ids = [sys.argv[idx + 1]]
+    # ─── Fetch from API ───
+
+    all_read_times = {}  # bookId -> {title, readTime}
+
+    # overall (all-time top reads)
+    print("[INFO] Fetching /readdata/detail?mode=overall ...")
+    for entry in fetch_read_longest("overall", debug=debug):
+        if entry["readTime"] > all_read_times.get(entry["bookId"], {}).get("readTime", 0):
+            all_read_times[entry["bookId"]] = entry
+
+    # annually (current year top reads, may include different books)
+    print("[INFO] Fetching /readdata/detail?mode=annually ...")
+    for entry in fetch_read_longest("annually", debug=debug):
+        if entry["readTime"] > all_read_times.get(entry["bookId"], {}).get("readTime", 0):
+            all_read_times[entry["bookId"]] = entry
+
+    print(f"\n[INFO] Got {len(all_read_times)} unique books with reading time from API")
+
+    if not all_read_times:
+        print("[WARN] No reading time data from API — books.read_time will not be updated.")
+        conn.close()
+        return
+
+    # ─── Update database ───
+
+    # Build a title→readTime map as fallback for books not matched by bookId
+    title_map = {}
+    for entry in all_read_times.values():
+        title_map[entry["title"]] = entry["readTime"]
+
+    updated = 0
+    for book_id, entry in all_read_times.items():
+        cur.execute(
+            "UPDATE books SET read_time = ? WHERE id = ?",
+            (entry["readTime"], book_id),
+        )
+        if cur.rowcount > 0:
+            h = entry["readTime"] // 3600
+            m = (entry["readTime"] % 3600) // 60
+            print(f"  [✓] {entry['title']}: {h}h {m}m (bookId match)")
+            updated += 1
         else:
-            print("[ERROR] --book requires a BOOK_ID argument")
-            sys.exit(1)
-    else:
-        rows = cur.execute("SELECT id, title FROM books ORDER BY update_time DESC").fetchall()
-        book_ids = [r["id"] for r in rows]
-        print(f"[INFO] Found {len(book_ids)} books to sync")
-
-    debug = "--debug" in sys.argv
-    synced = 0
-    skipped = 0
-    errors = 0
-
-    for i, book_id in enumerate(book_ids):
-        # Get title for logging
-        title_row = cur.execute("SELECT title FROM books WHERE id = ?", (book_id,)).fetchone()
-        title = title_row["title"] if title_row else book_id
-
-        record_time, err = get_book_progress(book_id, debug=(debug and i < 3))
-
-        if err:
-            print(f"  [{i+1}/{len(book_ids)}] {title}: ERROR — {err}")
-            errors += 1
-        elif record_time > 0:
+            # book not in our DB by bookId — try title match
             cur.execute(
-                "UPDATE books SET read_time = ? WHERE id = ?",
-                (record_time, book_id),
+                "UPDATE books SET read_time = ? WHERE title = ? AND read_time = 0",
+                (entry["readTime"], entry["title"]),
             )
-            h = record_time // 3600
-            m = (record_time % 3600) // 60
-            print(f"  [{i+1}/{len(book_ids)}] {title}: {h}h {m}m")
-            synced += 1
-        else:
-            print(f"  [{i+1}/{len(book_ids)}] {title}: 0m (no reading time)")
-            skipped += 1
-
-        # Commit periodically
-        if (i + 1) % BATCH_SIZE == 0:
-            conn.commit()
-            print(f"  ── committed {i+1}/{len(book_ids)} ──")
-
-        time.sleep(DELAY_SEC)
+            if cur.rowcount > 0:
+                h = entry["readTime"] // 3600
+                m = (entry["readTime"] % 3600) // 60
+                print(f"  [✓] {entry['title']}: {h}h {m}m (title match)")
+                updated += 1
+            else:
+                print(f"  [?] {entry['title']}: not found in DB or already has read_time")
 
     conn.commit()
     conn.close()
 
-    print(f"\n[DONE] Synced: {synced}, Skipped (0m): {skipped}, Errors: {errors}")
+    print(f"\n[DONE] Updated {updated} books. Total unique from API: {len(all_read_times)}")
 
 
 if __name__ == "__main__":
