@@ -1,103 +1,150 @@
-<section class="page-section">
-  <div class="report-header">
-    <h2 class="report-year"><%= year %> 阅读年报</h2>
-    <div class="report-year-nav">
-      <a href="/report?year=<%= year - 1 %>" class="cal-year-btn">&larr; <%= year - 1 %></a>
+<section class="report-page">
+  <!-- Hero — 年度总览 -->
+  <div class="rp-hero">
+    <div class="rp-hero-bg" aria-hidden="true"></div>
+    <div class="rp-hero-inner">
+      <div class="rp-hero-year"><%= year %></div>
+      <div class="rp-hero-divider" aria-hidden="true"></div>
+      <div class="rp-hero-bignum"><%= report.totalHours %><span class="rp-hero-unit">h</span></div>
+      <div class="rp-hero-label">总阅读时长</div>
+      <div class="rp-hero-meta">
+        <% if (report.yoyChange !== null) { %>
+        <span class="rp-hero-yoy <%= report.yoyChange > 0 ? 'up' : 'down' %>">
+          <%= report.yoyChange > 0 ? '↑' : '↓' %><%= Math.abs(report.yoyChange) %>% vs <%= year-1 %>
+        </span>
+        <% } %>
+      </div>
     </div>
   </div>
 
-  <div class="report-hero">
-    <div class="report-big-num"><%= report.totalHours %>h</div>
-    <div class="report-hero-sub">总阅读时长</div>
+  <!-- Stats Grid — 阅读数据面板 -->
+  <div class="rp-stats-grid">
+    <div class="rp-stat-card">
+      <div class="rp-stat-icon">✓</div>
+      <div class="rp-stat-num"><%= report.finished %></div>
+      <div class="rp-stat-label">已读完</div>
+    </div>
+    <div class="rp-stat-card">
+      <div class="rp-stat-icon">📚</div>
+      <div class="rp-stat-num"><%= report.totalBooks %></div>
+      <div class="rp-stat-label">加入书架</div>
+    </div>
+    <div class="rp-stat-card">
+      <div class="rp-stat-icon">☀</div>
+      <div class="rp-stat-num"><%= report.readDays %></div>
+      <div class="rp-stat-label">阅读天数</div>
+    </div>
+    <div class="rp-stat-card">
+      <div class="rp-stat-icon">✎</div>
+      <div class="rp-stat-num"><%= report.totalHighlights %></div>
+      <div class="rp-stat-label">划线笔记</div>
+    </div>
+    <div class="rp-stat-card">
+      <div class="rp-stat-icon">💭</div>
+      <div class="rp-stat-num"><%= report.totalReviews %></div>
+      <div class="rp-stat-label">想法评论</div>
+    </div>
   </div>
 
-  <div class="report-cards">
-    <div class="report-card">
-      <div class="report-num"><%= report.finished %></div>
-      <div class="report-label">读完</div>
-    </div>
-    <div class="report-card">
-      <div class="report-num"><%= report.totalBooks %></div>
-      <div class="report-label">加入书架</div>
-    </div>
-    <div class="report-card">
-      <div class="report-num"><%= report.readDays %></div>
-      <div class="report-label">阅读天数</div>
-    </div>
-    <div class="report-card">
-      <div class="report-num"><%= report.totalHighlights %></div>
-      <div class="report-label">划线</div>
-    </div>
-    <div class="report-card">
-      <div class="report-num"><%= report.totalReviews %></div>
-      <div class="report-label">想法</div>
-    </div>
-    <% if (report.yoyChange !== null) { %>
-    <div class="report-card">
-      <div class="report-num"><%= report.yoyChange > 0 ? '+' : '' %><%= report.yoyChange %>%</div>
-      <div class="report-label">同比</div>
-    </div>
-    <% } %>
-  </div>
-
-  <!-- Top Book -->
+  <!-- Top Book — 年度之书 -->
   <% if (report.topBook) { %>
-  <div class="report-section">
-    <h3 class="report-section-title">最用心之书</h3>
-    <div class="report-topbook">
-      <% if (report.topBook.cover) { %><img src="<%= report.topBook.cover %>" alt="" class="report-topbook-cover"><% } %>
-      <div class="report-topbook-info">
-        <div class="report-topbook-title"><%= report.topBook.title %></div>
-        <div class="report-topbook-author"><%= report.topBook.author %></div>
-        <div class="report-topbook-notes"><%= report.topBook.totalNotes %> 条笔记</div>
+  <div class="rp-section">
+    <div class="rp-section-header">
+      <h2 class="rp-section-title">年度之书</h2>
+      <span class="rp-section-tag">最用心</span>
+    </div>
+    <div class="rp-topbook">
+      <% if (report.topBook.cover) { %>
+      <div class="rp-topbook-cover-wrap">
+        <img src="<%= report.topBook.cover %>" alt="" class="rp-topbook-cover" loading="lazy">
+        <div class="rp-topbook-shadow" aria-hidden="true"></div>
+      </div>
+      <% } %>
+      <div class="rp-topbook-body">
+        <h3 class="rp-topbook-title"><%= report.topBook.title %></h3>
+        <p class="rp-topbook-author"><%= report.topBook.author %></p>
+        <div class="rp-topbook-stats">
+          <span class="rp-topbook-notes"><%= report.topBook.totalNotes %> 条笔记</span>
+          <% if (report.topBook.category) { %>
+          <span class="rp-topbook-cat"><%= report.topBook.category %></span>
+          <% } %>
+        </div>
       </div>
     </div>
   </div>
   <% } %>
 
-  <!-- Longest Book -->
+  <!-- Longest — 最耗时 -->
   <% if (report.longest) { %>
-  <div class="report-section">
-    <h3 class="report-section-title">最耗时之书</h3>
-    <div class="report-longest">
-      <span class="report-longest-title"><%= report.longest.title %></span>
-      <span class="report-longest-author"><%= report.longest.author %></span>
-      <span class="report-longest-time"><%= helpers.formatTime(report.longest.read_time) %></span>
+  <div class="rp-section">
+    <div class="rp-section-header">
+      <h2 class="rp-section-title">最耗时之书</h2>
+      <span class="rp-section-tag">沉浸最久</span>
     </div>
-  </div>
-  <% } %>
-
-  <!-- Category Distribution -->
-  <% if (report.categories.length > 0) { %>
-  <div class="report-section">
-    <h3 class="report-section-title">类型分布</h3>
-    <div class="report-cats">
-      <% const maxCat = Math.max(...report.categories.map(c => c.cnt)); %>
-      <% report.categories.forEach(c => { %>
-      <div class="report-cat-bar">
-        <div class="report-cat-label"><%= c.category || '未分类' %> (<%= c.cnt %>)</div>
-        <div class="report-cat-track"><div class="report-cat-fill" style="width:<%= Math.max(3, c.cnt / maxCat * 100) %>%"></div></div>
+    <div class="rp-longest">
+      <div class="rp-longest-info">
+        <span class="rp-longest-title"><%= report.longest.title %></span>
+        <span class="rp-longest-author"><%= report.longest.author %></span>
       </div>
-      <% }) %>
+      <div class="rp-longest-time"><%= helpers.formatTime(report.longest.read_time) %></div>
     </div>
   </div>
   <% } %>
 
-  <!-- Monthly Trend -->
+  <!-- Monthly Rhythm — 阅读节奏 -->
   <% if (report.trends.length > 0) { %>
-  <div class="report-section">
-    <h3 class="report-section-title">月度趋势</h3>
-    <div class="report-months">
+  <div class="rp-section">
+    <div class="rp-section-header">
+      <h2 class="rp-section-title">阅读节奏</h2>
+      <span class="rp-section-tag">月度分布</span>
+    </div>
+    <div class="rp-rhythm">
       <% const maxSec = Math.max(...report.trends.map(t => t.totalSec), 1); %>
       <% report.trends.forEach(t => { %>
-      <div class="report-month-bar">
-        <div class="report-month-label"><%= t.month %>月</div>
-        <div class="report-month-track"><div class="report-month-fill" style="width:<%= Math.max(2, t.totalSec / maxSec * 100) %>%"></div></div>
-        <div class="report-month-val"><%= t.hours %>h</div>
+      <div class="rp-rhythm-row">
+        <div class="rp-rhythm-label"><%= t.month %>月</div>
+        <div class="rp-rhythm-track">
+          <div class="rp-rhythm-fill" style="width:<%= Math.max(2, t.totalSec / maxSec * 100) %>%">
+            <div class="rp-rhythm-glow"></div>
+          </div>
+        </div>
+        <div class="rp-rhythm-val"><%= t.hours %>h</div>
       </div>
       <% }) %>
     </div>
   </div>
   <% } %>
 
+  <!-- Categories — 阅读版图 -->
+  <% if (report.categories.length > 0) { %>
+  <div class="rp-section">
+    <div class="rp-section-header">
+      <h2 class="rp-section-title">阅读版图</h2>
+      <span class="rp-section-tag">类型分布</span>
+    </div>
+    <div class="rp-cats">
+      <% const maxCat = Math.max(...report.categories.map(c => c.cnt)); %>
+      <% report.categories.forEach((c, i) => { %>
+      <div class="rp-cat-row">
+        <div class="rp-cat-name"><%= c.category || '未分类' %></div>
+        <div class="rp-cat-track">
+          <div class="rp-cat-fill" style="width:<%= Math.max(3, c.cnt / maxCat * 100) %>%"></div>
+        </div>
+        <div class="rp-cat-count"><%= c.cnt %>册</div>
+      </div>
+      <% }) %>
+    </div>
+  </div>
+  <% } %>
+
+  <!-- Footer note -->
+  <div class="rp-footnote">
+    <p>数据来自微信读书 · 静心阅读，自有回响</p>
+    <div class="rp-nav-row">
+      <a href="/report?year=<%= year - 1 %>" class="rp-year-link">&larr; <%= year - 1 %> 年报</a>
+      <% if (year < new Date().getFullYear()) { %>
+      <a href="/report?year=<%= year + 1 %>" class="rp-year-link"><%= year + 1 %> 年报 &rarr;</a>
+      <% } %>
+    </div>
+  </div>
 </section>
