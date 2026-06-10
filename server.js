@@ -140,7 +140,7 @@ app.get('/', (req, res) => {
 // Bookshelf page
 app.get('/bookshelf', (req, res) => {
   const { getAllBooks, getAllCategories, getSummary, getBookReadTimes, getBooksSorted } = db;
-  const filter = req.query.filter || 'finished';
+  const filter = req.query.filter || 'all';
   const sortBy = req.query.sort || 'readtime';
   const allCategories = getAllCategories();
 
