@@ -5,8 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="<%= typeof summary !== 'undefined' ? summary.totalBooks : 0 %> 册藏书 · <%= typeof summary !== 'undefined' ? summary.finishedCount : 0 %> 册已读完">
   <title><%= title %> — 阅读书房</title>
+  <!-- Preconnect to external origins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdn.weread.qq.com" crossorigin>
-  <link rel="stylesheet" href="/css/main.css?v=24">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <!-- Preload critical fonts -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
+  <!-- Main stylesheet -->
+  <link rel="stylesheet" href="/css/main.css?v=25">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='2' fill='%231a2744'/><text x='16' y='22' text-anchor='middle' font-size='16' fill='white'>读</text></svg>">
 </head>
 <body>
@@ -51,8 +60,10 @@
     </footer>
   </div>
 
-  <script src="/js/main.js?v=5" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="/js/main.js?v=6" defer></script>
+  <% if (typeof needsHtml2Canvas !== 'undefined' && needsHtml2Canvas) { %>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
+  <% } %>
   <% if (typeof heatmap !== 'undefined') { %>
   <script src="/js/heatmap.js" defer></script>
   <% } %>

@@ -1,9 +1,13 @@
 const express = require('express'),
       expressLayouts = require('express-ejs-layouts'),
+      compression = require('compression'),
       path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// ─── Compression (gzip/brotli) — reduce text responses by ~70% ───
+app.use(compression());
 
 app.use(expressLayouts);
 app.set('layout', 'layout');
@@ -36,7 +40,17 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // ─── Static assets ───
-app.use(express.static(path.join(__dirname, 'public')));
+// Cache immutable versioned assets for 1 year, others for 1 day
+app.use(express.static(path.join(__dirname, 'public'), {
+  maxAge: '1d',
+  etag: true,
+  setHeaders(res, filePath) {
+    // Versioned assets (main.css?v=24, main.js?v=5) cache aggressively
+    if (filePath.match(/\.(css|js)$/)) {
+      res.setHeader('Cache-Control', 'public, max-age=86400, immutable');
+    }
+  }
+}));
 
 // ─── Helpers ───
 const { formatTime, formatTimestamp, heatmapLevel } = db;
@@ -360,6 +374,7 @@ app.get('/book/:id', (req, res) => {
     intro,
     chapterActivity: chapterActivity.slice(0, 8),
     maxChapterTotal,
+    needsHtml2Canvas: true,
   });
 });
 
