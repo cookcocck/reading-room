@@ -52,10 +52,10 @@ source ~/.bashrc
 crontab -e
 ```
 
-添加以下行（每 4 小时执行一次，同步完成后重启服务）：
+添加以下行（每 4 小时执行一次）：
 
 ```
-0 */4 * * * . $HOME/.bashrc; cd $HOME/reading-site && python3 scripts/sync.py --quick --restart >> logs/sync.log 2>&1
+0 */4 * * * bash ~/reading-site/scripts/cron-sync.sh >> ~/reading-site/logs/cron.log 2>&1
 ```
 
 ### 手动运行
