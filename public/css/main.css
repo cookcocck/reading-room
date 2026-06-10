@@ -1729,6 +1729,165 @@ h3 {
   opacity: 0.14;
 }
 [data-theme="dark"] .book-detail-cover { box-shadow: 0 2px 16px rgba(0,0,0,0.40); }
+
+/* ── Review Star Ratings ── */
+.review-stars {
+  color: #d4a017;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  margin-right: var(--space-2);
+}
+
+/* ═══════════════════════════════════════════
+   Book Detail — Insight Row (Intro + Chapter Engagement)
+   ═══════════════════════════════════════════ */
+
+.detail-insight-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+  margin: var(--space-8) 0;
+}
+
+.detail-insight-card {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: var(--space-6);
+  box-shadow:
+    0 1px 3px rgba(0,0,0,0.03),
+    0 2px 6px rgba(0,0,0,0.02);
+}
+
+.detail-insight-card .section-kicker {
+  margin-bottom: var(--space-4);
+}
+
+/* ── Book Intro ── */
+.book-intro-body {
+  overflow: hidden;
+  transition: max-height 0.4s var(--ease-out);
+}
+.book-intro-body:not(.expanded) {
+  max-height: 5.4em;
+}
+.book-intro-body.expanded {
+  max-height: 80em;
+}
+
+.book-intro-body p {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  color: var(--ink-soft);
+  line-height: 1.8;
+  margin: 0;
+}
+
+.intro-toggle {
+  display: inline-block;
+  margin-top: var(--space-3);
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-size: var(--text-subhead);
+  color: var(--accent-bright);
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s var(--ease);
+}
+.intro-toggle:hover {
+  color: var(--accent);
+}
+
+/* ── Chapter Engagement Bars ── */
+.chapter-bars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.chapter-bar-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 48px;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.chapter-bar-label {
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  color: var(--ink-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+}
+
+.chapter-bar-track {
+  height: 22px;
+  background: var(--rule-thin);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.chapter-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-bright), var(--accent));
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: var(--space-2);
+  min-width: fit-content;
+  transition: width 0.6s var(--ease-out);
+}
+
+.chapter-bar-count {
+  font-family: var(--font-body);
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+  white-space: nowrap;
+}
+
+.chapter-bar-detail {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  color: var(--ink-muted);
+}
+
+.chap-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 1px;
+  flex-shrink: 0;
+}
+.chap-dot.hl { background: var(--accent-bright); }
+.chap-dot.rv { background: var(--accent-secondary); }
+
+/* ── Dark theme overrides ── */
+[data-theme="dark"] .detail-insight-card {
+  background: var(--paper-warm);
+  border-color: var(--rule);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.10);
+}
+[data-theme="dark"] .chapter-bar-track {
+  background: var(--rule);
+}
+[data-theme="dark"] .review-stars {
+  color: #e8b830;
+}
+[data-theme="dark"] .intro-toggle {
+  color: var(--accent);
+}
+[data-theme="dark"] .intro-toggle:hover {
+  color: var(--ink);
+}
 [data-theme="dark"] .milestone-dot { background: var(--bg-soft); border-color: var(--rule); }
 [data-theme="dark"] .deep-think-item:hover { background: var(--bg-soft); }
 [data-theme="dark"] .radar-chart polygon[fill-opacity] { fill-opacity: 0.18; }
@@ -1894,6 +2053,10 @@ h3 {
   }
   .book-detail-right {
     padding-top: 0;
+  }
+  .detail-insight-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
   }
 }
 

@@ -295,7 +295,7 @@ app.get('/api/book/:id/:section', (req, res) => {
 
 // Book detail page
 app.get('/book/:id', (req, res) => {
-  const { getBookById, getBookHighlights, getBookReviews, getBookReadTimes, getSummary, getBookMonthlyActivity } = db;
+  const { getBookById, getBookHighlights, getBookReviews, getBookReadTimes, getSummary, getBookMonthlyActivity, getBookChapterActivity, getBookIntro } = db;
   const book = getBookById(req.params.id);
   if (!book) return res.status(404).send('未找到此书');
 
@@ -338,6 +338,13 @@ app.get('/book/:id', (req, res) => {
   });
   const maxMonthlySec = Math.max(...monthlyBars.map(m => m.estimatedSec), 1);
 
+  // Book intro
+  const intro = getBookIntro(req.params.id);
+
+  // Chapter engagement
+  const chapterActivity = getBookChapterActivity(book.title);
+  const maxChapterTotal = Math.max(...chapterActivity.map(c => c.total), 1);
+
   res.render('book', {
     title: book.title,
     book: upgradeCovers(book),
@@ -350,6 +357,9 @@ app.get('/book/:id', (req, res) => {
     summary: getSummary(),
     monthlyBars,
     maxMonthlySec,
+    intro,
+    chapterActivity: chapterActivity.slice(0, 8),
+    maxChapterTotal,
   });
 });
 

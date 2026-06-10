@@ -88,6 +88,50 @@
     </div>
   </div>
 
+  <!-- Book Intro + Chapter Engagement row -->
+  <% if (intro || chapterActivity.length > 0) { %>
+  <div class="detail-insight-row">
+    <% if (intro) { %>
+    <div class="detail-insight-card" id="book-intro-card">
+      <div class="section-kicker">书籍简介</div>
+      <div class="book-intro-body" id="book-intro-body">
+        <p><%= intro %></p>
+      </div>
+      <% if (intro.length > 200) { %>
+      <button class="intro-toggle" id="intro-toggle" onclick="
+        var b=document.getElementById('book-intro-body');
+        var t=document.getElementById('intro-toggle');
+        b.classList.toggle('expanded');
+        t.textContent = b.classList.contains('expanded') ? '收起' : '展开全文';
+      ">展开全文</button>
+      <% } %>
+    </div>
+    <% } %>
+
+    <% if (chapterActivity.length > 0) { %>
+    <div class="detail-insight-card">
+      <div class="section-kicker">章节热度</div>
+      <div class="chapter-bars">
+        <% chapterActivity.forEach(function(c, i) { %>
+        <div class="chapter-bar-row">
+          <div class="chapter-bar-label" title="<%= c.chapter %>"><%= c.chapter.length > 12 ? c.chapter.slice(0,12) + '…' : c.chapter %></div>
+          <div class="chapter-bar-track">
+            <div class="chapter-bar-fill" style="width: <%= Math.round((c.total / maxChapterTotal) * 100) %>%;">
+              <span class="chapter-bar-count"><%= c.total %>条</span>
+            </div>
+          </div>
+          <div class="chapter-bar-detail">
+            <% if (c.highlights > 0) { %><span class="chap-dot hl"></span><%= c.highlights %><% } %>
+            <% if (c.reviews > 0) { %><span class="chap-dot rv"></span><%= c.reviews %><% } %>
+          </div>
+        </div>
+        <% }); %>
+      </div>
+    </div>
+    <% } %>
+  </div>
+  <% } %>
+
     <!-- Highlights & Reviews — side by side -->
     <% if (highlights.length > 0 || reviews.length > 0) { %>
     <hr class="section-rule">
@@ -129,7 +173,12 @@
           <% reviews.forEach(function(r) { %>
           <div class="detail-review">
             <p><%= r.content %></p>
-            <% if (r.chapter) { %><cite>— <%= r.chapter %></cite><% } %>
+            <cite>
+              <% if (r.star > 0) { %>
+              <span class="review-stars"><% for (var s=0; s<r.star; s++) { %>&#9733;<% } %></span>
+              <% } %>
+              <% if (r.chapter) { %>— <%= r.chapter %><% } %>
+            </cite>
           </div>
           <% }); %>
         </div>

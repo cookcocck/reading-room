@@ -466,6 +466,45 @@ function getBookReviews(bookTitle, limitReviews = 5) {
   }));
 }
 
+// ─── Chapter Engagement (aggregate highlights + reviews by chapter) ───
+
+function getBookChapterActivity(bookTitle) {
+  const d = getDb();
+
+  const hRows = d.prepare(`
+    SELECT h.chapter_title AS chapter, COUNT(*) AS cnt
+    FROM highlights h
+    JOIN books b ON h.book_id = b.id
+    WHERE b.title = ? AND h.chapter_title != ''
+    GROUP BY h.chapter_title
+  `).all(bookTitle);
+
+  const rRows = d.prepare(`
+    SELECT r.chapter_name AS chapter, COUNT(*) AS cnt
+    FROM reviews r
+    JOIN books b ON r.book_id = b.id
+    WHERE b.title = ? AND r.chapter_name != ''
+    GROUP BY r.chapter_name
+  `).all(bookTitle);
+
+  // Merge by chapter name
+  const map = new Map();
+  for (const row of hRows) {
+    map.set(row.chapter, { chapter: row.chapter, highlights: row.cnt, reviews: 0 });
+  }
+  for (const row of rRows) {
+    if (map.has(row.chapter)) {
+      map.get(row.chapter).reviews = row.cnt;
+    } else {
+      map.set(row.chapter, { chapter: row.chapter, highlights: 0, reviews: row.cnt });
+    }
+  }
+
+  return Array.from(map.values())
+    .map(c => ({ ...c, total: c.highlights + c.reviews }))
+    .sort((a, b) => b.total - a.total);
+}
+
 // ─── Book Intro (cached from WeRead API) ───
 
 function getBookIntro(bookId) {
@@ -649,6 +688,7 @@ module.exports = {
   setBookReadTime,
   getBookReadTimeFromDB,
   getBookMonthlyActivity,
+  getBookChapterActivity,
   // stats page additions
   getDeepThinking,
   getBookTimeline,
