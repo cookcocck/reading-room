@@ -1456,7 +1456,7 @@ h3 {
 /* ─── Book Detail — Two-column top section ─── */
 .book-detail-top {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: var(--space-10);
   align-items: start;
   margin-bottom: var(--space-8);
@@ -1739,8 +1739,17 @@ h3 {
 }
 
 /* ═══════════════════════════════════════════
-   Book Detail — Insight Row (Intro + Chapter Engagement)
+   Book Detail — Insight Row (阅读足迹 + 章节热度)
    ═══════════════════════════════════════════ */
+
+/* Full-width intro section above the insight row */
+.detail-intro-section {
+  margin: var(--space-8) 0;
+}
+
+.detail-intro-section .detail-insight-card {
+  /* same card styling, full width */
+}
 
 .detail-insight-row {
   display: grid;
@@ -1761,6 +1770,15 @@ h3 {
 
 .detail-insight-card .section-kicker {
   margin-bottom: var(--space-4);
+}
+
+/* Monthly bars inside card — suppress extra top margin */
+.detail-insight-card .monthly-bars {
+  margin-top: 0;
+}
+
+.detail-insight-card .monthly-empty-state {
+  padding: var(--space-2) 0;
 }
 
 /* ── Book Intro ── */
@@ -2051,12 +2069,16 @@ h3 {
     grid-template-columns: 1fr;
     gap: var(--space-6);
   }
-  .book-detail-right {
-    padding-top: 0;
-  }
   .detail-insight-row {
     grid-template-columns: 1fr;
     gap: var(--space-4);
+  }
+  .detail-intro-section {
+    margin: var(--space-5) 0;
+  }
+  .monthly-bar-row {
+    grid-template-columns: 90px 1fr 28px;
+    gap: var(--space-2);
   }
 }
 

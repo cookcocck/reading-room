@@ -52,46 +52,11 @@
         <% } %>
       </div>
     </div>
-
-    <!-- Right column: Monthly Reading Activity -->
-    <div class="book-detail-right">
-      <% if (monthlyBars && monthlyBars.length > 0) { %>
-      <div class="book-monthly-activity">
-        <div class="section-kicker">阅读足迹</div>
-        <div class="monthly-bars">
-          <% monthlyBars.forEach(function(m) { %>
-          <div class="monthly-bar-row">
-            <div class="monthly-bar-label"><%= m.label %></div>
-            <div class="monthly-bar-track">
-              <div class="monthly-bar-fill" style="width: <%= Math.round((m.estimatedSec / maxMonthlySec) * 100) %>%;">
-                <span class="monthly-bar-time"><%= m.timeLabel %></span>
-              </div>
-            </div>
-            <div class="monthly-bar-arrow">&#9662;</div>
-          </div>
-          <% }); %>
-        </div>
-      </div>
-      <% } else { %>
-      <div class="book-monthly-activity book-monthly-empty">
-        <div class="section-kicker">阅读足迹</div>
-        <div class="monthly-empty-state">
-          <% if (readTimeSec > 0) { %>
-            <p class="monthly-empty-total">累计阅读 <%= helpers.formatTime(readTimeSec) %></p>
-            <p class="monthly-empty-hint">按月分布数据将在下次同步后显示</p>
-          <% } else { %>
-            <p class="monthly-empty-hint">暂无月度阅读记录</p>
-          <% } %>
-        </div>
-      </div>
-      <% } %>
-    </div>
   </div>
 
-  <!-- Book Intro + Chapter Engagement row -->
-  <% if (intro || chapterActivity.length > 0) { %>
-  <div class="detail-insight-row">
-    <% if (intro) { %>
+  <!-- Book Intro — full width -->
+  <% if (intro) { %>
+  <div class="detail-intro-section">
     <div class="detail-insight-card" id="book-intro-card">
       <div class="section-kicker">书籍简介</div>
       <div class="book-intro-body" id="book-intro-body">
@@ -106,8 +71,45 @@
       ">展开全文</button>
       <% } %>
     </div>
+  </div>
+  <% } %>
+
+  <!-- 阅读足迹 + 章节热度 row -->
+  <% if ((monthlyBars && monthlyBars.length > 0) || chapterActivity.length > 0) { %>
+  <div class="detail-insight-row">
+    <!-- 阅读足迹 -->
+    <% if (monthlyBars && monthlyBars.length > 0) { %>
+    <div class="detail-insight-card">
+      <div class="section-kicker">阅读足迹</div>
+      <div class="monthly-bars">
+        <% monthlyBars.forEach(function(m) { %>
+        <div class="monthly-bar-row">
+          <div class="monthly-bar-label"><%= m.label %></div>
+          <div class="monthly-bar-track">
+            <div class="monthly-bar-fill" style="width: <%= Math.round((m.estimatedSec / maxMonthlySec) * 100) %>%;">
+              <span class="monthly-bar-time"><%= m.timeLabel %></span>
+            </div>
+          </div>
+          <div class="monthly-bar-arrow">&#9662;</div>
+        </div>
+        <% }); %>
+      </div>
+    </div>
+    <% } else { %>
+    <div class="detail-insight-card">
+      <div class="section-kicker">阅读足迹</div>
+      <div class="monthly-empty-state">
+        <% if (readTimeSec > 0) { %>
+          <p class="monthly-empty-total">累计阅读 <%= helpers.formatTime(readTimeSec) %></p>
+          <p class="monthly-empty-hint">按月分布数据将在下次同步后显示</p>
+        <% } else { %>
+          <p class="monthly-empty-hint">暂无月度阅读记录</p>
+        <% } %>
+      </div>
+    </div>
     <% } %>
 
+    <!-- 章节热度 -->
     <% if (chapterActivity.length > 0) { %>
     <div class="detail-insight-card">
       <div class="section-kicker">章节热度</div>
