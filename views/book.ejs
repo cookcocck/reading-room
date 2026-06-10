@@ -461,6 +461,19 @@
     var card = document.getElementById("share-card-inner");
     if (!card) { host.innerHTML = ""; return; }
 
+    // Show a brief loading overlay so the card flash is hidden from user
+    var overlay = document.createElement("div");
+    overlay.id = "share-loading-overlay";
+    overlay.style.cssText = "position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;letter-spacing:0.1em;";
+    overlay.textContent = "\u6B63\u5728\u751F\u6210\u5206\u4EAB\u56FE\u2026"; // 正在生成分享图…
+    document.body.appendChild(overlay);
+
+    // Bring card into visible viewport so html2canvas can find it
+    host.style.left = "0";
+    host.style.top = "0";
+    host.style.zIndex = "99999";
+    host.style.opacity = "1";
+
     Promise.all([
       waitForHtml2Canvas(),
       document.fonts ? document.fonts.ready : Promise.resolve()
@@ -479,11 +492,15 @@
       });
     }).then(function(canvas) {
       showModal(canvas);
-      host.innerHTML = "";
     }).catch(function(err) {
       console.error("[share] error:", err);
       alert("生成分享图失败：" + (err.message || err));
+    }).finally(function() {
       host.innerHTML = "";
+      host.style.left = "-9999px";
+      host.style.zIndex = "0";
+      host.style.opacity = "";
+      if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
     });
   }
 
