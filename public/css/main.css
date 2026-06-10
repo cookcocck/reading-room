@@ -1568,62 +1568,157 @@ h3 {
   letter-spacing: 0.06em;
 }
 
-/* Highlights — pull-quote style with left accent bar */
+/* Highlights — Premium Editorial Pull Quotes */
 .book-highlights {
 }
 .detail-highlight {
-  border-left: 3px solid var(--accent-bright);
-  padding: var(--space-4) var(--space-5);
-  margin: 0 0 var(--space-5) 0;
-  background: var(--paper-warm);
+  position: relative;
+  padding: var(--space-6) var(--space-6) var(--space-6) var(--space-7);
+  margin: 0 0 var(--space-6) 0;
+  border-left: 2px solid var(--accent-bright);
+  background:
+    linear-gradient(90deg, var(--accent-bright) 0%, transparent 100%) 0 0 / 100% 100% no-repeat;
+  background-size: 0% 100%;
+  background-origin: border-box;
+  transition:
+    transform 0.25s var(--ease-out),
+    border-left-color 0.25s var(--ease),
+    padding-left 0.25s var(--ease-out);
+  isolation: isolate;
 }
+
+/* Subtle tint overlay */
+.detail-highlight::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(105deg, var(--accent-bright) 0%, transparent 55%);
+  opacity: 0.035;
+  transition: opacity 0.25s var(--ease);
+}
+
+.detail-highlight::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--accent-bright);
+  opacity: 0;
+  transition: opacity 0.3s var(--ease);
+}
+
+.detail-highlight:hover {
+  transform: translateX(4px);
+  border-left-color: var(--accent);
+  padding-left: var(--space-8);
+}
+.detail-highlight:hover::before {
+  opacity: 0.07;
+}
+.detail-highlight:hover::after {
+  opacity: 1;
+}
+
 .detail-highlight p {
   font-family: var(--font-display);
-  font-size: var(--text-body-lg);
+  font-size: var(--text-pullquote);
   color: var(--ink);
-  line-height: 1.8;
-  margin: 0 0 var(--space-2) 0;
+  line-height: 1.75;
+  margin: 0 0 var(--space-4) 0;
+  letter-spacing: 0.005em;
 }
+
 .detail-highlight cite {
   display: block;
   font-family: var(--font-body);
-  font-size: var(--text-caption);
+  font-size: 0.6875rem;
   color: var(--ink-muted);
   font-style: normal;
-  margin-top: var(--space-3);
+  text-align: right;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-top: 1px solid var(--rule-thin);
+  padding-top: var(--space-4);
+  margin-top: var(--space-2);
 }
 
-/* Reviews — card style, warm tint, with chapter label */
+/* Reviews — Personal Annotations / Marginalia Style */
 .book-reviews {
 }
 .detail-review {
-  padding: var(--space-5) var(--space-5);
-  margin: 0 0 var(--space-5) 0;
-  background: var(--bg-soft);
-  border-left: 3px solid var(--accent-secondary);
+  position: relative;
+  padding: var(--space-6) var(--space-6) var(--space-6) var(--space-7);
+  margin: 0 0 var(--space-6) 0;
+  border-left: 2px solid var(--accent-secondary);
+  background:
+    linear-gradient(135deg, var(--accent-secondary) 0%, transparent 100%) 0 0 / 100% 100% no-repeat;
+  background-size: 0% 100%;
+  transition:
+    transform 0.25s var(--ease-out),
+    border-left-color 0.25s var(--ease),
+    padding-left 0.25s var(--ease-out);
+  isolation: isolate;
 }
+
+.detail-review::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(105deg, var(--accent-secondary) 0%, transparent 50%);
+  opacity: 0.04;
+  transition: opacity 0.25s var(--ease);
+}
+
+.detail-review:hover {
+  transform: translateX(4px);
+  border-left-color: #c96a50;
+  padding-left: var(--space-8);
+}
+.detail-review:hover::before {
+  opacity: 0.09;
+}
+
 .detail-review p {
   font-family: var(--font-body);
   font-size: var(--text-body);
   color: var(--ink-soft);
-  line-height: 1.8;
-  margin: 0 0 var(--space-2) 0;
+  line-height: 1.85;
+  margin: 0 0 var(--space-4) 0;
 }
+
 .detail-review cite {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
   font-family: var(--font-body);
-  font-size: var(--text-caption);
+  font-size: 0.6875rem;
   color: var(--ink-muted);
   font-style: normal;
-  margin-top: var(--space-3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-top: 1px solid var(--rule-thin);
+  padding-top: var(--space-4);
+  margin-top: var(--space-2);
 }
+
 .detail-review cite::before {
-  content: '📖 ';
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent-secondary);
+  flex-shrink: 0;
 }
 
 /* Dark theme overrides */
-[data-theme="dark"] .detail-highlight { background: var(--paper-warm); }
-[data-theme="dark"] .detail-review { background: var(--paper-warm); }
+[data-theme="dark"] .detail-highlight::before { opacity: 0.06; }
+[data-theme="dark"] .detail-highlight:hover::before { opacity: 0.12; }
+[data-theme="dark"] .detail-review::before { opacity: 0.06; }
+[data-theme="dark"] .detail-review:hover::before { opacity: 0.14; }
 [data-theme="dark"] .book-detail-cover { box-shadow: 0 2px 16px rgba(0,0,0,0.40); }
 [data-theme="dark"] .milestone-dot { background: var(--bg-soft); border-color: var(--rule); }
 [data-theme="dark"] .deep-think-item:hover { background: var(--bg-soft); }
