@@ -1670,14 +1670,73 @@ h3 {
 }
 
 /* ── Review card: clean personal note ── */
-.detail-review p {
+.detail-review p.review-content {
   font-family: var(--font-body);
-  font-size: var(--text-body);
+  font-size: var(--text-pullquote);
   color: var(--ink-soft);
   line-height: 1.85;
   margin: 0 0 var(--space-4) 0;
   position: relative;
   z-index: 1;
+}
+
+/* ── Review card: original quote (abstract) ── */
+.detail-review .review-quote {
+  position: relative;
+  margin: 0 0 var(--space-5) 0;
+  padding: var(--space-4) var(--space-5);
+  background: var(--rule-thin);
+  border-radius: 6px;
+  border-left: 3px solid var(--accent-bright);
+}
+
+.detail-review .review-quote p {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  color: var(--ink);
+  opacity: 0.65;
+  font-style: italic;
+  line-height: 1.6;
+  margin: 0;
+}
+
+[data-theme="dark"] .detail-review .review-quote {
+  background: var(--rule);
+}
+
+/* ── Review share button ── */
+.detail-review {
+  position: relative;
+}
+
+.detail-review .review-share-btn {
+  position: absolute;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: var(--rule-thin);
+  color: var(--ink-muted);
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s var(--ease-out), background 0.15s, color 0.15s, transform 0.15s;
+  z-index: 2;
+}
+
+.detail-review:hover .review-share-btn {
+  opacity: 1;
+}
+
+.detail-review .review-share-btn:hover {
+  background: var(--accent-secondary);
+  color: #fff;
+  transform: scale(1.08);
 }
 
 .detail-review cite {

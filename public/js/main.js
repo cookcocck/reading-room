@@ -117,8 +117,20 @@
       }
 
       function buildReview(r) {
-        var html = '<div class="detail-review"><p>' + escapeHTML(r.content) + '</p>';
-        if (r.chapter) html += '<cite>\u2014 ' + escapeHTML(r.chapter) + '</cite>';
+        var html = '<div class="detail-review">';
+        if (r.abstract) {
+          html += '<blockquote class="review-quote"><p>' + escapeHTML(r.abstract) + '</p></blockquote>';
+        }
+        html += '<p class="review-content">' + escapeHTML(r.content) + '</p>';
+        html += '<cite>';
+        if (r.star > 0) {
+          html += '<span class="review-stars">';
+          for (var s = 0; s < r.star; s++) html += '\u2605';
+          html += '</span>';
+        }
+        if (r.chapter) html += '\u2014 ' + escapeHTML(r.chapter);
+        html += '</cite>';
+        html += '<button class="review-share-btn" data-quote="' + (r.abstract ? escapeHTML(r.abstract) : '') + '" data-review="' + escapeHTML(r.content) + '" data-chapter="' + (r.chapter ? escapeHTML(r.chapter) : '') + '" title="\u751f\u6210\u5206\u4eab\u56fe" aria-label="\u751f\u6210\u5206\u4eab\u56fe">\u2934</button>';
         html += '</div>';
         return html;
       }

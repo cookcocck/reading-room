@@ -118,6 +118,14 @@ async function initDb() {
       // Column already exists — ignore
     }
 
+    // ─── Schema migration: add abstract column to reviews table ───
+    try {
+      sqlDb.run('ALTER TABLE reviews ADD COLUMN abstract TEXT DEFAULT \'\'');
+      console.log('[db] Migration: added reviews.abstract column');
+    } catch (e) {
+      // Column already exists — ignore
+    }
+
     console.log(`[db] Connected to reading-room.db (sql.js, ${(fileBuffer.length / 1024 / 1024).toFixed(1)} MB)`);
     return db;
   } catch (err) {
@@ -450,7 +458,7 @@ function getBookReviews(bookTitle, limitReviews = 5) {
   const d = getDb();
   // Match reviews to book by joining on book_id = books.id
   const rows = d.prepare(`
-    SELECT r.content, r.chapter_name, r.create_time, r.star
+    SELECT r.content, r.chapter_name, r.create_time, r.star, r.abstract
     FROM reviews r
     JOIN books b ON r.book_id = b.id
     WHERE b.title = ?
@@ -463,6 +471,7 @@ function getBookReviews(bookTitle, limitReviews = 5) {
     chapter: r.chapter_name || '',
     time: r.create_time || 0,
     star: r.star != null ? r.star : -1,
+    abstract: r.abstract || '',
   }));
 }
 
