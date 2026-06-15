@@ -1,242 +1,318 @@
-<!-- ═══════════════════════════════════════
-   BOOK DETAIL — Full-page book view
-   ═══════════════════════════════════════ -->
-<div class="container-wide" data-book-title="<%= book.title.replace(/"/g, '&quot;') %>" data-book-author="<%= (book.author || '').replace(/"/g, '&quot;') %>">
-  <a href="/bookshelf" class="back-link">&larr; 返回书架</a>
+<!-- ═══════════════════════════════════════════════════════
+   BOOK DETAIL — Redesigned
+   Curated reading experience with editorial depth.
+   ═══════════════════════════════════════════════════════ -->
+<div class="bd-container" data-book-title="<%= book.title.replace(/"/g, '&quot;') %>" data-book-author="<%= (book.author || '').replace(/"/g, '&quot;') %>">
 
-  <div class="book-detail-top">
-    <!-- Left column: Book info -->
-    <div class="book-detail-left">
-      <div class="book-detail-cover">
-        <% if (book.cover) { %>
-          <img src="<%= book.cover %>" alt="" onerror="this.style.display='none';this.parentElement.innerHTML='&#128218;'">
-        <% } else { %>
-          &#128218;
+  <!-- Breadcrumb -->
+  <nav class="bd-breadcrumb">
+    <a href="/" class="bd-breadcrumb-home">阅读书房</a>
+    <span class="bd-breadcrumb-sep">/</span>
+    <a href="/bookshelf" class="bd-breadcrumb-link">书架</a>
+    <span class="bd-breadcrumb-sep">/</span>
+    <span class="bd-breadcrumb-current"><%= book.title %></span>
+  </nav>
+
+  <!-- ═══ Hero: Cover + Info ═══ -->
+  <section class="bd-hero">
+    <!-- Decorative background character -->
+    <div class="bd-hero-decor" aria-hidden="true">读</div>
+
+    <div class="bd-hero-cover">
+      <% if (book.cover) { %>
+        <img src="<%= book.cover %>" alt="<%= book.title %> 封面" onerror="this.style.display='none';this.parentElement.querySelector('.bd-hero-cover-fallback').style.display='flex'">
+      <% } %>
+      <div class="bd-hero-cover-fallback" style="display:<%= book.cover ? 'none' : 'flex' %>">&#128218;</div>
+      <!-- Progress ring (reading books only) -->
+      <% if (!book.finished && book.progress > 0) { %>
+      <div class="bd-cover-progress">
+        <svg viewBox="0 0 36 36" class="bd-cover-progress-ring">
+          <path class="bd-cover-progress-bg"
+            d="M18 2.0845
+              a 15.9155 15.9155 0 0 1 0 31.831
+              a 15.9155 15.9155 0 0 1 0 -31.831"
+            fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+          <path class="bd-cover-progress-fill"
+            d="M18 2.0845
+              a 15.9155 15.9155 0 0 1 0 31.831
+              a 15.9155 15.9155 0 0 1 0 -31.831"
+            fill="none" stroke="currentColor" stroke-width="2"
+            stroke-dasharray="<%= book.progress %>, 100"
+            stroke-linecap="round"/>
+        </svg>
+        <span class="bd-cover-progress-text"><%= book.progress %>%</span>
+      </div>
+      <% } %>
+    </div>
+
+    <div class="bd-hero-body">
+      <!-- Status + Category -->
+      <div class="bd-hero-meta">
+        <% if (book.category) { %>
+        <span class="bd-hero-category"><%= book.category %></span>
         <% } %>
-      </div>
-
-      <h1 class="book-detail-title"><%= book.title %></h1>
-      <div class="book-detail-author"><%= book.author || '佚名' %></div>
-
-      <div class="book-detail-meta">
-        <% if (book.category) { %><span class="book-detail-tag"><%= book.category %></span><% } %>
-        <% if (book.finished) { %><span class="book-detail-tag done">已读完</span><% } else { %><span class="book-detail-tag reading">在读</span><% } %>
-      </div>
-
-      <!-- Rating -->
-      <div class="book-rating-row">
-        <span class="star-rating" id="star-rating">
-          <% for (var s = 1; s <= 5; s++) { %>
-          <button class="star-rating-btn <%= s <= userRating ? 'active' : '' %>" onclick="rateBook('<%= book.id %>',<%= s %>)" title="<%= s %>星">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="<%= s <= userRating ? 'currentColor' : 'none' %>" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          </button>
-          <% } %>
+        <span class="bd-hero-status <%= book.finished ? 'bd-hero-status--finished' : 'bd-hero-status--reading' %>">
+          <%= book.finished ? '已读完' : '在读' %>
         </span>
       </div>
 
-      <!-- Reading Stats — always show -->
-      <div class="book-detail-stats">
+      <!-- Title -->
+      <h1 class="bd-hero-title"><%= book.title %></h1>
+      <p class="bd-hero-author"><%= book.author || '佚名' %></p>
+
+      <!-- Rating -->
+      <div class="bd-hero-rating" id="star-rating">
+        <% for (var s = 1; s <= 5; s++) { %>
+        <button class="bd-star <%= s <= userRating ? 'bd-star--active' : '' %>" onclick="rateBook('<%= book.id %>',<%= s %>)" title="<%= s %>星" aria-label="评分 <%= s %> 星">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="<%= s <= userRating ? 'currentColor' : 'none' %>" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </button>
+        <% } %>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="bd-stats">
         <% if (readTimeSec > 0) { %>
-        <div class="detail-stat">
-          <span class="detail-stat-value"><%= helpers.formatTime(readTimeSec) %></span>
-          <span class="detail-stat-label">阅读时长</span>
+        <div class="bd-stat-card">
+          <div class="bd-stat-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="bd-stat-body">
+            <span class="bd-stat-value"><%= helpers.formatTime(readTimeSec) %></span>
+            <span class="bd-stat-label">阅读时长</span>
+          </div>
         </div>
         <% } %>
         <% if (book.progress > 0) { %>
-        <div class="detail-stat">
-          <span class="detail-stat-value"><%= book.progress %>%</span>
-          <span class="detail-stat-label">阅读进度</span>
+        <div class="bd-stat-card">
+          <div class="bd-stat-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          </div>
+          <div class="bd-stat-body">
+            <span class="bd-stat-value"><%= book.progress %>%</span>
+            <span class="bd-stat-label">阅读进度</span>
+          </div>
         </div>
         <% } %>
         <% if (book.notebook) { %>
           <% if (book.notebook.noteCount > 0) { %>
-          <div class="detail-stat">
-            <span class="detail-stat-value"><%= book.notebook.noteCount %></span>
-            <span class="detail-stat-label">划线</span>
+          <div class="bd-stat-card">
+            <div class="bd-stat-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            </div>
+            <div class="bd-stat-body">
+              <span class="bd-stat-value"><%= book.notebook.noteCount %></span>
+              <span class="bd-stat-label">划线</span>
+            </div>
           </div>
           <% } %>
           <% if (book.notebook.reviewCount > 0) { %>
-          <div class="detail-stat">
-            <span class="detail-stat-value"><%= book.notebook.reviewCount %></span>
-            <span class="detail-stat-label">想法</span>
+          <div class="bd-stat-card">
+            <div class="bd-stat-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <div class="bd-stat-body">
+              <span class="bd-stat-value"><%= book.notebook.reviewCount %></span>
+              <span class="bd-stat-label">想法</span>
+            </div>
           </div>
           <% } %>
           <% if (book.notebook.bookmarkCount > 0) { %>
-          <div class="detail-stat">
-            <span class="detail-stat-value"><%= book.notebook.bookmarkCount %></span>
-            <span class="detail-stat-label">书签</span>
+          <div class="bd-stat-card">
+            <div class="bd-stat-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <div class="bd-stat-body">
+              <span class="bd-stat-value"><%= book.notebook.bookmarkCount %></span>
+              <span class="bd-stat-label">书签</span>
+            </div>
           </div>
           <% } %>
         <% } %>
       </div>
     </div>
+  </section>
+
+  <!-- ═══ Divider ═══ -->
+  <div class="bd-divider">
+    <span class="bd-divider-ornament">❧</span>
   </div>
 
-  <!-- Book Intro — full width -->
+  <!-- ═══ Book Intro ═══ -->
   <% if (intro) { %>
-  <div class="detail-intro-section">
-    <div class="detail-insight-card" id="book-intro-card">
-      <div class="section-kicker">书籍简介</div>
-      <div class="book-intro-body" id="book-intro-body">
+  <section class="bd-intro">
+    <div class="bd-intro-card">
+      <span class="bd-intro-quote-mark" aria-hidden="true">"</span>
+      <div class="bd-intro-body" id="book-intro-body">
         <p><%= intro %></p>
       </div>
       <% if (intro.length > 200) { %>
-      <button class="intro-toggle" id="intro-toggle" onclick="
+      <button class="bd-intro-toggle" id="intro-toggle" onclick="
         var b=document.getElementById('book-intro-body');
         var t=document.getElementById('intro-toggle');
-        b.classList.toggle('expanded');
-        t.textContent = b.classList.contains('expanded') ? '收起' : '展开全文';
+        b.classList.toggle('bd-intro-body--expanded');
+        t.textContent = b.classList.contains('bd-intro-body--expanded') ? '收起简介' : '展开全文';
       ">展开全文</button>
       <% } %>
     </div>
-  </div>
+  </section>
   <% } %>
 
-  <!-- 阅读足迹 + 章节热度 row -->
+  <!-- ═══ Reading Footprint + Chapter Activity ═══ -->
   <% if ((monthlyBars && monthlyBars.length > 0) || chapterActivity.length > 0) { %>
-  <div class="detail-insight-row">
-    <!-- 阅读足迹 -->
-    <% if (monthlyBars && monthlyBars.length > 0) { %>
-    <div class="detail-insight-card">
-      <div class="section-kicker">阅读足迹</div>
-      <div class="monthly-bars">
+  <section class="bd-insight-grid">
+    <!-- Reading Footprint -->
+    <div class="bd-insight-card">
+      <h3 class="bd-insight-title">阅读足迹</h3>
+      <% if (monthlyBars && monthlyBars.length > 0) { %>
+      <div class="bd-monthly-bars">
         <% monthlyBars.forEach(function(m) { %>
-        <div class="monthly-bar-row">
-          <div class="monthly-bar-label"><%= m.label %></div>
-          <div class="monthly-bar-track">
-            <div class="monthly-bar-fill" style="width: <%= Math.round((m.estimatedSec / maxMonthlySec) * 100) %>%;">
-              <span class="monthly-bar-time"><%= m.timeLabel %></span>
+        <div class="bd-monthly-row">
+          <span class="bd-monthly-label"><%= m.label %></span>
+          <div class="bd-monthly-track">
+            <div class="bd-monthly-fill" style="width: <%= Math.round((m.estimatedSec / maxMonthlySec) * 100) %>%;">
+              <span class="bd-monthly-time"><%= m.timeLabel %></span>
             </div>
           </div>
-          <div class="monthly-bar-arrow">&#9662;</div>
         </div>
         <% }); %>
       </div>
-    </div>
-    <% } else { %>
-    <div class="detail-insight-card">
-      <div class="section-kicker">阅读足迹</div>
-      <div class="monthly-empty-state">
+      <% } else { %>
+      <div class="bd-monthly-empty">
         <% if (readTimeSec > 0) { %>
-          <p class="monthly-empty-total">累计阅读 <%= helpers.formatTime(readTimeSec) %></p>
-          <p class="monthly-empty-hint">按月分布数据将在下次同步后显示</p>
+          <p class="bd-monthly-empty-total">累计 <%= helpers.formatTime(readTimeSec) %></p>
+          <p class="bd-monthly-empty-hint">按月分布将在下次同步后显示</p>
         <% } else { %>
-          <p class="monthly-empty-hint">暂无月度阅读记录</p>
+          <p class="bd-monthly-empty-hint">暂无月度阅读记录</p>
         <% } %>
       </div>
+      <% } %>
     </div>
-    <% } %>
 
-    <!-- 章节热度 -->
+    <!-- Chapter Activity -->
     <% if (chapterActivity.length > 0) { %>
-    <div class="detail-insight-card">
-      <div class="section-kicker">章节热度</div>
-      <div class="chapter-bars">
-        <% chapterActivity.forEach(function(c, i) { %>
-        <div class="chapter-bar-row">
-          <div class="chapter-bar-label" title="<%= c.chapter %>"><%= c.chapter.length > 12 ? c.chapter.slice(0,12) + '…' : c.chapter %></div>
-          <div class="chapter-bar-track">
-            <div class="chapter-bar-fill" style="width: <%= Math.round((c.total / maxChapterTotal) * 100) %>%;">
-              <span class="chapter-bar-count"><%= c.total %>条</span>
+    <div class="bd-insight-card">
+      <h3 class="bd-insight-title">章节热度</h3>
+      <div class="bd-chapter-bars">
+        <% chapterActivity.forEach(function(c) { %>
+        <div class="bd-chapter-row">
+          <span class="bd-chapter-label" title="<%= c.chapter %>"><%= c.chapter.length > 14 ? c.chapter.slice(0,14) + '…' : c.chapter %></span>
+          <div class="bd-chapter-track">
+            <div class="bd-chapter-fill" style="width: <%= Math.round((c.total / maxChapterTotal) * 100) %>%;">
+              <span class="bd-chapter-count"><%= c.total %> 条</span>
             </div>
           </div>
-          <div class="chapter-bar-detail">
-            <% if (c.highlights > 0) { %><span class="chap-dot hl"></span><%= c.highlights %><% } %>
-            <% if (c.reviews > 0) { %><span class="chap-dot rv"></span><%= c.reviews %><% } %>
-          </div>
+          <span class="bd-chapter-detail">
+            <% if (c.highlights > 0) { %><span class="bd-chap-dot bd-chap-dot--hl"></span><%= c.highlights %><% } %>
+            <% if (c.reviews > 0) { %><span class="bd-chap-dot bd-chap-dot--rv"></span><%= c.reviews %><% } %>
+          </span>
         </div>
         <% }); %>
       </div>
     </div>
     <% } %>
-  </div>
+  </section>
   <% } %>
 
-    <!-- Highlights & Reviews — side by side -->
-    <% if (highlights.length > 0 || reviews.length > 0) { %>
-    <hr class="section-rule">
-    <div class="detail-columns">
-      <!-- Left: Highlights -->
-      <div class="detail-col">
-        <div class="section-head-row">
-          <div class="section-kicker">划线摘录</div>
-          <% if (highlights.length > 0) { %>
-          <button class="shuffle-btn" data-section="highlights" data-book="<%= book.id %>" title="随机换一批">⟳</button>
-          <% } %>
-        </div>
+  <!-- ═══ Highlights & Reviews ═══ -->
+  <% if (highlights.length > 0 || reviews.length > 0) { %>
+  <div class="bd-divider"></div>
+  <section class="bd-notes-grid">
+    <!-- Highlights Column -->
+    <div class="bd-notes-col">
+      <div class="bd-notes-head">
+        <h3 class="bd-insight-title">划线摘录</h3>
         <% if (highlights.length > 0) { %>
-        <div class="book-highlights" id="book-highlights">
-          <% highlights.forEach(function(h) { %>
-          <blockquote class="detail-highlight">
-            <p><%= h.text %></p>
-            <% if (h.chapter) { %><cite>— <%= h.chapter %></cite><% } %>
-            <button class="highlight-share-btn" data-text="<%= h.text.replace(/"/g, '&quot;') %>" data-chapter="<%= (h.chapter || '').replace(/"/g, '&quot;') %>" title="生成分享图" aria-label="生成分享图">⤴</button>
-          </blockquote>
-          <% }); %>
-        </div>
-        <% } else { %>
-        <div class="empty-state empty-state-col">
-          <p class="empty-state-text">暂无摘录</p>
-        </div>
+        <button class="bd-shuffle-btn" data-section="highlights" data-book="<%= book.id %>" title="随机换一批">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        </button>
         <% } %>
       </div>
-
-      <!-- Right: Reviews -->
-      <div class="detail-col">
-        <div class="section-head-row">
-          <div class="section-kicker">我的想法</div>
-          <% if (reviews.length > 0) { %>
-          <button class="shuffle-btn" data-section="reviews" data-book="<%= book.id %>" title="随机换一批">⟳</button>
+      <% if (highlights.length > 0) { %>
+      <div class="bd-highlights" id="book-highlights">
+        <% highlights.forEach(function(h) { %>
+        <blockquote class="bd-highlight-card">
+          <p class="bd-highlight-text"><%= h.text %></p>
+          <% if (h.chapter) { %>
+          <footer class="bd-highlight-footer">
+            <span class="bd-highlight-chapter"><%= h.chapter %></span>
+            <button class="bd-share-btn highlight-share-btn" data-text="<%= h.text.replace(/"/g, '&quot;') %>" data-chapter="<%= (h.chapter || '').replace(/"/g, '&quot;') %>" title="生成分享图" aria-label="生成分享图">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            </button>
+          </footer>
           <% } %>
-        </div>
+        </blockquote>
+        <% }); %>
+      </div>
+      <% } else { %>
+      <div class="bd-empty-block">暂无摘录</div>
+      <% } %>
+    </div>
+
+    <!-- Reviews Column -->
+    <div class="bd-notes-col">
+      <div class="bd-notes-head">
+        <h3 class="bd-insight-title">我的想法</h3>
         <% if (reviews.length > 0) { %>
-        <div class="book-reviews" id="book-reviews">
-          <% reviews.forEach(function(r) { %>
-          <div class="detail-review">
-            <% if (r.abstract) { %>
-            <blockquote class="review-quote"><p><%= r.abstract %></p></blockquote>
-            <% } %>
-            <p class="review-content"><%= r.content %></p>
-            <cite>
-              <% if (r.star > 0) { %>
-              <span class="review-stars"><% for (var s=0; s<r.star; s++) { %>&#9733;<% } %></span>
-              <% } %>
-              <% if (r.chapter) { %>— <%= r.chapter %><% } %>
-            </cite>
-            <button class="review-share-btn" data-quote="<%= (r.abstract || '').replace(/"/g, '&quot;') %>" data-review="<%= r.content.replace(/"/g, '&quot;') %>" data-chapter="<%= (r.chapter || '').replace(/"/g, '&quot;') %>" title="生成分享图" aria-label="生成分享图">⤴</button>
-          </div>
-          <% }); %>
-        </div>
-        <% } else { %>
-        <div class="empty-state empty-state-col">
-          <p class="empty-state-text">暂无想法</p>
-        </div>
+        <button class="bd-shuffle-btn" data-section="reviews" data-book="<%= book.id %>" title="随机换一批">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        </button>
         <% } %>
       </div>
+      <% if (reviews.length > 0) { %>
+      <div class="bd-reviews" id="book-reviews">
+        <% reviews.forEach(function(r) { %>
+        <div class="bd-review-card">
+          <% if (r.abstract) { %>
+          <blockquote class="bd-review-quote"><%= r.abstract %></blockquote>
+          <% } %>
+          <p class="bd-review-content"><%= r.content %></p>
+          <footer class="bd-review-footer">
+            <span class="bd-review-meta">
+              <% if (r.star > 0) { %><span class="bd-review-stars"><% for (var s=0; s<r.star; s++) { %>★<% } %></span><% } %>
+              <% if (r.chapter) { %>— <%= r.chapter %><% } %>
+            </span>
+            <button class="bd-share-btn review-share-btn" data-quote="<%= (r.abstract || '').replace(/"/g, '&quot;') %>" data-review="<%= r.content.replace(/"/g, '&quot;') %>" data-chapter="<%= (r.chapter || '').replace(/"/g, '&quot;') %>" title="生成分享图" aria-label="生成分享图">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            </button>
+          </footer>
+        </div>
+        <% }); %>
+      </div>
+      <% } else { %>
+      <div class="bd-empty-block">暂无想法</div>
+      <% } %>
     </div>
-    <% } else { %>
-    <hr class="section-rule">
-    <div class="empty-state">
-      <p class="empty-state-text">暂无笔记摘录</p>
+  </section>
+  <% } %>
+
+  <!-- ═══ Notes by Chapter ═══ -->
+  <% if (notesByChapter && notesByChapter.length > 0) { %>
+  <div class="bd-divider"></div>
+  <section class="bd-toc">
+    <h3 class="bd-insight-title">全书笔记分布</h3>
+    <div class="bd-toc-list">
+      <% notesByChapter.forEach(function(c, i) { %>
+      <div class="bd-toc-item">
+        <span class="bd-toc-index"><%= String(i + 1).padStart(2, '0') %></span>
+        <span class="bd-toc-name"><%= c.chapter %></span>
+        <span class="bd-toc-count"><%= c.count %> 条笔记</span>
+      </div>
+      <% }); %>
     </div>
-    <% } %>
+  </section>
+  <% } %>
+
+  <!-- Back to top -->
+  <div class="bd-footer-nav">
+    <a href="/bookshelf" class="bd-footer-back">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      返回书架
+    </a>
   </div>
 
-  <!-- Notes by Chapter -->
-  <% if (notesByChapter && notesByChapter.length > 0) { %>
-  <div class="book-notes-toc">
-    <h4>全书笔记分布</h4>
-    <% notesByChapter.forEach(function(c) { %>
-    <div class="toc-chapter">
-      <span class="toc-chapter-name"><%= c.chapter %></span>
-      <span class="toc-chapter-count"><%= c.count %> 条</span>
-    </div>
-    <% }); %>
-  </div>
-  <% } %>
 </div>
 
-<!-- Share Quote Card — hidden, used by html2canvas -->
+<!-- Share Quote Card — hidden -->
 <div id="share-card-host" style="position:fixed;left:-9999px;top:0;z-index:0;"></div>
 
 <!-- Share Preview Modal -->
@@ -307,62 +383,43 @@
       "padding:90px 110px;box-sizing:border-box;position:relative;" +
       "font-family:serif;overflow:hidden;" +
       '">' +
-
-      // Top-left large quote
       '<div style="' +
       "position:absolute;top:70px;left:90px;" +
       "font-size:160px;line-height:1;" +
       "color:" + accent + ";opacity:0.07;font-family:serif;user-select:none;" +
       '">' + QL + "</div>" +
-
-      // Bottom-right mirrored quote
       '<div style="' +
       "position:absolute;bottom:70px;right:90px;" +
       "font-size:120px;line-height:1;" +
       "color:" + accent + ";opacity:0.05;font-family:serif;user-select:none;" +
       "transform:scaleX(-1);" +
       '">' + QL + "</div>" +
-
-      // Top rule
       '<div style="' +
       "position:absolute;top:0;left:90px;right:90px;" +
       "height:2px;background:" + accent + ";opacity:0.3;" +
       '"></div>' +
-
-      // Bottom rule
       '<div style="' +
       "position:absolute;bottom:0;left:90px;right:90px;" +
       "height:2px;background:" + accent + ";opacity:0.3;" +
       '"></div>' +
-
-      // Central content
       '<div style="' +
       "max-width:1050px;text-align:center;position:relative;z-index:1;" +
       '">' +
-
-      // Quote text
       "<p style=\"" +
       "font-family:serif;font-size:36px;line-height:1.7;color:" + ink + ";" +
       "margin:0 0 32px 0;letter-spacing:0.02em;" +
       "\">" + escapeHtml(text) + "</p>" +
-
-      // Chapter
       (chapter ? "<p style=\"" +
       "font-size:17px;color:" + inkMuted + ";margin:0 0 28px 0;letter-spacing:0.08em;" +
       "\">" + MD + " " + escapeHtml(chapter) + "</p>" : "") +
-
-      // Divider
       '<div style="' +
       "width:70px;height:1px;background:" + rule + ";margin:0 auto 28px auto;" +
       '"></div>' +
-
-      // Book title + author
       "<p style=\"" +
       "font-size:18px;color:" + inkSoft + ";margin:0;font-weight:600;letter-spacing:0.04em;" +
       "\">" + LS + escapeHtml(bookTitle) + RS +
       (bookAuthor ? " " + DOT + " " + escapeHtml(bookAuthor) : "") +
       "</p>" +
-
       "</div>" +
       "</div>"
     );
@@ -373,7 +430,6 @@
     var ink      = themeColor("#171717", "#e8e6e0");
     var inkSoft  = themeColor("#3d3d3d", "#b0aea8");
     var inkMuted = themeColor("#8a8a85", "#706e68");
-    var rule     = themeColor("#e0ded8", "#2a2a26");
     var accent   = themeColor("#e07a5f", "#d4846e");
     var accent2  = themeColor("#2c5282", "#93bfec");
 
@@ -390,10 +446,8 @@
       '">'
     );
 
-    // If there's a quote, show it as a subdued block
     if (quote) {
       html += (
-        // Quote block
         '<div style="' +
         "position:relative;max-width:1050px;margin-bottom:40px;padding:0 20px;" +
         '">' +
@@ -409,7 +463,6 @@
       );
     }
 
-    // Review content — the main event
     html += (
       '<div style="' +
       "max-width:1050px;text-align:center;position:relative;z-index:1;" +
@@ -420,29 +473,19 @@
       "\">" + escapeHtml(review) + "</p>"
     );
 
-    // Chapter
     if (chapter) {
       html += "<p style=\"" +
         "font-size:15px;color:" + inkMuted + ";margin:0 0 24px 0;letter-spacing:0.08em;" +
         "\">" + MD + " " + escapeHtml(chapter) + "</p>";
     }
 
-    // Divider
     html += (
       '<div style="' +
       "width:50px;height:2px;background:" + accent + ";opacity:0.4;margin:0 auto 24px auto;border-radius:1px;" +
-      '"></div>'
-    );
-
-    // My Thoughts label
-    html += (
+      '"></div>' +
       "<p style=\"" +
       "font-size:13px;color:" + accent + ";margin:0 0 16px 0;letter-spacing:0.2em;text-transform:uppercase;opacity:0.7;" +
-      "\">\u6211\u7684\u60F3\u6CD5</p>"
-    );
-
-    // Book reference
-    html += (
+      "\">\u6211\u7684\u60F3\u6CD5</p>" +
       "<p style=\"" +
       "font-size:16px;color:" + inkSoft + ";margin:0;font-weight:600;letter-spacing:0.04em;" +
       "\">" + escapeHtml(bookTitle) +
@@ -451,33 +494,30 @@
     );
 
     html += "</div></div>";
-
     return html;
   }
 
   // Click handler for share buttons
   document.addEventListener("click", function(e) {
-    // Highlight share
     var hlBtn = e.target.closest(".highlight-share-btn");
     if (hlBtn) {
       e.preventDefault();
       var text = hlBtn.getAttribute("data-text") || "";
       var chapter = hlBtn.getAttribute("data-chapter") || "";
-      var container = document.querySelector(".container-wide");
+      var container = document.querySelector(".bd-container");
       var bookTitle = container ? (container.getAttribute("data-book-title") || "") : "";
       var bookAuthor = container ? (container.getAttribute("data-book-author") || "") : "";
       generateAndShow(buildShareCard(text, chapter, bookTitle, bookAuthor));
       return;
     }
 
-    // Review share
     var rvBtn = e.target.closest(".review-share-btn");
     if (rvBtn) {
       e.preventDefault();
       var quote = rvBtn.getAttribute("data-quote") || "";
       var review = rvBtn.getAttribute("data-review") || "";
       var chapter = rvBtn.getAttribute("data-chapter") || "";
-      var container = document.querySelector(".container-wide");
+      var container = document.querySelector(".bd-container");
       var bookTitle = container ? (container.getAttribute("data-book-title") || "") : "";
       var bookAuthor = container ? (container.getAttribute("data-book-author") || "") : "";
       generateAndShow(buildReviewShareCard(quote, review, chapter, bookTitle, bookAuthor));
@@ -493,21 +533,18 @@
     var card = document.getElementById("share-card-inner");
     if (!card) { host.innerHTML = ""; return; }
 
-    // Show loading overlay first — force paint so it covers everything
     var overlay = document.createElement("div");
     overlay.id = "share-loading-overlay";
     overlay.style.cssText = "position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;letter-spacing:0.1em;";
     overlay.textContent = "\u6B63\u5728\u751F\u6210\u5206\u4EAB\u56FE\u2026";
     document.body.appendChild(overlay);
-    // Force synchronous paint — read layout to flush
     overlay.offsetHeight;
 
-    // Defer card show to next frame so overlay is already painted
     requestAnimationFrame(function() {
       host.style.left = "0";
       host.style.top = "0";
       host.style.zIndex = "99990";
-      host.style.opacity = "0";  // visually hidden, html2canvas still catches it
+      host.style.opacity = "0";
       host.style.maxWidth = "100vw";
       host.style.maxHeight = "100vh";
       host.style.overflow = "hidden";
@@ -516,7 +553,6 @@
         waitForHtml2Canvas(),
         document.fonts ? document.fonts.ready : Promise.resolve()
       ]).then(function() {
-        // Restore opacity on clone so canvas is fully opaque
         return html2canvas(card, {
           backgroundColor: null,
           scale: 2,
