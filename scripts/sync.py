@@ -561,8 +561,9 @@ def main():
     log("=" * 60)
 
     if not DB_PATH.exists():
-        log(f"ERROR: Database not found at {DB_PATH}")
-        sys.exit(1)
+        import os as _os
+        _os.makedirs(DB_PATH.parent, exist_ok=True)
+        log(f"Database not found, initializing: {DB_PATH}")
 
     conn = get_conn()
     ensure_tables(conn)
