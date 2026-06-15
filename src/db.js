@@ -139,6 +139,22 @@ async function initDb() {
       // Column already exists — ignore
     }
 
+    // ─── Schema migration: add progress column to books table ───
+    try {
+      sqlDb.run('ALTER TABLE books ADD COLUMN progress INTEGER DEFAULT 0');
+      console.log('[db] Migration: added books.progress column');
+    } catch (e) {
+      // Column already exists — ignore
+    }
+
+    // ─── Schema migration: add last_read_time column to books table ───
+    try {
+      sqlDb.run('ALTER TABLE books ADD COLUMN last_read_time INTEGER DEFAULT 0');
+      console.log('[db] Migration: added books.last_read_time column');
+    } catch (e) {
+      // Column already exists — ignore
+    }
+
     // ─── Schema migration: add abstract column to reviews table ───
     try {
       sqlDb.run('ALTER TABLE reviews ADD COLUMN abstract TEXT DEFAULT \'\'');

@@ -36,10 +36,18 @@
 
       <!-- Reading Stats — always show -->
       <div class="book-detail-stats">
+        <% if (readTimeSec > 0) { %>
         <div class="detail-stat">
           <span class="detail-stat-value"><%= helpers.formatTime(readTimeSec) %></span>
           <span class="detail-stat-label">阅读时长</span>
         </div>
+        <% } %>
+        <% if (book.progress > 0) { %>
+        <div class="detail-stat">
+          <span class="detail-stat-value"><%= book.progress %>%</span>
+          <span class="detail-stat-label">阅读进度</span>
+        </div>
+        <% } %>
         <% if (book.notebook) { %>
           <% if (book.notebook.noteCount > 0) { %>
           <div class="detail-stat">

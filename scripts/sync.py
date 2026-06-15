@@ -108,7 +108,10 @@ def ensure_tables(conn):
             cover TEXT DEFAULT '',
             category TEXT DEFAULT '',
             finished INTEGER NOT NULL DEFAULT 0,
-            update_time INTEGER DEFAULT 0
+            update_time INTEGER DEFAULT 0,
+            read_time INTEGER DEFAULT 0,
+            progress INTEGER DEFAULT 0,
+            last_read_time INTEGER DEFAULT 0
         );
 
         CREATE TABLE IF NOT EXISTS highlights (
@@ -173,6 +176,22 @@ def ensure_tables(conn):
             try:
                 conn.execute(f"ALTER TABLE sync_log ADD COLUMN {col} {col_type}")
                 log(f"  [migration] Added missing column sync_log.{col}")
+            except sqlite3.OperationalError:
+                pass
+    conn.commit()
+
+    # ── Schema migration: add missing columns to existing books table ──
+    book_migrations = {
+        "read_time":      "INTEGER DEFAULT 0",
+        "progress":       "INTEGER DEFAULT 0",
+        "last_read_time": "INTEGER DEFAULT 0",
+    }
+    existing_book_cols = {r[1] for r in conn.execute("PRAGMA table_info(books)")}
+    for col, col_type in book_migrations.items():
+        if col not in existing_book_cols:
+            try:
+                conn.execute(f"ALTER TABLE books ADD COLUMN {col} {col_type}")
+                log(f"  [migration] Added missing column books.{col}")
             except sqlite3.OperationalError:
                 pass
     conn.commit()
@@ -338,10 +357,44 @@ def fetch_reviews(book_id: str) -> list:
         return None
 
 
+# ─── Phase 3.5: Book Progress Sync ────────────────────────────────────────────
+
+def fetch_book_progress(book_id: str) -> dict:
+    """Fetch per-book reading progress from /book/getprogress.
+    Returns dict with read_time, progress, last_read_time, or None on error.
+    """
+    try:
+        result = call_api("/book/getprogress", {"bookId": book_id})
+        book = result.get("book", {})
+        return {
+            "read_time": int(book.get("recordReadingTime", 0)),
+            "progress": int(book.get("progress", 0)),
+            "last_read_time": int(book.get("updateTime", 0)),
+        }
+    except Exception as e:
+        log(f"    [!] Progress fetch failed: {e}")
+        return None
+
+
+def save_book_progress(conn, book_id: str, progress: dict) -> bool:
+    """Save book progress to the books table. Returns True on success."""
+    if not progress:
+        return False
+    conn.execute(
+        """UPDATE books SET read_time=?, progress=?, last_read_time=?
+           WHERE id=?""",
+        (progress["read_time"], progress["progress"],
+         progress["last_read_time"], book_id),
+    )
+    return True
+
+
 def sync_book_notes(conn, book_id: str, book_title: str) -> tuple:
-    """Sync highlights and reviews for one book. Returns (h_count, r_count)."""
+    """Sync highlights, reviews, and progress for one book.
+    Returns (h_count, r_count, progress_sec)."""
     h_count = 0
     r_count = 0
+    p_sec = 0
 
     # Highlights
     highlights = fetch_highlights(book_id)
@@ -383,7 +436,15 @@ def sync_book_notes(conn, book_id: str, book_title: str) -> tuple:
         conn.commit()
         log(f"    reviews: {r_count}")
 
-    return h_count, r_count
+    # Progress (per-book reading time from /book/getprogress)
+    p = fetch_book_progress(book_id)
+    if p is not None:
+        save_book_progress(conn, book_id, p)
+        p_sec = p["read_time"]
+        if p_sec > 0:
+            log(f"    read_time: {p_sec}s ({p_sec // 3600}h {p_sec % 3600 // 60}m), progress: {p['progress']}%")
+
+    return h_count, r_count, p_sec
 
 
 def detect_changed_books(
@@ -498,7 +559,7 @@ def main():
     sync_id = cur.lastrowid
     conn.commit()
 
-    stats = {"books": 0, "highlights": 0, "reviews": 0}
+    stats = {"books": 0, "highlights": 0, "reviews": 0, "progress_books": 0, "progress_sec": 0}
     errors = []
 
     try:
@@ -508,16 +569,19 @@ def main():
         # Phase 2: Notebooks
         new_notebooks = sync_notebooks(conn)
 
-        # Phase 3: Highlights & Reviews
+        # Phase 3: Highlights, Reviews & Progress
         changed_books = detect_changed_books(conn, new_notebooks, quick_mode)
 
         total = len(changed_books)
         for i, (book_id, title) in enumerate(changed_books):
             log(f"  [{i + 1}/{total}] {title}")
             try:
-                hc, rc = sync_book_notes(conn, book_id, title)
+                hc, rc, psec = sync_book_notes(conn, book_id, title)
                 stats["highlights"] += hc
                 stats["reviews"] += rc
+                if psec > 0:
+                    stats["progress_books"] += 1
+                    stats["progress_sec"] += psec
             except Exception as e:
                 msg = f"{title}: {e}"
                 log(f"    [!] {msg}")
@@ -531,7 +595,9 @@ def main():
         write_sync_log(conn, sync_id, "success" if not errors else "partial", stats, error_str)
         log("-" * 60)
         log(f"Sync complete: {stats['books']} books, {stats['highlights']} highlights, "
-            f"{stats['reviews']} reviews, {len(errors)} errors")
+            f"{stats['reviews']} reviews, "
+            f"{stats['progress_books']} books with progress ({stats['progress_sec'] // 3600}h {(stats['progress_sec'] % 3600) // 60}m total), "
+            f"{len(errors)} errors")
         log("-" * 60)
 
     except Exception as e:
