@@ -750,11 +750,6 @@ function getHomepageStats() {
     return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   })();
 
-  // Days read this month
-  const monthDays = d.prepare(
-    "SELECT COUNT(*) AS c FROM reading_sessions WHERE date >= ?"
-  ).get(monthStart);
-
   // Currently reading count
   const readingCount = d.prepare(
     "SELECT COUNT(*) AS c FROM books WHERE finished = 0"
@@ -769,10 +764,37 @@ function getHomepageStats() {
     "SELECT COUNT(*) AS c FROM reviews WHERE create_time >= ?"
   ).get(weekAgoTs).c;
 
-  // Reading streak — longest & current
-  const sessions = d.prepare('SELECT date, seconds FROM reading_sessions ORDER BY date').all();
-  const dates = [...new Set(sessions.map(s => s.date))].sort();
-  let maxStreak = 0, curStreak = 0, curIdx = -1;
+  // ── Reading days: merge reading_sessions + books.last_read_time ──
+  // reading_sessions is from the initial import only; books.last_read_time
+  // is updated every sync cycle and is the authoritative real-time source.
+  const today = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  const todayTs = Math.floor(now.getTime() / 1000);
+
+  // Collect all reading dates from both sources
+  const combinedDates = new Set();
+
+  // Source 1: reading_sessions table
+  const sessions = d.prepare('SELECT date FROM reading_sessions ORDER BY date').all();
+  for (const s of sessions) combinedDates.add(s.date);
+
+  // Source 2: books.last_read_time (updated by sync.py every run)
+  const bookTimes = d.prepare(
+    'SELECT last_read_time FROM books WHERE last_read_time > 0'
+  ).all();
+  for (const row of bookTimes) {
+    const d = new Date(row.last_read_time * 1000);
+    const ds = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    combinedDates.add(ds);
+  }
+
+  const dates = [...combinedDates].sort();
+
+  // Month days — count from combined set
+  let monthDays = 0;
+  for (const d of dates) { if (d >= monthStart) monthDays++; }
+
+  // Longest streak
+  let maxStreak = 0, curStreak = 0;
   for (let i = 1; i < dates.length; i++) {
     const diff = (new Date(dates[i]) - new Date(dates[i-1])) / 86400000;
     if (diff === 1) curStreak = curStreak > 0 ? curStreak + 1 : 2;
@@ -781,7 +803,6 @@ function getHomepageStats() {
   if (curStreak > maxStreak) maxStreak = curStreak;
 
   // Current streak: count backwards from today
-  const today = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
   const dateSet = new Set(dates);
   let currentStreak = 0;
   let checkDate = new Date(today);
@@ -789,7 +810,7 @@ function getHomepageStats() {
     currentStreak++;
     checkDate.setDate(checkDate.getDate() - 1);
   }
-  // Also check: if today wasn't read, did we read yesterday?
+  // If today wasn't in set, check from yesterday
   if (currentStreak === 0) {
     checkDate = new Date(today);
     checkDate.setDate(checkDate.getDate() - 1);
@@ -800,7 +821,7 @@ function getHomepageStats() {
   }
 
   return {
-    monthDays: monthDays.c,
+    monthDays,
     readingCount: readingCount.c,
     newNotes: newHighlights + newReviews,
     maxStreak,
