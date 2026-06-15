@@ -168,6 +168,37 @@ def ensure_tables(conn):
             reviews_updated INTEGER DEFAULT 0,
             errors TEXT
         );
+
+        -- Tables needed by the Node.js app (ensure they exist even on fresh DB)
+        CREATE TABLE IF NOT EXISTS summary (
+            id INTEGER PRIMARY KEY CHECK(id=1),
+            total_books INTEGER DEFAULT 0,
+            finished_count INTEGER DEFAULT 0,
+            total_note_count INTEGER DEFAULT 0,
+            notebook_books_count INTEGER DEFAULT 0,
+            categories TEXT DEFAULT '[]',
+            top_authors TEXT DEFAULT '[]',
+            archives TEXT DEFAULT '[]'
+        );
+        INSERT OR IGNORE INTO summary (id) VALUES (1);
+
+        CREATE TABLE IF NOT EXISTS reading_sessions (
+            date TEXT PRIMARY KEY,
+            seconds INTEGER NOT NULL DEFAULT 0
+        );
+
+        CREATE TABLE IF NOT EXISTS reading_trends (
+            year INTEGER NOT NULL,
+            month INTEGER NOT NULL,
+            total_seconds INTEGER NOT NULL DEFAULT 0,
+            read_days INTEGER NOT NULL DEFAULT 0,
+            PRIMARY KEY (year, month)
+        );
+
+        CREATE TABLE IF NOT EXISTS kv_store (
+            name TEXT PRIMARY KEY,
+            value TEXT DEFAULT ''
+        );
     """)
     # ── Schema migration: add missing columns to existing sync_log table ──
     # Older sync_log tables may be missing columns added in later versions.
