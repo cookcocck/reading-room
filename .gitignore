@@ -3,7 +3,15 @@ node_modules/
 *.log
 .DS_Store
 __pycache__/
+# JSON data files for create_db.py — NOT in git.
+# These are one-time exports; use the DB backup or
+# rebuild_computed.py to recover from API instead.
 src/data/
 scripts/migrate_reviews_progress.json
+# SQLite database binary — NOT in git.
+# DO NOT add reading-room.db to version control.
+# Transfer via SCP or rebuild from API.
 db/
 .workbuddy/
+# Ignore daily backup files
+*.db.bak.*

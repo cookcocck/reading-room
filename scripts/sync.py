@@ -17,6 +17,7 @@ sync.py — 服务器端 WeRead 增量数据同步脚本
 
 import json
 import os
+import shutil
 import sqlite3
 import subprocess
 import sys
@@ -111,99 +112,17 @@ def get_conn():
 
 
 def ensure_tables(conn):
-    """Ensure all required tables exist."""
-    conn.executescript("""
-        CREATE TABLE IF NOT EXISTS books (
-            id TEXT PRIMARY KEY,
-            title TEXT NOT NULL,
-            author TEXT DEFAULT '',
-            cover TEXT DEFAULT '',
-            category TEXT DEFAULT '',
-            finished INTEGER NOT NULL DEFAULT 0,
-            update_time INTEGER DEFAULT 0,
-            read_time INTEGER DEFAULT 0,
-            progress INTEGER DEFAULT 0,
-            last_read_time INTEGER DEFAULT 0
-        );
+    """Ensure all required tables exist — reads DDL from schema.sql (single source of truth)."""
+    schema_sql = SCRIPT_DIR / "schema.sql"
+    if schema_sql.exists():
+        conn.executescript(schema_sql.read_text(encoding="utf-8"))
+        log("  [schema] Applied schema.sql")
+    else:
+        log("  [WARN] schema.sql not found — tables may be incomplete")
 
-        CREATE TABLE IF NOT EXISTS highlights (
-            bookmark_id TEXT PRIMARY KEY,
-            book_id TEXT NOT NULL,
-            chapter_uid TEXT DEFAULT '',
-            chapter_title TEXT DEFAULT '',
-            mark_text TEXT DEFAULT '',
-            color_style TEXT DEFAULT '0',
-            type INTEGER DEFAULT 1,
-            create_time INTEGER NOT NULL,
-            range_text TEXT DEFAULT ''
-        );
-        CREATE INDEX IF NOT EXISTS idx_highlights_book ON highlights(book_id);
-
-        CREATE TABLE IF NOT EXISTS reviews (
-            review_id TEXT PRIMARY KEY,
-            book_id TEXT NOT NULL,
-            content TEXT DEFAULT '',
-            chapter_name TEXT DEFAULT '',
-            star INTEGER DEFAULT -1,
-            create_time INTEGER NOT NULL
-        );
-        CREATE INDEX IF NOT EXISTS idx_reviews_book ON reviews(book_id);
-
-        CREATE TABLE IF NOT EXISTS notebooks (
-            book_id TEXT PRIMARY KEY,
-            review_count INTEGER DEFAULT 0,
-            note_count INTEGER DEFAULT 0,
-            bookmark_count INTEGER DEFAULT 0,
-            total_notes INTEGER DEFAULT 0,
-            sort INTEGER DEFAULT 0
-        );
-
-        CREATE TABLE IF NOT EXISTS sync_log (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            started_at TEXT NOT NULL,
-            finished_at TEXT,
-            status TEXT DEFAULT 'running',
-            books_updated INTEGER DEFAULT 0,
-            highlights_updated INTEGER DEFAULT 0,
-            reviews_updated INTEGER DEFAULT 0,
-            errors TEXT
-        );
-
-        -- Tables needed by the Node.js app (ensure they exist even on fresh DB)
-        CREATE TABLE IF NOT EXISTS summary (
-            id INTEGER PRIMARY KEY CHECK(id=1),
-            total_books INTEGER DEFAULT 0,
-            finished_count INTEGER DEFAULT 0,
-            total_note_count INTEGER DEFAULT 0,
-            notebook_books_count INTEGER DEFAULT 0,
-            categories TEXT DEFAULT '[]',
-            top_authors TEXT DEFAULT '[]',
-            archives TEXT DEFAULT '[]'
-        );
-        INSERT OR IGNORE INTO summary (id) VALUES (1);
-
-        CREATE TABLE IF NOT EXISTS reading_sessions (
-            date TEXT PRIMARY KEY,
-            seconds INTEGER NOT NULL DEFAULT 0
-        );
-
-        CREATE TABLE IF NOT EXISTS reading_trends (
-            year INTEGER NOT NULL,
-            month INTEGER NOT NULL,
-            total_seconds INTEGER NOT NULL DEFAULT 0,
-            read_days INTEGER NOT NULL DEFAULT 0,
-            PRIMARY KEY (year, month)
-        );
-
-        CREATE TABLE IF NOT EXISTS kv_store (
-            name TEXT PRIMARY KEY,
-            value TEXT DEFAULT ''
-        );
-    """)
-    # ── Schema migration: add missing columns to existing sync_log table ──
-    # Older sync_log tables may be missing columns added in later versions.
-    # Check PRAGMA table_info and ALTER TABLE ADD COLUMN for any gaps.
-    expected = {
+    # ── Schema migration: add missing columns to existing tables ──
+    # These handle databases created by older versions that may lack newer columns.
+    _migrate_columns(conn, "sync_log", {
         "id":                None,
         "started_at":        None,
         "finished_at":       None,
@@ -212,32 +131,44 @@ def ensure_tables(conn):
         "highlights_updated":"INTEGER DEFAULT 0",
         "reviews_updated":   "INTEGER DEFAULT 0",
         "errors":            "TEXT",
-    }
-    existing_cols = {r[1] for r in conn.execute("PRAGMA table_info(sync_log)")}
+    })
+    _migrate_columns(conn, "books", {
+        "read_time":      "INTEGER DEFAULT 0",
+        "progress":       "INTEGER DEFAULT 0",
+        "last_read_time": "INTEGER DEFAULT 0",
+        "intro":          "TEXT DEFAULT ''",
+        "want_to_read":   "INTEGER DEFAULT 0",
+        "user_rating":    "INTEGER DEFAULT 0",
+    })
+    _migrate_columns(conn, "reviews", {
+        "abstract": "TEXT DEFAULT ''",
+    })
+
+
+def _migrate_columns(conn, table: str, expected: dict):
+    """Add any missing columns to an existing table (idempotent)."""
+    existing_cols = {r[1] for r in conn.execute(f"PRAGMA table_info({table})")}
     for col, col_type in expected.items():
         if col_type is not None and col not in existing_cols:
             try:
-                conn.execute(f"ALTER TABLE sync_log ADD COLUMN {col} {col_type}")
-                log(f"  [migration] Added missing column sync_log.{col}")
+                conn.execute(f"ALTER TABLE {table} ADD COLUMN {col} {col_type}")
+                log(f"  [migration] Added {table}.{col}")
             except sqlite3.OperationalError:
                 pass
     conn.commit()
 
-    # ── Schema migration: add missing columns to existing books table ──
-    book_migrations = {
-        "read_time":      "INTEGER DEFAULT 0",
-        "progress":       "INTEGER DEFAULT 0",
-        "last_read_time": "INTEGER DEFAULT 0",
-    }
-    existing_book_cols = {r[1] for r in conn.execute("PRAGMA table_info(books)")}
-    for col, col_type in book_migrations.items():
-        if col not in existing_book_cols:
-            try:
-                conn.execute(f"ALTER TABLE books ADD COLUMN {col} {col_type}")
-                log(f"  [migration] Added missing column books.{col}")
-            except sqlite3.OperationalError:
-                pass
-    conn.commit()
+
+def backup_database():
+    """Create a timestamped backup of the database before syncing."""
+    if not DB_PATH.exists():
+        return  # nothing to back up
+    backup_dir = DB_PATH.parent
+    backup_path = backup_dir / f"reading-room.db.bak.{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    try:
+        shutil.copy2(DB_PATH, backup_path)
+        log(f"  [backup] {backup_path.name}")
+    except Exception as e:
+        log(f"  [WARN] backup failed: {e}")
 
 
 def get_existing_notebook_counts(conn) -> dict:
@@ -595,6 +526,8 @@ def main():
         import os as _os
         _os.makedirs(DB_PATH.parent, exist_ok=True)
         log(f"Database not found, initializing: {DB_PATH}")
+    else:
+        backup_database()
 
     conn = get_conn()
     ensure_tables(conn)
