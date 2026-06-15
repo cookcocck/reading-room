@@ -590,6 +590,32 @@ def main():
 
             time.sleep(BATCH_DELAY)
 
+        # Phase 4: Progress backfill — fill read_time for books that don't have it yet
+        gap_books = conn.execute(
+            "SELECT id, title FROM books WHERE read_time = 0 ORDER BY title"
+        ).fetchall()
+
+        if gap_books:
+            MAX_BACKFILL = 30  # per-run cap to avoid excessive API calls
+            gap_total = len(gap_books)
+            gap_batch = gap_books[:MAX_BACKFILL]
+            log(f"[Phase 4] Progress backfill: {gap_total} books without read_time "
+                f"(processing up to {MAX_BACKFILL})")
+
+            for bi, (bid, btitle) in enumerate(gap_batch):
+                log(f"  [{bi + 1}/{len(gap_batch)}] {btitle}")
+                try:
+                    p = fetch_book_progress(bid)
+                    if p is not None and save_book_progress(conn, bid, p):
+                        if p["read_time"] > 0:
+                            stats["progress_books"] += 1
+                            stats["progress_sec"] += p["read_time"]
+                except Exception as e:
+                    log(f"    [!] {e}")
+                time.sleep(BATCH_DELAY)
+        else:
+            log("[Phase 4] Progress backfill: all books have read_time — nothing to do")
+
         # Done
         error_str = "; ".join(errors[:5]) if errors else None
         write_sync_log(conn, sync_id, "success" if not errors else "partial", stats, error_str)
