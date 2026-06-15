@@ -193,6 +193,31 @@ async function initDb() {
       )
     `);
 
+    // ─── Ensure critical tables exist (needed when DB is created from scratch by sync.py) ───
+    sqlDb.run(`CREATE TABLE IF NOT EXISTS reading_sessions (
+        date TEXT PRIMARY KEY, seconds INTEGER NOT NULL DEFAULT 0
+    )`);
+    sqlDb.run(`CREATE TABLE IF NOT EXISTS reading_trends (
+        year INTEGER NOT NULL, month INTEGER NOT NULL,
+        total_seconds INTEGER NOT NULL DEFAULT 0,
+        read_days INTEGER NOT NULL DEFAULT 0,
+        PRIMARY KEY (year, month)
+    )`);
+    sqlDb.run(`CREATE TABLE IF NOT EXISTS summary (
+        id INTEGER PRIMARY KEY CHECK(id=1),
+        total_books INTEGER DEFAULT 0,
+        finished_count INTEGER DEFAULT 0,
+        total_note_count INTEGER DEFAULT 0,
+        notebook_books_count INTEGER DEFAULT 0,
+        categories TEXT DEFAULT '[]',
+        top_authors TEXT DEFAULT '[]',
+        archives TEXT DEFAULT '[]'
+    )`);
+    sqlDb.run(`INSERT OR IGNORE INTO summary (id) VALUES (1)`);
+    sqlDb.run(`CREATE TABLE IF NOT EXISTS kv_store (
+        name TEXT PRIMARY KEY, value TEXT DEFAULT ''
+    )`);
+
     console.log(`[db] Connected to reading-room.db (sql.js, ${(fileBuffer.length / 1024 / 1024).toFixed(1)} MB)`);
     return db;
   } catch (err) {
