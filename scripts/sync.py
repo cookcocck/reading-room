@@ -367,7 +367,7 @@ def fetch_book_progress(book_id: str) -> dict:
         result = call_api("/book/getprogress", {"bookId": book_id})
         book = result.get("book", {})
         return {
-            "read_time": int(book.get("recordReadingTime", 0)),
+            "read_time": int(book.get("readingTime", 0)),
             "progress": int(book.get("progress", 0)),
             "last_read_time": int(book.get("updateTime", 0)),
         }
