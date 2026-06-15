@@ -1,76 +1,134 @@
 <!-- ═══════════════════════════════════════════
-   BOOKSHELF — Editorial Book Catalog
+   BOOKSHELF — Curated Collection
+   Redesigned: depth, hierarchy, breathing room.
    ═══════════════════════════════════════════ -->
 
-<div class="container-bookshelf">
-  <div class="catalog-header">
-    <h1>书架</h1>
-    <div class="catalog-count"><%= books.length %> 册藏书 · <%= summary.finishedCount %> 册已读完</div>
-  </div>
+<div class="bs-container">
 
-  <!-- Status filter — pill toggle group -->
-  <div class="catalog-filters">
-    <div class="filter-pill-group">
-      <a href="/bookshelf?filter=all&sort=<%= sortBy %>" class="filter-pill <%= filter === 'all' && !category ? 'active' : '' %>">全部</a>
-      <a href="/bookshelf?filter=reading&sort=<%= sortBy %>" class="filter-pill <%= filter === 'reading' ? 'active' : '' %>">在读</a>
-      <a href="/bookshelf?filter=finished&sort=<%= sortBy %>" class="filter-pill <%= filter === 'finished' ? 'active' : '' %>">已读完</a>
-      <a href="/bookshelf?filter=want_to_read&sort=<%= sortBy %>" class="filter-pill <%= filter === 'want_to_read' ? 'active' : '' %>">想读</a>
+  <!-- ── Hero ── -->
+  <header class="bs-hero">
+    <div class="bs-hero-ornament" aria-hidden="true">藏书</div>
+    <h1 class="bs-hero-title">藏书阁</h1>
+    <p class="bs-hero-lede">
+      <span><%= books.length %> 册藏书</span>
+      <span class="bs-hero-sep">·</span>
+      <span><%= summary.finishedCount %> 册已读完</span>
+      <span class="bs-hero-sep">·</span>
+      <span>共 <%= allCategories.length %> 个分类</span>
+    </p>
+    <div class="bs-hero-rule"></div>
+  </header>
+
+  <!-- ── Filter bar ── -->
+  <div class="bs-toolbar">
+    <div class="bs-filter-pills">
+      <a href="/bookshelf?filter=all&sort=<%= sortBy %>"
+         class="bs-pill <%= filter === 'all' && !category ? 'active' : '' %>">全部</a>
+      <a href="/bookshelf?filter=reading&sort=<%= sortBy %>"
+         class="bs-pill <%= filter === 'reading' ? 'active' : '' %>">在读</a>
+      <a href="/bookshelf?filter=finished&sort=<%= sortBy %>"
+         class="bs-pill <%= filter === 'finished' ? 'active' : '' %>">已读完</a>
+      <a href="/bookshelf?filter=want_to_read&sort=<%= sortBy %>"
+         class="bs-pill <%= filter === 'want_to_read' ? 'active' : '' %>">想读</a>
     </div>
-    <div class="sort-select-wrap">
-      <select class="sort-select" onchange="window.location.href='/bookshelf?filter=<%= filter %>&sort='+this.value<% if (category) { %>+'&category=<%= encodeURIComponent(category) %>'<% } %>">
-        <option value="readtime" <%= sortBy === 'readtime' ? 'selected' : '' %>>按阅读时长</option>
-        <option value="recent" <%= sortBy === 'recent' ? 'selected' : '' %>>按最近阅读</option>
-        <option value="title" <%= sortBy === 'title' ? 'selected' : '' %>>按书名</option>
-        <option value="author" <%= sortBy === 'author' ? 'selected' : '' %>>按作者</option>
+
+    <div class="bs-sort-wrap">
+      <label class="bs-sort-label" for="bs-sort-select">排序</label>
+      <select id="bs-sort-select" class="bs-sort-select"
+              onchange="window.location.href='/bookshelf?filter=<%= filter %>&sort='+this.value<% if (category) { %>+'&category=<%= encodeURIComponent(category) %>'<% } %>">
+        <option value="readtime" <%= sortBy === 'readtime' ? 'selected' : '' %>>阅读时长</option>
+        <option value="recent"   <%= sortBy === 'recent' ? 'selected' : '' %>>最近阅读</option>
+        <option value="title"    <%= sortBy === 'title' ? 'selected' : '' %>>书名</option>
+        <option value="author"   <%= sortBy === 'author' ? 'selected' : '' %>>作者</option>
       </select>
     </div>
+
     <% if (category) { %>
-    <span class="filter-breadcrumb">
-      <span class="filter-breadcrumb-label"><%= category %></span>
-      <a href="/bookshelf?filter=<%= filter %>" class="filter-breadcrumb-clear" title="清除分类">×</a>
+    <span class="bs-breadcrumb">
+      <span class="bs-breadcrumb-label"><%= category %></span>
+      <a href="/bookshelf?filter=<%= filter %>" class="bs-breadcrumb-clear" title="清除分类">&times;</a>
     </span>
     <% } %>
   </div>
 
-  <!-- Category chips -->
+  <!-- ── Category tags ── -->
   <% if (allCategories.length > 0) { %>
-  <div class="category-chips">
+  <nav class="bs-categories" aria-label="分类筛选">
     <% allCategories.forEach(function(c) { %>
     <a href="/bookshelf?category=<%= encodeURIComponent(c) %>&filter=<%= filter %>"
-       class="category-chip <%= category === c ? 'active' : '' %>">
-      <%= c %>
-    </a>
+       class="bs-cat-tag <%= category === c ? 'active' : '' %>"><%= c %></a>
     <% }); %>
-    <a href="/bookshelf?filter=<%= filter %>" class="category-chip category-chip-all <%= !category ? 'active' : '' %>">全部分类</a>
-  </div>
+    <a href="/bookshelf?filter=<%= filter %>"
+       class="bs-cat-tag bs-cat-all <%= !category ? 'active' : '' %>">全部分类</a>
+  </nav>
   <% } %>
 
-  <!-- Book Card Grid -->
+  <!-- ── Book grid ── -->
   <% if (books.length > 0) { %>
-  <div class="book-card-grid">
-    <% books.forEach(function(b) { %>
-    <div class="book-card" data-book-id="<%= b.id %>">
-      <div class="book-card-cover" onclick="window.location.href='/book/<%= b.id %>'">
-        <% if (b.cover) { %><img src="<%= b.cover %>" alt="" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='📖'"><% } else { %>📖<% } %>
+  <div class="bs-grid">
+    <% books.forEach(function(b, i) {
+      var isReading = !b.finished && b.progress > 0;
+      var isFinished = !!b.finished;
+      var isWish = !b.finished && !isReading && !!b.want_to_read;
+      var statusLabel = isReading ? '在读' : (isFinished ? '已读完' : (isWish ? '想读' : ''));
+      var statusClass = isReading ? 'reading' : (isFinished ? 'finished' : (isWish ? 'wish' : ''));
+    %>
+    <article class="bs-card bs-card--<%= statusClass %>"
+             style="animation-delay: <%= Math.min(i * 40, 800) %>ms"
+             data-book-id="<%= b.id %>">
+      <!-- Cover -->
+      <a class="bs-card-cover" href="/book/<%= b.id %>" aria-label="<%= b.title %>">
+        <% if (b.cover) { %>
+          <img src="<%= b.cover %>" alt="" loading="lazy"
+               onerror="this.style.display='none';this.parentElement.innerHTML='<span class=bs-card-cover-fallback>&#128218;</span>'">
+        <% } else { %>
+          <span class="bs-card-cover-fallback">📖</span>
+        <% } %>
+        <!-- Wish toggle -->
+        <button class="bs-card-wish <%= b.want_to_read ? 'active' : '' %>"
+                onclick="event.preventDefault();event.stopPropagation();toggleWish(this,'<%= b.id %>')"
+                title="<%= b.want_to_read ? '取消想读' : '标记想读' %>" aria-label="<%= b.want_to_read ? '取消想读' : '标记想读' %>">
+          <svg width="15" height="15" viewBox="0 0 24 24"
+               fill="<%= b.want_to_read ? 'var(--accent2)' : 'none' %>"
+               stroke="<%= b.want_to_read ? 'var(--accent2)' : 'rgba(255,255,255,0.8)' %>"
+               stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+      </a>
+
+      <!-- Progress bar (reading books only) -->
+      <% if (isReading) { %>
+      <div class="bs-card-progress">
+        <div class="bs-card-progress-fill" style="width:<%= Math.min(b.progress || 0, 100) %>%"></div>
       </div>
-      <div class="book-card-body">
-        <div class="book-card-title"><a href="/book/<%= b.id %>"><%= b.title %></a></div>
-        <div class="book-card-author"><%= b.author || '佚名' %></div>
-        <% if (b.readTimeSec) { %><div class="book-card-duration"><%= helpers.formatTime(b.readTimeSec) %></div><% } %>
-        <div class="book-card-footer">
-          <% if (b.finished) { %><span class="book-card-badge">已读完</span><% } %>
-          <button class="wish-btn <%= b.want_to_read ? 'active' : '' %>" onclick="event.stopPropagation();toggleWish(this,'<%= b.id %>')" title="<%= b.want_to_read ? '取消想读' : '标记为想读' %>">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="<%= b.want_to_read ? 'var(--accent-bright)' : 'none' %>" stroke="<%= b.want_to_read ? 'var(--accent-bright)' : 'var(--ink-muted)' %>" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-          </button>
+      <% } %>
+
+      <!-- Meta -->
+      <div class="bs-card-body">
+        <h2 class="bs-card-title">
+          <a href="/book/<%= b.id %>"><%= b.title %></a>
+        </h2>
+        <p class="bs-card-author"><%= b.author || '佚名' %></p>
+
+        <div class="bs-card-foot">
+          <% if (b.readTimeSec && b.readTimeSec > 0) { %>
+          <span class="bs-card-time" title="阅读 <%= helpers.formatTime(b.readTimeSec) %>">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <%= helpers.formatTime(b.readTimeSec) %>
+          </span>
+          <% } %>
+          <% if (statusLabel) { %>
+          <span class="bs-card-status bs-card-status--<%= statusClass %>"><%= statusLabel %></span>
+          <% } %>
         </div>
       </div>
-    </div>
+    </article>
     <% }); %>
   </div>
   <% } else { %>
-  <div class="empty-state">
-    <div class="empty-state-icon">—</div>
-    <p class="empty-state-text">没有符合条件的藏书</p>
+  <div class="bs-empty">
+    <div class="bs-empty-icon">—</div>
+    <p>没有符合条件的藏书</p>
   </div>
   <% } %>
+
 </div>
