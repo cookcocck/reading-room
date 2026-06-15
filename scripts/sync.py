@@ -45,6 +45,18 @@ BATCH_DELAY = 0.5  # seconds between books for highlight/review fetch
 
 PM2_APP_NAME = os.environ.get("PM2_APP_NAME", "reading-room")
 
+# ─── Blacklist: books to exclude from sync ──────────────────────────────────
+BLOCKED_BOOK_IDS = {
+    "CB_GCr0tB0vdFAW6uW6tC44y4fU",  # 新威科夫操盘法
+    "CB_6iAEyAEvI20j6o16p56Nx55P",  # 日本蜡烛图技术
+    "CB_DXp45V47300h6nr6p525O4wC",  # 期货多空逻辑
+    "CB_8ni8XC8YSBpK6hO6gnDTc9CF",  # 股票大作手回忆录
+    "22661836",                       # 股票大作手回忆录（另一版本）
+    "CB_EDT4l94mF9AI6hW6gnGfzB8x",  # 订单流交易
+    "35679924",                       # 雪球专刊·段永平投资问答录
+    "CB_94A6XG6Z80sI6nm6p55rz3ij",  # 香帅金融学讲义
+}
+
 
 # ─── API Client ──────────────────────────────────────────────────────────────
 
@@ -208,15 +220,19 @@ def get_existing_notebook_counts(conn) -> dict:
 # ─── Phase 1: Bookshelf Sync ─────────────────────────────────────────────────
 
 def sync_shelf(conn) -> int:
-    """Fetch /shelf/sync and upsert books."""
+    """Fetch /shelf/sync and upsert books, skipping blacklisted IDs."""
     log("[Phase 1] Syncing bookshelf...")
     result = call_api("/shelf/sync")
     books = result.get("books", [])
     count = 0
+    skipped = 0
 
     for b in books:
         book_id = b.get("bookId", "")
         if not book_id:
+            continue
+        if book_id in BLOCKED_BOOK_IDS:
+            skipped += 1
             continue
         conn.execute(
             """INSERT INTO books (id, title, author, cover, category, finished, update_time)
@@ -238,7 +254,7 @@ def sync_shelf(conn) -> int:
         count += 1
 
     conn.commit()
-    log(f"  [+] {count} books upserted from shelf ({len(books)} total)")
+    log(f"  [+] {count} books upserted ({skipped} skipped by blacklist, {len(books)} total)")
     return count
 
 
@@ -551,6 +567,24 @@ def main():
     conn = get_conn()
     ensure_tables(conn)
 
+    # ── Cleanup: remove any blacklisted books that snuck into the DB ──
+    blocked_placeholders = ",".join("?" for _ in BLOCKED_BOOK_IDS)
+    blocked_list = list(BLOCKED_BOOK_IDS)
+    for table in ("highlights", "reviews", "notebooks"):
+        n = conn.execute(
+            f"DELETE FROM {table} WHERE book_id IN ({blocked_placeholders})",
+            blocked_list,
+        ).rowcount
+        if n:
+            log(f"  [cleanup] {table}: removed {n} rows for blocked books")
+    n = conn.execute(
+        f"DELETE FROM books WHERE id IN ({blocked_placeholders})",
+        blocked_list,
+    ).rowcount
+    if n:
+        log(f"  [cleanup] books: removed {n} blocked books")
+        conn.commit()
+
     # Create sync log entry
     cur = conn.execute(
         "INSERT INTO sync_log (started_at, status) VALUES (?, 'running')",
@@ -571,6 +605,12 @@ def main():
 
         # Phase 3: Highlights, Reviews & Progress
         changed_books = detect_changed_books(conn, new_notebooks, quick_mode)
+
+        # Filter out blacklisted books
+        changed_books = [
+            (bid, title) for bid, title in changed_books
+            if bid not in BLOCKED_BOOK_IDS
+        ]
 
         total = len(changed_books)
         for i, (book_id, title) in enumerate(changed_books):
