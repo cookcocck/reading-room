@@ -36,9 +36,10 @@ pm2 save
 
 ---
 
-## 自动同步微信读书数据（每 4 小时）
+## 自动同步微信读书数据（每 2 小时）
 
 使用 `scripts/sync.py` 通过 API 增量拉取书架、划线和想法，更新到数据库。
+包装脚本 `scripts/cron-sync.sh` 负责加载环境变量、日志轮转和 PM2 重启。
 
 ```bash
 # 设置环境变量（写入 ~/.bashrc 使其持久化）
@@ -46,16 +47,23 @@ echo 'export WEREAD_API_KEY=wrk-xxxxxxxx' >> ~/.bashrc
 source ~/.bashrc
 ```
 
-### 设置 crontab
+### 设置 crontab（每 2 小时执行）
 
 ```bash
+# 编辑 crontab
 crontab -e
+
+# 添加以下行：
+0 */2 * * * bash ~/reading-site/scripts/cron-sync.sh
 ```
 
-添加以下行（每 4 小时执行一次）：
+> **注意**：cron 脚本内部已将输出重定向到 `logs/sync.log`，crontab 行不需要再重定向。
 
-```
-0 */4 * * * bash ~/reading-site/scripts/cron-sync.sh >> ~/reading-site/logs/cron.log 2>&1
+### 测试 cron 脚本
+
+```bash
+# 在设置 crontab 之前，先手动运行确认脚本正常工作：
+bash ~/reading-site/scripts/cron-sync.sh
 ```
 
 ### 手动运行
