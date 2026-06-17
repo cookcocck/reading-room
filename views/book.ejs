@@ -215,72 +215,103 @@
 
   <!-- ═══ Highlights & Reviews ═══ -->
   <% if (highlights.length > 0 || reviews.length > 0) { %>
-  <div class="bd-divider"></div>
-  <section class="bd-notes-grid">
-    <!-- Highlights Column -->
-    <div class="bd-notes-col">
-      <div class="bd-notes-head">
-        <h3 class="bd-insight-title">划线摘录</h3>
-        <% if (highlights.length > 0) { %>
-        <button class="bd-shuffle-btn" data-section="highlights" data-book="<%= book.id %>" title="随机换一批">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-        </button>
-        <% } %>
-      </div>
-      <% if (highlights.length > 0) { %>
-      <div class="bd-highlights" id="book-highlights">
-        <% highlights.forEach(function(h) { %>
-        <blockquote class="bd-highlight-card">
-          <p class="bd-highlight-text"><%= h.text %></p>
-          <% if (h.chapter) { %>
-          <footer class="bd-highlight-footer">
-            <span class="bd-highlight-chapter"><%= h.chapter %></span>
-            <button class="bd-share-btn highlight-share-btn" data-text="<%= h.text.replace(/"/g, '&quot;') %>" data-chapter="<%= (h.chapter || '').replace(/"/g, '&quot;') %>" title="生成分享图" aria-label="生成分享图">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-            </button>
-          </footer>
-          <% } %>
-        </blockquote>
-        <% }); %>
-      </div>
-      <% } else { %>
-      <div class="bd-empty-block">暂无摘录</div>
-      <% } %>
-    </div>
+  <section class="bd-notes-section">
 
-    <!-- Reviews Column -->
-    <div class="bd-notes-col">
-      <div class="bd-notes-head">
-        <h3 class="bd-insight-title">我的想法</h3>
-        <% if (reviews.length > 0) { %>
-        <button class="bd-shuffle-btn" data-section="reviews" data-book="<%= book.id %>" title="随机换一批">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-        </button>
+    <!-- Section Header: Ornamental -->
+    <header class="bd-notes-header">
+      <div class="bd-notes-header-deco" aria-hidden="true"></div>
+      <h2 class="bd-notes-header-title">阅读笔记</h2>
+      <p class="bd-notes-header-sub">摘录与随想</p>
+      <div class="bd-notes-header-line"></div>
+    </header>
+
+    <!-- Two Columns -->
+    <div class="bd-notes-grid">
+      <!-- Highlights Column -->
+      <div class="bd-notes-col bd-notes-col--hl">
+        <div class="bd-col-head">
+          <div class="bd-col-head-left">
+            <span class="bd-col-head-icon" aria-hidden="true">❝</span>
+            <h3 class="bd-col-head-title">划线摘录</h3>
+            <span class="bd-col-head-count"><%= highlights.length %></span>
+          </div>
+          <% if (highlights.length > 4) { %>
+          <button class="bd-shuffle-btn" data-section="highlights" data-book="<%= book.id %>" title="随机换一批">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          </button>
+          <% } %>
+        </div>
+        <% if (highlights.length > 0) { %>
+        <div class="bd-highlights" id="book-highlights">
+          <% highlights.forEach(function(h, idx) { %>
+          <article class="bd-hl-card">
+            <span class="bd-hl-num" aria-hidden="true"><%= String(idx + 1).padStart(2, '0') %></span>
+            <blockquote class="bd-hl-body">
+              <p class="bd-hl-text"><%= h.text %></p>
+            </blockquote>
+            <% if (h.chapter) { %>
+            <footer class="bd-hl-foot">
+              <span class="bd-hl-chap">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                <%= h.chapter %>
+              </span>
+              <button class="bd-share-btn highlight-share-btn" data-text="<%= h.text.replace(/"/g, '&quot;') %>" data-chapter="<%= (h.chapter || '').replace(/"/g, '&quot;') %>" title="生成分享图" aria-label="生成分享图">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              </button>
+            </footer>
+            <% } %>
+          </article>
+          <% }); %>
+        </div>
+        <% } else { %>
+        <div class="bd-empty-block">暂无摘录</div>
         <% } %>
       </div>
-      <% if (reviews.length > 0) { %>
-      <div class="bd-reviews" id="book-reviews">
-        <% reviews.forEach(function(r) { %>
-        <div class="bd-review-card">
-          <% if (r.abstract) { %>
-          <blockquote class="bd-review-quote"><%= r.abstract %></blockquote>
+
+      <!-- Reviews Column -->
+      <div class="bd-notes-col bd-notes-col--rv">
+        <div class="bd-col-head">
+          <div class="bd-col-head-left">
+            <span class="bd-col-head-icon" aria-hidden="true">✦</span>
+            <h3 class="bd-col-head-title">我的想法</h3>
+            <span class="bd-col-head-count"><%= reviews.length %></span>
+          </div>
+          <% if (reviews.length > 4) { %>
+          <button class="bd-shuffle-btn" data-section="reviews" data-book="<%= book.id %>" title="随机换一批">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          </button>
           <% } %>
-          <p class="bd-review-content"><%= r.content %></p>
-          <footer class="bd-review-footer">
-            <span class="bd-review-meta">
-              <% if (r.star > 0) { %><span class="bd-review-stars"><% for (var s=0; s<r.star; s++) { %>★<% } %></span><% } %>
-              <% if (r.chapter) { %>— <%= r.chapter %><% } %>
-            </span>
-            <button class="bd-share-btn review-share-btn" data-quote="<%= (r.abstract || '').replace(/"/g, '&quot;') %>" data-review="<%= r.content.replace(/"/g, '&quot;') %>" data-chapter="<%= (r.chapter || '').replace(/"/g, '&quot;') %>" title="生成分享图" aria-label="生成分享图">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-            </button>
-          </footer>
         </div>
-        <% }); %>
+        <% if (reviews.length > 0) { %>
+        <div class="bd-reviews" id="book-reviews">
+          <% reviews.forEach(function(r, idx) { %>
+          <article class="bd-rv-card">
+            <span class="bd-rv-num" aria-hidden="true"><%= String(idx + 1).padStart(2, '0') %></span>
+            <% if (r.abstract) { %>
+            <aside class="bd-rv-quote-wrap">
+              <span class="bd-rv-qmark" aria-hidden="true">\201C</span>
+              <p class="bd-rv-quote"><%= r.abstract %></p>
+            </aside>
+            <% } %>
+            <div class="bd-rv-body">
+              <p class="bd-rv-text"><%= r.content %></p>
+            </div>
+            <footer class="bd-rv-foot">
+              <span class="bd-rv-meta">
+                <% if (r.star > 0) { %><span class="bd-rv-stars" title="<%= r.star %> 星"><% for (var s=0; s<r.star; s++) { %>\u2605<% } %></span><% } %>
+                <% if (r.chapter) { %><span class="bd-rv-chap"><%= r.chapter %></span><% } %>
+              </span>
+              <button class="bd-share-btn review-share-btn" data-quote="<%= (r.abstract || '').replace(/"/g, '&quot;') %>" data-review="<%= r.content.replace(/"/g, '&quot;') %>" data-chapter="<%= (r.chapter || '').replace(/"/g, '&quot;') %>" title="生成分享图" aria-label="生成分享图">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              </button>
+            </footer>
+          </article>
+          <% }); %>
+        </div>
+        <% } else { %>
+        <div class="bd-empty-block">暂无想法</div>
+        <% } %>
       </div>
-      <% } else { %>
-      <div class="bd-empty-block">暂无想法</div>
-      <% } %>
     </div>
   </section>
   <% } %>
