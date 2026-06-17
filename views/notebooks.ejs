@@ -1,71 +1,94 @@
 <!-- ═══════════════════════════════════════════
-   NOTEBOOKS — Redesigned
+   NOTEBOOKS — Premium Redesign
    ═══════════════════════════════════════════ -->
 
-<div class="container-wide">
-  <!-- Header -->
-  <div class="notes-header">
-    <div class="notes-header-left">
-      <h1>笔记</h1>
-      <p class="notes-header-desc">藏书中那些被划亮的思想片段</p>
-    </div>
-    <div class="notes-header-stats">
-      <div class="notes-stat">
-        <span class="notes-stat-value"><%= notebooks.length %></span>
-        <span class="notes-stat-label">册有笔记</span>
-      </div>
-      <div class="notes-stat">
-        <span class="notes-stat-value"><%= summary.totalNoteCount.toLocaleString() %></span>
-        <span class="notes-stat-label">条笔记</span>
-      </div>
-    </div>
-  </div>
+<div class="nb-container">
 
-  <!-- Books Grid -->
-  <div class="notes-books-section">
-    <h2 class="notes-section-title">有笔记的藏书</h2>
-    <div class="notes-books-grid">
-      <% notebooks.forEach(function(nb) { %>
-      <a href="/book/<%= nb.book_id %>" class="notes-book-card">
-        <div class="notes-book-cover">
-          <% if (nb.cover) { %><img src="<%= nb.cover %>" alt="" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='&#128218;'"><% } else { %>&#128218;<% } %>
-        </div>
-        <div class="notes-book-info">
-          <div class="notes-book-title"><%= nb.title %></div>
-          <div class="notes-book-author"><%= nb.author || '佚名' %></div>
-          <div class="notes-book-meta">
-            <span class="notes-meta-dot">&#9679;</span>
-            <span><%= nb.note_count %> 划线</span>
-            <span class="notes-meta-dot">&#9679;</span>
-            <span><%= nb.review_count %> 想法</span>
+  <!-- ── Hero ── -->
+  <header class="nb-hero">
+    <div class="nb-hero-ornament" aria-hidden="true">笔记</div>
+    <h1 class="nb-hero-title">阅读笔记</h1>
+    <p class="nb-hero-lede">
+      <span><%= notebooks.length %> 册有笔记</span>
+      <span class="nb-hero-sep">·</span>
+      <span><%= summary.totalNoteCount.toLocaleString() %> 条笔记</span>
+    </p>
+    <div class="nb-hero-rule"></div>
+  </header>
+
+  <!-- ── Books with Notes Grid ── -->
+  <section class="nb-books-section">
+    <h2 class="nb-section-title">有笔记的藏书</h2>
+    <% if (notebooks.length > 0) { %>
+    <div class="nb-grid">
+      <% notebooks.forEach(function(nb, i) { %>
+      <article class="nb-card" style="animation-delay: <%= Math.min(i * 40, 800) %>ms">
+        <a class="nb-card-cover" href="/book/<%= nb.book_id %>" aria-label="<%= nb.title %>">
+          <% if (nb.cover) { %>
+            <img src="<%= nb.cover %>" alt="" loading="lazy"
+                 onerror="this.style.display='none';this.parentElement.innerHTML='<span class=nb-card-cover-fallback>&#128218;</span>'">
+          <% } else { %>
+            <span class="nb-card-cover-fallback">📖</span>
+          <% } %>
+        </a>
+        <div class="nb-card-body">
+          <h3 class="nb-card-title">
+            <a href="/book/<%= nb.book_id %>"><%= nb.title %></a>
+          </h3>
+          <p class="nb-card-author"><%= nb.author || '佚名' %></p>
+          <div class="nb-card-foot">
+            <span class="nb-card-count">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              <%= nb.total_notes %> 条笔记
+            </span>
           </div>
         </div>
-        <div class="notes-book-badge"><%= nb.total_notes %></div>
-      </a>
+      </article>
       <% }); %>
     </div>
-  </div>
+    <% } else { %>
+    <div class="nb-empty">
+      <div class="nb-empty-icon">—</div>
+      <p>还没有笔记</p>
+      <p class="nb-empty-sub">读过的书，留下的思考，都会出现在这里</p>
+    </div>
+    <% } %>
+  </section>
 
-  <!-- Recent Notes Feed -->
-  <hr class="section-rule">
-  <div class="notes-feed-section">
-    <h2 class="notes-section-title">最近笔记</h2>
-    <div class="notes-feed">
+  <!-- ── Recent Notes Feed ── -->
+  <div class="nb-rule"></div>
+  <section class="nb-feed-section">
+    <h2 class="nb-section-title">最近笔记</h2>
+    <% if (recentNotes.length > 0) { %>
+    <div class="nb-feed">
       <% recentNotes.forEach(function(note) { %>
-      <div class="notes-feed-item notes-feed-<%= note.type %>">
-        <div class="notes-feed-icon">
-          <%= note.type === 'highlight' ? '💡' : '💭' %>
+      <div class="nb-feed-item nb-feed-<%= note.type %>">
+        <div class="nb-feed-icon">
+          <% if (note.type === 'highlight') { %>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          <% } else { %>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <% } %>
         </div>
-        <div class="notes-feed-body">
-          <div class="notes-feed-text"><%= note.text.length > 100 ? note.text.substring(0, 100) + '…' : note.text %></div>
-          <div class="notes-feed-meta">
-            <a href="/book/<%= note.book_id %>" class="notes-feed-book"><%= note.book_title %></a>
-            <span class="notes-feed-chapter"><%= note.chapter || '' %></span>
-            <span class="notes-feed-date"><%= helpers.formatTimestamp(note.create_time) %></span>
+        <div class="nb-feed-body">
+          <div class="nb-feed-text"><%= note.text.length > 140 ? note.text.substring(0, 140) + '…' : note.text %></div>
+          <div class="nb-feed-meta">
+            <a href="/book/<%= note.book_id %>" class="nb-feed-book"><%= note.book_title %></a>
+            <% if (note.chapter) { %>
+            <span class="nb-feed-sep">—</span>
+            <span class="nb-feed-chapter"><%= note.chapter %></span>
+            <% } %>
+            <span class="nb-feed-date"><%= helpers.formatTimestamp(note.create_time) %></span>
           </div>
         </div>
       </div>
       <% }); %>
     </div>
-  </div>
+    <% } else { %>
+    <div class="nb-empty">
+      <p>还没有笔记</p>
+    </div>
+    <% } %>
+  </section>
+
 </div>
