@@ -189,7 +189,7 @@ app.get('/bookshelf', (req, res) => {
 
 // Stats page
 app.get('/stats', (req, res) => {
-  const { getOverall, getSummary, getTrends, getDeepThinking, getBookTimeline, getYearlyIntensity, getMilestones, getAuthorStats } = db;
+  const { getOverall, getSummary, getTrends, getDeepThinking, getBookTimeline, getYearlyIntensity, getMilestones, getAuthorStats, getHeatmap, getWeekdayDistribution, getReadingStats, getHomepageStats } = db;
 
   const overall_kv = getOverall();
   const overall = overall_kv.overall || {};
@@ -224,6 +224,12 @@ app.get('/stats', (req, res) => {
   const milestones = getMilestones();
   const authorStats = getAuthorStats();
 
+  // New graphical data
+  const heatmapData = getHeatmap();
+  const weekdayDist = getWeekdayDistribution();
+  const readingStatsRaw = getReadingStats();
+  const homepageStats = getHomepageStats();
+
   // Year-over-year comparison
   const nowYr = new Date().getFullYear();
   const thisYearTrend = trends.filter(t => t.year === nowYr);
@@ -252,6 +258,10 @@ app.get('/stats', (req, res) => {
     timelineJson: JSON.stringify(bookTimeline).replace(/</g, '\\u003c'),
     intensityJson: JSON.stringify(yearlyIntensity),
     authorStats: JSON.stringify(authorStats),
+    heatmapData: JSON.stringify(heatmapData),
+    weekdayDist: JSON.stringify(weekdayDist),
+    readingStatsRaw: JSON.stringify(readingStatsRaw),
+    homepageStats: JSON.stringify(homepageStats),
     yoyChange,
   });
 });

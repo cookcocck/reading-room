@@ -25,13 +25,10 @@
     </div>
   </div>
 
-  <!-- Completion -->
+  <!-- 00 · 阅读完成度 + 打卡环 -->
   <div class="chart-block">
     <div class="chart-title">阅读完成度</div>
-    <div style="display: flex; align-items: baseline; gap: var(--space-4);">
-      <span style="font-family: var(--font-display); font-size: var(--text-h1); font-weight: 700; color: var(--ink);"><%= summary.finishedCount %>/<%= summary.totalBooks %></span>
-      <span style="font-family: var(--font-mono); font-size: var(--text-body); color: var(--ink-muted);"><%= Math.round(summary.finishedCount / Math.max(summary.totalBooks, 1) * 100) %>%</span>
-    </div>
+    <div class="st-rings-row" id="st-rings-row"></div>
   </div>
 
   <!-- Yearly Distribution -->
@@ -330,6 +327,22 @@
   </div>
   <% } %>
 
+  <!-- ═══════════════════ 7. 阅读日历热力图 ═══════════════════ -->
+  <hr class="section-rule">
+  <div class="section-kicker">07 · 阅读日历</div>
+  <p style="font-family: var(--font-body); font-size: var(--text-subhead); color: var(--ink-muted); margin-bottom: var(--space-5);">
+    过去一年的阅读足迹 — 颜色越深，当天读得越多。
+  </p>
+  <div class="st-heatmap-wrap" id="st-heatmap"></div>
+
+  <!-- ═══════════════════ 8. 周阅读分布 ═══════════════════ -->
+  <hr class="section-rule">
+  <div class="section-kicker">08 · 周阅读分布</div>
+  <p style="font-family: var(--font-body); font-size: var(--text-subhead); color: var(--ink-muted); margin-bottom: var(--space-5);">
+    一周七天，哪天是你的阅读高峰？
+  </p>
+  <div class="st-weekday-wrap" id="st-weekday"></div>
+
   <!-- Prefer Authors -->
   <% if (overall.preferAuthors && overall.preferAuthors.length > 0) { %>
   <hr class="section-rule">
@@ -353,20 +366,234 @@
 
 <script>
 (function() {
+  // ═══════════════════ Author Chart ═══════════════════
   var authorData = JSON.parse('<%- authorStats %>');
-  if (!authorData || !authorData.length) return;
-  var maxTime = Math.max.apply(null, authorData.map(function(a) { return a.totalTime || 0; }));
-  if (!maxTime) return;
-  var container = document.getElementById('author-chart');
-  authorData.forEach(function(a) {
-    var pct = Math.max(2, (a.totalTime || 0) / maxTime * 100);
-    var h = Math.floor((a.totalTime || 0) / 3600);
-    var bar = document.createElement('div');
-    bar.className = 'author-bar';
-    bar.innerHTML = '<span class="author-bar-label">' + (a.author || '佚名') + '</span>' +
-      '<span class="author-bar-track"><span class="author-bar-fill" style="width:' + pct.toFixed(0) + '%"></span></span>' +
-      '<span class="author-bar-val">' + h + 'h (' + a.bookCount + '册)</span>';
-    container.appendChild(bar);
-  });
+  if (authorData && authorData.length) {
+    var maxTime = Math.max.apply(null, authorData.map(function(a) { return a.totalTime || 0; }));
+    if (maxTime) {
+      var container = document.getElementById('author-chart');
+      authorData.forEach(function(a) {
+        var pct = Math.max(2, (a.totalTime || 0) / maxTime * 100);
+        var h = Math.floor((a.totalTime || 0) / 3600);
+        var bar = document.createElement('div');
+        bar.className = 'author-bar';
+        bar.innerHTML = '<span class="author-bar-label">' + (a.author || '佚名') + '</span>' +
+          '<span class="author-bar-track"><span class="author-bar-fill" style="width:' + pct.toFixed(0) + '%"></span></span>' +
+          '<span class="author-bar-val">' + h + 'h (' + a.bookCount + '册)</span>';
+        container.appendChild(bar);
+      });
+    }
+  }
+
+  // ═══════════════════ Stats Rings ═══════════════════
+  (function buildRings() {
+    var container = document.getElementById('st-rings-row');
+    if (!container) return;
+    var total = <%- summary.totalBooks || 0 %>;
+    var finished = <%- summary.finishedCount || 0 %>;
+    var hps = JSON.parse('<%- homepageStats %>');
+    var rs = JSON.parse('<%- readingStatsRaw %>');
+
+    function ringSVG(label, value, max, unit, color, sub) {
+      var pct = max > 0 ? value / max : 0;
+      var r = 48, c = 64, circ = 2 * Math.PI * r;
+      var dash = circ * pct;
+      return '<div class="st-ring-card">' +
+        '<svg viewBox="0 0 128 128" class="st-ring">' +
+          '<circle cx="' + c + '" cy="' + c + '" r="' + r + '" fill="none" stroke="var(--rule-thin)" stroke-width="8"/>' +
+          '<circle cx="' + c + '" cy="' + c + '" r="' + r + '" fill="none" stroke="' + color + '" stroke-width="8" stroke-dasharray="' + dash.toFixed(1) + ' ' + (circ - dash).toFixed(1) + '" stroke-linecap="round" transform="rotate(-90 ' + c + ' ' + c + ')" style="transition: stroke-dasharray 1.2s var(--ease-out);"/>' +
+          '<text x="' + c + '" y="' + (c - 4) + '" text-anchor="middle" font-family="\'JetBrains Mono\', monospace" font-size="22" font-weight="700" fill="var(--ink)">' + value + '</text>' +
+          '<text x="' + c + '" y="' + (c + 16) + '" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="var(--ink-muted)">' + unit + '</text>' +
+        '</svg>' +
+        '<div class="st-ring-label">' + label + '</div>' +
+        (sub ? '<div class="st-ring-sub">' + sub + '</div>' : '') +
+      '</div>';
+    }
+
+    var html = '';
+    // Ring 1: completion
+    var pctDone = total > 0 ? Math.round(finished / total * 100) : 0;
+    html += ringSVG('阅读完成度', finished, total, '/' + total, 'var(--accent)', pctDone + '% 已完成');
+    // Ring 2: current streak
+    html += ringSVG('当前连续', hps.currentStreak || 0, 30, '天', 'var(--accent-bright)', '每日阅读打卡');
+    // Ring 3: max streak
+    html += ringSVG('最长连续', hps.maxStreak || 0, Math.max(hps.maxStreak || 30, 30), '天', '#10b981', '历史最佳记录');
+    // Ring 4: total days
+    html += ringSVG('累计阅读', rs.readDays || 0, 365, '天', '#8b5cf6', '总阅读天数');
+
+    container.innerHTML = html;
+
+    // Animate rings on scroll
+    var animated = false;
+    function animateRings() {
+      if (animated) return;
+      var rect = container.getBoundingClientRect();
+      if (rect.top < window.innerHeight + 200) {
+        animated = true;
+        container.querySelectorAll('.st-ring circle:nth-child(2)').forEach(function(c) {
+          var full = c.getAttribute('stroke-dasharray').split(' ')[0];
+          c.style.strokeDasharray = '0 ' + (2 * Math.PI * 48);
+          setTimeout(function() { c.style.strokeDasharray = c.getAttribute('stroke-dasharray'); }, 50);
+        });
+      }
+    }
+    window.addEventListener('scroll', animateRings, {passive: true});
+    animateRings();
+  })();
+
+  // ═══════════════════ Calendar Heatmap ═══════════════════
+  (function buildHeatmap() {
+    var container = document.getElementById('st-heatmap');
+    if (!container) return;
+    var raw = JSON.parse('<%- heatmapData %>'); // [{date, seconds}, ...]
+
+    // Aggregate by date
+    var map = {};
+    raw.forEach(function(r) {
+      map[r.date] = (map[r.date] || 0) + r.seconds;
+    });
+
+    // Build 53 weeks × 7 days grid, ending at today
+    var today = new Date();
+    today.setHours(0,0,0,0);
+    var endDate = new Date(today);
+    // Round to Saturday (end of week)
+    var dayOfWeek = endDate.getDay();
+    endDate.setDate(endDate.getDate() + (6 - dayOfWeek));
+
+    // Start 52 weeks ago
+    var startDate = new Date(endDate);
+    startDate.setDate(startDate.getDate() - 52 * 7 + 1);
+    // Round to Sunday
+    startDate.setDate(startDate.getDate() - startDate.getDay());
+
+    function fmt(d) {
+      return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    }
+
+    // Find max for color scale
+    var maxSec = 0;
+    for (var k in map) { if (map[k] > maxSec) maxSec = map[k]; }
+    if (maxSec === 0) maxSec = 1;
+
+    function color(sec) {
+      if (sec === 0) return 'var(--rule-thin)';
+      var t = sec / maxSec;
+      if (t < 0.25) return 'var(--accent)';
+      if (t < 0.5)  return 'var(--accent-bright)';
+      if (t < 0.75) return '#e8860c';
+      return '#d4520a';
+    }
+
+    var cell = 13, gap = 3, csz = cell + gap;
+
+    var weeks = [];
+    var d = new Date(startDate);
+    while (d <= endDate) {
+      weeks.push(fmt(d));
+      d.setDate(d.getDate() + 7);
+    }
+
+    var nWeeks = weeks.length;
+    var svgW = nWeeks * csz + 40;
+    var svgH = 7 * csz + 24;
+
+    // Month labels
+    var months = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+    var monthLabels = [];
+    var lastMonth = -1;
+    weeks.forEach(function(w, wi) {
+      var m = parseInt(w.split('-')[1]) - 1;
+      if (m !== lastMonth) {
+        monthLabels.push({label: months[m], x: wi * csz + 2});
+        lastMonth = m;
+      }
+    });
+
+    var svg = '<svg viewBox="0 0 ' + svgW + ' ' + svgH + '" class="st-heatmap" xmlns="http://www.w3.org/2000/svg">';
+    // Day labels (Mon, Wed, Fri)
+    var dayLabels = ['','一','','三','','五',''];
+    for (var di = 0; di < 7; di++) {
+      if (dayLabels[di]) {
+        svg += '<text x="2" y="' + ((di * csz) + csz * 0.65 + 20).toFixed(0) + '" font-family="Inter, sans-serif" font-size="9" fill="var(--ink-muted)" text-anchor="start">' + dayLabels[di] + '</text>';
+      }
+    }
+    // Month labels
+    monthLabels.forEach(function(ml) {
+      svg += '<text x="' + (ml.x + 30).toFixed(0) + '" y="12" font-family="Inter, sans-serif" font-size="9" fill="var(--ink-muted)">' + ml.label + '</text>';
+    });
+
+    // Cells
+    weeks.forEach(function(w, wi) {
+      for (var di = 0; di < 7; di++) {
+        var cd = new Date(startDate);
+        cd.setDate(cd.getDate() + wi * 7 + di);
+        var key = fmt(cd);
+        var sec = map[key] || 0;
+        var x = wi * csz + 30;
+        var y = di * csz + 20;
+        var tip = key;
+        if (sec > 0) {
+          var m = Math.floor(sec / 60);
+          tip += ' · ' + m + '分钟';
+        }
+        svg += '<rect x="' + x + '" y="' + y + '" width="' + cell + '" height="' + cell + '" rx="2" fill="' + color(sec) + '" opacity="' + (sec > 0 ? 1 : 0.4) + '"><title>' + tip + '</title></rect>';
+      }
+    });
+
+    // Legend
+    var lx = 30, ly = 7 * csz + 24;
+    svg += '<text x="' + lx + '" y="' + (ly + 9) + '" font-family="Inter, sans-serif" font-size="9" fill="var(--ink-muted)">少</text>';
+    [0.25, 0.5, 0.75, 1].forEach(function(t, i) {
+      var sc = t * maxSec;
+      svg += '<rect x="' + (lx + 24 + i * (cell + 2)) + '" y="' + (ly - 2) + '" width="' + cell + '" height="' + cell + '" rx="2" fill="' + color(sc) + '"/>';
+    });
+    svg += '<text x="' + (lx + 24 + 4 * (cell + 2) + 4) + '" y="' + (ly + 9) + '" font-family="Inter, sans-serif" font-size="9" fill="var(--ink-muted)">多</text>';
+
+    svg += '</svg>';
+    container.innerHTML = svg;
+  })();
+
+  // ═══════════════════ Weekday Distribution ═══════════════════
+  (function buildWeekday() {
+    var container = document.getElementById('st-weekday');
+    if (!container) return;
+    var dist = JSON.parse('<%- weekdayDist %>'); // [sun, mon, tue, wed, thu, fri, sat] in seconds
+    var labels = ['周日','周一','周二','周三','周四','周五','周六'];
+    var maxH = Math.max.apply(null, dist) || 1;
+
+    // Build bar chart with a twist — rounded bars with gradient
+    var html = '<div class="st-weekday-chart">';
+    dist.forEach(function(sec, i) {
+      var h = Math.round(sec / 3600 * 10) / 10;
+      var pct = (sec / maxH * 100);
+      var isPeak = pct >= 90;
+      html += '<div class="st-wd-col' + (isPeak ? ' st-wd-peak' : '') + '">' +
+        '<div class="st-wd-bar-wrap">' +
+        '<div class="st-wd-bar" style="--h:' + Math.max(pct, 4).toFixed(0) + '%"></div>' +
+        '</div>' +
+        '<div class="st-wd-val">' + h + 'h</div>' +
+        '<div class="st-wd-label">' + labels[i] + '</div>' +
+      '</div>';
+    });
+    html += '</div>';
+    container.innerHTML = html;
+
+    // Animate bars
+    var animated = false;
+    function animate() {
+      if (animated) return;
+      var rect = container.getBoundingClientRect();
+      if (rect.top < window.innerHeight + 200) {
+        animated = true;
+        container.querySelectorAll('.st-wd-bar').forEach(function(b, i) {
+          b.style.transitionDelay = (i * 0.06) + 's';
+          b.classList.add('st-wd-bar--show');
+        });
+      }
+    }
+    window.addEventListener('scroll', animate, {passive: true});
+    setTimeout(animate, 300);
+  })();
 })();
 </script>

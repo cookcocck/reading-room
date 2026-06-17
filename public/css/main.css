@@ -1528,6 +1528,130 @@ h3 {
 }
 .trend-card.peak .trend-sparkline-bar { background: var(--accent); }
 
+/* ─── Stats: Progress Rings ─── */
+.st-rings-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-5);
+  margin-top: var(--space-5);
+}
+
+.st-ring-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.st-ring {
+  width: 100%;
+  max-width: 140px;
+  height: auto;
+}
+
+.st-ring-label {
+  font-family: var(--font-body);
+  font-size: var(--text-subhead);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.st-ring-sub {
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  color: var(--ink-muted);
+  margin-top: 2px;
+}
+
+/* ─── Stats: Calendar Heatmap ─── */
+.st-heatmap-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: var(--space-4);
+}
+
+.st-heatmap {
+  display: block;
+  width: 100%;
+  min-width: 720px;
+  height: auto;
+}
+
+.st-heatmap rect {
+  transition: opacity 0.15s var(--ease);
+}
+
+.st-heatmap rect:hover {
+  opacity: 1 !important;
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+
+/* ─── Stats: Weekday Distribution ─── */
+.st-weekday-wrap {
+  padding: var(--space-4) 0;
+}
+
+.st-weekday-chart {
+  display: flex;
+  gap: var(--space-4);
+  align-items: flex-end;
+  height: 200px;
+}
+
+.st-wd-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.st-wd-bar-wrap {
+  width: 100%;
+  max-width: 48px;
+  height: 150px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.st-wd-bar {
+  width: 100%;
+  background: var(--accent);
+  border-radius: 6px 6px 0 0;
+  height: 0;
+  transition: height 0.8s var(--ease-out);
+  min-height: 0;
+}
+
+.st-wd-bar--show {
+  height: var(--h);
+}
+
+.st-wd-peak .st-wd-bar {
+  background: var(--accent-bright);
+}
+
+.st-wd-val {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+.st-wd-label {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  color: var(--ink-muted);
+}
+
+/* Dark theme overrides for stats charts */
+[data-theme="dark"] .st-ring-sub { color: var(--ink-faint); }
+[data-theme="dark"] .st-heatmap rect:hover { stroke: var(--ink); }
+
 /* ─── About Page — Manifesto ─── */
 .about-section {
   padding: var(--space-12) 0;
@@ -2814,6 +2938,10 @@ h3 {
 @media (max-width: 480px) {
   .stats-hed { grid-template-columns: repeat(2, 1fr); }
   .time-masthead { grid-template-columns: repeat(2, 1fr); }
+  .st-rings-row { grid-template-columns: repeat(2, 1fr); }
+  .st-weekday-chart { height: 160px; }
+  .st-wd-bar-wrap { max-width: 36px; height: 110px; }
+  .st-heatmap-wrap { margin: 0 calc(-1 * var(--space-4)); }
 
   .nav-brand { font-size: 1rem; }
   .nav-link { font-size: 0.6875rem; }
