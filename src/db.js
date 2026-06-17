@@ -378,6 +378,45 @@ function getRecentNotes(limit = 30) {
   `).all(limit);
 }
 
+function getRandomNotes(limit = 20) {
+  const d = getDb();
+  return d.prepare(`
+    SELECT * FROM (
+      SELECT
+        h.bookmark_id AS id,
+        'highlight' AS type,
+        h.mark_text AS text,
+        h.chapter_title AS chapter,
+        h.create_time,
+        h.book_id,
+        b.title AS book_title,
+        b.author AS book_author,
+        b.cover AS book_cover
+      FROM highlights h
+      LEFT JOIN books b ON h.book_id = b.id
+      WHERE h.mark_text IS NOT NULL AND h.mark_text != ''
+
+      UNION ALL
+
+      SELECT
+        r.review_id AS id,
+        'review' AS type,
+        r.content AS text,
+        r.chapter_name AS chapter,
+        r.create_time,
+        r.book_id,
+        b.title AS book_title,
+        b.author AS book_author,
+        b.cover AS book_cover
+      FROM reviews r
+      LEFT JOIN books b ON r.book_id = b.id
+      WHERE r.content IS NOT NULL AND r.content != ''
+    )
+    ORDER BY RANDOM()
+    LIMIT ?
+  `).all(limit);
+}
+
 function getHeatmap() {
   const d = getDb();
   return d.prepare('SELECT date, seconds FROM reading_sessions ORDER BY date').all();
@@ -1106,6 +1145,7 @@ module.exports = {
   // notebooks page
   getAllNotebooks,
   getRecentNotes,
+  getRandomNotes,
   // helpers
   formatTime,
   formatTimestamp,

@@ -193,6 +193,376 @@
     });
   });
 
+  // ─── Notebooks shuffle ───
+  document.querySelectorAll('.nb-shuffle-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var container = document.getElementById('notes-feed');
+      if (!container) return;
+
+      // Spin animation
+      var svg = btn.querySelector('svg');
+      if (svg) svg.style.animation = 'none';
+      btn.offsetHeight;
+      if (svg) svg.style.animation = 'bd-shuffle-spin 0.6s ease';
+
+      fetch('/api/notebooks/random?n=20')
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          if (!data.notes || !data.notes.length) return;
+          container.innerHTML = data.notes.map(function(n, idx) {
+            var icon = n.type === 'highlight' ? '\uD83D\uDCA1' : '\uD83D\uDCAD';
+            var cls = 'notes-feed-item notes-feed-' + n.type;
+            var shortText = n.text.length > 100 ? n.text.substring(0, 100) + '\u2026' : n.text;
+            var escText = escapeHTML(n.text);
+            var escChap = n.chapter ? escapeHTML(n.chapter) : '';
+            var escBook = n.book_title ? escapeHTML(n.book_title) : '';
+            var escAuthor = n.book_author ? escapeHTML(n.book_author) : '';
+            var escAttrText = escapeAttr(n.text);
+            var escAttrChapter = n.chapter ? escapeAttr(n.chapter) : '';
+            var escAttrBook = n.book_title ? escapeAttr(n.book_title) : '';
+            var escAttrAuthor = n.book_author ? escapeAttr(n.book_author) : '';
+
+            var shareBtn = '';
+            if (n.type === 'highlight') {
+              shareBtn = '<button class="bd-share-btn highlight-share-btn" data-text="' + escAttrText + '" data-chapter="' + escAttrChapter + '" data-book-title="' + escAttrBook + '" data-book-author="' + escAttrAuthor + '" title="生成分享图" aria-label="生成分享图"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>';
+            } else {
+              shareBtn = '<button class="bd-share-btn review-share-btn" data-quote="" data-review="' + escAttrText + '" data-chapter="' + escAttrChapter + '" data-book-title="' + escAttrBook + '" data-book-author="' + escAttrAuthor + '" title="生成分享图" aria-label="生成分享图"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>';
+            }
+
+            return '' +
+              '<div class="' + cls + '">' +
+              '<div class="notes-feed-icon">' + icon + '</div>' +
+              '<div class="notes-feed-body">' +
+              '<div class="notes-feed-text">' + shortText + '</div>' +
+              '<div class="notes-feed-meta">' +
+              '<a href="/book/' + (n.book_id || '') + '" class="notes-feed-book">' + escBook + '</a>' +
+              '<span class="notes-feed-chapter">' + escChap + '</span>' +
+              '</div>' +
+              '</div>' +
+              '<div class="notes-feed-action">' + shareBtn + '</div>' +
+              '</div>';
+          }).join('');
+        })
+        .catch(function() { /* silent */ });
+    });
+  });
+
+})();
+
+// ═════════════════════════════════════════════════
+// Shared Share Card Engine
+// Used by book detail and notebooks pages.
+// ═════════════════════════════════════════════════
+(function() {
+  "use strict";
+
+  function themeColor(light, dark) {
+    return document.documentElement.getAttribute("data-theme") === "dark" ? dark : light;
+  }
+
+  function esc(s) {
+    return s.replace(/&/g, "&amp;")
+           .replace(/</g, "&lt;")
+           .replace(/>/g, "&gt;")
+           .replace(/"/g, "&quot;")
+           .replace(/'/g, "&#39;");
+  }
+
+  function waitForHtml2Canvas() {
+    return new Promise(function(resolve, reject) {
+      if (window.html2canvas) return resolve();
+      var tries = 0;
+      var timer = setInterval(function() {
+        tries++;
+        if (window.html2canvas) { clearInterval(timer); resolve(); }
+        else if (tries > 30) { clearInterval(timer); reject(new Error("html2canvas timeout")); }
+      }, 200);
+    });
+  }
+
+  function buildHighlightCard(text, chapter, bookTitle, bookAuthor) {
+    var paper    = themeColor("#faf9f5", "#161615");
+    var ink      = themeColor("#171717", "#e8e6e0");
+    var inkSoft  = themeColor("#3d3d3d", "#b0aea8");
+    var inkMuted = themeColor("#8a8a85", "#706e68");
+    var rule     = themeColor("#e0ded8", "#2a2a26");
+    var accent   = themeColor("#2c5282", "#93bfec");
+
+    var QL = "\u201C";
+    var MD = "\u2014";
+    var LS = "\u300A";
+    var RS = "\u300B";
+    var DOT = "\u00B7";
+
+    return (
+      '<div id="share-card-inner" style="' +
+      "width:1400px;height:900px;" +
+      "background:" + paper + ";" +
+      "display:flex;flex-direction:column;justify-content:center;align-items:center;" +
+      "padding:90px 110px;box-sizing:border-box;position:relative;" +
+      "font-family:serif;overflow:hidden;" +
+      '">' +
+      '<div style="' +
+      "position:absolute;top:70px;left:90px;" +
+      "font-size:160px;line-height:1;" +
+      "color:" + accent + ";opacity:0.07;font-family:serif;user-select:none;" +
+      '">' + QL + "</div>" +
+      '<div style="' +
+      "position:absolute;bottom:70px;right:90px;" +
+      "font-size:120px;line-height:1;" +
+      "color:" + accent + ";opacity:0.05;font-family:serif;user-select:none;" +
+      "transform:scaleX(-1);" +
+      '">' + QL + "</div>" +
+      '<div style="' +
+      "position:absolute;top:0;left:90px;right:90px;" +
+      "height:2px;background:" + accent + ";opacity:0.3;" +
+      '"></div>' +
+      '<div style="' +
+      "position:absolute;bottom:0;left:90px;right:90px;" +
+      "height:2px;background:" + accent + ";opacity:0.3;" +
+      '"></div>' +
+      '<div style="' +
+      "max-width:1050px;text-align:center;position:relative;z-index:1;" +
+      '">' +
+      "<p style=\"" +
+      "font-family:serif;font-size:36px;line-height:1.7;color:" + ink + ";" +
+      "margin:0 0 32px 0;letter-spacing:0.02em;" +
+      "\">" + esc(text) + "</p>" +
+      (chapter ? "<p style=\"" +
+      "font-size:17px;color:" + inkMuted + ";margin:0 0 28px 0;letter-spacing:0.08em;" +
+      "\">" + MD + " " + esc(chapter) + "</p>" : "") +
+      '<div style="' +
+      "width:70px;height:1px;background:" + rule + ";margin:0 auto 28px auto;" +
+      '"></div>' +
+      "<p style=\"" +
+      "font-size:18px;color:" + inkSoft + ";margin:0;font-weight:600;letter-spacing:0.04em;" +
+      "\">" + LS + esc(bookTitle) + RS +
+      (bookAuthor ? " " + DOT + " " + esc(bookAuthor) : "") +
+      "</p>" +
+      "</div>" +
+      "</div>"
+    );
+  }
+
+  function buildReviewCard(quote, review, chapter, bookTitle, bookAuthor) {
+    var paper    = themeColor("#faf9f5", "#161615");
+    var ink      = themeColor("#171717", "#e8e6e0");
+    var inkSoft  = themeColor("#3d3d3d", "#b0aea8");
+    var inkMuted = themeColor("#8a8a85", "#706e68");
+    var accent   = themeColor("#e07a5f", "#d4846e");
+    var accent2  = themeColor("#2c5282", "#93bfec");
+
+    var MD = "\u2014";
+    var DOT = "\u00B7";
+
+    var html = (
+      '<div id="share-card-inner" style="' +
+      "width:1400px;height:900px;" +
+      "background:" + paper + ";" +
+      "display:flex;flex-direction:column;justify-content:center;align-items:center;" +
+      "padding:90px 110px;box-sizing:border-box;position:relative;" +
+      "font-family:serif;overflow:hidden;" +
+      '">'
+    );
+
+    if (quote) {
+      html += (
+        '<div style="' +
+        "position:relative;max-width:1050px;margin-bottom:40px;padding:0 20px;" +
+        '">' +
+        '<div style="' +
+        "position:absolute;left:0;top:0;bottom:0;width:3px;" +
+        "background:" + accent2 + ";opacity:0.25;border-radius:2px;" +
+        '"></div>' +
+        "<p style=\"" +
+        "font-family:serif;font-size:22px;line-height:1.6;color:" + ink + ";opacity:0.65;" +
+        "margin:0 0 0 24px;letter-spacing:0.01em;font-style:italic;" +
+        "\">" + esc(quote) + "</p>" +
+        "</div>"
+      );
+    }
+
+    html += (
+      '<div style="' +
+      "max-width:1050px;text-align:center;position:relative;z-index:1;" +
+      '">' +
+      "<p style=\"" +
+      "font-family:serif;font-size:32px;line-height:1.75;color:" + ink + ";" +
+      "margin:0 0 28px 0;letter-spacing:0.02em;" +
+      "\">" + esc(review) + "</p>"
+    );
+
+    if (chapter) {
+      html += "<p style=\"" +
+        "font-size:15px;color:" + inkMuted + ";margin:0 0 24px 0;letter-spacing:0.08em;" +
+        "\">" + MD + " " + esc(chapter) + "</p>";
+    }
+
+    html += (
+      '<div style="' +
+      "width:50px;height:2px;background:" + accent + ";opacity:0.4;margin:0 auto 24px auto;border-radius:1px;" +
+      '"></div>' +
+      "<p style=\"" +
+      "font-size:13px;color:" + accent + ";margin:0 0 16px 0;letter-spacing:0.2em;text-transform:uppercase;opacity:0.7;" +
+      "\">\u6211\u7684\u60F3\u6CD5</p>" +
+      "<p style=\"" +
+      "font-size:16px;color:" + inkSoft + ";margin:0;font-weight:600;letter-spacing:0.04em;" +
+      "\">" + esc(bookTitle) +
+      (bookAuthor ? " " + DOT + " " + esc(bookAuthor) : "") +
+      "</p>"
+    );
+
+    html += "</div></div>";
+    return html;
+  }
+
+  function generateAndShow(html) {
+    var host = document.getElementById("share-card-host");
+    if (!host) return;
+    host.innerHTML = html;
+
+    var card = document.getElementById("share-card-inner");
+    if (!card) { host.innerHTML = ""; return; }
+
+    var overlay = document.createElement("div");
+    overlay.id = "share-loading-overlay";
+    overlay.style.cssText = "position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;letter-spacing:0.1em;";
+    overlay.textContent = "\u6B63\u5728\u751F\u6210\u5206\u4EAB\u56FE\u2026";
+    document.body.appendChild(overlay);
+    overlay.offsetHeight;
+
+    requestAnimationFrame(function() {
+      host.style.left = "0";
+      host.style.top = "0";
+      host.style.zIndex = "99990";
+      host.style.opacity = "0";
+      host.style.maxWidth = "100vw";
+      host.style.maxHeight = "100vh";
+      host.style.overflow = "hidden";
+
+      Promise.all([
+        waitForHtml2Canvas(),
+        document.fonts ? document.fonts.ready : Promise.resolve()
+      ]).then(function() {
+        return html2canvas(card, {
+          backgroundColor: null,
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          onclone: function(clonedDoc) {
+            var el = clonedDoc.getElementById("share-card-inner");
+            if (el) el.style.opacity = "1";
+            var link = clonedDoc.createElement("link");
+            link.rel = "stylesheet";
+            link.href = "https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap";
+            clonedDoc.head.appendChild(link);
+          }
+        });
+      }).then(function(canvas) {
+        showModal(canvas);
+      }).catch(function(err) {
+        console.error("[share] error:", err);
+        alert("生成分享图失败：" + (err.message || err));
+      }).finally(function() {
+        host.innerHTML = "";
+        host.style.left = "-9999px";
+        host.style.zIndex = "0";
+        host.style.opacity = "";
+        if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+      });
+    });
+  }
+
+  function showModal(canvas) {
+    var modal = document.getElementById("share-modal");
+    var img = document.getElementById("share-preview-img");
+    if (!modal || !img) return;
+
+    var dataUrl = canvas.toDataURL("image/png");
+    img.src = dataUrl;
+    modal.setAttribute("aria-hidden", "false");
+    modal.classList.add("is-open");
+
+    var dlBtn = document.getElementById("share-download-btn");
+    if (dlBtn) {
+      dlBtn.onclick = function() {
+        var a = document.createElement("a");
+        a.href = dataUrl;
+        a.download = "quote-share.png";
+        a.click();
+      };
+    }
+
+    var cpBtn = document.getElementById("share-copy-btn");
+    if (cpBtn) {
+      cpBtn.onclick = function() {
+        canvas.toBlob(function(blob) {
+          if (!blob) { alert("复制失败"); return; }
+          navigator.clipboard.write([
+            new ClipboardItem({ "image/png": blob })
+          ]).then(function() {
+            cpBtn.textContent = "已复制 \u2713";
+            setTimeout(function() { cpBtn.textContent = "复制图片"; }, 1500);
+          }).catch(function() {
+            alert("复制失败，请尝试下载图片");
+          });
+        }, "image/png");
+      };
+    }
+  }
+
+  function closeModal() {
+    var modal = document.getElementById("share-modal");
+    if (modal) {
+      modal.setAttribute("aria-hidden", "true");
+      modal.classList.remove("is-open");
+    }
+  }
+
+  // Delegated click handler for all share buttons
+  document.addEventListener("click", function(e) {
+    var hlBtn = e.target.closest(".highlight-share-btn");
+    if (hlBtn) {
+      e.preventDefault();
+      var text = hlBtn.getAttribute("data-text") || "";
+      var chapter = hlBtn.getAttribute("data-chapter") || "";
+      var bookTitle = hlBtn.getAttribute("data-book-title") || "";
+      var bookAuthor = hlBtn.getAttribute("data-book-author") || "";
+      // Fallback to .bd-container data attributes for book page
+      if (!bookTitle) {
+        var container = document.querySelector(".bd-container");
+        bookTitle = container ? (container.getAttribute("data-book-title") || "") : "";
+        bookAuthor = container ? (container.getAttribute("data-book-author") || "") : "";
+      }
+      generateAndShow(buildHighlightCard(text, chapter, bookTitle, bookAuthor));
+      return;
+    }
+
+    var rvBtn = e.target.closest(".review-share-btn");
+    if (rvBtn) {
+      e.preventDefault();
+      var quote = rvBtn.getAttribute("data-quote") || "";
+      var review = rvBtn.getAttribute("data-review") || "";
+      var chapter = rvBtn.getAttribute("data-chapter") || "";
+      var bookTitle = rvBtn.getAttribute("data-book-title") || "";
+      var bookAuthor = rvBtn.getAttribute("data-book-author") || "";
+      // Fallback to .bd-container data attributes for book page
+      if (!bookTitle) {
+        var container = document.querySelector(".bd-container");
+        bookTitle = container ? (container.getAttribute("data-book-title") || "") : "";
+        bookAuthor = container ? (container.getAttribute("data-book-author") || "") : "";
+      }
+      generateAndShow(buildReviewCard(quote, review, chapter, bookTitle, bookAuthor));
+      return;
+    }
+  });
+
+  // Modal close handlers
+  var closeBtn = document.getElementById("share-modal-close");
+  if (closeBtn) closeBtn.addEventListener("click", closeModal);
+  var backdrop = document.querySelector(".share-modal-backdrop");
+  if (backdrop) backdrop.addEventListener("click", closeModal);
+
 })();
 
 // ─── Toggle Want-To-Read ───

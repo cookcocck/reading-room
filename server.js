@@ -262,7 +262,16 @@ app.get('/notebooks', (req, res) => {
     summary,
     helpers: { formatTime, formatTimestamp },
     path: '/notebooks',
+    needsHtml2Canvas: true,
   });
+});
+
+// API: Random notes for notebooks page shuffle
+app.get('/api/notebooks/random', (req, res) => {
+  const { getRandomNotes } = db;
+  const n = parseInt(req.query.n) || 20;
+  const notes = getRandomNotes(n);
+  res.json({ notes });
 });
 
 // ─── Search ───
