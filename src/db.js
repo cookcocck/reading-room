@@ -419,7 +419,36 @@ function getRandomNotes(limit = 20) {
 
 function getHeatmap() {
   const d = getDb();
-  return d.prepare('SELECT date, seconds FROM reading_sessions ORDER BY date').all();
+  // Merge reading_sessions (initial import) + books.last_read_time (real-time)
+  const dateMap = new Map();
+
+  // Source 1: reading_sessions
+  const sessions = d.prepare('SELECT date, seconds FROM reading_sessions').all();
+  for (const s of sessions) {
+    dateMap.set(s.date, (dateMap.get(s.date) || 0) + s.seconds);
+  }
+
+  // Source 2: books.last_read_time (authoritative, updated every sync)
+  // We estimate per-book daily reading based on last_read_time recency
+  const bookTimes = d.prepare(
+    'SELECT last_read_time, read_time FROM books WHERE last_read_time > 0'
+  ).all();
+  for (const row of bookTimes) {
+    const dt = new Date(row.last_read_time * 1000);
+    const ds = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+    // Only add if not already in sessions (avoid double counting)
+    if (!dateMap.has(ds)) {
+      // Estimate: distribute total read_time across its reading days
+      dateMap.set(ds, (dateMap.get(ds) || 0) + Math.max(Math.round(row.read_time / 30), 60));
+    }
+  }
+
+  const result = [];
+  for (const [date, seconds] of dateMap) {
+    result.push({ date, seconds });
+  }
+  result.sort((a, b) => a.date.localeCompare(b.date));
+  return result;
 }
 
 function getTrends() {
@@ -429,13 +458,28 @@ function getTrends() {
 
 function getWeekdayDistribution() {
   const d = getDb();
-  const rows = d.prepare("SELECT date, seconds FROM reading_sessions WHERE date >= '2026-01-01'").all();
-
   const counts = [0, 0, 0, 0, 0, 0, 0];
-  rows.forEach(r => {
-    const date = new Date(r.date);
-    counts[date.getDay()] += r.seconds;
-  });
+
+  // Source 1: reading_sessions
+  const sessions = d.prepare('SELECT date, seconds FROM reading_sessions').all();
+  for (const r of sessions) {
+    counts[new Date(r.date).getDay()] += r.seconds;
+  }
+
+  // Source 2: books.last_read_time (authoritative)
+  const bookTimes = d.prepare(
+    'SELECT last_read_time, read_time FROM books WHERE last_read_time > 0'
+  ).all();
+  for (const row of bookTimes) {
+    const dt = new Date(row.last_read_time * 1000);
+    const ds = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+    // Check if this date is already covered by reading_sessions
+    const alreadyCovered = sessions.some(s => s.date === ds);
+    if (!alreadyCovered) {
+      counts[dt.getDay()] += Math.max(Math.round(row.read_time / 30), 60);
+    }
+  }
+
   return counts;
 }
 

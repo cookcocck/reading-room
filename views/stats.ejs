@@ -392,7 +392,7 @@
     var total = <%- summary.totalBooks || 0 %>;
     var finished = <%- summary.finishedCount || 0 %>;
     var hps = JSON.parse('<%- homepageStats %>');
-    var rs = JSON.parse('<%- readingStatsRaw %>');
+    var overallDays = <%- overall.readDays || 0 %>;
 
     function ringSVG(label, value, max, unit, color, sub) {
       var pct = max > 0 ? value / max : 0;
@@ -418,8 +418,10 @@
     html += ringSVG('当前连续', hps.currentStreak || 0, 30, '天', 'var(--accent-bright)', '每日阅读打卡');
     // Ring 3: max streak
     html += ringSVG('最长连续', hps.maxStreak || 0, Math.max(hps.maxStreak || 30, 30), '天', '#10b981', '历史最佳记录');
-    // Ring 4: total days
-    html += ringSVG('累计阅读', rs.readDays || 0, 365, '天', '#8b5cf6', '总阅读天数');
+    // Ring 4: total days — overall.readDays is the authoritative count
+    var daysMax = Math.max(overallDays, 365);
+    daysMax = Math.ceil(daysMax / 100) * 100;
+    html += ringSVG('累计阅读', overallDays, daysMax, '天', '#8b5cf6', '总阅读天数');
 
     container.innerHTML = html;
 
