@@ -4338,7 +4338,7 @@ h3 {
    ═══════════════════════════════════════════════════════════════════ */
 
 .bd-container {
-  max-width: calc(8 * 160px + 7 * var(--space-6));
+  max-width: calc(10 * 160px + 9 * var(--space-6));
   margin: 0 auto;
   padding: 0 var(--space-6);
   animation: bdFadeIn 0.5s var(--ease-out);
