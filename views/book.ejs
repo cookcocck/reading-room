@@ -60,15 +60,6 @@
       <h1 class="bd-hero-title"><%= book.title %></h1>
       <p class="bd-hero-author"><%= book.author || '佚名' %></p>
 
-      <!-- Rating -->
-      <div class="bd-hero-rating" id="star-rating">
-        <% for (var s = 1; s <= 5; s++) { %>
-        <button class="bd-star <%= s <= userRating ? 'bd-star--active' : '' %>" onclick="rateBook('<%= book.id %>',<%= s %>)" title="<%= s %>星" aria-label="评分 <%= s %> 星">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="<%= s <= userRating ? 'currentColor' : 'none' %>" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        </button>
-        <% } %>
-      </div>
-
       <!-- Stats Cards -->
       <div class="bd-stats">
         <% if (readTimeSec > 0) { %>
