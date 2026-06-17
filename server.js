@@ -294,65 +294,6 @@ app.get('/search', (req, res) => {
   });
 });
 
-// ─── Reading Calendar ───
-app.get('/calendar', (req, res) => {
-  const { getCalendarData, getSummary } = db;
-  const year = parseInt(req.query.year) || new Date().getFullYear();
-  const sessions = getCalendarData(year);
-  const summary = getSummary();
-
-  const dateSet = new Set(sessions.map(s => s.date));
-  const totalDays = sessions.length;
-  const totalHours = Math.round(sessions.reduce((s, r) => s + r.seconds, 0) / 3600 * 10) / 10;
-  const avgDaily = totalDays > 0 ? Math.round(totalHours / totalDays * 60) : 0;
-
-  // Current streak
-  const today = new Date();
-  let streak = 0, check = new Date(today);
-  while (dateSet.has(`${check.getFullYear()}-${String(check.getMonth()+1).padStart(2,'0')}-${String(check.getDate()).padStart(2,'0')}`)) {
-    streak++; check.setDate(check.getDate() - 1);
-  }
-  if (streak === 0) { check = new Date(today); check.setDate(check.getDate() - 1);
-    while (dateSet.has(`${check.getFullYear()}-${String(check.getMonth()+1).padStart(2,'0')}-${String(check.getDate()).padStart(2,'0')}`)) {
-      streak++; check.setDate(check.getDate() - 1);
-    }
-  }
-
-  // Build calendar months
-  const months = [];
-  for (let m = 0; m < 12; m++) {
-    const firstDay = new Date(year, m, 1);
-    const daysInMonth = new Date(year, m + 1, 0).getDate();
-    const startDow = firstDay.getDay();
-    const weeks = [];
-    let day = 1;
-    const maxWeeks = Math.ceil((daysInMonth + startDow) / 7);
-    for (let w = 0; w < maxWeeks; w++) {
-      const week = [];
-      for (let d = 0; d < 7; d++) {
-        if ((w === 0 && d < startDow) || day > daysInMonth) {
-          week.push(null);
-        } else {
-          const dateStr = `${year}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-          const session = sessions.find(s => s.date === dateStr);
-          week.push({ day, date: dateStr, level: session ? session.level : 0, hours: session ? session.hours : 0 });
-          day++;
-        }
-      }
-      weeks.push(week);
-    }
-    months.push({ name: `${m+1}月`, weeks });
-  }
-
-  const allSessionsJson = JSON.stringify(sessions);
-
-  res.render('calendar', {
-    title: '阅读日历', year, months, totalDays, totalHours, avgDaily, streak,
-    summary, helpers: { formatTime, formatTimestamp }, path: '/calendar',
-    allSessionsJson,
-  });
-});
-
 // ─── Annual Report ───
 app.get('/report', (req, res) => {
   const { getReportData, getSummary } = db;

@@ -961,22 +961,6 @@ function getBookAllNotes(bookTitle) {
   return { all, grouped };
 }
 
-// ─── Calendar Data ───
-
-function getCalendarData(year) {
-  const d = getDb();
-  const sessions = d.prepare(
-    "SELECT date, seconds FROM reading_sessions WHERE date LIKE ? ORDER BY date"
-  ).all(`${year}-%`);
-
-  return sessions.map(s => ({
-    date: s.date,
-    seconds: s.seconds,
-    hours: Math.round(s.seconds / 3600 * 10) / 10,
-    level: heatmapLevel(s.seconds),
-  }));
-}
-
 // ─── Annual Report ───
 
 function getReportData(year) {
@@ -1232,8 +1216,6 @@ module.exports = {
   setBookRating,
   getBookRating,
   getBookAllNotes,
-  // calendar
-  getCalendarData,
   // report
   getReportData,
   // tags
