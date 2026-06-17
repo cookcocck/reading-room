@@ -5070,13 +5070,13 @@ h3 {
 .bd-reviews {
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: var(--space-6);
 }
 
 /* ═══ Highlight Cards — Left accent bar style ═══ */
 .bd-hl-card {
   position: relative;
-  padding: var(--space-6) var(--space-6) var(--space-5) var(--space-7);
+  padding: var(--space-8) var(--space-10) var(--space-6) var(--space-10);
   background: var(--paper);
   border-radius: 14px;
   border-left: 3px solid var(--accent-bright);
@@ -5185,7 +5185,7 @@ h3 {
 /* ═══ Review Cards — Soft thought bubble style ═══ */
 .bd-rv-card {
   position: relative;
-  padding: var(--space-6) var(--space-6) var(--space-5) var(--space-6);
+  padding: var(--space-8) var(--space-10) var(--space-6) var(--space-10);
   background: linear-gradient(135deg, var(--paper) 0%, var(--paper-warm) 100%);
   border-radius: 14px;
   border: 1px solid var(--rule);
@@ -5665,7 +5665,7 @@ h3 {
 
   .bd-hl-card,
   .bd-rv-card {
-    padding: var(--space-4) var(--space-5) var(--space-3) var(--space-6);
+    padding: var(--space-5) var(--space-6) var(--space-4) var(--space-6);
   }
 
   .bd-hl-body::before { left: calc(-1 * var(--space-4) - 3px); }
