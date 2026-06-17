@@ -3156,7 +3156,7 @@ h3 {
    ═══════════════════════════════════════════════════════════ */
 
 .bs-container {
-  max-width: calc(8 * 160px + 7 * var(--space-6));
+  max-width: var(--col-wide);
   margin: 0 auto;
   padding: 0 var(--space-6);
 }
