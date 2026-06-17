@@ -49,13 +49,8 @@
   <!-- Recent Notes Feed -->
   <hr class="section-rule">
   <div class="notes-feed-section">
-    <div class="notes-section-head">
-      <h2 class="notes-section-title">最近笔记</h2>
-      <button class="bd-shuffle-btn nb-shuffle-btn" title="随机换一批">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-      </button>
-    </div>
-    <div class="notes-feed" id="notes-feed">
+    <h2 class="notes-section-title">最近笔记</h2>
+    <div class="notes-feed">
       <% recentNotes.forEach(function(note) { %>
       <div class="notes-feed-item notes-feed-<%= note.type %>">
         <div class="notes-feed-icon">
@@ -68,28 +63,6 @@
             <span class="notes-feed-chapter"><%= note.chapter || '' %></span>
             <span class="notes-feed-date"><%= helpers.formatTimestamp(note.create_time) %></span>
           </div>
-        </div>
-        <div class="notes-feed-action">
-          <% if (note.type === 'highlight') { %>
-          <button class="bd-share-btn highlight-share-btn"
-            data-text="<%= note.text.replace(/"/g, '&quot;') %>"
-            data-chapter="<%= (note.chapter || '').replace(/"/g, '&quot;') %>"
-            data-book-title="<%= (note.book_title || '').replace(/"/g, '&quot;') %>"
-            data-book-author="<%= (note.book_author || '').replace(/"/g, '&quot;') %>"
-            title="生成分享图" aria-label="生成分享图">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-          </button>
-          <% } else { %>
-          <button class="bd-share-btn review-share-btn"
-            data-quote=""
-            data-review="<%= note.text.replace(/"/g, '&quot;') %>"
-            data-chapter="<%= (note.chapter || '').replace(/"/g, '&quot;') %>"
-            data-book-title="<%= (note.book_title || '').replace(/"/g, '&quot;') %>"
-            data-book-author="<%= (note.book_author || '').replace(/"/g, '&quot;') %>"
-            title="生成分享图" aria-label="生成分享图">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-          </button>
-          <% } %>
         </div>
       </div>
       <% }); %>

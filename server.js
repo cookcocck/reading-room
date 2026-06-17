@@ -134,7 +134,16 @@ app.get('/', (req, res) => {
     weekdayMap: ['日','一','二','三','四','五','六'],
     annual2026,
     hpStats: hps,
+    needsHtml2Canvas: true,
   });
+});
+
+// API: Random highlights for homepage shuffle
+app.get('/api/home/highlights', (req, res) => {
+  const { getRecentHighlights } = db;
+  const n = parseInt(req.query.n) || 8;
+  const highlights = getRecentHighlights(n);
+  res.json({ highlights });
 });
 
 // Bookshelf page
@@ -262,7 +271,6 @@ app.get('/notebooks', (req, res) => {
     summary,
     helpers: { formatTime, formatTimestamp },
     path: '/notebooks',
-    needsHtml2Canvas: true,
   });
 });
 

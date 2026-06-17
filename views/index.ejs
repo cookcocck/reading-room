@@ -292,13 +292,29 @@ var maxWeekday = Math.max.apply(null, weekdayCounts) || 1;
 <% if (recentHighlights && recentHighlights.length > 0) { %>
 <div class="container-wide">
   <hr class="section-rule">
-  <div class="section-kicker">IV. 阅读摘录</div>
+  <div class="section-head">
+    <div class="section-kicker">IV. 阅读摘录</div>
+    <button class="bd-shuffle-btn hm-shuffle-btn" title="随机换一批" data-n="8">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+    </button>
+  </div>
 
-  <div class="highlights-list">
+  <div class="highlights-list" id="home-highlights">
     <% recentHighlights.slice(0, 8).forEach(function(h) { %>
     <div class="highlight-block">
       <div class="highlight-text"><%= h.markText || h.content || '' %></div>
-      <div class="highlight-source"><%= h.bookTitle || '未知书名' %></div>
+      <div class="highlight-source">
+        <%= h.bookTitle || '未知书名' %>
+        <button class="bd-share-btn highlight-share-btn"
+          data-text="<%= (h.markText || h.content || '').replace(/"/g, '&quot;') %>"
+          data-chapter="<%= (h.chapter_title || '').replace(/"/g, '&quot;') %>"
+          data-book-title="<%= (h.bookTitle || '未知书名').replace(/"/g, '&quot;') %>"
+          data-book-author="<%= (h.bookAuthor || '').replace(/"/g, '&quot;') %>"
+          title="生成分享图" aria-label="生成分享图"
+          style="display:inline-flex;vertical-align:middle;margin-left:6px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        </button>
+      </div>
     </div>
     <% }); %>
   </div>

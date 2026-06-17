@@ -193,11 +193,12 @@
     });
   });
 
-  // ─── Notebooks shuffle ───
-  document.querySelectorAll('.nb-shuffle-btn').forEach(function(btn) {
+  // ─── Homepage highlights shuffle ───
+  document.querySelectorAll('.hm-shuffle-btn').forEach(function(btn) {
     btn.addEventListener('click', function() {
-      var container = document.getElementById('notes-feed');
+      var container = document.getElementById('home-highlights');
       if (!container) return;
+      var n = parseInt(btn.dataset.n) || 8;
 
       // Spin animation
       var svg = btn.querySelector('svg');
@@ -205,42 +206,32 @@
       btn.offsetHeight;
       if (svg) svg.style.animation = 'bd-shuffle-spin 0.6s ease';
 
-      fetch('/api/notebooks/random?n=20')
+      fetch('/api/home/highlights?n=' + n)
         .then(function(res) { return res.json(); })
         .then(function(data) {
-          if (!data.notes || !data.notes.length) return;
-          container.innerHTML = data.notes.map(function(n, idx) {
-            var icon = n.type === 'highlight' ? '\uD83D\uDCA1' : '\uD83D\uDCAD';
-            var cls = 'notes-feed-item notes-feed-' + n.type;
-            var shortText = n.text.length > 100 ? n.text.substring(0, 100) + '\u2026' : n.text;
-            var escText = escapeHTML(n.text);
-            var escChap = n.chapter ? escapeHTML(n.chapter) : '';
-            var escBook = n.book_title ? escapeHTML(n.book_title) : '';
-            var escAuthor = n.book_author ? escapeHTML(n.book_author) : '';
-            var escAttrText = escapeAttr(n.text);
-            var escAttrChapter = n.chapter ? escapeAttr(n.chapter) : '';
-            var escAttrBook = n.book_title ? escapeAttr(n.book_title) : '';
-            var escAttrAuthor = n.book_author ? escapeAttr(n.book_author) : '';
-
-            var shareBtn = '';
-            if (n.type === 'highlight') {
-              shareBtn = '<button class="bd-share-btn highlight-share-btn" data-text="' + escAttrText + '" data-chapter="' + escAttrChapter + '" data-book-title="' + escAttrBook + '" data-book-author="' + escAttrAuthor + '" title="生成分享图" aria-label="生成分享图"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>';
-            } else {
-              shareBtn = '<button class="bd-share-btn review-share-btn" data-quote="" data-review="' + escAttrText + '" data-chapter="' + escAttrChapter + '" data-book-title="' + escAttrBook + '" data-book-author="' + escAttrAuthor + '" title="生成分享图" aria-label="生成分享图"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>';
-            }
-
-            return '' +
-              '<div class="' + cls + '">' +
-              '<div class="notes-feed-icon">' + icon + '</div>' +
-              '<div class="notes-feed-body">' +
-              '<div class="notes-feed-text">' + shortText + '</div>' +
-              '<div class="notes-feed-meta">' +
-              '<a href="/book/' + (n.book_id || '') + '" class="notes-feed-book">' + escBook + '</a>' +
-              '<span class="notes-feed-chapter">' + escChap + '</span>' +
+          if (!data.highlights || !data.highlights.length) return;
+          container.innerHTML = data.highlights.map(function(h) {
+            var text = h.markText || h.content || '';
+            var bookTitle = h.bookTitle || h.book_title || '未知书名';
+            var bookAuthor = h.bookAuthor || h.book_author || '';
+            var chapter = h.chapter_title || '';
+            return (
+              '<div class="highlight-block">' +
+              '<div class="highlight-text">' + escapeHTML(text) + '</div>' +
+              '<div class="highlight-source">' +
+              escapeHTML(bookTitle) +
+              '<button class="bd-share-btn highlight-share-btn" ' +
+              'data-text="' + escapeAttr(text) + '" ' +
+              'data-chapter="' + escapeAttr(chapter) + '" ' +
+              'data-book-title="' + escapeAttr(bookTitle) + '" ' +
+              'data-book-author="' + escapeAttr(bookAuthor) + '" ' +
+              'title="生成分享图" aria-label="生成分享图" ' +
+              'style="display:inline-flex;vertical-align:middle;margin-left:6px;">' +
+              '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>' +
+              '</button>' +
               '</div>' +
-              '</div>' +
-              '<div class="notes-feed-action">' + shareBtn + '</div>' +
-              '</div>';
+              '</div>'
+            );
           }).join('');
         })
         .catch(function() { /* silent */ });

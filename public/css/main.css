@@ -584,6 +584,46 @@ h3 {
   margin-top: var(--space-1);
 }
 
+/* ─── Section Head (shared) — kicker + refresh button ─── */
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.section-head .section-kicker {
+  margin-bottom: 0;
+}
+
+/* Shared shuffle button — used by bd-shuffle-btn on book detail, hm-shuffle-btn on homepage */
+.hm-shuffle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 1px solid var(--rule-thin);
+  background: transparent;
+  color: var(--ink-faint);
+  cursor: pointer;
+  transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.hm-shuffle-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.hm-shuffle-btn svg {
+  transition: transform 0.3s var(--ease);
+}
+
+.hm-shuffle-btn:hover svg {
+  transform: rotate(180deg);
+}
+
 /* ─── Highlights — Pull Quote Style ─── */
 .highlights-list {
   columns: 2;
@@ -990,50 +1030,12 @@ h3 {
 }
 
 /* ─── Section Title ─── */
-.notes-section-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--space-6);
-}
-
-.notes-section-head .notes-section-title {
-  margin-bottom: 0;
-}
-
 .notes-section-title {
   font-family: var(--font-display);
   font-size: var(--text-body-lg);
   font-weight: 600;
   color: var(--ink-soft);
   margin-bottom: var(--space-6);
-}
-
-.nb-shuffle-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  border: 1px solid var(--rule-thin);
-  background: transparent;
-  color: var(--ink-faint);
-  cursor: pointer;
-  transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
-}
-
-.nb-shuffle-btn:hover {
-  color: var(--accent);
-  border-color: var(--accent);
-}
-
-.nb-shuffle-btn svg {
-  transition: transform 0.3s var(--ease);
-}
-
-.nb-shuffle-btn:hover svg {
-  transform: rotate(180deg);
 }
 
 /* ─── Books Grid ─── */
@@ -1236,19 +1238,6 @@ h3 {
 .notes-feed-date {
   flex-shrink: 0;
   margin-left: auto;
-}
-
-.notes-feed-action {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  margin-left: var(--space-2);
-  opacity: 0;
-  transition: opacity 0.2s var(--ease);
-}
-
-.notes-feed-item:hover .notes-feed-action {
-  opacity: 1;
 }
 
 /* ─── Pagination ─── */
