@@ -961,98 +961,6 @@ function getBookAllNotes(bookTitle) {
   return { all, grouped };
 }
 
-// ─── Annual Report ───
-
-function getReportData(year) {
-  const d = getDb();
-
-  // Books finished this year
-  const yearStart = Math.floor(new Date(`${year}-01-01`).getTime() / 1000);
-  const yearEnd = Math.floor(new Date(`${year+1}-01-01`).getTime() / 1000);
-  const finished = d.prepare(
-    'SELECT COUNT(*) AS c FROM books WHERE finished = 1 AND update_time >= ? AND update_time < ?'
-  ).get(yearStart, yearEnd).c;
-
-  // Total books on shelf this year
-  const totalBooks = d.prepare(
-    'SELECT COUNT(*) AS c FROM books WHERE update_time >= ? AND update_time < ?'
-  ).get(yearStart, yearEnd).c;
-
-  // Reading time this year
-  const sessions = d.prepare(
-    "SELECT date, seconds FROM reading_sessions WHERE date LIKE ?"
-  ).all(`${year}-%`);
-  const totalSec = sessions.reduce((sum, s) => sum + s.seconds, 0);
-  const totalHours = Math.round(totalSec / 3600 * 10) / 10;
-  const readDays = [...new Set(sessions.map(s => s.date))].length;
-
-  // Top book this year (by notes)
-  const topBook = d.prepare(`
-    SELECT b.title, b.author, b.cover, b.category,
-      COALESCE(n.total_notes, 0) AS totalNotes
-    FROM books b
-    LEFT JOIN notebooks n ON b.id = n.book_id
-    ORDER BY n.total_notes DESC
-    LIMIT 1
-  `).get();
-
-  // Category distribution
-  const categories = d.prepare(`
-    SELECT category, COUNT(*) AS cnt
-    FROM books WHERE category != '' AND category IS NOT NULL
-    GROUP BY category ORDER BY cnt DESC
-  `).all();
-
-  // Monthly trend
-  const trends = d.prepare(`
-    SELECT month, total_seconds AS totalSec, read_days AS readDays
-    FROM reading_trends WHERE year = ?
-    ORDER BY month
-  `).all(year);
-
-  // Longest book by read time
-  const longest = d.prepare(`
-    SELECT title, author, read_time FROM books
-    WHERE read_time > 0 ORDER BY read_time DESC LIMIT 1
-  `).get();
-
-  // Total highlights this year
-  const totalHighlights = d.prepare(
-    'SELECT COUNT(*) AS c FROM highlights WHERE create_time >= ? AND create_time < ?'
-  ).get(yearStart, yearEnd).c;
-
-  // Total reviews this year
-  const totalReviews = d.prepare(
-    'SELECT COUNT(*) AS c FROM reviews WHERE create_time >= ? AND create_time < ?'
-  ).get(yearStart, yearEnd).c;
-
-  // Comparison with previous year
-  const prevSessions = d.prepare(
-    "SELECT date, seconds FROM reading_sessions WHERE date LIKE ?"
-  ).all(`${year-1}-%`);
-  const prevSec = prevSessions.reduce((sum, s) => sum + s.seconds, 0);
-  const prevHours = Math.round(prevSec / 3600 * 10) / 10;
-
-  return {
-    year,
-    finished,
-    totalBooks,
-    totalHours,
-    readDays,
-    topBook: topBook || null,
-    categories,
-    trends: trends.map(t => ({
-      ...t,
-      hours: Math.round(t.totalSec / 3600 * 10) / 10,
-    })),
-    longest,
-    totalHighlights,
-    totalReviews,
-    prevYearHours: prevHours,
-    yoyChange: prevHours > 0 ? Math.round(((totalHours - prevHours) / prevHours) * 100) : null,
-  };
-}
-
 // ─── Tags ───
 
 function getAllTags() {
@@ -1216,8 +1124,6 @@ module.exports = {
   setBookRating,
   getBookRating,
   getBookAllNotes,
-  // report
-  getReportData,
   // tags
   getAllTags,
   createTag,

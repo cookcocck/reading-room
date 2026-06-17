@@ -294,19 +294,6 @@ app.get('/search', (req, res) => {
   });
 });
 
-// ─── Annual Report ───
-app.get('/report', (req, res) => {
-  const { getReportData, getSummary } = db;
-  const year = parseInt(req.query.year) || new Date().getFullYear();
-  const report = getReportData(year);
-  const summary = getSummary();
-
-  res.render('report', {
-    title: `${year} 阅读年报`, report, year, summary,
-    formatTime, formatTimestamp, helpers: { formatTime, formatTimestamp }, path: '/report',
-  });
-});
-
 // ─── API: Want-to-read toggle ───
 app.post('/api/want-to-read', (req, res) => {
   const { setWantToRead } = db;
