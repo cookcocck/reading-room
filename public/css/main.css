@@ -315,12 +315,17 @@ h3 {
   color: var(--ink);
   border-color: var(--ink-faint);
 }
-.shuffle-btn.spinning {
+.bd-shuffle-btn.spinning {
   animation: shuffle-spin 0.5s var(--ease-out);
   pointer-events: none;
 }
 
 @keyframes shuffle-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes bd-shuffle-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }

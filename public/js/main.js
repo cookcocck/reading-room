@@ -96,7 +96,11 @@
     return div.innerHTML;
   }
 
-  document.querySelectorAll('.shuffle-btn').forEach(function(btn) {
+  function escapeAttr(s) {
+    return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  document.querySelectorAll('.bd-shuffle-btn').forEach(function(btn) {
     btn.addEventListener('click', function() {
       var section = btn.dataset.section;
       var bookId = btn.dataset.book;
@@ -104,34 +108,75 @@
       if (!container) return;
 
       // Spin animation
-      btn.classList.add('spinning');
-      btn.addEventListener('animationend', function() { btn.classList.remove('spinning'); }, { once: true });
+      var svg = btn.querySelector('svg');
+      if (svg) svg.style.animation = 'none';
+      btn.offsetHeight; // force reflow
+      if (svg) svg.style.animation = 'bd-shuffle-spin 0.6s ease';
 
-      // Build HTML for a single item
-      function buildHighlight(h) {
-        var html = '<blockquote class="detail-highlight"><p>' + escapeHTML(h.text) + '</p>';
-        if (h.chapter) html += '<cite>\u2014 ' + escapeHTML(h.chapter) + '</cite>';
-        html += '<button class="highlight-share-btn" data-text="' + escapeHTML(h.text) + '" data-chapter="' + (h.chapter ? escapeHTML(h.chapter) : '') + '" title="\u751f\u6210\u5206\u4eab\u56fe" aria-label="\u751f\u6210\u5206\u4eab\u56fe">\u2934</button>';
-        html += '</blockquote>';
+      // Build HTML matching current card design
+      function buildHighlight(h, idx) {
+        var num = String(idx + 1).padStart(2, '0');
+        var html = (
+          '<article class="bd-hl-card">' +
+          '<span class="bd-hl-num" aria-hidden="true">' + num + '</span>' +
+          '<blockquote class="bd-hl-body">' +
+          '<p class="bd-hl-text">' + escapeHTML(h.text) + '</p>' +
+          '</blockquote>'
+        );
+        if (h.chapter) {
+          html += (
+            '<footer class="bd-hl-foot">' +
+            '<span class="bd-hl-chap">' +
+            '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>' +
+            escapeHTML(h.chapter) +
+            '</span>' +
+            '<button class="bd-share-btn highlight-share-btn" data-text="' + escapeAttr(h.text) + '" data-chapter="' + (h.chapter ? escapeAttr(h.chapter) : '') + '" title="生成分享图" aria-label="生成分享图">' +
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>' +
+            '</button>' +
+            '</footer>'
+          );
+        }
+        html += '</article>';
         return html;
       }
 
-      function buildReview(r) {
-        var html = '<div class="detail-review">';
+      function buildReview(r, idx) {
+        var num = String(idx + 1).padStart(2, '0');
+        var html = (
+          '<article class="bd-rv-card">' +
+          '<span class="bd-rv-num" aria-hidden="true">' + num + '</span>'
+        );
         if (r.abstract) {
-          html += '<blockquote class="review-quote"><p>' + escapeHTML(r.abstract) + '</p></blockquote>';
+          html += (
+            '<aside class="bd-rv-quote-wrap">' +
+            '<span class="bd-rv-qmark" aria-hidden="true">\u201C</span>' +
+            '<p class="bd-rv-quote">' + escapeHTML(r.abstract) + '</p>' +
+            '</aside>'
+          );
         }
-        html += '<p class="review-content">' + escapeHTML(r.content) + '</p>';
-        html += '<cite>';
+        html += (
+          '<div class="bd-rv-body">' +
+          '<p class="bd-rv-text">' + escapeHTML(r.content) + '</p>' +
+          '</div>' +
+          '<footer class="bd-rv-foot">' +
+          '<span class="bd-rv-meta">'
+        );
         if (r.star > 0) {
-          html += '<span class="review-stars">';
+          html += '<span class="bd-rv-stars" title="' + r.star + ' 星">';
           for (var s = 0; s < r.star; s++) html += '\u2605';
           html += '</span>';
         }
-        if (r.chapter) html += '\u2014 ' + escapeHTML(r.chapter);
-        html += '</cite>';
-        html += '<button class="review-share-btn" data-quote="' + (r.abstract ? escapeHTML(r.abstract) : '') + '" data-review="' + escapeHTML(r.content) + '" data-chapter="' + (r.chapter ? escapeHTML(r.chapter) : '') + '" title="\u751f\u6210\u5206\u4eab\u56fe" aria-label="\u751f\u6210\u5206\u4eab\u56fe">\u2934</button>';
-        html += '</div>';
+        if (r.chapter) {
+          html += '<span class="bd-rv-chap">' + escapeHTML(r.chapter) + '</span>';
+        }
+        html += (
+          '</span>' +
+          '<button class="bd-share-btn review-share-btn" data-quote="' + (r.abstract ? escapeAttr(r.abstract) : '') + '" data-review="' + escapeAttr(r.content) + '" data-chapter="' + (r.chapter ? escapeAttr(r.chapter) : '') + '" title="生成分享图" aria-label="生成分享图">' +
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>' +
+          '</button>' +
+          '</footer>' +
+          '</article>'
+        );
         return html;
       }
 
@@ -143,10 +188,6 @@
 
           var builder = section === 'highlights' ? buildHighlight : buildReview;
           container.innerHTML = items.map(builder).join('');
-
-          // Trigger fade-in
-          container.classList.add('inserting');
-          container.addEventListener('animationend', function() { container.classList.remove('inserting'); }, { once: true });
         })
         .catch(function() { /* silent — retry on next click */ });
     });
