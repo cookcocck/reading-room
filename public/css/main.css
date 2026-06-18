@@ -1896,7 +1896,7 @@ h3 {
 }
 
 .au-card {
-  display: block; text-decoration: none; color: inherit;
+  display: block; text-decoration: none; color: inherit; cursor: pointer;
   background: var(--paper);
   border: 1px solid var(--rule-thin);
   border-radius: 14px;
