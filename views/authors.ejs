@@ -26,8 +26,8 @@
   <!-- Grid -->
   <div class="au-grid" id="au-grid">
     <% authors.forEach(function(author, idx) { %>
-    <div class="au-card" data-author="<%= author.author %>" data-count="<%= author.books.length %>" data-time="<%= author.totalReadTime %>" data-href="/author/<%= encodeURIComponent(author.author) %>"
-         style="animation-delay: <%= Math.min(idx * 0.03, 1.2) %>s" onclick="event.ctrlKey||event.metaKey||(window.location=this.dataset.href)" role="link" tabindex="0">
+    <div class="au-card" data-author="<%= author.author %>" data-count="<%= author.books.length %>" data-time="<%= author.totalReadTime %>"
+         style="animation-delay: <%= Math.min(idx * 0.03, 1.2) %>s">
       <!-- Cover collage (up to 4 covers) -->
       <% var covers = author.books.filter(function(b){ return b.cover; }).slice(0, 4); %>
       <% var colClass = covers.length === 1 ? 'au-collage--1' : covers.length === 2 ? 'au-collage--2' : covers.length === 3 ? 'au-collage--3' : 'au-collage--4'; %>
@@ -43,7 +43,7 @@
       </div>
       <!-- Info -->
       <div class="au-card-body">
-        <h2 class="au-card-name"><span class="au-name-text"><%= author.author %></span></h2>
+        <h2 class="au-card-name"><a href="/author/<%= encodeURIComponent(author.author) %>" class="au-name-link"><%= author.author %></a></h2>
         <p class="au-card-meta">
           <span><%= author.books.length %> 本</span>
           <% if (author.totalReadTime > 0) { %>

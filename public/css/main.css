@@ -1896,7 +1896,6 @@ h3 {
 }
 
 .au-card {
-  display: block; text-decoration: none; color: inherit; cursor: pointer;
   background: var(--paper);
   border: 1px solid var(--rule-thin);
   border-radius: 14px;
@@ -1928,21 +1927,14 @@ h3 {
 
 .au-card-name {
   font-family: var(--font-display); font-size: var(--text-body-lg);
-  font-weight: 700; color: var(--ink); margin: 0;
-  display: inline-flex; align-items: center; gap: 6px;
+  font-weight: 700; margin: 0;
 }
-.au-card:hover .au-card-name {
-  color: var(--accent-bright);
+.au-name-link {
+  color: var(--ink); text-decoration: none;
+  transition: color 0.15s var(--ease);
 }
-.au-card-name::after {
-  content: '→';
-  font-size: 0.75em;
-  color: var(--ink-faint);
-  transition: transform 0.2s var(--ease), color 0.2s var(--ease);
-}
-.au-card:hover .au-card-name::after {
-  transform: translateX(3px);
-  color: var(--accent-bright);
+.au-name-link:hover {
+  color: var(--accent-bright); text-decoration: underline;
 }
 
 .au-card-meta {
@@ -1969,12 +1961,6 @@ h3 {
 }
 
 .au-empty { text-align: center; padding: var(--space-10) 0; color: var(--ink-muted); }
-
-/* ── Author name text (non-link) ── */
-.au-name-text {
-  color: var(--ink);
-}
-
 
 /* ═══════════════════════════════════════════
    AUTHOR DETAIL — 作者详情页
