@@ -175,25 +175,8 @@ async function initDb() {
       console.log('[db] Migration: added books.user_rating column');
     } catch (e) { /* ignore */ }
 
-    // ─── Schema migration: tags table ───
-    sqlDb.run(`
-      CREATE TABLE IF NOT EXISTS tags (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL UNIQUE,
-        color TEXT DEFAULT '#6366f1',
-        created_at INTEGER NOT NULL DEFAULT (unixepoch())
-      )
-    `);
-    sqlDb.run(`
-      CREATE TABLE IF NOT EXISTS note_tags (
-        note_id TEXT NOT NULL,
-        note_type TEXT NOT NULL,
-        tag_id INTEGER NOT NULL,
-        PRIMARY KEY (note_id, note_type, tag_id)
-      )
-    `);
-
-    // ─── Ensure critical tables exist (needed when DB is created from scratch by sync.py) ───
+    // ─── CRITICAL: Ensure essential tables exist BEFORE optional tables ───
+    // (these MUST succeed — any failure here bubbles up to prevent silent crashes)
     sqlDb.run(`CREATE TABLE IF NOT EXISTS reading_sessions (
         date TEXT PRIMARY KEY, seconds INTEGER NOT NULL DEFAULT 0
     )`);
@@ -218,28 +201,54 @@ async function initDb() {
         name TEXT PRIMARY KEY, value TEXT DEFAULT ''
     )`);
 
-    // ─── Schema migration: booklists tables ───
-    sqlDb.run(`
-      CREATE TABLE IF NOT EXISTS booklists (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        description TEXT DEFAULT '',
-        created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-        updated_at INTEGER NOT NULL DEFAULT (unixepoch())
-      )
-    `);
-    sqlDb.run(`
-      CREATE TABLE IF NOT EXISTS booklist_items (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        list_id INTEGER NOT NULL,
-        book_id TEXT NOT NULL,
-        note TEXT DEFAULT '',
-        sort_order INTEGER DEFAULT 0,
-        added_at INTEGER NOT NULL DEFAULT (unixepoch()),
-        UNIQUE(list_id, book_id)
-      )
-    `);
-    sqlDb.run('CREATE INDEX IF NOT EXISTS idx_bl_items_list ON booklist_items(list_id)');
+    // ─── Schema migration: booklists tables (best-effort — may fail on old sql.js) ───
+    try {
+      sqlDb.run(`
+        CREATE TABLE IF NOT EXISTS booklists (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
+          description TEXT DEFAULT '',
+          created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+          updated_at INTEGER NOT NULL DEFAULT (unixepoch())
+        )
+      `);
+      sqlDb.run(`
+        CREATE TABLE IF NOT EXISTS booklist_items (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          list_id INTEGER NOT NULL,
+          book_id TEXT NOT NULL,
+          note TEXT DEFAULT '',
+          sort_order INTEGER DEFAULT 0,
+          added_at INTEGER NOT NULL DEFAULT (unixepoch()),
+          UNIQUE(list_id, book_id)
+        )
+      `);
+      sqlDb.run('CREATE INDEX IF NOT EXISTS idx_bl_items_list ON booklist_items(list_id)');
+    } catch (e) {
+      console.log('[db] Warning: booklists tables could not be created (old sql.js)', e.message);
+    }
+
+    // ─── Schema migration: tags table (best-effort — may fail on old sql.js) ───
+    try {
+      sqlDb.run(`
+        CREATE TABLE IF NOT EXISTS tags (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL UNIQUE,
+          color TEXT DEFAULT '#6366f1',
+          created_at INTEGER NOT NULL DEFAULT (unixepoch())
+        )
+      `);
+      sqlDb.run(`
+        CREATE TABLE IF NOT EXISTS note_tags (
+          note_id TEXT NOT NULL,
+          note_type TEXT NOT NULL,
+          tag_id INTEGER NOT NULL,
+          PRIMARY KEY (note_id, note_type, tag_id)
+        )
+      `);
+    } catch (e) {
+      console.log('[db] Warning: tags tables could not be created (old sql.js)', e.message);
+    }
 
     console.log(`[db] Connected to reading-room.db (sql.js, ${(fileBuffer.length / 1024 / 1024).toFixed(1)} MB)`);
     return db;
