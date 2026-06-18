@@ -1140,6 +1140,61 @@ function getAuthorsAll() {
   return authors;
 }
 
+function getAuthorDetail(authorName) {
+  const d = getDb();
+
+  // All books by this author
+  const books = upgradeCovers(d.prepare(`
+    SELECT b.id, b.title, b.author, b.cover, b.finished, b.read_time,
+      b.update_time, b.category, b.intro,
+      n.total_notes AS totalNotes
+    FROM books b
+    LEFT JOIN notebooks n ON b.id = n.book_id
+    WHERE b.author IS NOT NULL AND b.author != ''
+    ORDER BY b.update_time DESC
+  `).all());
+
+  // Filter books where author field contains the authorName
+  const authorBooks = books.filter(book => {
+    const names = book.author.split(/[,，\/、&]/).map(s => s.trim());
+    return names.includes(authorName);
+  });
+
+  if (authorBooks.length === 0) return null;
+
+  const totalReadTime = authorBooks.reduce((s, b) => s + (b.read_time || 0), 0);
+  const finishedCount = authorBooks.filter(b => b.finished).length;
+  const totalNotes = authorBooks.reduce((s, b) => s + (b.totalNotes || 0), 0);
+
+  // Get highlights from this author's books
+  const bookIds = authorBooks.map(b => b.id);
+  let highlights = [];
+  if (bookIds.length > 0) {
+    const placeholders = bookIds.map(() => '?').join(',');
+    highlights = d.prepare(`
+      SELECT h.mark_text AS text, h.chapter_title AS chapter,
+        h.create_time, h.book_id,
+        b.title AS book_title, b.cover AS book_cover, b.id AS bookId
+      FROM highlights h
+      LEFT JOIN books b ON h.book_id = b.id
+      WHERE h.book_id IN (${placeholders})
+        AND h.mark_text IS NOT NULL AND h.mark_text != '' AND length(h.mark_text) > 10
+      ORDER BY h.create_time DESC
+      LIMIT 50
+    `).all(...bookIds);
+  }
+
+  return {
+    author: authorName,
+    books: authorBooks,
+    highlights,
+    totalReadTime,
+    finishedCount,
+    totalNotes,
+    totalBooks: authorBooks.length,
+  };
+}
+
 // ─── Quotes / Highlights Wall ───
 
 function getHighlightsPaged(limit = 40, offset = 0, bookId = null) {
@@ -1429,6 +1484,7 @@ module.exports = {
   getAnnualYears,
   // authors page
   getAuthorsAll,
+  getAuthorDetail,
   // quotes / highlights wall
   getHighlightsPaged,
   getHighlightsTotal,

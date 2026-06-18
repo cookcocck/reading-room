@@ -527,6 +527,28 @@ app.get('/authors', (req, res) => {
   });
 });
 
+// ─── Author Detail ───
+app.get('/author/:name', (req, res) => {
+  const { getAuthorDetail } = db;
+  const authorName = decodeURIComponent(req.params.name);
+  const detail = getAuthorDetail(authorName);
+
+  if (!detail) {
+    return res.status(404).render('404', {
+      title: '作者未找到',
+      path: '/author',
+      helpers: { formatTime, formatTimestamp },
+    });
+  }
+
+  res.render('author-detail', {
+    title: authorName + ' · 作者详情',
+    detail,
+    helpers: { formatTime, formatTimestamp },
+    path: '/authors',
+  });
+});
+
 // ─── Quotes / Highlights Wall ───
 app.get('/quotes', (req, res) => {
   const { getHighlightsPaged, getHighlightsTotal, getAllBooks } = db;
