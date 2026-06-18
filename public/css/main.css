@@ -1929,6 +1929,20 @@ h3 {
 .au-card-name {
   font-family: var(--font-display); font-size: var(--text-body-lg);
   font-weight: 700; color: var(--ink); margin: 0;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.au-card:hover .au-card-name {
+  color: var(--accent-bright);
+}
+.au-card-name::after {
+  content: '→';
+  font-size: 0.75em;
+  color: var(--ink-faint);
+  transition: transform 0.2s var(--ease), color 0.2s var(--ease);
+}
+.au-card:hover .au-card-name::after {
+  transform: translateX(3px);
+  color: var(--accent-bright);
 }
 
 .au-card-meta {
