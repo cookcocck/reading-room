@@ -1,0 +1,107 @@
+<div class="au-container">
+
+  <!-- Hero -->
+  <header class="au-hero">
+    <p class="au-hero-kicker">作者图谱</p>
+    <h1 class="au-hero-title">所有读过的作者</h1>
+    <div class="au-hero-stats">
+      <span class="au-hero-stat"><strong><%= totalAuthors %></strong> 位作者</span>
+      <span class="au-hero-sep">·</span>
+      <span class="au-hero-stat"><strong><%= totalBooks %></strong> 本书</span>
+      <span class="au-hero-sep">·</span>
+      <span class="au-hero-stat"><strong><%= helpers.formatTime(totalTime) %></strong> 阅读</span>
+    </div>
+  </header>
+
+  <!-- Filter -->
+  <div class="au-toolbar">
+    <input class="au-search" id="au-search" type="search" placeholder="搜索作者…" autocomplete="off" />
+    <select class="au-sort" id="au-sort">
+      <option value="count">按书数排序</option>
+      <option value="time">按时长排序</option>
+      <option value="name">按姓名排序</option>
+    </select>
+  </div>
+
+  <!-- Grid -->
+  <div class="au-grid" id="au-grid">
+    <% authors.forEach(function(author, idx) { %>
+    <div class="au-card" data-author="<%= author.author %>" data-count="<%= author.books.length %>" data-time="<%= author.totalReadTime %>"
+         style="animation-delay: <%= Math.min(idx * 0.03, 1.2) %>s">
+      <!-- Cover collage (up to 4 covers) -->
+      <% var covers = author.books.filter(function(b){ return b.cover; }).slice(0, 4); %>
+      <% var colClass = covers.length === 1 ? 'au-collage--1' : covers.length === 2 ? 'au-collage--2' : covers.length === 3 ? 'au-collage--3' : 'au-collage--4'; %>
+      <div class="au-collage">
+        <div class="au-collage-inner <%= colClass %>">
+          <% covers.forEach(function(b) { %>
+          <div class="au-collage-cell"><img src="<%= b.cover %>" alt="<%= b.title %>" loading="lazy" /></div>
+          <% }); %>
+          <% for (var i = covers.length; i < Math.min(4, author.books.length > 1 ? 4 : 1); i++) { %>
+          <div class="au-collage-cell au-collage-placeholder">📖</div>
+          <% } %>
+        </div>
+      </div>
+      <!-- Info -->
+      <div class="au-card-body">
+        <h2 class="au-card-name"><span class="au-name-text"><%= author.author %></span></h2>
+        <p class="au-card-meta">
+          <span><%= author.books.length %> 本</span>
+          <% if (author.totalReadTime > 0) { %>
+          <span class="au-sep">·</span>
+          <span><%= helpers.formatTime(author.totalReadTime) %></span>
+          <% } %>
+          <% if (author.finishedCount > 0) { %>
+          <span class="au-sep">·</span>
+          <span><%= author.finishedCount %> 本完成</span>
+          <% } %>
+        </p>
+        <!-- Mini book list -->
+        <ul class="au-book-list">
+          <% author.books.slice(0, 3).forEach(function(b) { %>
+          <li class="au-book-item">
+            <a href="/book/<%= b.id %>" class="au-book-link" title="<%= b.title %>"><%= b.title %></a>
+          </li>
+          <% }); %>
+          <% if (author.books.length > 3) { %>
+          <li class="au-book-more">…还有 <%= author.books.length - 3 %> 本</li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+    <% }); %>
+  </div>
+
+  <div class="au-empty" id="au-empty" style="display:none">
+    <p>没有找到匹配的作者</p>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var search  = document.getElementById('au-search');
+  var sortSel = document.getElementById('au-sort');
+  var grid    = document.getElementById('au-grid');
+  var emptyEl = document.getElementById('au-empty');
+  var cards   = Array.from(grid.querySelectorAll('.au-card'));
+
+  function filter() {
+    var q = search.value.trim().toLowerCase();
+    var sortKey = sortSel.value;
+    var visible = cards.filter(function(c) {
+      return !q || c.dataset.author.toLowerCase().includes(q);
+    });
+    cards.forEach(function(c){ c.style.display = 'none'; });
+    visible.sort(function(a, b) {
+      if (sortKey === 'time')  return parseInt(b.dataset.time)  - parseInt(a.dataset.time);
+      if (sortKey === 'name')  return a.dataset.author.localeCompare(b.dataset.author, 'zh');
+      return parseInt(b.dataset.count) - parseInt(a.dataset.count);
+    });
+    visible.forEach(function(c){ c.style.display = ''; grid.appendChild(c); });
+    emptyEl.style.display = visible.length ? 'none' : '';
+  }
+
+  search.addEventListener('input', filter);
+  sortSel.addEventListener('change', filter);
+})();
+</script>

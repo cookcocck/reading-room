@@ -1830,6 +1830,138 @@ h3 {
 
 
 /* ═══════════════════════════════════════════
+   AUTHORS — 作者图谱
+   ═══════════════════════════════════════════ */
+
+.au-container {
+  max-width: var(--col-wide);
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+.au-hero {
+  padding: var(--space-12) 0 var(--space-6);
+  text-align: center;
+}
+
+.au-hero-kicker {
+  font-family: var(--font-body); font-size: var(--text-caption);
+  color: var(--ink-muted); letter-spacing: 0.12em; text-transform: uppercase;
+  margin: 0 0 var(--space-2);
+}
+
+.au-hero-title {
+  font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, var(--text-display));
+  font-weight: 900; color: var(--ink); letter-spacing: -0.02em; margin: 0;
+}
+
+.au-hero-stats {
+  display: flex; justify-content: center; gap: var(--space-3); flex-wrap: wrap;
+  margin-top: var(--space-4); font-family: var(--font-mono);
+  font-size: var(--text-caption); color: var(--ink-muted);
+}
+
+.au-hero-stat strong { color: var(--ink); font-weight: 600; margin-right: 2px; }
+.au-hero-sep { color: var(--ink-faint); }
+
+/* Toolbar */
+.au-toolbar {
+  display: flex; gap: var(--space-3); margin-bottom: var(--space-8); flex-wrap: wrap;
+}
+
+.au-search {
+  flex: 1; min-width: 180px;
+  font-family: var(--font-body); font-size: var(--text-body);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--rule); border-radius: 8px;
+  background: var(--paper); color: var(--ink);
+  transition: border-color 0.2s var(--ease);
+}
+.au-search:focus { outline: none; border-color: var(--accent); }
+
+.au-sort {
+  font-family: var(--font-body); font-size: var(--text-body);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--rule); border-radius: 8px;
+  background: var(--paper); color: var(--ink);
+  cursor: pointer;
+}
+
+/* Grid */
+.au-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space-5);
+  margin-bottom: var(--space-12);
+}
+
+.au-card {
+  background: var(--paper);
+  border: 1px solid var(--rule-thin);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease), transform 0.25s var(--ease);
+  animation: auCardIn 0.4s var(--ease-out) both;
+  opacity: 0;
+}
+
+@keyframes auCardIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.au-card:hover {
+  border-color: var(--rule);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  transform: translateY(-3px);
+}
+
+/* Cover collage */
+.au-collage { width: 100%; aspect-ratio: 16 / 7; overflow: hidden; background: var(--rule-thin); }
+.au-collage-inner { display: flex; width: 100%; height: 100%; }
+.au-collage-cell { flex: 1; overflow: hidden; }
+.au-collage-cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.au-collage-placeholder { display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--ink-faint); background: var(--paper-warm); }
+
+.au-card-body { padding: var(--space-4); }
+
+.au-card-name {
+  font-family: var(--font-display); font-size: var(--text-body-lg);
+  font-weight: 700; color: var(--ink); margin: 0;
+}
+
+.au-card-meta {
+  font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-muted);
+  margin: var(--space-2) 0 0; display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+}
+.au-sep { color: var(--ink-faint); }
+
+.au-book-list { list-style: none; padding: 0; margin: var(--space-3) 0 0; }
+
+.au-book-item {
+  padding: 3px 0;
+  border-top: 1px solid var(--rule-thin);
+  font-family: var(--font-body); font-size: 0.75rem; color: var(--ink-soft);
+}
+
+.au-book-link { color: inherit; text-decoration: none; transition: color 0.15s var(--ease); }
+.au-book-link:hover { color: var(--accent-bright); }
+
+.au-book-more {
+  padding: 3px 0;
+  border-top: 1px solid var(--rule-thin);
+  font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-faint);
+}
+
+.au-empty { text-align: center; padding: var(--space-10) 0; color: var(--ink-muted); }
+
+/* ── Author name text (non-link) ── */
+.au-name-text {
+  color: var(--ink);
+}
+
+
+/* ═══════════════════════════════════════════
    QUOTES — 金句墙
    ═══════════════════════════════════════════ */
 

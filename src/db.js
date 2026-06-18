@@ -1104,6 +1104,49 @@ function getAnnualYears() {
   return rows.map(r => r.yr).filter(Boolean);
 }
 
+// ─── Authors (authors page) ───
+
+function getAuthorsAll() {
+  const d = getDb();
+
+  const books = upgradeCovers(d.prepare(`
+    SELECT b.id, b.title, b.author, b.cover, b.finished, b.read_time, b.update_time, b.category,
+      n.total_notes AS totalNotes
+    FROM books b
+    LEFT JOIN notebooks n ON b.id = n.book_id
+    WHERE b.author IS NOT NULL AND b.author != ''
+    ORDER BY b.author ASC, b.update_time DESC
+  `).all());
+
+  // Group by author
+  const map = new Map();
+  for (const book of books) {
+    const authors = book.author.split(/[,，\/、&]/);
+    for (const rawAuthor of authors) {
+      const author = rawAuthor.trim();
+      if (!author) continue;
+      if (!map.has(author)) {
+        map.set(author, { author, books: [], totalReadTime: 0, finishedCount: 0, totalNotes: 0 });
+      }
+      const entry = map.get(author);
+      // Only add book once per author slot
+      if (!entry.books.find(b => b.id === book.id)) {
+        entry.books.push(book);
+        entry.totalReadTime += book.read_time || 0;
+        if (book.finished) entry.finishedCount++;
+        entry.totalNotes += book.totalNotes || 0;
+      }
+    }
+  }
+
+  // Sort by book count desc, then totalReadTime desc
+  const authors = Array.from(map.values())
+    .filter(a => a.books.length > 0)
+    .sort((a, b) => (b.books.length - a.books.length) || (b.totalReadTime - a.totalReadTime));
+
+  return authors;
+}
+
 // ─── Quotes / Highlights Wall ───
 
 function getHighlightsPaged(limit = 40, offset = 0, bookId = null) {
@@ -1392,6 +1435,8 @@ module.exports = {
   // annual page
   getAnnualBooks,
   getAnnualYears,
+  // authors page
+  getAuthorsAll,
   // quotes / highlights wall
   getHighlightsPaged,
   getHighlightsTotal,

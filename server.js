@@ -508,6 +508,25 @@ app.get('/annual', (req, res) => {
   });
 });
 
+// ─── Authors page ───
+app.get('/authors', (req, res) => {
+  const { getAuthorsAll } = db;
+  const authors = getAuthorsAll();
+  const totalBooks = authors.reduce((s, a) => s + a.books.length, 0);
+  const totalTime  = authors.reduce((s, a) => s + a.totalReadTime, 0);
+
+  res.render('authors', {
+    title: '作者图谱',
+    authors,
+    totalAuthors: authors.length,
+    totalBooks,
+    totalTime,
+    formatTime,
+    helpers: { formatTime, formatTimestamp },
+    path: '/authors',
+  });
+});
+
 // ─── Quotes / Highlights Wall ───
 app.get('/quotes', (req, res) => {
   const { getHighlightsPaged, getHighlightsTotal, getAllBooks } = db;
