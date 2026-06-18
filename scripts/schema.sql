@@ -122,6 +122,27 @@ CREATE TABLE IF NOT EXISTS note_tags (
     PRIMARY KEY (note_id, note_type, tag_id)
 );
 
+-- Booklists: 自定义书单
+CREATE TABLE IF NOT EXISTS booklists (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    name        TEXT NOT NULL,
+    description TEXT DEFAULT '',
+    created_at  INTEGER NOT NULL,
+    updated_at  INTEGER NOT NULL
+);
+
+-- Booklist Items: 书单-书籍关联
+CREATE TABLE IF NOT EXISTS booklist_items (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    list_id     INTEGER NOT NULL,
+    book_id     TEXT NOT NULL,
+    note        TEXT DEFAULT '',
+    sort_order  INTEGER DEFAULT 0,
+    added_at    INTEGER NOT NULL,
+    UNIQUE(list_id, book_id)
+);
+CREATE INDEX IF NOT EXISTS idx_bl_items_list ON booklist_items(list_id);
+
 -- FTS5: 全文搜索索引
 CREATE VIRTUAL TABLE IF NOT EXISTS highlights_fts USING fts5(
     mark_text,

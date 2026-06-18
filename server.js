@@ -29,7 +29,7 @@ app.use((req, res, next) => {
       pre{background:#f5f5f5;padding:12px;border-radius:6px;overflow-x:auto}</style></head>
       <body><h1>503 - 数据库不可用</h1>
       <p>数据库文件不存在或无法读取。请在服务器上运行：</p>
-      <pre><code>cd /home/admin/reading-site && python scripts/create_db.py</code></pre>
+      <pre><code>cd ~/reading-room && python scripts/sync.py</code></pre>
       <p>然后重启服务：<code>pm2 restart reading-room</code></p></body></html>
     `);
   }

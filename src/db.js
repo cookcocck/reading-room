@@ -141,6 +141,31 @@ async function initDb() {
   )`);
   _safeRun('reviews_idx', 'CREATE INDEX IF NOT EXISTS idx_reviews_book ON reviews(book_id)');
 
+  // Core tables (also created by sync.py/schema.sql — defense in depth)
+  _safeRun('books', `CREATE TABLE IF NOT EXISTS books (
+    id TEXT PRIMARY KEY, title TEXT NOT NULL,
+    author TEXT DEFAULT '', cover TEXT DEFAULT '',
+    category TEXT DEFAULT '', finished INTEGER NOT NULL DEFAULT 0,
+    update_time INTEGER DEFAULT 0, read_time INTEGER DEFAULT 0,
+    progress INTEGER DEFAULT 0, last_read_time INTEGER DEFAULT 0,
+    intro TEXT DEFAULT '', want_to_read INTEGER DEFAULT 0,
+    user_rating INTEGER DEFAULT 0
+  )`);
+  _safeRun('highlights', `CREATE TABLE IF NOT EXISTS highlights (
+    bookmark_id TEXT PRIMARY KEY, book_id TEXT NOT NULL,
+    chapter_uid TEXT DEFAULT '', chapter_title TEXT DEFAULT '',
+    mark_text TEXT DEFAULT '', color_style TEXT DEFAULT '0',
+    type INTEGER DEFAULT 1, create_time INTEGER NOT NULL,
+    range_text TEXT DEFAULT ''
+  )`);
+  _safeRun('h_idx_book', 'CREATE INDEX IF NOT EXISTS idx_highlights_book ON highlights(book_id)');
+  _safeRun('h_idx_time', 'CREATE INDEX IF NOT EXISTS idx_highlights_time ON highlights(create_time)');
+  _safeRun('notebooks', `CREATE TABLE IF NOT EXISTS notebooks (
+    book_id TEXT PRIMARY KEY, review_count INTEGER DEFAULT 0,
+    note_count INTEGER DEFAULT 0, bookmark_count INTEGER DEFAULT 0,
+    total_notes INTEGER DEFAULT 0, sort INTEGER DEFAULT 0
+  )`);
+
   _safeRun('reading_sessions', `CREATE TABLE IF NOT EXISTS reading_sessions (
     date TEXT PRIMARY KEY, seconds INTEGER NOT NULL DEFAULT 0
   )`);
@@ -158,8 +183,12 @@ async function initDb() {
   )`);
   _safeRun('summary_init', 'INSERT OR IGNORE INTO summary (id) VALUES (1)');
   _safeRun('kv_store', `CREATE TABLE IF NOT EXISTS kv_store (
-    name TEXT PRIMARY KEY, value TEXT DEFAULT ''
+    name TEXT PRIMARY KEY, value TEXT DEFAULT '',
+    updated_at TEXT DEFAULT (datetime('now'))
   )`);
+  // Add updated_at if missing on older DB
+  try { sqlDb.run("ALTER TABLE kv_store ADD COLUMN updated_at TEXT DEFAULT ''"); }
+  catch (e) { /* already exists */ }
 
   // ─── Column migrations (each independently guarded) ───
   const _migrations = [
@@ -1285,7 +1314,8 @@ function getTagById(id) {
 
 function createTag(name, color) {
   const d = getDb();
-  d.prepare('INSERT OR IGNORE INTO tags (name, color) VALUES (?, ?)').all(name, color || '#6366f1');
+  const now = Math.floor(Date.now() / 1000);
+  d.prepare('INSERT OR IGNORE INTO tags (name, color, created_at) VALUES (?, ?, ?)').all(name, color || '#6366f1', now);
   return d.prepare('SELECT * FROM tags WHERE name = ?').get(name);
 }
 

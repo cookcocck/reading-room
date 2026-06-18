@@ -403,11 +403,14 @@ def sync_book_notes(conn, book_id: str, book_title: str) -> tuple:
             if r["review_id"] and r["content"]:
                 conn.execute(
                     """INSERT OR REPLACE INTO reviews
-                       (review_id, book_id, content, chapter_name, star, create_time)
-                       VALUES (?, ?, ?, ?, ?, ?)""",
+                       (review_id, book_id, content, chapter_name, star, create_time, abstract)
+                       VALUES (?, ?, ?, ?, ?, ?,
+                         COALESCE((SELECT abstract FROM reviews WHERE review_id = ?), '')
+                       )""",
                     (
                         r["review_id"], book_id, r["content"],
                         r["chapter_name"], r["star"], r["create_time"],
+                        r["review_id"],
                     ),
                 )
                 r_count += 1
