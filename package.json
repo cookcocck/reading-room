@@ -2,10 +2,12 @@
   "name": "huangs-reading-room",
   "version": "1.0.0",
   "description": "个人读书网站 — 基于微信读书数据",
-  "main": "server.js",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc && node dist/index.js",
+    "watch": "tsc --watch"
   },
   "dependencies": {
     "compression": "^1.8.1",
@@ -16,5 +18,12 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "devDependencies": {
+    "@types/compression": "^1.8.1",
+    "@types/ejs": "^3.1.5",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.9.3",
+    "typescript": "^6.0.3"
   }
 }

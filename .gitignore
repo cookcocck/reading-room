@@ -11,7 +11,9 @@ scripts/migrate_reviews_progress.json
 # SQLite database binary — NOT in git.
 # DO NOT add reading-room.db to version control.
 # Transfer via SCP or rebuild from API.
-db/
+/db/
 .workbuddy/
 # Ignore daily backup files
 *.db.bak.*
+# TypeScript build output
+dist/
