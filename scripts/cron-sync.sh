@@ -56,6 +56,12 @@ echo "[$(date '+%Y-%m-%d %H:%M:%S')] Cron sync triggered" >> "$LOG_FILE"
 # 切换到项目根目录
 cd "$ROOT_DIR"
 
+# ─── TypeScript 编译（dist/ 不进 git，每次同步前重编译） ──────────
+if [ -f "$ROOT_DIR/node_modules/.bin/tsc" ]; then
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] Compiling TypeScript..." >> "$LOG_FILE"
+    "$ROOT_DIR/node_modules/.bin/tsc" 2>&1 | tee -a "$LOG_FILE" || true
+fi
+
 # 使用 Python3，优先用虚拟环境
 PYTHON="python3"
 if [ -f "$ROOT_DIR/venv/bin/python3" ]; then

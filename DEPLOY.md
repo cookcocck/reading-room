@@ -15,6 +15,8 @@
 ```bash
 cd ~/reading-site
 git pull origin main
+npm install                # 依赖有变更时才需要
+npx tsc                    # TypeScript 编译 → dist/
 pm2 restart reading-room
 ```
 
