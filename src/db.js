@@ -1146,13 +1146,27 @@ function getAuthorDetail(authorName) {
     ORDER BY b.update_time DESC
   `).all());
 
-  // Filter books where author field contains the authorName
+  // Filter books where author field matches the authorName
+  // Stage 1: exact split-name match (e.g. "陀思妥耶夫斯基" in "陀思妥耶夫斯基, 某某")
+  // Stage 2: fallback — strip nationality prefixes like (俄)/(美)/[法] and match again
+  // Stage 3: fallback — substring match on raw author field
   const authorBooks = books.filter(book => {
     const names = book.author.split(/[,，\/、&]/).map(s => s.trim());
-    return names.includes(authorName);
+    // Exact match on split names
+    if (names.includes(authorName)) return true;
+    // Strip nationality prefixes like (俄), (美), [法], (日) etc.
+    const cleanNames = names.map(n => n.replace(/^[[(（]\w{1,4}[]）)]\s*/u, '').trim());
+    if (cleanNames.includes(authorName)) return true;
+    // Substring fallback
+    if (book.author.includes(authorName)) return true;
+    return false;
   });
 
-  if (authorBooks.length === 0) return null;
+  if (authorBooks.length === 0) {
+    console.log(`[db] getAuthorDetail("${authorName}"): no books matched. Sampled author fields:`,
+      books.slice(0, 5).map(b => b.author));
+    return null;
+  }
 
   const totalReadTime = authorBooks.reduce((s, b) => s + (b.read_time || 0), 0);
   const finishedCount = authorBooks.filter(b => b.finished).length;

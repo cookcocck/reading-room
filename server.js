@@ -529,14 +529,26 @@ app.get('/authors', (req, res) => {
 
 // ─── Author Detail ───
 app.get('/author/:name', (req, res) => {
-  const { getAuthorDetail } = db;
-  const authorName = decodeURIComponent(req.params.name);
-  const detail = getAuthorDetail(authorName);
+  let authorName;
+  try {
+    authorName = decodeURIComponent(req.params.name);
+  } catch (e) {
+    authorName = req.params.name;
+  }
+
+  let detail;
+  try {
+    const { getAuthorDetail } = db;
+    detail = getAuthorDetail(authorName);
+  } catch (e) {
+    console.error(`[server] getAuthorDetail("${authorName}") error:`, e.message);
+    detail = null;
+  }
 
   if (!detail) {
     return res.status(404).render('404', {
-      title: '作者未找到',
-      path: '/author',
+      title: '作者未找到 — ' + authorName,
+      path: '/authors',
       helpers: { formatTime, formatTimestamp },
     });
   }
