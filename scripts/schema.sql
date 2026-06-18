@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS books (
     id              TEXT PRIMARY KEY,
     title           TEXT NOT NULL,
     author          TEXT DEFAULT '',
+    author_id       TEXT,                      -- 作者 UID（稳定 hash，用于关联查询）
     cover           TEXT DEFAULT '',
     category        TEXT DEFAULT '',
     finished        INTEGER NOT NULL DEFAULT 0,

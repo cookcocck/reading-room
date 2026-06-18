@@ -527,34 +527,29 @@ app.get('/authors', (req, res) => {
   });
 });
 
-// ─── Author Detail ───
-app.get('/author/:name', (req, res) => {
-  let authorName;
-  try {
-    authorName = decodeURIComponent(req.params.name);
-  } catch (e) {
-    authorName = req.params.name;
-  }
+// ─── Author Detail (by stable UID, not name) ───
+app.get('/author/:id', (req, res) => {
+  const authorId = req.params.id;
 
   let detail;
   try {
     const { getAuthorDetail } = db;
-    detail = getAuthorDetail(authorName);
+    detail = getAuthorDetail(authorId);
   } catch (e) {
-    console.error(`[server] getAuthorDetail("${authorName}") error:`, e.message);
+    console.error(`[server] getAuthorDetail("${authorId}") error:`, e.message);
     detail = null;
   }
 
   if (!detail) {
     return res.status(404).render('404', {
-      title: '作者未找到 — ' + authorName,
+      title: '作者未找到',
       path: '/authors',
       helpers: { formatTime, formatTimestamp },
     });
   }
 
   res.render('author-detail', {
-    title: authorName + ' · 作者详情',
+    title: detail.author + ' · 作者详情',
     detail,
     helpers: { formatTime, formatTimestamp },
     path: '/authors',
