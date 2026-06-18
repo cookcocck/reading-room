@@ -1,118 +1,135 @@
-<div class="ad-container">
+<div class="ad-page">
+
+  <!-- Breadcrumb -->
+  <nav class="ad-breadcrumb">
+    <a href="/authors" class="ad-breadcrumb-link">作者图谱</a>
+    <span class="ad-breadcrumb-sep">/</span>
+    <span class="ad-breadcrumb-current"><%= author.author %></span>
+  </nav>
 
   <!-- Hero -->
   <header class="ad-hero">
-    <a href="/authors" class="ad-back">&larr; 返回作者图谱</a>
-    <h1 class="ad-name"><%= author.author %></h1>
-    <div class="ad-hero-stats">
-      <div class="ad-stat">
-        <span class="ad-stat-num"><%= books.length %></span>
-        <span class="ad-stat-label">本书</span>
-      </div>
-      <div class="ad-stat">
-        <span class="ad-stat-num"><%= helpers.formatTime(totalReadTime) %></span>
-        <span class="ad-stat-label">阅读</span>
-      </div>
-      <div class="ad-stat">
-        <span class="ad-stat-num"><%= totalFinished %></span>
-        <span class="ad-stat-label">本读完</span>
-      </div>
-      <div class="ad-stat">
-        <span class="ad-stat-num"><%= totalNotes %></span>
-        <span class="ad-stat-label">条笔记</span>
-      </div>
-    </div>
+    <h1 class="ad-hero-name"><%= author.author %></h1>
+    <p class="ad-hero-byline">
+      <span><%= books.length %> 部作品</span>
+      <% if (totalReadTime > 0) { %>
+      <span class="ad-hero-dot">·</span>
+      <span><%= helpers.formatTime(totalReadTime) %></span>
+      <% } %>
+      <% if (totalFinished > 0) { %>
+      <span class="ad-hero-dot">·</span>
+      <span>读完 <%= totalFinished %> 部</span>
+      <% } %>
+      <% if (totalNotes > 0) { %>
+      <span class="ad-hero-dot">·</span>
+      <span><%= totalNotes %> 条笔记</span>
+      <% } %>
+    </p>
   </header>
 
-  <!-- Reading Period -->
+  <!-- Reading Timeline -->
   <% if (firstRead) { %>
-  <div class="ad-period">
-    <span class="ad-period-label">阅读时段</span>
-    <span class="ad-period-range"><%= helpers.formatTimestamp(firstRead) %> — <%= helpers.formatTimestamp(lastRead) %></span>
+  <div class="ad-timeline">
+    <div class="ad-timeline-bar"></div>
+    <div class="ad-timeline-points">
+      <span class="ad-timeline-date"><%= helpers.formatTimestamp(firstRead) %></span>
+      <span class="ad-timeline-label">首次阅读</span>
+    </div>
+    <div class="ad-timeline-points ad-timeline-end">
+      <span class="ad-timeline-date"><%= helpers.formatTimestamp(lastRead) %></span>
+      <span class="ad-timeline-label">最近阅读</span>
+    </div>
   </div>
   <% } %>
 
   <!-- Category Tags -->
   <% if (categories.length > 0) { %>
-  <div class="ad-categories">
+  <div class="ad-tags">
     <% categories.forEach(function(cat) { %>
-    <span class="ad-cat-tag"><%= cat.name %><small> ·<%= cat.count %></small></span>
+    <span class="ad-tag"><%= cat.name %><span class="ad-tag-count"><%= cat.count %></span></span>
     <% }); %>
   </div>
   <% } %>
 
-  <!-- Books Timeline -->
-  <section class="ad-books-section">
-    <h2 class="ad-section-title">作品阅读轨迹</h2>
-    <div class="ad-books-grid">
-      <% books.forEach(function(book) { %>
-      <a href="/book/<%= book.id %>" class="ad-book-card">
-        <!-- Cover -->
+  <!-- Books Section -->
+  <section class="ad-section">
+    <div class="ad-section-head">
+      <h2 class="ad-section-title">作品</h2>
+      <span class="ad-section-count"><%= books.length %> 本</span>
+    </div>
+    <div class="ad-book-list">
+      <% books.forEach(function(book, i) { %>
+      <a href="/book/<%= book.id %>" class="ad-book">
         <div class="ad-book-cover">
           <% if (book.cover) { %>
           <img src="<%= book.cover %>" alt="<%= book.title %>" loading="lazy" />
           <% } else { %>
-          <div class="ad-book-no-cover">
-            <span class="ad-book-no-cover-icon">📖</span>
-          </div>
+          <div class="ad-book-cover-empty"><%= i + 1 %></div>
           <% } %>
         </div>
-        <!-- Info -->
-        <div class="ad-book-body">
-          <h3 class="ad-book-title"><%= book.title %></h3>
-          <% if (book.category) { %>
-          <span class="ad-book-cat"><%= book.category %></span>
-          <% } %>
-          <!-- Read time bar -->
-          <div class="ad-book-bar-wrap">
-            <div class="ad-book-bar" style="width: <%= Math.max((book.read_time || 0) / maxReadTime * 100, 2) %>%"></div>
-          </div>
-          <div class="ad-book-meta">
-            <span class="ad-book-time"><%= helpers.formatTime(book.read_time || 0) %></span>
+        <div class="ad-book-info">
+          <div class="ad-book-head">
+            <h3 class="ad-book-title"><%= book.title %></h3>
             <% if (book.finished) { %>
-            <span class="ad-book-finished">✓ 已读完</span>
+            <span class="ad-book-badge ad-book-badge--done">已读</span>
             <% } else { %>
-            <span class="ad-book-reading">阅读中</span>
+            <span class="ad-book-badge">在读</span>
             <% } %>
           </div>
+          <div class="ad-book-details">
+            <% if (book.category) { %><span class="ad-book-cat"><%= book.category %></span><% } %>
+            <span class="ad-book-time"><%= helpers.formatTime(book.read_time || 0) %></span>
+          </div>
+          <% if (maxReadTime > 0) { %>
+          <div class="ad-book-progress">
+            <div class="ad-book-progress-fill" style="width: <%= Math.max((book.read_time || 0) / maxReadTime * 100, 1) %>%"></div>
+          </div>
+          <% } %>
         </div>
       </a>
       <% }); %>
     </div>
   </section>
 
-  <!-- Highlights from this author -->
+  <!-- Highlights -->
   <% if (highlights.length > 0) { %>
-  <section class="ad-notes-section">
-    <h2 class="ad-section-title">划线手记</h2>
-    <div class="ad-highlights">
+  <section class="ad-section">
+    <div class="ad-section-head">
+      <h2 class="ad-section-title">划线</h2>
+      <span class="ad-section-count"><%= highlights.length %> 条</span>
+    </div>
+    <div class="ad-quotes">
       <% highlights.forEach(function(h) { %>
-      <div class="ad-hl-card">
-        <p class="ad-hl-text">"<%= h.mark_text.replace(/"/g, '&quot;') %>"</p>
-        <div class="ad-hl-meta">
-          <span class="ad-hl-book">《<%= h.book_title %>》</span>
-          <% if (h.chapter_title) { %><span class="ad-hl-chapter"><%= h.chapter_title %></span><% } %>
-        </div>
-      </div>
+      <blockquote class="ad-quote">
+        <p class="ad-quote-text"><%= h.mark_text.replace(/"/g, '&quot;') %></p>
+        <cite class="ad-quote-cite">
+          《<%= h.book_title %>》
+          <% if (h.chapter_title) { %><span class="ad-quote-chapter"><%= h.chapter_title %></span><% } %>
+        </cite>
+      </blockquote>
       <% }); %>
     </div>
   </section>
   <% } %>
 
-  <!-- Reviews from this author -->
+  <!-- Reviews -->
   <% if (reviews.length > 0) { %>
-  <section class="ad-notes-section">
-    <h2 class="ad-section-title">读后想法</h2>
-    <div class="ad-reviews">
+  <section class="ad-section">
+    <div class="ad-section-head">
+      <h2 class="ad-section-title">想法</h2>
+      <span class="ad-section-count"><%= reviews.length %> 条</span>
+    </div>
+    <div class="ad-reviews-grid">
       <% reviews.forEach(function(r) { %>
-      <div class="ad-review-card">
+      <article class="ad-review">
         <p class="ad-review-text"><%= r.content.replace(/"/g, '&quot;') %></p>
-        <div class="ad-review-meta">
+        <footer class="ad-review-footer">
           <span class="ad-review-book">《<%= r.book_title %>》</span>
-          <% if (r.chapter_name) { %><span class="ad-review-chapter"><%= r.chapter_name %></span><% } %>
-          <% if (r.star > 0) { %><span class="ad-review-star"><% for (var i=0; i<r.star; i++){%>★<%}%></span><% } %>
-        </div>
-      </div>
+          <% if (r.star > 0) { %>
+          <span class="ad-review-stars"><% for (var i=0; i<r.star; i++){%>★<%}%></span>
+          <% } %>
+        </footer>
+      </article>
       <% }); %>
     </div>
   </section>
