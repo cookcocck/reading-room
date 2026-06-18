@@ -115,6 +115,47 @@ export function getAuthorsAll(): AuthorEntry[] {
     .sort((a, b) => (b.books.length - a.books.length) || (b.totalReadTime - a.totalReadTime));
 }
 
+export function getAuthorByName(name: string): AuthorEntry | undefined {
+  const all = getAuthorsAll();
+  return all.find(a => a.author === name);
+}
+
+export function getAuthorHighlights(author: string): Array<{
+  mark_text: string; chapter_title: string; create_time: number;
+  book_title: string; book_id: string; color_style: string;
+}> {
+  const d = getDb()!;
+  return d.prepare(`
+    SELECT h.mark_text, h.chapter_title, h.create_time, h.color_style,
+      b.title AS book_title, b.id AS book_id
+    FROM highlights h
+    JOIN books b ON h.book_id = b.id
+    WHERE b.author LIKE ?
+    ORDER BY h.create_time DESC LIMIT 20
+  `).all(`%${author}%`) as unknown as Array<{
+    mark_text: string; chapter_title: string; create_time: number;
+    book_title: string; book_id: string; color_style: string;
+  }>;
+}
+
+export function getAuthorReviews(author: string): Array<{
+  content: string; chapter_name: string; create_time: number; star: number;
+  book_title: string; book_id: string;
+}> {
+  const d = getDb()!;
+  return d.prepare(`
+    SELECT r.content, r.chapter_name, r.create_time, r.star,
+      b.title AS book_title, b.id AS book_id
+    FROM reviews r
+    JOIN books b ON r.book_id = b.id
+    WHERE b.author LIKE ?
+    ORDER BY r.create_time DESC LIMIT 20
+  `).all(`%${author}%`) as unknown as Array<{
+    content: string; chapter_name: string; create_time: number; star: number;
+    book_title: string; book_id: string;
+  }>;
+}
+
 export function getAuthorStats() {
   const d = getDb()!;
   return d.prepare(`

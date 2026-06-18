@@ -9,7 +9,7 @@ import {
   getDeepThinking, getBookTimeline, getYearlyIntensity, getMilestones,
   getAuthorStats, getReadingStats,
   getAnnualBooks, getAnnualYears,
-  getAuthorsAll,
+  getAuthorsAll, getAuthorByName, getAuthorHighlights, getAuthorReviews,
   getHighlightsPaged, getHighlightsTotal,
   getAllBooklists, getBooklistById,
 } from '../db/models';
@@ -295,6 +295,70 @@ router.get('/authors', (_req: Request, res: Response) => {
     formatTime,
     helpers: { formatTime, formatTimestamp },
     path: '/authors',
+  });
+});
+
+// ─── Author Detail ───
+router.get('/author/:name', (req: Request, res: Response) => {
+  const authorName = decodeURIComponent(req.params.name as string);
+  const entry = getAuthorByName(authorName);
+  if (!entry) {
+    res.status(404).send('未找到该作者');
+    return;
+  }
+
+  // Sort books by read_time descending, then finished first
+  const books = [...entry.books];
+  books.sort((a, b) => {
+    if ((a.finished ? 1 : 0) !== (b.finished ? 1 : 0)) return (b.finished ? 1 : 0) - (a.finished ? 1 : 0);
+    return (b.read_time || 0) - (a.read_time || 0);
+  });
+
+  // Category distribution
+  const catMap = new Map<string, number>();
+  for (const b of books) {
+    const cat = b.category || '未分类';
+    catMap.set(cat, (catMap.get(cat) || 0) + 1);
+  }
+  const categories = Array.from(catMap.entries())
+    .sort((a, b) => b[1] - a[1])
+    .map(([name, count]) => ({ name, count }));
+
+  // Max read time for relative bar
+  const maxReadTime = Math.max(...books.map(b => b.read_time || 0), 1);
+
+  // Author's highlights & reviews from all books
+  const highlights = getAuthorHighlights(authorName);
+  const reviews = getAuthorReviews(authorName);
+
+  // Reading timeline across months
+  const allTimestamps = books
+    .filter(b => b.last_read_time > 0)
+    .map(b => b.last_read_time)
+    .sort();
+  const firstRead = allTimestamps.length > 0
+    ? allTimestamps[0]
+    : (books.length > 0 ? books[books.length - 1].update_time : 0);
+  const lastRead = allTimestamps.length > 0
+    ? allTimestamps[allTimestamps.length - 1]
+    : (books.length > 0 ? books[0].update_time : 0);
+
+  res.render('author-detail', {
+    title: entry.author,
+    author: entry,
+    books: upgradeCovers(books),
+    categories,
+    maxReadTime,
+    totalBooks: books.length,
+    totalFinished: entry.finishedCount,
+    totalReadTime: entry.totalReadTime,
+    totalNotes: entry.totalNotes,
+    highlights,
+    reviews,
+    formatTime, formatTimestamp,
+    helpers: { formatTime, formatTimestamp },
+    path: '/authors',
+    firstRead, lastRead,
   });
 });
 
