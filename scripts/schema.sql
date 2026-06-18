@@ -111,7 +111,7 @@ CREATE TABLE IF NOT EXISTS tags (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     name        TEXT NOT NULL UNIQUE,
     color       TEXT DEFAULT '#6366f1',
-    created_at  INTEGER NOT NULL DEFAULT (unixepoch())
+    created_at  INTEGER NOT NULL
 );
 
 -- Note Tags: 笔记-标签关联

@@ -491,6 +491,67 @@ def write_sync_log(conn, sync_id: int, status: str, stats: dict, errors: str = N
     conn.commit()
 
 
+# ─── Compute summary table ──────────────────────────────────────────────────
+
+def populate_summary(conn):
+    """Compute summary row from existing books/highlights/reviews data.
+    Called automatically after every sync so the summary table is always
+    up to date — even if the table was just created by schema.sql.
+    """
+    log("[Summary] Computing from local data...")
+    try:
+        total_books = conn.execute("SELECT COUNT(*) FROM books").fetchone()[0]
+        finished_count = conn.execute(
+            "SELECT COUNT(*) FROM books WHERE finished = 1"
+        ).fetchone()[0]
+        notebook_books_count = conn.execute(
+            "SELECT COUNT(*) FROM notebooks WHERE total_notes > 0"
+        ).fetchone()[0]
+        total_note_count = (
+            conn.execute("SELECT COUNT(*) FROM highlights").fetchone()[0]
+            + conn.execute("SELECT COUNT(*) FROM reviews").fetchone()[0]
+        )
+
+        cats = conn.execute(
+            "SELECT DISTINCT category FROM books WHERE category != '' ORDER BY category"
+        ).fetchall()
+        categories = json.dumps([c[0] for c in cats], ensure_ascii=False)
+
+        authors = conn.execute("""
+            SELECT author, COUNT(*) as cnt FROM books
+            WHERE author != '' GROUP BY author ORDER BY cnt DESC LIMIT 10
+        """).fetchall()
+        top_authors = json.dumps(
+            [{"name": a[0], "count": a[1]} for a in authors], ensure_ascii=False
+        )
+
+        archive_rows = conn.execute("""
+            SELECT b.id, b.title, b.author, b.cover, b.category,
+                   COALESCE(MIN(h.create_time), 0) as first_time,
+                   COUNT(h.bookmark_id) as note_cnt
+            FROM books b LEFT JOIN highlights h ON b.id = h.book_id
+            WHERE b.finished = 1 GROUP BY b.id ORDER BY first_time ASC
+        """).fetchall()
+        archives = json.dumps([
+            {"id": r[0], "title": r[1], "author": r[2], "cover": r[3],
+             "category": r[4], "date": r[5], "notes": r[6]}
+            for r in archive_rows
+        ], ensure_ascii=False)
+
+        conn.execute("""
+            INSERT OR REPLACE INTO summary
+            (id, total_books, finished_count, total_note_count,
+             notebook_books_count, categories, top_authors, archives)
+            VALUES (1, ?, ?, ?, ?, ?, ?, ?)
+        """, (total_books, finished_count, total_note_count,
+              notebook_books_count, categories, top_authors, archives))
+        conn.commit()
+        log(f"  [+] {total_books} books | {finished_count} finished | "
+            f"{total_note_count} notes | {notebook_books_count} notebooks")
+    except Exception as e:
+        log(f"  [!] Summary computation failed: {e}")
+
+
 # ─── PM2 Restart ─────────────────────────────────────────────────────────────
 
 def restart_pm2():
@@ -620,6 +681,9 @@ def main():
                 time.sleep(BATCH_DELAY)
         else:
             log("[Phase 4] Progress backfill: all books have read_time — nothing to do")
+
+        # Phase 5: Compute summary table
+        populate_summary(conn)
 
         # Done
         error_str = "; ".join(errors[:5]) if errors else None

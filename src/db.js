@@ -104,158 +104,112 @@ async function initDb() {
     return null;
   }
 
+  // ═══════════════════════════════════════════════════════════════════
+  //  INIT — load database file into sql.js
+  //  Outer try/catch ONLY guards file I/O; individual table ops are
+  //  independently catch-guarded so no single failure cascades.
+  // ═══════════════════════════════════════════════════════════════════
   try {
     const SQL = await initSqlJs();
     const fileBuffer = fs.readFileSync(DB_PATH);
     sqlDb = new SQL.Database(fileBuffer);
     db = createWrapper(sqlDb);
-
-    // ─── Auto-migration: ensure new tables exist ───
-    sqlDb.run(`
-      CREATE TABLE IF NOT EXISTS reviews (
-          review_id TEXT PRIMARY KEY,
-          book_id TEXT NOT NULL,
-          content TEXT DEFAULT '',
-          chapter_name TEXT DEFAULT '',
-          star INTEGER DEFAULT -1,
-          create_time INTEGER NOT NULL
-      )
-    `);
-    sqlDb.run('CREATE INDEX IF NOT EXISTS idx_reviews_book ON reviews(book_id)');
-
-    // ─── Schema migration: add intro column to books table ───
-    try {
-      sqlDb.run('ALTER TABLE books ADD COLUMN intro TEXT DEFAULT \'\'');
-      console.log('[db] Migration: added books.intro column');
-    } catch (e) {
-      // Column already exists — ignore
-    }
-
-    // ─── Schema migration: add read_time column to books table ───
-    try {
-      sqlDb.run('ALTER TABLE books ADD COLUMN read_time INTEGER DEFAULT 0');
-      console.log('[db] Migration: added books.read_time column');
-    } catch (e) {
-      // Column already exists — ignore
-    }
-
-    // ─── Schema migration: add progress column to books table ───
-    try {
-      sqlDb.run('ALTER TABLE books ADD COLUMN progress INTEGER DEFAULT 0');
-      console.log('[db] Migration: added books.progress column');
-    } catch (e) {
-      // Column already exists — ignore
-    }
-
-    // ─── Schema migration: add last_read_time column to books table ───
-    try {
-      sqlDb.run('ALTER TABLE books ADD COLUMN last_read_time INTEGER DEFAULT 0');
-      console.log('[db] Migration: added books.last_read_time column');
-    } catch (e) {
-      // Column already exists — ignore
-    }
-
-    // ─── Schema migration: add abstract column to reviews table ───
-    try {
-      sqlDb.run('ALTER TABLE reviews ADD COLUMN abstract TEXT DEFAULT \'\'');
-      console.log('[db] Migration: added reviews.abstract column');
-    } catch (e) {
-      // Column already exists — ignore
-    }
-
-    // ─── Schema migration: add want_to_read column to books table ───
-    try {
-      sqlDb.run('ALTER TABLE books ADD COLUMN want_to_read INTEGER DEFAULT 0');
-      console.log('[db] Migration: added books.want_to_read column');
-    } catch (e) { /* ignore */ }
-
-    // ─── Schema migration: add user_rating column to books table ───
-    try {
-      sqlDb.run('ALTER TABLE books ADD COLUMN user_rating INTEGER DEFAULT 0');
-      console.log('[db] Migration: added books.user_rating column');
-    } catch (e) { /* ignore */ }
-
-    // ─── CRITICAL: Ensure essential tables exist BEFORE optional tables ───
-    // (these MUST succeed — any failure here bubbles up to prevent silent crashes)
-    sqlDb.run(`CREATE TABLE IF NOT EXISTS reading_sessions (
-        date TEXT PRIMARY KEY, seconds INTEGER NOT NULL DEFAULT 0
-    )`);
-    sqlDb.run(`CREATE TABLE IF NOT EXISTS reading_trends (
-        year INTEGER NOT NULL, month INTEGER NOT NULL,
-        total_seconds INTEGER NOT NULL DEFAULT 0,
-        read_days INTEGER NOT NULL DEFAULT 0,
-        PRIMARY KEY (year, month)
-    )`);
-    sqlDb.run(`CREATE TABLE IF NOT EXISTS summary (
-        id INTEGER PRIMARY KEY CHECK(id=1),
-        total_books INTEGER DEFAULT 0,
-        finished_count INTEGER DEFAULT 0,
-        total_note_count INTEGER DEFAULT 0,
-        notebook_books_count INTEGER DEFAULT 0,
-        categories TEXT DEFAULT '[]',
-        top_authors TEXT DEFAULT '[]',
-        archives TEXT DEFAULT '[]'
-    )`);
-    sqlDb.run(`INSERT OR IGNORE INTO summary (id) VALUES (1)`);
-    sqlDb.run(`CREATE TABLE IF NOT EXISTS kv_store (
-        name TEXT PRIMARY KEY, value TEXT DEFAULT ''
-    )`);
-
-    // ─── Schema migration: booklists tables (best-effort — may fail on old sql.js) ───
-    try {
-      sqlDb.run(`
-        CREATE TABLE IF NOT EXISTS booklists (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          name TEXT NOT NULL,
-          description TEXT DEFAULT '',
-          created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-          updated_at INTEGER NOT NULL DEFAULT (unixepoch())
-        )
-      `);
-      sqlDb.run(`
-        CREATE TABLE IF NOT EXISTS booklist_items (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          list_id INTEGER NOT NULL,
-          book_id TEXT NOT NULL,
-          note TEXT DEFAULT '',
-          sort_order INTEGER DEFAULT 0,
-          added_at INTEGER NOT NULL DEFAULT (unixepoch()),
-          UNIQUE(list_id, book_id)
-        )
-      `);
-      sqlDb.run('CREATE INDEX IF NOT EXISTS idx_bl_items_list ON booklist_items(list_id)');
-    } catch (e) {
-      console.log('[db] Warning: booklists tables could not be created (old sql.js)', e.message);
-    }
-
-    // ─── Schema migration: tags table (best-effort — may fail on old sql.js) ───
-    try {
-      sqlDb.run(`
-        CREATE TABLE IF NOT EXISTS tags (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          name TEXT NOT NULL UNIQUE,
-          color TEXT DEFAULT '#6366f1',
-          created_at INTEGER NOT NULL DEFAULT (unixepoch())
-        )
-      `);
-      sqlDb.run(`
-        CREATE TABLE IF NOT EXISTS note_tags (
-          note_id TEXT NOT NULL,
-          note_type TEXT NOT NULL,
-          tag_id INTEGER NOT NULL,
-          PRIMARY KEY (note_id, note_type, tag_id)
-        )
-      `);
-    } catch (e) {
-      console.log('[db] Warning: tags tables could not be created (old sql.js)', e.message);
-    }
-
-    console.log(`[db] Connected to reading-room.db (sql.js, ${(fileBuffer.length / 1024 / 1024).toFixed(1)} MB)`);
-    return db;
   } catch (err) {
     console.error(`[db] Failed to open database: ${err.message}`);
     return null;
   }
+
+  // ─── Helper: run SQL safely (log + continue on error) ───
+  function _safeRun(desc, sql) {
+    try {
+      sqlDb.run(sql);
+      return true;
+    } catch (e) {
+      console.warn(`[db] ${desc}: ${e.message}`);
+      return false;
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  //  CRITICAL TABLES — every table independently, no cascade failures
+  // ═══════════════════════════════════════════════════════════════════
+
+  _safeRun('reviews', `CREATE TABLE IF NOT EXISTS reviews (
+    review_id TEXT PRIMARY KEY, book_id TEXT NOT NULL,
+    content TEXT DEFAULT '', chapter_name TEXT DEFAULT '',
+    star INTEGER DEFAULT -1, create_time INTEGER NOT NULL
+  )`);
+  _safeRun('reviews_idx', 'CREATE INDEX IF NOT EXISTS idx_reviews_book ON reviews(book_id)');
+
+  _safeRun('reading_sessions', `CREATE TABLE IF NOT EXISTS reading_sessions (
+    date TEXT PRIMARY KEY, seconds INTEGER NOT NULL DEFAULT 0
+  )`);
+  _safeRun('reading_trends', `CREATE TABLE IF NOT EXISTS reading_trends (
+    year INTEGER NOT NULL, month INTEGER NOT NULL,
+    total_seconds INTEGER NOT NULL DEFAULT 0,
+    read_days INTEGER NOT NULL DEFAULT 0, PRIMARY KEY (year, month)
+  )`);
+  _safeRun('summary', `CREATE TABLE IF NOT EXISTS summary (
+    id INTEGER PRIMARY KEY CHECK(id=1),
+    total_books INTEGER DEFAULT 0, finished_count INTEGER DEFAULT 0,
+    total_note_count INTEGER DEFAULT 0, notebook_books_count INTEGER DEFAULT 0,
+    categories TEXT DEFAULT '[]', top_authors TEXT DEFAULT '[]',
+    archives TEXT DEFAULT '[]'
+  )`);
+  _safeRun('summary_init', 'INSERT OR IGNORE INTO summary (id) VALUES (1)');
+  _safeRun('kv_store', `CREATE TABLE IF NOT EXISTS kv_store (
+    name TEXT PRIMARY KEY, value TEXT DEFAULT ''
+  )`);
+
+  // ─── Column migrations (each independently guarded) ───
+  const _migrations = [
+    ['books', 'intro', "TEXT DEFAULT ''"],
+    ['books', 'read_time', 'INTEGER DEFAULT 0'],
+    ['books', 'progress', 'INTEGER DEFAULT 0'],
+    ['books', 'last_read_time', 'INTEGER DEFAULT 0'],
+    ['books', 'want_to_read', 'INTEGER DEFAULT 0'],
+    ['books', 'user_rating', 'INTEGER DEFAULT 0'],
+    ['reviews', 'abstract', "TEXT DEFAULT ''"],
+  ];
+  for (const [table, col, type] of _migrations) {
+    try {
+      sqlDb.run(`ALTER TABLE ${table} ADD COLUMN ${col} ${type}`);
+      console.log(`[db] Migration: added ${table}.${col}`);
+    } catch (e) { /* already exists */ }
+  }
+
+  // ─── Optional tables (advanced SQL features — may fail on old sql.js) ───
+  _safeRun('booklists', `CREATE TABLE IF NOT EXISTS booklists (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL,
+    description TEXT DEFAULT '',
+    created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL
+  )`);
+  _safeRun('booklist_items', `CREATE TABLE IF NOT EXISTS booklist_items (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, list_id INTEGER NOT NULL,
+    book_id TEXT NOT NULL, note TEXT DEFAULT '',
+    sort_order INTEGER DEFAULT 0, added_at INTEGER NOT NULL,
+    UNIQUE(list_id, book_id)
+  )`);
+  _safeRun('bl_items_idx', 'CREATE INDEX IF NOT EXISTS idx_bl_items_list ON booklist_items(list_id)');
+
+  _safeRun('tags', `CREATE TABLE IF NOT EXISTS tags (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE,
+    color TEXT DEFAULT '#6366f1', created_at INTEGER NOT NULL
+  )`);
+  _safeRun('note_tags', `CREATE TABLE IF NOT EXISTS note_tags (
+    note_id TEXT NOT NULL, note_type TEXT NOT NULL, tag_id INTEGER NOT NULL,
+    PRIMARY KEY (note_id, note_type, tag_id)
+  )`);
+
+  // ─── Persist any auto-migrations back to disk ───
+  try {
+    fs.writeFileSync(DB_PATH, sqlDb.export());
+  } catch (e) {
+    console.error('[db] Failed to save DB after migrations:', e.message);
+  }
+
+  console.log(`[db] Connected to reading-room.db (sql.js, ${(fs.statSync(DB_PATH).size / 1024 / 1024).toFixed(1)} MB)`);
+  return db;
 }
 
 function getDb() {
