@@ -1155,7 +1155,7 @@ function getAuthorDetail(authorName) {
     // Exact match on split names
     if (names.includes(authorName)) return true;
     // Strip nationality prefixes like (俄), (美), [法], (日) etc.
-    const cleanNames = names.map(n => n.replace(/^[[(（]\w{1,4}[]）)]\s*/u, '').trim());
+    const cleanNames = names.map(n => n.replace(/^[\[(（]\w{1,4}[\])）]\s*/u, '').trim());
     if (cleanNames.includes(authorName)) return true;
     // Substring fallback
     if (book.author.includes(authorName)) return true;
