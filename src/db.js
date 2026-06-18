@@ -55,29 +55,6 @@ function upgradeCovers(obj) {
   return obj;
 }
 
-// ─── Author UID helpers ───
-// Stable hash → 8-char hex, deterministic across restarts.
-
-function generateAuthorId(name) {
-  if (!name || typeof name !== 'string') return null;
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = ((hash << 5) - hash) + name.charCodeAt(i);
-    hash = hash | 0;
-  }
-  return 'au' + Math.abs(hash).toString(16).padStart(6, '0');
-}
-
-// Extract primary author: split by delimiters, strip (xx)/[xx]/（xx） prefix, trim.
-function normalizeAuthorName(rawAuthor) {
-  if (!rawAuthor || typeof rawAuthor !== 'string') return '';
-  const names = rawAuthor.split(/[,，\/、&]/);
-  let name = names[0].trim();
-  // Strip nationality / role prefixes: (俄), [法], （日）, (美) etc.
-  name = name.replace(/^[\[(（][^\]）)]{1,6}[\])）]\s*/u, '').trim();
-  return name;
-}
-
 // ─── sql.js wrapper — mimics better-sqlite3 API ───
 
 /**
@@ -234,47 +211,16 @@ async function initDb() {
     } catch (e) { /* already exists */ }
   }
 
-  // ─── Author ID migration: add column + backfill + index ───
+  // ─── Cleanup: drop obsolete author_id column & index (requires sqlite >= 3.35) ───
   try {
-    sqlDb.run('ALTER TABLE books ADD COLUMN author_id TEXT');
-    console.log('[db] Migration: added books.author_id');
-  } catch (e) { /* already exists */ }
-  try {
-    sqlDb.run('CREATE INDEX IF NOT EXISTS idx_books_author_id ON books(author_id)');
-  } catch (e) { /* ignore */ }
-
-  // Backfill missing author_ids for ALL rows (re-runnable, handles edge cases)
-  const missingBooks = sqlDb.exec(`
-    SELECT id, author, title FROM books WHERE author_id IS NULL OR author_id = ''
-  `);
-  if (missingBooks.length > 0 && missingBooks[0].values.length > 0) {
-    const rows = missingBooks[0].values;
-    const stmt = sqlDb.prepare('UPDATE books SET author_id = ? WHERE id = ?');
-    let filled = 0;
-    const seen = new Map(); // track collisions for dedup
-    for (const [bookId, rawAuthor, title] of rows) {
-      // Stage 1: normalize the author field (strip nationality prefix, split)
-      let name = normalizeAuthorName(rawAuthor);
-      // Stage 2: if normalization failed, try author field as-is
-      if (!name && rawAuthor && rawAuthor.trim()) {
-        name = rawAuthor.trim();
-      }
-      // Stage 3: ultimate fallback — use book title hash
-      if (!name && title) {
-        name = title;
-      }
-      if (!name) continue; // truly empty, can't do anything
-      let uid = seen.get(name);
-      if (!uid) {
-        uid = generateAuthorId(name);
-        seen.set(name, uid);
-      }
-      stmt.run([uid, bookId]);
-      filled++;
+    sqlDb.run('DROP INDEX IF EXISTS idx_books_author_id');
+    const cols = sqlDb.exec("PRAGMA table_info(books)");
+    const hasAuthorId = cols[0]?.values?.some(r => r[1] === 'author_id');
+    if (hasAuthorId) {
+      sqlDb.run('ALTER TABLE books DROP COLUMN author_id');
+      console.log('[db] Cleanup: dropped books.author_id');
     }
-    stmt.free();
-    console.log(`[db] Author ID backfill: ${filled} books, ${seen.size} unique authors`);
-  }
+  } catch (e) { /* DROP COLUMN may fail on older sql.js — harmless */ }
 
   // ─── Optional tables (advanced SQL features — may fail on old sql.js) ───
   _safeRun('booklists', `CREATE TABLE IF NOT EXISTS booklists (
@@ -1158,128 +1104,6 @@ function getAnnualYears() {
   return rows.map(r => r.yr).filter(Boolean);
 }
 
-// ─── Authors (authors page) ───
-
-// ─── Runtime author_id auto-fill: catches stragglers from sync.py ───
-// Cheap SELECT → only runs UPDATE when there's actually missing data.
-function _ensureAuthorIds(d) {
-  const stragglers = d.exec(`
-    SELECT id, author, title FROM books WHERE author_id IS NULL OR author_id = ''
-  `);
-  if (!stragglers[0] || stragglers[0].values.length === 0) return;
-
-  const rows = stragglers[0].values;
-  const stmt = sqlDb.prepare('UPDATE books SET author_id = ? WHERE id = ?');
-  const seen = new Map();
-  let filled = 0;
-  for (const [bookId, rawAuthor, title] of rows) {
-    let name = normalizeAuthorName(rawAuthor);
-    if (!name && rawAuthor && rawAuthor.trim()) name = rawAuthor.trim();
-    if (!name && title) name = title;
-    if (!name) continue;
-    let uid = seen.get(name);
-    if (!uid) { uid = generateAuthorId(name); seen.set(name, uid); }
-    stmt.run([uid, bookId]);
-    filled++;
-  }
-  stmt.free();
-  if (filled > 0) console.log(`[db] Auto-filled ${filled} missing author_ids`);
-}
-
-// ─── Author list (grouped by UID) ───
-function getAuthorsAll() {
-  const d = getDb();
-  _ensureAuthorIds(d);
-
-
-  const books = upgradeCovers(d.prepare(`
-    SELECT b.id, b.title, b.author, b.cover, b.finished, b.read_time, b.update_time, b.category, b.author_id,
-      n.total_notes AS totalNotes
-    FROM books b
-    LEFT JOIN notebooks n ON b.id = n.book_id
-    WHERE b.author_id IS NOT NULL
-    ORDER BY b.author_id ASC, b.update_time DESC
-  `).all());
-
-  // Group by author_id (stable UID, no string matching)
-  const map = new Map();
-  for (const book of books) {
-    const uid = book.author_id;
-    if (!map.has(uid)) {
-      map.set(uid, {
-        uid,
-        author: normalizeAuthorName(book.author), // display name
-        books: [],
-        totalReadTime: 0,
-        finishedCount: 0,
-        totalNotes: 0,
-      });
-    }
-    const entry = map.get(uid);
-    entry.books.push(book);
-    entry.totalReadTime += book.read_time || 0;
-    if (book.finished) entry.finishedCount++;
-    entry.totalNotes += book.totalNotes || 0;
-  }
-
-  // Sort: most books first, then most reading time
-  const authors = Array.from(map.values())
-    .filter(a => a.books.length > 0)
-    .sort((a, b) => (b.books.length - a.books.length) || (b.totalReadTime - a.totalReadTime));
-
-  return authors;
-}
-
-function getAuthorDetail(authorId) {
-  const d = getDb();
-
-  const authorBooks = upgradeCovers(d.prepare(`
-    SELECT b.id, b.title, b.author, b.cover, b.finished, b.read_time,
-      b.update_time, b.category, b.intro,
-      n.total_notes AS totalNotes
-    FROM books b
-    LEFT JOIN notebooks n ON b.id = n.book_id
-    WHERE b.author_id = ?
-    ORDER BY b.finished DESC, b.read_time DESC
-  `).all(authorId));
-
-  if (authorBooks.length === 0) return null;
-
-  const displayName = normalizeAuthorName(authorBooks[0].author);
-  const totalReadTime = authorBooks.reduce((s, b) => s + (b.read_time || 0), 0);
-  const finishedCount = authorBooks.filter(b => b.finished).length;
-  const totalNotes = authorBooks.reduce((s, b) => s + (b.totalNotes || 0), 0);
-
-  // Highlights from this author's books
-  const bookIds = authorBooks.map(b => b.id);
-  let highlights = [];
-  if (bookIds.length > 0) {
-    const placeholders = bookIds.map(() => '?').join(',');
-    highlights = d.prepare(`
-      SELECT h.mark_text AS text, h.chapter_title AS chapter,
-        h.create_time, h.book_id,
-        b.title AS book_title, b.cover AS book_cover, b.id AS bookId
-      FROM highlights h
-      LEFT JOIN books b ON h.book_id = b.id
-      WHERE h.book_id IN (${placeholders})
-        AND h.mark_text IS NOT NULL AND h.mark_text != '' AND length(h.mark_text) > 10
-      ORDER BY h.create_time DESC
-      LIMIT 50
-    `).all(...bookIds);
-  }
-
-  return {
-    uid: authorId,
-    author: displayName,
-    books: authorBooks,
-    highlights,
-    totalReadTime,
-    finishedCount,
-    totalNotes,
-    totalBooks: authorBooks.length,
-  };
-}
-
 // ─── Quotes / Highlights Wall ───
 
 function getHighlightsPaged(limit = 40, offset = 0, bookId = null) {
@@ -1568,9 +1392,6 @@ module.exports = {
   // annual page
   getAnnualBooks,
   getAnnualYears,
-  // authors page
-  getAuthorsAll,
-  getAuthorDetail,
   // quotes / highlights wall
   getHighlightsPaged,
   getHighlightsTotal,

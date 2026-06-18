@@ -508,54 +508,6 @@ app.get('/annual', (req, res) => {
   });
 });
 
-// ─── Authors page ───
-app.get('/authors', (req, res) => {
-  const { getAuthorsAll } = db;
-  const authors = getAuthorsAll();
-  const totalBooks = authors.reduce((s, a) => s + a.books.length, 0);
-  const totalTime  = authors.reduce((s, a) => s + a.totalReadTime, 0);
-
-  res.render('authors', {
-    title: '作者图谱',
-    authors,
-    totalAuthors: authors.length,
-    totalBooks,
-    totalTime,
-    formatTime,
-    helpers: { formatTime, formatTimestamp },
-    path: '/authors',
-  });
-});
-
-// ─── Author Detail (by stable UID, not name) ───
-app.get('/author/:id', (req, res) => {
-  const authorId = req.params.id;
-
-  let detail;
-  try {
-    const { getAuthorDetail } = db;
-    detail = getAuthorDetail(authorId);
-  } catch (e) {
-    console.error(`[server] getAuthorDetail("${authorId}") error:`, e.message);
-    detail = null;
-  }
-
-  if (!detail) {
-    return res.status(404).render('404', {
-      title: '作者未找到',
-      path: '/authors',
-      helpers: { formatTime, formatTimestamp },
-    });
-  }
-
-  res.render('author-detail', {
-    title: detail.author + ' · 作者详情',
-    detail,
-    helpers: { formatTime, formatTimestamp },
-    path: '/authors',
-  });
-});
-
 // ─── Quotes / Highlights Wall ───
 app.get('/quotes', (req, res) => {
   const { getHighlightsPaged, getHighlightsTotal, getAllBooks } = db;
