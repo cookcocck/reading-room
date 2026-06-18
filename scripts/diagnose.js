@@ -81,9 +81,11 @@ try {
   const [{ values: [[bookCount]] }] = d.exec('SELECT COUNT(*) FROM books');
   console.log(`  书籍总数: ${bookCount}`);
 
-  // author_id 为空的数量
+  // author_id 为空的数量（提升到外层作用域，供总结部分使用）
+  let nullCount = 0;
   if (hasAuthorId) {
-    const [{ values: [[nullCount]] }] = d.exec("SELECT COUNT(*) FROM books WHERE author_id IS NULL OR author_id = ''");
+    const [{ values: [[nc]] }] = d.exec("SELECT COUNT(*) FROM books WHERE author_id IS NULL OR author_id = ''");
+    nullCount = nc;
     console.log(`  author_id 为空: ${nullCount} 本${nullCount > 0 ? ' ❌ 回填未完成！' : ' ✅ 全部回填完成'}`);
   }
 
