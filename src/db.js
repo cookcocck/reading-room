@@ -1135,38 +1135,24 @@ function getAuthorsAll() {
 function getAuthorDetail(authorName) {
   const d = getDb();
 
-  // All books by this author
-  const books = upgradeCovers(d.prepare(`
+  // Use SQL LIKE for robust matching — handles nationality prefixes, co-authors, etc.
+  const authorBooks = upgradeCovers(d.prepare(`
     SELECT b.id, b.title, b.author, b.cover, b.finished, b.read_time,
       b.update_time, b.category, b.intro,
       n.total_notes AS totalNotes
     FROM books b
     LEFT JOIN notebooks n ON b.id = n.book_id
     WHERE b.author IS NOT NULL AND b.author != ''
-    ORDER BY b.update_time DESC
-  `).all());
-
-  // Filter books where author field matches the authorName
-  // Stage 1: exact split-name match (e.g. "陀思妥耶夫斯基" in "陀思妥耶夫斯基, 某某")
-  // Stage 2: fallback — strip nationality prefixes like (俄)/(美)/[法] and match again
-  // Stage 3: fallback — substring match on raw author field
-  const authorBooks = books.filter(book => {
-    const names = book.author.split(/[,，\/、&]/).map(s => s.trim());
-    // Exact match on split names
-    if (names.includes(authorName)) return true;
-    // Strip nationality prefixes like (俄), (美), [法], (日) etc.
-    const cleanNames = names.map(n => n.replace(/^[\[(（]\w{1,4}[\])）]\s*/u, '').trim());
-    if (cleanNames.includes(authorName)) return true;
-    // Substring fallback
-    if (book.author.includes(authorName)) return true;
-    return false;
-  });
+      AND (b.author LIKE ? OR b.author = ?)
+    ORDER BY b.finished DESC, b.read_time DESC
+  `).all(`%${authorName}%`, authorName));
 
   if (authorBooks.length === 0) {
-    console.log(`[db] getAuthorDetail("${authorName}"): no books matched. Sampled author fields:`,
-      books.slice(0, 5).map(b => b.author));
+    console.log(`[db] getAuthorDetail("${authorName}"): no books matched via LIKE`);
     return null;
   }
+
+  console.log(`[db] getAuthorDetail("${authorName}"): matched ${authorBooks.length} books`);
 
   const totalReadTime = authorBooks.reduce((s, b) => s + (b.read_time || 0), 0);
   const finishedCount = authorBooks.filter(b => b.finished).length;
