@@ -2,7 +2,7 @@
   "apps": [{
     "name": "reading-room",
     "script": "dist/index.js",
-    "cwd": "/home/admin/reading-site",
+    "cwd": "/home/admin/reading-room",
     "env": {
       "NODE_ENV": "production",
       "PORT": 3000
