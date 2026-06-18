@@ -109,6 +109,10 @@ function createWrapper(sqlDb) {
           }
         }
       };
+    },
+    // Thin wrapper around sql.js exec for raw queries (SELECT only)
+    exec(sql) {
+      return sqlDb.exec(sql);
     }
   };
 }
@@ -239,18 +243,27 @@ async function initDb() {
     sqlDb.run('CREATE INDEX IF NOT EXISTS idx_books_author_id ON books(author_id)');
   } catch (e) { /* ignore */ }
 
-  // Backfill missing author_ids for existing rows
+  // Backfill missing author_ids for ALL rows (re-runnable, handles edge cases)
   const missingBooks = sqlDb.exec(`
-    SELECT id, author FROM books WHERE author_id IS NULL AND author IS NOT NULL AND author != ''
+    SELECT id, author, title FROM books WHERE author_id IS NULL OR author_id = ''
   `);
   if (missingBooks.length > 0 && missingBooks[0].values.length > 0) {
     const rows = missingBooks[0].values;
     const stmt = sqlDb.prepare('UPDATE books SET author_id = ? WHERE id = ?');
     let filled = 0;
     const seen = new Map(); // track collisions for dedup
-    for (const [bookId, rawAuthor] of rows) {
-      const name = normalizeAuthorName(rawAuthor);
-      if (!name) continue;
+    for (const [bookId, rawAuthor, title] of rows) {
+      // Stage 1: normalize the author field (strip nationality prefix, split)
+      let name = normalizeAuthorName(rawAuthor);
+      // Stage 2: if normalization failed, try author field as-is
+      if (!name && rawAuthor && rawAuthor.trim()) {
+        name = rawAuthor.trim();
+      }
+      // Stage 3: ultimate fallback — use book title hash
+      if (!name && title) {
+        name = title;
+      }
+      if (!name) continue; // truly empty, can't do anything
       let uid = seen.get(name);
       if (!uid) {
         uid = generateAuthorId(name);
@@ -1147,8 +1160,37 @@ function getAnnualYears() {
 
 // ─── Authors (authors page) ───
 
+// ─── Runtime author_id auto-fill: catches stragglers from sync.py ───
+// Cheap SELECT → only runs UPDATE when there's actually missing data.
+function _ensureAuthorIds(d) {
+  const stragglers = d.exec(`
+    SELECT id, author, title FROM books WHERE author_id IS NULL OR author_id = ''
+  `);
+  if (!stragglers[0] || stragglers[0].values.length === 0) return;
+
+  const rows = stragglers[0].values;
+  const stmt = sqlDb.prepare('UPDATE books SET author_id = ? WHERE id = ?');
+  const seen = new Map();
+  let filled = 0;
+  for (const [bookId, rawAuthor, title] of rows) {
+    let name = normalizeAuthorName(rawAuthor);
+    if (!name && rawAuthor && rawAuthor.trim()) name = rawAuthor.trim();
+    if (!name && title) name = title;
+    if (!name) continue;
+    let uid = seen.get(name);
+    if (!uid) { uid = generateAuthorId(name); seen.set(name, uid); }
+    stmt.run([uid, bookId]);
+    filled++;
+  }
+  stmt.free();
+  if (filled > 0) console.log(`[db] Auto-filled ${filled} missing author_ids`);
+}
+
+// ─── Author list (grouped by UID) ───
 function getAuthorsAll() {
   const d = getDb();
+  _ensureAuthorIds(d);
+
 
   const books = upgradeCovers(d.prepare(`
     SELECT b.id, b.title, b.author, b.cover, b.finished, b.read_time, b.update_time, b.category, b.author_id,

@@ -87,6 +87,15 @@ try {
     const [{ values: [[nc]] }] = d.exec("SELECT COUNT(*) FROM books WHERE author_id IS NULL OR author_id = ''");
     nullCount = nc;
     console.log(`  author_id 为空: ${nullCount} 本${nullCount > 0 ? ' ❌ 回填未完成！' : ' ✅ 全部回填完成'}`);
+
+    // 打印 author_id 为空的书，帮助定位
+    if (nullCount > 0) {
+      const nullBooks = d.exec("SELECT id, title, author FROM books WHERE author_id IS NULL OR author_id = '' LIMIT 5");
+      console.log('  作者UID为空的书：');
+      for (const [id, title, author] of nullBooks[0]?.values || []) {
+        console.log(`    ${id} | ${title || '(无标题)'} | 作者: "${author || '(空)'}"`);
+      }
+    }
   }
 
   // ─── 2. 检查 author 字段样本 ───
