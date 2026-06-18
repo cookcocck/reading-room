@@ -1,0 +1,70 @@
+<%- contentFor('title') %><%= title %>
+
+<div class="an-container">
+
+  <!-- Hero -->
+  <header class="an-hero">
+    <div class="an-hero-ornament"><%= year %></div>
+    <div class="an-hero-content">
+      <p class="an-hero-kicker">年度书单</p>
+      <h1 class="an-hero-title"><%= year %></h1>
+      <div class="an-hero-stats">
+        <span class="an-hero-stat"><strong><%= books.length %></strong> 本收藏</span>
+        <span class="an-hero-sep">·</span>
+        <span class="an-hero-stat"><strong><%= finishedCount %></strong> 本完成</span>
+        <span class="an-hero-sep">·</span>
+        <span class="an-hero-stat"><strong><%= helpers.formatTime(totalReadTime) %></strong> 阅读</span>
+        <span class="an-hero-sep">·</span>
+        <span class="an-hero-stat"><strong><%= totalNotes %></strong> 条笔记</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Year tabs -->
+  <nav class="an-year-tabs">
+    <% years.forEach(function(yr) { %>
+    <a href="/annual?year=<%= yr %>" class="an-year-tab<%= yr === year ? ' an-year-tab--active' : '' %>"><%= yr %></a>
+    <% }); %>
+  </nav>
+
+  <% if (books.length === 0) { %>
+  <div class="an-empty">
+    <div class="an-empty-icon">📅</div>
+    <p><%= year %> 年暂无记录</p>
+    <p class="an-empty-sub">选择其他年份查看</p>
+  </div>
+  <% } else { %>
+
+  <!-- Books grid -->
+  <section class="an-grid" id="an-grid">
+    <% books.forEach(function(book, idx) { %>
+    <div class="an-card" style="animation-delay: <%= Math.min(idx * 0.04, 0.8) %>s">
+      <a href="/book/<%= book.id %>" class="an-card-cover" tabindex="-1">
+        <% if (book.cover) { %>
+        <img src="<%= book.cover %>" alt="<%= book.title %>" loading="lazy" />
+        <% } else { %>
+        <div class="an-cover-fallback">📖</div>
+        <% } %>
+        <% if (book.finished) { %>
+        <span class="an-badge-done">完成</span>
+        <% } %>
+      </a>
+      <div class="an-card-body">
+        <h2 class="an-card-title"><a href="/book/<%= book.id %>"><%= book.title %></a></h2>
+        <p class="an-card-author"><%= book.author || '' %></p>
+        <div class="an-card-foot">
+          <% if (book.read_time && book.read_time > 0) { %>
+          <span class="an-card-time"><%= helpers.formatTime(book.read_time) %></span>
+          <% } %>
+          <% if (book.totalNotes && book.totalNotes > 0) { %>
+          <span class="an-card-notes"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M2 3h12v8H2zM5 11v3l3-3" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg> <%= book.totalNotes %></span>
+          <% } %>
+        </div>
+      </div>
+    </div>
+    <% }); %>
+  </section>
+
+  <% } %>
+
+</div>

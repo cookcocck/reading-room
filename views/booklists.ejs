@@ -1,0 +1,123 @@
+<%- contentFor('title') %><%= title %>
+
+<div class="bl-container">
+
+  <!-- Hero -->
+  <header class="bl-hero">
+    <p class="bl-hero-kicker">书单推荐</p>
+    <h1 class="bl-hero-title">我的书单</h1>
+    <p class="bl-hero-sub">把读过的书整理成主题书单，分享给感兴趣的人</p>
+  </header>
+
+  <!-- Toolbar -->
+  <div class="bl-toolbar">
+    <button class="bl-create-btn" id="bl-create-btn">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      新建书单
+    </button>
+  </div>
+
+  <% if (lists.length === 0) { %>
+  <div class="bl-empty" id="bl-empty">
+    <div class="bl-empty-icon">📋</div>
+    <p>还没有书单</p>
+    <p class="bl-empty-sub">点击「新建书单」开始整理</p>
+  </div>
+  <% } else { %>
+
+  <!-- Lists grid -->
+  <div class="bl-grid" id="bl-grid">
+    <% lists.forEach(function(list) { %>
+    <div class="bl-card" data-id="<%= list.id %>">
+      <div class="bl-card-head">
+        <h2 class="bl-card-name"><a href="/booklists/<%= list.id %>"><%= list.name %></a></h2>
+        <div class="bl-card-actions">
+          <button class="bl-icon-btn bl-edit-btn" data-id="<%= list.id %>" data-name="<%= list.name %>" data-desc="<%= list.description || '' %>" title="编辑">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M11.5 2.5l2 2L6 12H4v-2L11.5 2.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="bl-icon-btn bl-delete-btn" data-id="<%= list.id %>" title="删除">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 4h10M6 4V2h4v2M5 4l1 9h4l1-9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+      </div>
+      <% if (list.description) { %>
+      <p class="bl-card-desc"><%= list.description %></p>
+      <% } %>
+      <div class="bl-card-foot">
+        <span class="bl-card-count"><%= list.book_count %> 本书</span>
+        <a href="/booklists/<%= list.id %>" class="bl-view-link">查看详情 →</a>
+      </div>
+    </div>
+    <% }); %>
+  </div>
+
+  <% } %>
+
+</div>
+
+<!-- Create/Edit Modal -->
+<div class="bl-modal-overlay" id="bl-modal" style="display:none" role="dialog" aria-modal="true" aria-label="书单设置">
+  <div class="bl-modal">
+    <h3 class="bl-modal-title" id="bl-modal-title">新建书单</h3>
+    <label class="bl-label">书单名称 <span class="bl-required">*</span></label>
+    <input class="bl-input" id="bl-name" type="text" placeholder="例如：改变我的10本书" maxlength="60" />
+    <label class="bl-label">简介（可选）</label>
+    <textarea class="bl-textarea" id="bl-desc" placeholder="这个书单的主题或推荐理由…" rows="3" maxlength="200"></textarea>
+    <div class="bl-modal-actions">
+      <button class="bl-btn-secondary" id="bl-cancel">取消</button>
+      <button class="bl-btn-primary" id="bl-save">保存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var modal   = document.getElementById('bl-modal');
+  var nameEl  = document.getElementById('bl-name');
+  var descEl  = document.getElementById('bl-desc');
+  var titleEl = document.getElementById('bl-modal-title');
+  var editId  = null;
+
+  function openModal(id, name, desc) {
+    editId = id || null;
+    titleEl.textContent = id ? '编辑书单' : '新建书单';
+    nameEl.value = name || '';
+    descEl.value = desc || '';
+    modal.style.display = 'flex';
+    nameEl.focus();
+  }
+  function closeModal(){ modal.style.display = 'none'; editId = null; }
+
+  document.getElementById('bl-create-btn').addEventListener('click', function(){ openModal(); });
+  document.getElementById('bl-cancel').addEventListener('click', closeModal);
+  modal.addEventListener('click', function(e){ if (e.target === modal) closeModal(); });
+
+  document.getElementById('bl-save').addEventListener('click', function(){
+    var name = nameEl.value.trim();
+    if (!name) { nameEl.focus(); return; }
+    var url    = editId ? '/api/booklists/' + editId : '/api/booklists';
+    var method = editId ? 'PUT' : 'POST';
+    fetch(url, { method: method, headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name: name, description: descEl.value.trim() }) })
+      .then(function(r){ return r.json(); })
+      .then(function(){ location.reload(); })
+      .catch(function(){ alert('保存失败，请重试'); });
+  });
+
+  // Edit buttons
+  document.addEventListener('click', function(e){
+    var editBtn = e.target.closest('.bl-edit-btn');
+    if (editBtn) openModal(editBtn.dataset.id, editBtn.dataset.name, editBtn.dataset.desc);
+
+    var delBtn = e.target.closest('.bl-delete-btn');
+    if (delBtn) {
+      if (!confirm('确定删除这个书单？')) return;
+      fetch('/api/booklists/' + delBtn.dataset.id, { method: 'DELETE' })
+        .then(function(){ location.reload(); })
+        .catch(function(){ alert('删除失败，请重试'); });
+    }
+  });
+
+  // Keyboard close
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeModal(); });
+})();
+</script>

@@ -1,0 +1,151 @@
+<%- contentFor('title') %><%= title %>
+
+<div class="qt-container">
+
+  <!-- Hero -->
+  <header class="qt-hero">
+    <p class="qt-hero-kicker">金句墙</p>
+    <h1 class="qt-hero-title">所有精彩摘录</h1>
+    <p class="qt-hero-count" id="qt-count">共 <%= total %> 条划线</p>
+  </header>
+
+  <!-- Toolbar -->
+  <div class="qt-toolbar">
+    <input class="qt-search" id="qt-search" type="search" placeholder="搜索摘录内容…" autocomplete="off" />
+    <div class="qt-toolbar-right">
+      <select class="qt-book-filter" id="qt-book-filter">
+        <option value="">全部书籍</option>
+        <% allBooks.forEach(function(b) { %>
+        <option value="<%= b.id %>"<%= bookId === b.id ? ' selected' : '' %>><%= b.title %></option>
+        <% }); %>
+      </select>
+    </div>
+  </div>
+
+  <!-- Masonry wall -->
+  <div class="qt-wall" id="qt-wall">
+    <% highlights.forEach(function(h, idx) { %>
+    <div class="qt-card<%= h.text && h.text.length > 100 ? ' qt-card--long' : '' %>" style="animation-delay: <%= Math.min(idx * 0.025, 0.8) %>s"
+         data-text="<%= (h.text || '').replace(/\"/g, '&quot;').replace(/</g, '&lt;') %>">
+      <blockquote class="qt-text"><%= h.text || '' %></blockquote>
+      <footer class="qt-meta">
+        <a href="/book/<%= h.bookId %>" class="qt-book"><%= h.bookTitle || '未知' %></a>
+        <% if (h.chapter) { %><span class="qt-chapter">· <%= h.chapter %></span><% } %>
+      </footer>
+    </div>
+    <% }); %>
+  </div>
+
+  <div class="qt-loading" id="qt-loading" style="display:none">
+    <span class="qt-loading-dot"></span>
+    <span class="qt-loading-dot"></span>
+    <span class="qt-loading-dot"></span>
+  </div>
+
+  <div class="qt-end" id="qt-end" style="display:none">— 已加载全部 <span id="qt-loaded-count"></span> 条 —</div>
+
+  <div class="qt-empty" id="qt-empty" style="display:none">
+    <div class="qt-empty-icon">✍️</div>
+    <p>没有找到匹配的摘录</p>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var wall    = document.getElementById('qt-wall');
+  var loading = document.getElementById('qt-loading');
+  var endEl   = document.getElementById('qt-end');
+  var emptyEl = document.getElementById('qt-empty');
+  var countEl = document.getElementById('qt-count');
+  var loadedCountEl = document.getElementById('qt-loaded-count');
+  var searchEl  = document.getElementById('qt-search');
+  var filterSel = document.getElementById('qt-book-filter');
+
+  var total   = <%= total %>;
+  var perPage = <%= perPage %>;
+  var offset  = <%= highlights.length %>;
+  var loading_ = false;
+  var hasMore  = offset < total;
+  var currentBook = '<%= bookId %>';
+  var searchQ = '';
+
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function renderCard(h) {
+    var isLong = h.text && h.text.length > 100;
+    var d = document.createElement('div');
+    d.className = 'qt-card qt-card--new' + (isLong ? ' qt-card--long' : '');
+    d.dataset.text = h.text || '';
+    d.innerHTML = '<blockquote class="qt-text">' + escHtml(h.text || '') + '</blockquote>' +
+      '<footer class="qt-meta"><a href="/book/' + escHtml(h.bookId) + '" class="qt-book">' + escHtml(h.bookTitle || '未知') + '</a>' +
+      (h.chapter ? '<span class="qt-chapter">· ' + escHtml(h.chapter) + '</span>' : '') + '</footer>';
+    return d;
+  }
+
+  function loadMore() {
+    if (loading_ || !hasMore) return;
+    loading_ = true;
+    loading.style.display = 'flex';
+
+    var url = '/api/quotes?offset=' + offset + '&limit=' + perPage;
+    if (currentBook) url += '&book=' + encodeURIComponent(currentBook);
+
+    fetch(url).then(function(r){ return r.json(); }).then(function(data) {
+      loading_ = false;
+      loading.style.display = 'none';
+      data.highlights.forEach(function(h){ wall.appendChild(renderCard(h)); });
+      offset += data.highlights.length;
+      hasMore = data.hasMore;
+      applySearch();
+      if (!hasMore) {
+        endEl.style.display = '';
+        if (loadedCountEl) loadedCountEl.textContent = offset;
+      }
+    }).catch(function(){ loading_ = false; loading.style.display = 'none'; });
+  }
+
+  // Infinite scroll
+  var sentinel = document.createElement('div');
+  sentinel.style.height = '1px';
+  document.getElementById('qt-container') ? document.getElementById('qt-container').appendChild(sentinel) : document.body.appendChild(sentinel);
+  wall.after(sentinel);
+
+  var observer = new IntersectionObserver(function(entries){
+    if (entries[0].isIntersecting) loadMore();
+  }, { rootMargin: '300px' });
+  observer.observe(sentinel);
+
+  // Book filter → reload page
+  filterSel.addEventListener('change', function(){
+    var b = filterSel.value;
+    window.location.href = '/quotes' + (b ? '?book=' + encodeURIComponent(b) : '');
+  });
+
+  // Client-side text search
+  function applySearch() {
+    var q = searchQ.toLowerCase().trim();
+    var cards = wall.querySelectorAll('.qt-card');
+    var visible = 0;
+    cards.forEach(function(c) {
+      var text = (c.dataset.text || '').toLowerCase();
+      var show = !q || text.includes(q);
+      c.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    emptyEl.style.display = visible === 0 ? '' : 'none';
+  }
+
+  var searchTimer;
+  searchEl.addEventListener('input', function(){
+    searchQ = searchEl.value;
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(applySearch, 200);
+  });
+
+  // Show end line if already all loaded
+  if (!hasMore) { endEl.style.display = ''; if (loadedCountEl) loadedCountEl.textContent = offset; }
+})();
+</script>

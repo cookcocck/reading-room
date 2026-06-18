@@ -218,6 +218,29 @@ async function initDb() {
         name TEXT PRIMARY KEY, value TEXT DEFAULT ''
     )`);
 
+    // ─── Schema migration: booklists tables ───
+    sqlDb.run(`
+      CREATE TABLE IF NOT EXISTS booklists (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        description TEXT DEFAULT '',
+        created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+        updated_at INTEGER NOT NULL DEFAULT (unixepoch())
+      )
+    `);
+    sqlDb.run(`
+      CREATE TABLE IF NOT EXISTS booklist_items (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        list_id INTEGER NOT NULL,
+        book_id TEXT NOT NULL,
+        note TEXT DEFAULT '',
+        sort_order INTEGER DEFAULT 0,
+        added_at INTEGER NOT NULL DEFAULT (unixepoch()),
+        UNIQUE(list_id, book_id)
+      )
+    `);
+    sqlDb.run('CREATE INDEX IF NOT EXISTS idx_bl_items_list ON booklist_items(list_id)');
+
     console.log(`[db] Connected to reading-room.db (sql.js, ${(fileBuffer.length / 1024 / 1024).toFixed(1)} MB)`);
     return db;
   } catch (err) {
@@ -1044,6 +1067,192 @@ function getBookAllNotes(bookTitle) {
   return { all, grouped };
 }
 
+// ─── Annual Books (year page) ───
+
+function getAnnualBooks(year) {
+  const d = getDb();
+  const start = Math.floor(new Date(`${year}-01-01T00:00:00`).getTime() / 1000);
+  const end   = Math.floor(new Date(`${year + 1}-01-01T00:00:00`).getTime() / 1000);
+
+  const books = upgradeCovers(d.prepare(`
+    SELECT b.*, n.total_notes AS totalNotes, n.note_count AS noteCount, n.review_count AS reviewCount
+    FROM books b
+    LEFT JOIN notebooks n ON b.id = n.book_id
+    WHERE b.update_time >= ? AND b.update_time < ?
+    ORDER BY b.update_time ASC
+  `).all(start, end));
+
+  const totalReadTime = books.reduce((s, b) => s + (b.read_time || 0), 0);
+  const finishedCount = books.filter(b => b.finished).length;
+  const totalNotes    = books.reduce((s, b) => s + (b.totalNotes || 0), 0);
+
+  return { books, totalReadTime, finishedCount, totalNotes };
+}
+
+function getAnnualYears() {
+  const d = getDb();
+  const rows = d.prepare(
+    'SELECT DISTINCT CAST(strftime(\'%Y\', datetime(update_time, \'unixepoch\')) AS INTEGER) AS yr FROM books WHERE update_time > 0 ORDER BY yr DESC'
+  ).all();
+  return rows.map(r => r.yr).filter(Boolean);
+}
+
+// ─── Authors (authors page) ───
+
+function getAuthorsAll() {
+  const d = getDb();
+
+  const books = upgradeCovers(d.prepare(`
+    SELECT b.id, b.title, b.author, b.cover, b.finished, b.read_time, b.update_time, b.category,
+      n.total_notes AS totalNotes
+    FROM books b
+    LEFT JOIN notebooks n ON b.id = n.book_id
+    WHERE b.author IS NOT NULL AND b.author != ''
+    ORDER BY b.author ASC, b.update_time DESC
+  `).all());
+
+  // Group by author
+  const map = new Map();
+  for (const book of books) {
+    const authors = book.author.split(/[,，\/、&]/);
+    for (const rawAuthor of authors) {
+      const author = rawAuthor.trim();
+      if (!author) continue;
+      if (!map.has(author)) {
+        map.set(author, { author, books: [], totalReadTime: 0, finishedCount: 0, totalNotes: 0 });
+      }
+      const entry = map.get(author);
+      // Only add book once per author slot
+      if (!entry.books.find(b => b.id === book.id)) {
+        entry.books.push(book);
+        entry.totalReadTime += book.read_time || 0;
+        if (book.finished) entry.finishedCount++;
+        entry.totalNotes += book.totalNotes || 0;
+      }
+    }
+  }
+
+  // Sort by book count desc, then totalReadTime desc
+  const authors = Array.from(map.values())
+    .filter(a => a.books.length > 0)
+    .sort((a, b) => (b.books.length - a.books.length) || (b.totalReadTime - a.totalReadTime));
+
+  return authors;
+}
+
+// ─── Quotes / Highlights Wall ───
+
+function getHighlightsPaged(limit = 40, offset = 0, bookId = null) {
+  const d = getDb();
+  const params = [];
+  let where = "h.mark_text IS NOT NULL AND h.mark_text != '' AND length(h.mark_text) > 10";
+  if (bookId) {
+    where += ' AND h.book_id = ?';
+    params.push(bookId);
+  }
+  const rows = d.prepare(`
+    SELECT h.bookmark_id AS id, h.mark_text AS text, h.chapter_title AS chapter,
+      h.create_time, h.book_id,
+      b.title AS book_title, b.author AS book_author, b.cover AS book_cover, b.id AS bookId
+    FROM highlights h
+    LEFT JOIN books b ON h.book_id = b.id
+    WHERE ${where}
+    ORDER BY h.create_time DESC
+    LIMIT ? OFFSET ?
+  `).all(...params, limit, offset);
+
+  return rows.map(r => ({
+    id: r.id,
+    text: r.text,
+    chapter: r.chapter || '',
+    bookTitle: r.book_title || '',
+    bookAuthor: r.book_author || '',
+    bookCover: r.book_cover || '',
+    bookId: r.bookId || r.book_id,
+    createTime: r.create_time,
+  }));
+}
+
+function getHighlightsTotal(bookId = null) {
+  const d = getDb();
+  let where = "mark_text IS NOT NULL AND mark_text != '' AND length(mark_text) > 10";
+  const params = [];
+  if (bookId) { where += ' AND book_id = ?'; params.push(bookId); }
+  const row = d.prepare(`SELECT COUNT(*) AS c FROM highlights WHERE ${where}`).get(...params);
+  return row ? row.c : 0;
+}
+
+// ─── Book Lists ───
+
+function initBooklistsTable() {
+}
+
+function ensureBooklistsTable(sqlDbInst) {
+}
+
+function getAllBooklists() {
+  const d = getDb();
+  const lists = d.prepare(`
+    SELECT bl.*, COUNT(bli.id) AS book_count
+    FROM booklists bl
+    LEFT JOIN booklist_items bli ON bl.id = bli.list_id
+    GROUP BY bl.id
+    ORDER BY bl.updated_at DESC
+  `).all();
+  return lists;
+}
+
+function getBooklistById(id) {
+  const d = getDb();
+  const list = d.prepare('SELECT * FROM booklists WHERE id = ?').get(id);
+  if (!list) return null;
+  const items = upgradeCovers(d.prepare(`
+    SELECT bli.*, b.title, b.author, b.cover, b.finished, b.read_time, b.category
+    FROM booklist_items bli
+    JOIN books b ON bli.book_id = b.id
+    WHERE bli.list_id = ?
+    ORDER BY bli.sort_order ASC, bli.added_at ASC
+  `).all(id));
+  return { ...list, items };
+}
+
+function createBooklist(name, description) {
+  const d = getDb();
+  const now = Math.floor(Date.now() / 1000);
+  d.prepare('INSERT INTO booklists (name, description, created_at, updated_at) VALUES (?, ?, ?, ?)').all(name, description || '', now, now);
+  return d.prepare('SELECT * FROM booklists ORDER BY id DESC LIMIT 1').get();
+}
+
+function updateBooklist(id, name, description) {
+  const d = getDb();
+  const now = Math.floor(Date.now() / 1000);
+  d.prepare('UPDATE booklists SET name = ?, description = ?, updated_at = ? WHERE id = ?').all(name, description || '', now, id);
+}
+
+function deleteBooklist(id) {
+  const d = getDb();
+  d.prepare('DELETE FROM booklist_items WHERE list_id = ?').all(id);
+  d.prepare('DELETE FROM booklists WHERE id = ?').all(id);
+}
+
+function addBookToList(listId, bookId, note) {
+  const d = getDb();
+  const now = Math.floor(Date.now() / 1000);
+  d.prepare('INSERT OR IGNORE INTO booklist_items (list_id, book_id, note, added_at) VALUES (?, ?, ?, ?)').all(listId, bookId, note || '', now);
+  d.prepare('UPDATE booklists SET updated_at = ? WHERE id = ?').all(now, listId);
+}
+
+function removeBookFromList(listId, bookId) {
+  const d = getDb();
+  d.prepare('DELETE FROM booklist_items WHERE list_id = ? AND book_id = ?').all(listId, bookId);
+  d.prepare('UPDATE booklists SET updated_at = ? WHERE id = ?').all(Math.floor(Date.now() / 1000), listId);
+}
+
+function updateBooklistItemNote(listId, bookId, note) {
+  const d = getDb();
+  d.prepare('UPDATE booklist_items SET note = ? WHERE list_id = ? AND book_id = ?').all(note || '', listId, bookId);
+}
+
 // ─── Tags ───
 
 function getAllTags() {
@@ -1215,4 +1424,21 @@ module.exports = {
   setNoteTags,
   getNoteTags,
   getNotesByTag,
+  // annual page
+  getAnnualBooks,
+  getAnnualYears,
+  // authors page
+  getAuthorsAll,
+  // quotes / highlights wall
+  getHighlightsPaged,
+  getHighlightsTotal,
+  // booklists
+  getAllBooklists,
+  getBooklistById,
+  createBooklist,
+  updateBooklist,
+  deleteBooklist,
+  addBookToList,
+  removeBookFromList,
+  updateBooklistItemNote,
 };

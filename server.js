@@ -484,6 +484,161 @@ app.get('/book/:id', (req, res) => {
   });
 });
 
+// ─── Annual Books page ───
+app.get('/annual', (req, res) => {
+  const { getAnnualBooks, getAnnualYears } = db;
+  const years = getAnnualYears();
+  const currentYear = years[0] || new Date().getFullYear();
+  const year = parseInt(req.query.year) || currentYear;
+
+  const { books, totalReadTime, finishedCount, totalNotes } = getAnnualBooks(year);
+
+  res.render('annual', {
+    title: `${year} 年度书单`,
+    years,
+    year,
+    books,
+    totalReadTime,
+    finishedCount,
+    totalNotes,
+    formatTime,
+    formatTimestamp,
+    helpers: { formatTime, formatTimestamp },
+    path: '/annual',
+  });
+});
+
+// ─── Authors page ───
+app.get('/authors', (req, res) => {
+  const { getAuthorsAll } = db;
+  const authors = getAuthorsAll();
+  const totalBooks = authors.reduce((s, a) => s + a.books.length, 0);
+  const totalTime  = authors.reduce((s, a) => s + a.totalReadTime, 0);
+
+  res.render('authors', {
+    title: '作者图谱',
+    authors,
+    totalAuthors: authors.length,
+    totalBooks,
+    totalTime,
+    formatTime,
+    helpers: { formatTime, formatTimestamp },
+    path: '/authors',
+  });
+});
+
+// ─── Quotes / Highlights Wall ───
+app.get('/quotes', (req, res) => {
+  const { getHighlightsPaged, getHighlightsTotal, getAllBooks } = db;
+  const bookId = req.query.book || null;
+  const PAGE = 40;
+
+  const total = getHighlightsTotal(bookId);
+  const highlights = getHighlightsPaged(PAGE, 0, bookId);
+
+  // Get book list for filter dropdown
+  const allBooks = getAllBooks().map(b => ({ id: b.id, title: b.title }));
+
+  res.render('quotes', {
+    title: '金句墙',
+    highlights,
+    total,
+    page: 1,
+    perPage: PAGE,
+    bookId: bookId || '',
+    allBooks,
+    helpers: { formatTime, formatTimestamp },
+    path: '/quotes',
+  });
+});
+
+// API: Load more quotes (pagination)
+app.get('/api/quotes', (req, res) => {
+  const { getHighlightsPaged, getHighlightsTotal } = db;
+  const bookId = req.query.book || null;
+  const offset = parseInt(req.query.offset) || 0;
+  const limit  = parseInt(req.query.limit)  || 40;
+
+  const highlights = getHighlightsPaged(limit, offset, bookId);
+  const total = getHighlightsTotal(bookId);
+  res.json({ highlights, total, hasMore: offset + highlights.length < total });
+});
+
+// ─── Book Lists page ───
+app.get('/booklists', (req, res) => {
+  const { getAllBooklists, getAllBooks } = db;
+  const lists = getAllBooklists();
+  const allBooks = upgradeCovers(getAllBooks()).map(b => ({ id: b.id, title: b.title, author: b.author, cover: b.cover }));
+
+  res.render('booklists', {
+    title: '书单推荐',
+    lists,
+    allBooks: JSON.stringify(allBooks),
+    helpers: { formatTime, formatTimestamp },
+    path: '/booklists',
+  });
+});
+
+app.get('/booklists/:id', (req, res) => {
+  const { getBooklistById } = db;
+  const list = getBooklistById(parseInt(req.params.id));
+  if (!list) return res.status(404).send('书单不存在');
+
+  const allBooks = upgradeCovers(db.getAllBooks()).map(b => ({ id: b.id, title: b.title, author: b.author, cover: b.cover }));
+
+  res.render('booklist-detail', {
+    title: list.name,
+    list,
+    allBooks: JSON.stringify(allBooks),
+    formatTime,
+    formatTimestamp,
+    helpers: { formatTime, formatTimestamp },
+    path: '/booklists',
+  });
+});
+
+// Booklists API
+app.post('/api/booklists', (req, res) => {
+  const { createBooklist } = db;
+  const { name, description } = req.body;
+  if (!name) return res.status(400).json({ error: 'name required' });
+  res.json(createBooklist(name, description));
+});
+
+app.put('/api/booklists/:id', (req, res) => {
+  const { updateBooklist } = db;
+  const { name, description } = req.body;
+  updateBooklist(parseInt(req.params.id), name, description);
+  res.json({ ok: true });
+});
+
+app.delete('/api/booklists/:id', (req, res) => {
+  const { deleteBooklist } = db;
+  deleteBooklist(parseInt(req.params.id));
+  res.json({ ok: true });
+});
+
+app.post('/api/booklists/:id/books', (req, res) => {
+  const { addBookToList } = db;
+  const { bookId, note } = req.body;
+  if (!bookId) return res.status(400).json({ error: 'bookId required' });
+  addBookToList(parseInt(req.params.id), bookId, note);
+  res.json({ ok: true });
+});
+
+app.delete('/api/booklists/:id/books/:bookId', (req, res) => {
+  const { removeBookFromList } = db;
+  removeBookFromList(parseInt(req.params.id), req.params.bookId);
+  res.json({ ok: true });
+});
+
+app.put('/api/booklists/:id/books/:bookId', (req, res) => {
+  const { updateBooklistItemNote } = db;
+  const { note } = req.body;
+  updateBooklistItemNote(parseInt(req.params.id), req.params.bookId, note);
+  res.json({ ok: true });
+});
+
 // ─── Start (async: await DB init) ───
 let server;
 
