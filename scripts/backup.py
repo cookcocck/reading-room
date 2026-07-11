@@ -25,6 +25,7 @@ import sys
 import time
 from datetime import datetime
 from pathlib import Path
+from typing import Optional
 
 DB_PATH = Path(__file__).parent.parent / "db" / "reading-room.db"
 BACKUP_DIR = Path(__file__).parent.parent / "backups"
@@ -37,7 +38,7 @@ def log(msg: str):
     print(f"[{ts}] {msg}")
 
 
-def create_backup() -> Path | None:
+def create_backup() -> Optional[Path]:
     """Create a consistent backup using SQLite Online Backup API, then gzip compress."""
     if not DB_PATH.exists():
         log(f"ERROR: Database not found at {DB_PATH}")
