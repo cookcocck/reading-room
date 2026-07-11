@@ -1,5 +1,4 @@
 import { getDb } from '../connection';
-import { upgradeCovers } from '../../utils/covers';
 import type { Booklist, BooklistItem, Book } from '../../types';
 
 export function getAllBooklists(): Booklist[] {
@@ -18,15 +17,13 @@ export function getBooklistById(id: number): Booklist | null {
   const list = d.prepare('SELECT * FROM booklists WHERE id = ?').get(id) as Record<string, unknown> | undefined;
   if (!list) return null;
 
-  const items = upgradeCovers(
-    d.prepare(`
+  const items = d.prepare(`
       SELECT bli.*, b.title, b.author, b.cover, b.finished, b.read_time, b.category
       FROM booklist_items bli
       JOIN books b ON bli.book_id = b.id
       WHERE bli.list_id = ?
       ORDER BY bli.sort_order ASC, bli.added_at ASC
-    `).all(id) as unknown as BooklistItem[]
-  );
+    `).all(id) as unknown as BooklistItem[];
 
   return { ...(list as unknown as Booklist), items };
 }
@@ -83,12 +80,12 @@ export function getAnnualBooks(year: number) {
   const start = Math.floor(new Date(`${year}-01-01T00:00:00`).getTime() / 1000);
   const end = Math.floor(new Date(`${year + 1}-01-01T00:00:00`).getTime() / 1000);
 
-  const books = upgradeCovers(d.prepare(`
+  const books = d.prepare(`
     SELECT b.*, n.total_notes AS totalNotes, n.note_count AS noteCount, n.review_count AS reviewCount
     FROM books b LEFT JOIN notebooks n ON b.id = n.book_id
     WHERE b.update_time >= ? AND b.update_time < ?
     ORDER BY b.update_time ASC
-  `).all(start, end) as unknown as Book[]);
+  `).all(start, end) as unknown as Book[];
 
   const totalReadTime = books.reduce((s, b) => s + (b.read_time || 0), 0);
   const finishedCount = books.filter(b => b.finished).length;

@@ -1,0 +1,13 @@
+# 黑名单 — 不同步到书房的书籍 ID
+# 格式：一行一个 ID，# 开头为注释
+# 修改后下次 sync.py 运行时自动生效，无需改代码
+
+# 交易类书籍
+CB_GCr0tB0vdFAW6uW6tC44y4fU    # 新威科夫操盘法
+CB_6iAEyAEvI20j6o16p56Nx55P    # 日本蜡烛图技术
+CB_DXp45V47300h6nr6p525O4wC    # 期货多空逻辑
+CB_8ni8XC8YSBpK6hO6gnDTc9CF    # 股票大作手回忆录
+22661836                        # 股票大作手回忆录（另一版本）
+CB_EDT4l94mF9AI6hW6gnGfzB8x    # 订单流交易
+35679924                        # 雪球专刊·段永平投资问答录
+CB_94A6XG6Z80sI6nm6p55rz3ij    # 香帅金融学讲义

@@ -366,16 +366,19 @@ export interface PaginatedHighlights {
   hasMore: boolean;
 }
 
-// ─── DB Wrapper (sql.js) ───
+// ─── DB Wrapper (better-sqlite3) ───
 
 export interface DbStatement {
   all(...params: unknown[]): Record<string, unknown>[];
   get(...params: unknown[]): Record<string, unknown> | undefined;
+  run(...params: unknown[]): { changes: number; lastInsertRowid: number };
 }
 
 export interface DbWrapper {
   prepare(sql: string): DbStatement;
-  exec(sql: string): unknown[];
+  exec(sql: string): void;
+  transaction<T>(fn: () => T): T;
+  pragma(pragma: string): unknown;
 }
 
 // ─── View Context ───

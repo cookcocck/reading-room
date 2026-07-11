@@ -1,41 +1,38 @@
-import initSqlJs from 'sql.js';
+import Database from 'better-sqlite3';
 import path from 'path';
 import fs from 'fs';
 import type { DbWrapper, DbStatement } from '../types';
 
 const DB_PATH = path.join(__dirname, '..', '..', 'db', 'reading-room.db');
 
-// ─── sql.js Wrapper — mimics better-sqlite3 .prepare(sql).all(...) / .get(...) ───
+// ─── better-sqlite3 Wrapper ───
+// The native Statement already has .all(), .get(), .run() — we just adapt the types.
 
-function createWrapper(sqlDb: initSqlJs.Database): DbWrapper {
+function createWrapper(db: Database.Database): DbWrapper {
   return {
     prepare(sql: string): DbStatement {
+      const stmt = db.prepare(sql);
       return {
         all(...params: unknown[]): Record<string, unknown>[] {
-          const stmt = sqlDb.prepare(sql);
-          try {
-            if (params.length > 0) stmt.bind(params as initSqlJs.BindParams);
-            const results: Record<string, unknown>[] = [];
-            while (stmt.step()) results.push(stmt.getAsObject());
-            return results;
-          } finally {
-            stmt.free();
-          }
+          return stmt.all(...params) as Record<string, unknown>[];
         },
         get(...params: unknown[]): Record<string, unknown> | undefined {
-          const stmt = sqlDb.prepare(sql);
-          try {
-            if (params.length > 0) stmt.bind(params as initSqlJs.BindParams);
-            if (stmt.step()) return stmt.getAsObject();
-            return undefined;
-          } finally {
-            stmt.free();
-          }
+          return stmt.get(...params) as Record<string, unknown> | undefined;
+        },
+        run(...params: unknown[]): { changes: number; lastInsertRowid: number } {
+          const result = stmt.run(...params);
+          return { changes: result.changes, lastInsertRowid: Number(result.lastInsertRowid) };
         },
       };
     },
     exec(sql: string) {
-      return sqlDb.exec(sql);
+      db.exec(sql);
+    },
+    transaction<T>(fn: () => T): T {
+      return db.transaction(fn)();
+    },
+    pragma(pragma: string) {
+      return db.pragma(pragma);
     },
   };
 }
@@ -43,16 +40,16 @@ function createWrapper(sqlDb: initSqlJs.Database): DbWrapper {
 // ─── Singleton ───
 
 let db: DbWrapper | null = null;
-let sqlDb: initSqlJs.Database | null = null;
+let rawDb: Database.Database | null = null;
 
 export function getDb(): DbWrapper | null {
   return db;
 }
 
 export function closeDb(): void {
-  if (sqlDb) {
-    sqlDb.close();
-    sqlDb = null;
+  if (rawDb) {
+    rawDb.close();
+    rawDb = null;
     db = null;
     console.log('[db] Connection closed');
   }
@@ -128,7 +125,7 @@ const SCHEMA = {
     sort_order INTEGER DEFAULT 0, added_at INTEGER NOT NULL,
     UNIQUE(list_id, book_id)
   )`,
-  'bl_items_idx': 'CREATE INDEX IF NOT EXISTS idx_bl_items_list ON booklist_items(list_id)',
+  'blItems_idx': 'CREATE INDEX IF NOT EXISTS idx_bl_items_list ON booklist_items(list_id)',
 
   tags: `CREATE TABLE IF NOT EXISTS tags (
     id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE,
@@ -148,25 +145,27 @@ const COLUMN_MIGRATIONS: Array<[string, string, string]> = [
   ['books', 'want_to_read', 'INTEGER DEFAULT 0'],
   ['books', 'user_rating', 'INTEGER DEFAULT 0'],
   ['reviews', 'abstract', "TEXT DEFAULT ''"],
+  ['kv_store', 'version', "TEXT DEFAULT '1'"],
+  ['kv_store', 'fetched_at', 'INTEGER DEFAULT 0'],
 ];
 
 // ─── Init ───
 
-export async function initDb(): Promise<DbWrapper | null> {
+export function initDb(): DbWrapper | null {
   if (db) return db;
 
   if (!fs.existsSync(DB_PATH)) {
     console.error(`[db] WARNING: Database not found at ${DB_PATH}`);
-    console.error('[db] Run "python scripts/create_db.py" to create it.');
+    console.error('[db] Run "python scripts/sync.py" to create it.');
     return null;
   }
 
-  // Load database
+  // Open database with WAL mode for concurrent read/write with Python sync
   try {
-    const SQL = await initSqlJs();
-    const fileBuffer = fs.readFileSync(DB_PATH);
-    sqlDb = new SQL.Database(fileBuffer);
-    db = createWrapper(sqlDb);
+    rawDb = new Database(DB_PATH);
+    rawDb.pragma('journal_mode = WAL');
+    rawDb.pragma('busy_timeout = 10000');
+    db = createWrapper(rawDb);
   } catch (err) {
     console.error(`[db] Failed to open database: ${(err as Error).message}`);
     return null;
@@ -175,7 +174,7 @@ export async function initDb(): Promise<DbWrapper | null> {
   // Safe run: log and continue on error
   function safeRun(desc: string, sql: string): boolean {
     try {
-      sqlDb!.run(sql);
+      rawDb!.exec(sql);
       return true;
     } catch (e) {
       console.warn(`[db] ${desc}: ${(e as Error).message}`);
@@ -190,36 +189,29 @@ export async function initDb(): Promise<DbWrapper | null> {
 
   // Add updated_at to kv_store if missing (older DB)
   try {
-    sqlDb.run("ALTER TABLE kv_store ADD COLUMN updated_at TEXT DEFAULT ''");
+    rawDb.exec("ALTER TABLE kv_store ADD COLUMN updated_at TEXT DEFAULT ''");
   } catch { /* already exists */ }
 
   // Column migrations
   for (const [table, col, type] of COLUMN_MIGRATIONS) {
     try {
-      sqlDb.run(`ALTER TABLE ${table} ADD COLUMN ${col} ${type}`);
+      rawDb.exec(`ALTER TABLE ${table} ADD COLUMN ${col} ${type}`);
       console.log(`[db] Migration: added ${table}.${col}`);
     } catch { /* already exists */ }
   }
 
   // Cleanup: drop obsolete author_id column
   try {
-    sqlDb.run('DROP INDEX IF EXISTS idx_books_author_id');
-    const cols = sqlDb.exec("PRAGMA table_info(books)");
-    const hasAuthorId = cols[0]?.values?.some((r: unknown[]) => r[1] === 'author_id');
+    rawDb.exec('DROP INDEX IF EXISTS idx_books_author_id');
+    const cols = rawDb.pragma('table_info(books)') as Array<{ name: string }>;
+    const hasAuthorId = cols.some(r => r.name === 'author_id');
     if (hasAuthorId) {
-      sqlDb.run('ALTER TABLE books DROP COLUMN author_id');
+      rawDb.exec('ALTER TABLE books DROP COLUMN author_id');
       console.log('[db] Cleanup: dropped books.author_id');
     }
-  } catch { /* DROP COLUMN may fail on older sql.js */ }
-
-  // Persist auto-migrations
-  try {
-    fs.writeFileSync(DB_PATH, sqlDb.export());
-  } catch (e) {
-    console.error('[db] Failed to save DB after migrations:', (e as Error).message);
-  }
+  } catch { /* DROP COLUMN may fail on older SQLite */ }
 
   const sizeMB = (fs.statSync(DB_PATH).size / 1024 / 1024).toFixed(1);
-  console.log(`[db] Connected to reading-room.db (sql.js, ${sizeMB} MB)`);
+  console.log(`[db] Connected to reading-room.db (better-sqlite3, WAL, ${sizeMB} MB)`);
   return db;
 }

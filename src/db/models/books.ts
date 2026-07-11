@@ -1,5 +1,4 @@
 import { getDb } from '../connection';
-import { upgradeCovers } from '../../utils/covers';
 import type { Book, BookDetail, NotebookSummary, BookshelfFilter, BookshelfSort } from '../../types';
 
 export function getAllBooks(filter?: string, category?: string): Book[] {
@@ -108,7 +107,7 @@ export function getBooksSorted(
     default: query += ' ORDER BY b.read_time DESC'; break;
   }
 
-  return upgradeCovers(d.prepare(query).all(...params) as unknown as Book[]);
+  return d.prepare(query).all(...params) as unknown as Book[];
 }
 
 export function setWantToRead(bookId: string, want: boolean): void {
@@ -118,9 +117,7 @@ export function setWantToRead(bookId: string, want: boolean): void {
 
 export function getWantToReadBooks(): Book[] {
   const d = getDb()!;
-  return upgradeCovers(
-    d.prepare('SELECT * FROM books WHERE want_to_read = 1 ORDER BY update_time DESC').all() as unknown as Book[]
-  );
+  return d.prepare('SELECT * FROM books WHERE want_to_read = 1 ORDER BY update_time DESC').all() as unknown as Book[];
 }
 
 export function setBookRating(bookId: string, rating: number): void {

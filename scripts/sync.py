@@ -47,16 +47,22 @@ BATCH_DELAY = 0.5  # seconds between books for highlight/review fetch
 PM2_APP_NAME = os.environ.get("PM2_APP_NAME", "reading-room")
 
 # ─── Blacklist: books to exclude from sync ──────────────────────────────────
-BLOCKED_BOOK_IDS = {
-    "CB_GCr0tB0vdFAW6uW6tC44y4fU",  # 新威科夫操盘法
-    "CB_6iAEyAEvI20j6o16p56Nx55P",  # 日本蜡烛图技术
-    "CB_DXp45V47300h6nr6p525O4wC",  # 期货多空逻辑
-    "CB_8ni8XC8YSBpK6hO6gnDTc9CF",  # 股票大作手回忆录
-    "22661836",                       # 股票大作手回忆录（另一版本）
-    "CB_EDT4l94mF9AI6hW6gnGfzB8x",  # 订单流交易
-    "35679924",                       # 雪球专刊·段永平投资问答录
-    "CB_94A6XG6Z80sI6nm6p55rz3ij",  # 香帅金融学讲义
-}
+# Reads from config/blacklist.txt (one ID per line, # comments supported).
+# Falls back to empty set if file is missing.
+
+def _load_blacklist() -> set:
+    """Load blacklisted book IDs from config/blacklist.txt."""
+    path = ROOT_DIR / "config" / "blacklist.txt"
+    if not path.exists():
+        return set()
+    ids = set()
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.split('#')[0].strip()  # strip comments
+        if line:
+            ids.add(line)
+    return ids
+
+BLOCKED_BOOK_IDS = _load_blacklist()
 
 
 # ─── API Client ──────────────────────────────────────────────────────────────
@@ -142,6 +148,10 @@ def ensure_tables(conn):
     })
     _migrate_columns(conn, "reviews", {
         "abstract": "TEXT DEFAULT ''",
+    })
+    _migrate_columns(conn, "kv_store", {
+        "version":    "TEXT DEFAULT '1'",
+        "fetched_at": "INTEGER DEFAULT 0",
     })
 
 
@@ -555,6 +565,52 @@ def populate_summary(conn):
         log(f"  [!] Summary computation failed: {e}")
 
 
+# ─── Phase 6: KV Store refresh ───────────────────────────────────────────────
+
+def sync_kv_store(conn):
+    """Fetch aggregated reading stats from WeRead API and store in kv_store.
+
+    Refreshes 'overall' and 'annual' keys with data from /readdata/detail API.
+    Also upgrades cover URLs in the JSON data to t7_ (consistent with sync-time upgrading).
+    """
+    log("[Phase 6] Refreshing kv_store from API...")
+
+    for mode, kv_name in [("overall", "overall"), ("annually", "annual")]:
+        try:
+            data = call_api("/readdata/detail", mode=mode)
+            if not data:
+                log(f"  [!] Empty response for '{mode}' — skipping")
+                continue
+
+            # Upgrade cover URLs in the JSON data before storing
+            _upgrade_covers_in_obj(data)
+
+            conn.execute(
+                "INSERT OR REPLACE INTO kv_store (name, value, version, fetched_at, updated_at) "
+                "VALUES (?, ?, ?, ?, datetime('now'))",
+                (kv_name, json.dumps(data, ensure_ascii=False), SKILL_VERSION, int(time.time())),
+            )
+            conn.commit()
+            log(f"  [+] kv_store['{kv_name}'] updated ({len(data)} top-level keys)")
+            time.sleep(DELAY)
+        except Exception as e:
+            log(f"  [!] Failed to fetch '{mode}': {e}")
+
+
+def _upgrade_covers_in_obj(obj):
+    """Recursively upgrade cover URLs in a dict/list structure (in-place)."""
+    if isinstance(obj, list):
+        for item in obj:
+            _upgrade_covers_in_obj(item)
+    elif isinstance(obj, dict):
+        for key in list(obj.keys()):
+            val = obj[key]
+            if key in ('cover', 'bookCover', 'book_cover') and isinstance(val, str):
+                obj[key] = upgrade_cover_url(val)
+            elif isinstance(val, (dict, list)):
+                _upgrade_covers_in_obj(val)
+
+
 # ─── PM2 Restart ─────────────────────────────────────────────────────────────
 
 def restart_pm2():
@@ -687,6 +743,9 @@ def main():
 
         # Phase 5: Compute summary table
         populate_summary(conn)
+
+        # Phase 6: Refresh kv_store from API
+        sync_kv_store(conn)
 
         # Done
         error_str = "; ".join(errors[:5]) if errors else None

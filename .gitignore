@@ -15,5 +15,7 @@ scripts/migrate_reviews_progress.json
 .workbuddy/
 # Ignore daily backup files
 *.db.bak.*
+# Backup directory (backup.py / restore.py)
+/backups/
 # TypeScript build output
 dist/

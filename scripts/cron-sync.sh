@@ -77,6 +77,12 @@ export PM2_APP_NAME="${PM2_APP_NAME:-reading-room}"
 "$PYTHON" scripts/sync.py --quick --restart 2>&1 | tee -a "$LOG_FILE"
 EXIT_CODE=${PIPESTATUS[0]}
 
+# ─── Backup after successful sync ─────────────────────────────────
+if [ $EXIT_CODE -eq 0 ]; then
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] Creating backup..." >> "$LOG_FILE"
+    "$PYTHON" scripts/backup.py --cron --rotate 7 2>&1 | tee -a "$LOG_FILE" || true
+fi
+
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] Cron sync finished (exit code: $EXIT_CODE)" >> "$LOG_FILE"
 echo "────────────────────────────────────────────────────────────" >> "$LOG_FILE"
 

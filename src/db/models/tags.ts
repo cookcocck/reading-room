@@ -1,6 +1,5 @@
 import { getDb } from '../connection';
 import type { Tag, AuthorEntry } from '../../types';
-import { upgradeCovers } from '../../utils/covers';
 import type { Book } from '../../types';
 
 // ─── Tags ───
@@ -82,14 +81,14 @@ export function getNotesByTag(tagId: number, limit = 50): Array<Record<string, u
 export function getAuthorsAll(): AuthorEntry[] {
   const d = getDb()!;
 
-  const books = upgradeCovers(d.prepare(`
+  const books = d.prepare(`
     SELECT b.id, b.title, b.author, b.cover, b.finished, b.read_time, b.update_time, b.category,
       n.total_notes AS totalNotes
     FROM books b
     LEFT JOIN notebooks n ON b.id = n.book_id
     WHERE b.author IS NOT NULL AND b.author != ''
     ORDER BY b.author ASC, b.update_time DESC
-  `).all() as unknown as Book[]);
+  `).all() as unknown as Book[];
 
   const map = new Map<string, AuthorEntry>();
   for (const book of books) {

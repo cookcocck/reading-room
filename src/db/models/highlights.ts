@@ -4,7 +4,6 @@ import type {
   MonthlyActivity, ChapterActivity, NotesGrouped,
   SearchResults,
 } from '../../types';
-import { upgradeCovers } from '../../utils/covers';
 
 // ─── Highlights ───
 
@@ -332,7 +331,7 @@ export function searchAll(query: string, limit = 30): SearchResults {
   `).all(like, limit) as Array<Record<string, unknown>>;
 
   return {
-    books: upgradeCovers(books),
+    books: books,
     highlights: highlights as unknown as SearchResults['highlights'],
     reviews: reviews as unknown as SearchResults['reviews'],
   };

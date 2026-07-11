@@ -103,6 +103,8 @@ CREATE TABLE IF NOT EXISTS sync_log (
 CREATE TABLE IF NOT EXISTS kv_store (
     name        TEXT PRIMARY KEY,
     value       TEXT DEFAULT '',
+    version     TEXT DEFAULT '1',             -- API skill version when fetched
+    fetched_at  INTEGER DEFAULT 0,            -- Unix timestamp of API fetch
     updated_at  TEXT DEFAULT (datetime('now'))
 );
 

@@ -4,7 +4,6 @@ import type {
   YearlyIntensity, Milestone, HomepageStats,
   DeepThinkingItem, BookTimelineItem,
 } from '../../types';
-import { upgradeCovers } from '../../utils/covers';
 
 // ─── Summary ───
 
@@ -25,13 +24,29 @@ export function getSummary(): Summary {
 
 // ─── Overall KV ───
 
+/** Stale threshold: 8 hours (sync runs every 4h, give 2x buffer) */
+const KV_STALE_MS = 8 * 3600 * 1000;
+
 export function getOverall(): OverallKV {
   const d = getDb()!;
-  const rows = d.prepare("SELECT name, value FROM kv_store WHERE name IN ('overall', 'annual')").all();
+  const rows = d.prepare(
+    "SELECT name, value, fetched_at FROM kv_store WHERE name IN ('overall', 'annual')"
+  ).all();
 
   const result: Record<string, unknown> = {};
+  const now = Date.now();
+
   rows.forEach((r: Record<string, unknown>) => {
-    try { result[r.name as string] = JSON.parse(r.value as string); } catch { /* invalid JSON */ }
+    try {
+      const parsed = JSON.parse(r.value as string);
+      // Check freshness — log warning if stale (but still return data)
+      const fetchedAt = (r.fetched_at as number) || 0;
+      if (fetchedAt > 0 && now - fetchedAt * 1000 > KV_STALE_MS) {
+        const ageH = Math.floor((now - fetchedAt * 1000) / 3600000);
+        console.warn(`[kv_store] '${r.name}' is ${ageH}h old (stale threshold: ${KV_STALE_MS / 3600000}h)`);
+      }
+      result[r.name as string] = parsed;
+    } catch { /* invalid JSON — skip */ }
   });
   return result as unknown as OverallKV;
 }

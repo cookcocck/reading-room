@@ -14,7 +14,6 @@ import {
   getAllBooklists, getBooklistById,
 } from '../db/models';
 import { formatTime, formatTimestamp } from '../utils/format';
-import { upgradeCoverURL, upgradeCovers } from '../utils/covers';
 import type { Book } from '../types';
 
 const router = Router();
@@ -28,10 +27,10 @@ router.get('/', (_req: Request, res: Response) => {
   const summary = getSummary();
   const overall_kv = getOverall();
   const overall = overall_kv.overall || {};
-  const annual = upgradeCovers(overall_kv.annual || {});
-  const annual2026 = upgradeCovers(overall_kv['annual-2026'] || {});
+  const annual = overall_kv.annual || {};
+  const annual2026 = overall_kv['annual-2026'] || {};
 
-  const currentlyReading = upgradeCovers(getCurrentlyReading(6));
+  const currentlyReading = getCurrentlyReading(6);
   const recentHighlights = getRecentHighlights(8);
 
   const now = new Date();
@@ -84,7 +83,7 @@ router.get('/bookshelf', (req: Request, res: Response) => {
   try {
     books = getBooksSorted(filter, category, sortBy);
   } catch {
-    books = upgradeCovers(getAllBooks(filter, category));
+    books = getAllBooks(filter, category);
   }
 
   const summary = getSummary();
@@ -107,7 +106,7 @@ router.get('/bookshelf', (req: Request, res: Response) => {
 router.get('/stats', (_req: Request, res: Response) => {
   const overall_kv = getOverall();
   const overall = overall_kv.overall || {};
-  const annual = upgradeCovers(overall_kv.annual || {});
+  const annual = overall_kv.annual || {};
 
   const trends = getTrends();
 
@@ -131,7 +130,7 @@ router.get('/stats', (_req: Request, res: Response) => {
 
   const summary = getSummary();
   const deepThinking = getDeepThinking(10);
-  const bookTimeline = upgradeCovers(getBookTimeline());
+  const bookTimeline = getBookTimeline();
   const yearlyIntensity = getYearlyIntensity();
   const milestones = getMilestones();
   const authorStats = getAuthorStats();
@@ -170,7 +169,7 @@ router.get('/stats', (_req: Request, res: Response) => {
 
 // ─── Notebooks ───
 router.get('/notebooks', (_req: Request, res: Response) => {
-  const notebooks = upgradeCovers(getAllNotebooks());
+  const notebooks = getAllNotebooks();
   const recentNotes = getRecentNotes(30);
   const summary = getSummary();
 
@@ -251,7 +250,7 @@ router.get('/book/:id', (req: Request, res: Response) => {
 
   res.render('book', {
     title: book.title,
-    book: upgradeCovers(book),
+    book: book,
     highlights, reviews, readTimeSec, formatTimestamp,
     helpers: { formatTime, formatTimestamp },
     path: '/bookshelf',
@@ -346,7 +345,7 @@ router.get('/author/:name', (req: Request, res: Response) => {
   res.render('author-detail', {
     title: entry.author,
     author: entry,
-    books: upgradeCovers(books),
+    books: books,
     categories,
     maxReadTime,
     totalBooks: books.length,
@@ -383,7 +382,7 @@ router.get('/quotes', (req: Request, res: Response) => {
 // ─── Booklists ───
 router.get('/booklists', (_req: Request, res: Response) => {
   const lists = getAllBooklists();
-  const allBooks = upgradeCovers(getAllBooks()).map((b: Book) => ({
+  const allBooks = getAllBooks().map((b: Book) => ({
     id: b.id, title: b.title, author: b.author, cover: b.cover,
   }));
 
@@ -402,7 +401,7 @@ router.get('/booklists/:id', (req: Request, res: Response) => {
     return;
   }
 
-  const allBooks = upgradeCovers(getAllBooks()).map((b: Book) => ({
+  const allBooks = getAllBooks().map((b: Book) => ({
     id: b.id, title: b.title, author: b.author, cover: b.cover,
   }));
 
