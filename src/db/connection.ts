@@ -163,7 +163,7 @@ function forceSave(): void {
 
 // ─── Schema ───
 
-const CREATE_TABLES = [
+export const CREATE_TABLES = [
   `CREATE TABLE IF NOT EXISTS reviews (
     review_id TEXT PRIMARY KEY, book_id TEXT NOT NULL,
     content TEXT DEFAULT '', chapter_name TEXT DEFAULT '',
@@ -242,14 +242,14 @@ const CREATE_TABLES = [
   )`,
 ];
 
-const CREATE_INDEXES = [
+export const CREATE_INDEXES = [
   'CREATE INDEX IF NOT EXISTS idx_reviews_book ON reviews(book_id)',
   'CREATE INDEX IF NOT EXISTS idx_highlights_book ON highlights(book_id)',
   'CREATE INDEX IF NOT EXISTS idx_highlights_time ON highlights(create_time)',
   'CREATE INDEX IF NOT EXISTS idx_bl_items_list ON booklist_items(list_id)',
 ];
 
-const COLUMN_MIGRATIONS: Array<[string, string, string]> = [
+export const COLUMN_MIGRATIONS: Array<[string, string, string]> = [
   ['books', 'intro', "TEXT DEFAULT ''"],
   ['books', 'read_time', 'INTEGER DEFAULT 0'],
   ['books', 'progress', 'INTEGER DEFAULT 0'],
@@ -265,6 +265,11 @@ const COLUMN_MIGRATIONS: Array<[string, string, string]> = [
 
 export function getDb(): DbWrapper | null {
   return db;
+}
+
+/** 测试专用：注入一个 DB 实例，跳过文件 I/O */
+export function _setDbForTesting(wrapper: DbWrapper | null): void {
+  db = wrapper as SqljsWrapper | null;
 }
 
 export function closeDb(): void {
