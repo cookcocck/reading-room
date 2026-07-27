@@ -20,11 +20,12 @@ declare module 'sql.js' {
     Database: new (data?: ArrayLike<number> | Buffer | null) => Database;
   }
 
+  type BindParams = (string | number | null | Uint8Array)[];
+
   interface Database {
     prepare(sql: string): Statement;
     exec(sql: string): QueryExecResult[];
-    run(sql: string, params?: BindParams): Database;
-    query(sql: string, params?: BindParams): QueryExecResult[];
+    run(sql: string): Database;
     export(): Uint8Array;
     close(): void;
   }
@@ -33,11 +34,8 @@ declare module 'sql.js' {
     bind(params?: BindParams): boolean;
     step(): boolean;
     getAsObject(): Record<string, unknown>;
-    run(params?: BindParams): void;
-    free(): boolean;
+    free(): void;
   }
-
-  type BindParams = (string | number | null | Uint8Array)[] | Record<string, string | number | null | Uint8Array>;
 
   interface QueryExecResult {
     columns: string[];
