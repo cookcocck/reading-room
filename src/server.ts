@@ -5,7 +5,6 @@ import path from 'path';
 import pagesRouter from './routes/pages';
 import apiRouter from './routes/api';
 import { getDb, initDb, closeDb } from './db/connection';
-// initDb is now synchronous (better-sqlite3), no longer async (sql.js WASM)
 
 const app = express();
 const PORT: number = Number(process.env.PORT) || 3000;
@@ -62,7 +61,7 @@ app.use('/', pagesRouter);
 let server: ReturnType<typeof app.listen>;
 
 export async function start(): Promise<void> {
-  initDb();
+  await initDb();
 
   server = app.listen(PORT, '0.0.0.0', () => {
     const dbStatus = getDb() ? 'connected' : 'MISSING';

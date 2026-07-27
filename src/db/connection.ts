@@ -1,70 +1,140 @@
-import Database from 'better-sqlite3';
+import initSqlJs from 'sql.js';
 import path from 'path';
 import fs from 'fs';
 import type { DbWrapper, DbStatement } from '../types';
 
+type SqliteDatabase = initSqlJs.Database;
+type SqlJsStatic = initSqlJs.SqlJsStatic;
+
 const DB_PATH = path.join(__dirname, '..', '..', 'db', 'reading-room.db');
 
-// ─── better-sqlite3 Wrapper ───
-// The native Statement already has .all(), .get(), .run() — we just adapt the types.
+// ─── SQL.js Wrapper ───
 
-function createWrapper(db: Database.Database): DbWrapper {
-  return {
-    prepare(sql: string): DbStatement {
-      const stmt = db.prepare(sql);
-      return {
-        all(...params: unknown[]): Record<string, unknown>[] {
-          return stmt.all(...params) as Record<string, unknown>[];
-        },
-        get(...params: unknown[]): Record<string, unknown> | undefined {
-          return stmt.get(...params) as Record<string, unknown> | undefined;
-        },
-        run(...params: unknown[]): { changes: number; lastInsertRowid: number } {
-          const result = stmt.run(...params);
-          return { changes: result.changes, lastInsertRowid: Number(result.lastInsertRowid) };
-        },
-      };
-    },
-    exec(sql: string) {
-      db.exec(sql);
-    },
-    transaction<T>(fn: () => T): T {
-      return db.transaction(fn)();
-    },
-    pragma(pragma: string) {
-      return db.pragma(pragma);
-    },
-  };
+class SqljsWrapper implements DbWrapper {
+  private db: SqliteDatabase;
+
+  constructor(db: SqliteDatabase) {
+    this.db = db;
+  }
+
+  export(): Uint8Array {
+    return this.db.export();
+  }
+
+  prepare(sql: string): DbStatement {
+    const trimmed = sql.trim();
+    const stmt = this.db.prepare(trimmed);
+    const isQuery = /^\s*(SELECT|PRAGMA|EXPLAIN|WITH)\b/i.test(trimmed);
+    const self = this;
+
+    return {
+      all(...params: unknown[]): Record<string, unknown>[] {
+        if (!isQuery) {
+          stmt.run(params);
+          scheduleSave();
+          return [];
+        }
+        stmt.bind(params);
+        const results: Record<string, unknown>[] = [];
+        while (stmt.step()) {
+          results.push(stmt.getAsObject() as Record<string, unknown>);
+        }
+        stmt.free();
+        return results;
+      },
+
+      get(...params: unknown[]): Record<string, unknown> | undefined {
+        if (!isQuery) {
+          stmt.run(params);
+          scheduleSave();
+          return undefined;
+        }
+        stmt.bind(params);
+        const result = stmt.step()
+          ? (stmt.getAsObject() as Record<string, unknown>)
+          : undefined;
+        stmt.free();
+        return result;
+      },
+
+      run(...params: unknown[]): { changes: number; lastInsertRowid: number } {
+        stmt.run(params);
+        const info = self.db.query(
+          'SELECT last_insert_rowid() as id, changes() as cnt'
+        );
+        const row = info[0];
+        scheduleSave();
+        return {
+          changes: row ? Number(row.cnt) : 0,
+          lastInsertRowid: row ? Number(row.id) : 0,
+        };
+      },
+    };
+  }
+
+  exec(sql: string): void {
+    this.db.run(sql);
+    scheduleSave();
+  }
+
+  transaction<T>(fn: () => T): T {
+    this.db.run('BEGIN');
+    try {
+      const result = fn();
+      this.db.run('COMMIT');
+      scheduleSave();
+      return result;
+    } catch (e) {
+      this.db.run('ROLLBACK');
+      throw e;
+    }
+  }
+
+  pragma(pragma: string): unknown {
+    const result = this.db.query(`PRAGMA ${pragma}`);
+    return result;
+  }
 }
 
 // ─── Singleton ───
 
-let db: DbWrapper | null = null;
-let rawDb: Database.Database | null = null;
+let db: SqljsWrapper | null = null;
+let SQL: SqlJsStatic | null = null;
 
-export function getDb(): DbWrapper | null {
-  return db;
+// ─── Debounced File Save ───
+
+let saveTimer: ReturnType<typeof setTimeout> | null = null;
+
+function scheduleSave(): void {
+  if (saveTimer) return;
+  saveTimer = setTimeout(() => {
+    saveTimer = null;
+    forceSave();
+  }, 300);
 }
 
-export function closeDb(): void {
-  if (rawDb) {
-    rawDb.close();
-    rawDb = null;
-    db = null;
-    console.log('[db] Connection closed');
+function forceSave(): void {
+  if (!db) return;
+  try {
+    const data = db.export();
+    const buf = Buffer.from(data);
+    const tmpPath = DB_PATH + '.tmp';
+    fs.writeFileSync(tmpPath, buf);
+    fs.renameSync(tmpPath, DB_PATH);
+  } catch (e) {
+    console.error('[db] Failed to save to disk:', (e as Error).message);
   }
 }
 
-// ─── Schema & Migrations ───
+// ─── Schema (same as before) ───
 
 const SCHEMA = {
   reviews: `CREATE TABLE IF NOT EXISTS reviews (
     review_id TEXT PRIMARY KEY, book_id TEXT NOT NULL,
     content TEXT DEFAULT '', chapter_name TEXT DEFAULT '',
-    star INTEGER DEFAULT -1, create_time INTEGER NOT NULL
+    star INTEGER DEFAULT -1, create_time INTEGER NOT NULL,
+    abstract TEXT DEFAULT ''
   )`,
-  'reviews_idx': 'CREATE INDEX IF NOT EXISTS idx_reviews_book ON reviews(book_id)',
-
   books: `CREATE TABLE IF NOT EXISTS books (
     id TEXT PRIMARY KEY, title TEXT NOT NULL,
     author TEXT DEFAULT '', cover TEXT DEFAULT '',
@@ -74,7 +144,6 @@ const SCHEMA = {
     intro TEXT DEFAULT '', want_to_read INTEGER DEFAULT 0,
     user_rating INTEGER DEFAULT 0
   )`,
-
   highlights: `CREATE TABLE IF NOT EXISTS highlights (
     bookmark_id TEXT PRIMARY KEY, book_id TEXT NOT NULL,
     chapter_uid TEXT DEFAULT '', chapter_title TEXT DEFAULT '',
@@ -82,15 +151,11 @@ const SCHEMA = {
     type INTEGER DEFAULT 1, create_time INTEGER NOT NULL,
     range_text TEXT DEFAULT ''
   )`,
-  'h_idx_book': 'CREATE INDEX IF NOT EXISTS idx_highlights_book ON highlights(book_id)',
-  'h_idx_time': 'CREATE INDEX IF NOT EXISTS idx_highlights_time ON highlights(create_time)',
-
   notebooks: `CREATE TABLE IF NOT EXISTS notebooks (
     book_id TEXT PRIMARY KEY, review_count INTEGER DEFAULT 0,
     note_count INTEGER DEFAULT 0, bookmark_count INTEGER DEFAULT 0,
     total_notes INTEGER DEFAULT 0, sort INTEGER DEFAULT 0
   )`,
-
   reading_sessions: `CREATE TABLE IF NOT EXISTS reading_sessions (
     date TEXT PRIMARY KEY, seconds INTEGER NOT NULL DEFAULT 0
   )`,
@@ -99,7 +164,6 @@ const SCHEMA = {
     total_seconds INTEGER NOT NULL DEFAULT 0,
     read_days INTEGER NOT NULL DEFAULT 0, PRIMARY KEY (year, month)
   )`,
-
   summary: `CREATE TABLE IF NOT EXISTS summary (
     id INTEGER PRIMARY KEY CHECK(id=1),
     total_books INTEGER DEFAULT 0, finished_count INTEGER DEFAULT 0,
@@ -108,12 +172,29 @@ const SCHEMA = {
     archives TEXT DEFAULT '[]'
   )`,
   'summary_init': 'INSERT OR IGNORE INTO summary (id) VALUES (1)',
-
   kv_store: `CREATE TABLE IF NOT EXISTS kv_store (
     name TEXT PRIMARY KEY, value TEXT DEFAULT '',
+    version TEXT DEFAULT '1', fetched_at INTEGER DEFAULT 0,
     updated_at TEXT DEFAULT (datetime('now'))
   )`,
-
+  sync_log: `CREATE TABLE IF NOT EXISTS sync_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    started_at TEXT NOT NULL, finished_at TEXT,
+    status TEXT DEFAULT 'running',
+    books_updated INTEGER DEFAULT 0,
+    highlights_updated INTEGER DEFAULT 0,
+    reviews_updated INTEGER DEFAULT 0,
+    errors TEXT
+  )`,
+  tags: `CREATE TABLE IF NOT EXISTS tags (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE,
+    color TEXT DEFAULT '#6366f1', created_at INTEGER NOT NULL
+  )`,
+  note_tags: `CREATE TABLE IF NOT EXISTS note_tags (
+    note_id TEXT NOT NULL, note_type TEXT NOT NULL,
+    tag_id INTEGER NOT NULL,
+    PRIMARY KEY (note_id, note_type, tag_id)
+  )`,
   booklists: `CREATE TABLE IF NOT EXISTS booklists (
     id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL,
     description TEXT DEFAULT '',
@@ -125,17 +206,14 @@ const SCHEMA = {
     sort_order INTEGER DEFAULT 0, added_at INTEGER NOT NULL,
     UNIQUE(list_id, book_id)
   )`,
-  'blItems_idx': 'CREATE INDEX IF NOT EXISTS idx_bl_items_list ON booklist_items(list_id)',
-
-  tags: `CREATE TABLE IF NOT EXISTS tags (
-    id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE,
-    color TEXT DEFAULT '#6366f1', created_at INTEGER NOT NULL
-  )`,
-  note_tags: `CREATE TABLE IF NOT EXISTS note_tags (
-    note_id TEXT NOT NULL, note_type TEXT NOT NULL, tag_id INTEGER NOT NULL,
-    PRIMARY KEY (note_id, note_type, tag_id)
-  )`,
 };
+
+const SCHEMA_INDEXES = [
+  'CREATE INDEX IF NOT EXISTS idx_reviews_book ON reviews(book_id)',
+  'CREATE INDEX IF NOT EXISTS idx_highlights_book ON highlights(book_id)',
+  'CREATE INDEX IF NOT EXISTS idx_highlights_time ON highlights(create_time)',
+  'CREATE INDEX IF NOT EXISTS idx_bl_items_list ON booklist_items(list_id)',
+];
 
 const COLUMN_MIGRATIONS: Array<[string, string, string]> = [
   ['books', 'intro', "TEXT DEFAULT ''"],
@@ -149,69 +227,88 @@ const COLUMN_MIGRATIONS: Array<[string, string, string]> = [
   ['kv_store', 'fetched_at', 'INTEGER DEFAULT 0'],
 ];
 
-// ─── Init ───
+// ─── Public API ───
 
-export function initDb(): DbWrapper | null {
+export function getDb(): DbWrapper | null {
+  return db;
+}
+
+export function closeDb(): void {
+  if (saveTimer) {
+    clearTimeout(saveTimer);
+    saveTimer = null;
+  }
+  forceSave();
+  if (db) {
+    db = null;
+    console.log('[db] Connection closed');
+  }
+}
+
+// ─── Init (async) ───
+
+export async function initDb(): Promise<DbWrapper | null> {
   if (db) return db;
 
-  if (!fs.existsSync(DB_PATH)) {
-    console.error(`[db] WARNING: Database not found at ${DB_PATH}`);
-    console.error('[db] Run "python scripts/sync.py" to create it.');
-    return null;
+  const dbDir = path.dirname(DB_PATH);
+  if (!fs.existsSync(dbDir)) {
+    fs.mkdirSync(dbDir, { recursive: true });
   }
 
-  // Open database with WAL mode for concurrent read/write with Python sync
-  try {
-    rawDb = new Database(DB_PATH);
-    rawDb.pragma('journal_mode = WAL');
-    rawDb.pragma('busy_timeout = 10000');
-    db = createWrapper(rawDb);
-  } catch (err) {
-    console.error(`[db] Failed to open database: ${(err as Error).message}`);
-    return null;
+  if (!SQL) {
+    SQL = await initSqlJs();
   }
 
-  // Safe run: log and continue on error
-  function safeRun(desc: string, sql: string): boolean {
+  let sqlDb: SqliteDatabase;
+
+  if (fs.existsSync(DB_PATH)) {
     try {
-      rawDb!.exec(sql);
-      return true;
+      const data = fs.readFileSync(DB_PATH);
+      sqlDb = new SQL.Database(data);
+    } catch (err) {
+      console.warn(
+        `[db] Failed to load database: ${(err as Error).message} — creating empty one`
+      );
+      sqlDb = new SQL.Database();
+    }
+  } else {
+    console.warn(
+      `[db] Database not found at ${DB_PATH} — creating empty database`
+    );
+    console.warn('[db] Run "python scripts/sync.py" to populate data from WeRead API');
+    sqlDb = new SQL.Database();
+  }
+
+  db = new SqljsWrapper(sqlDb);
+
+  function safeExec(desc: string, sql: string): void {
+    try {
+      sqlDb.run(sql);
     } catch (e) {
       console.warn(`[db] ${desc}: ${(e as Error).message}`);
-      return false;
     }
   }
 
-  // Create all tables
   for (const [desc, sql] of Object.entries(SCHEMA)) {
-    safeRun(desc, sql);
+    safeExec(desc, sql);
   }
 
-  // Add updated_at to kv_store if missing (older DB)
-  try {
-    rawDb.exec("ALTER TABLE kv_store ADD COLUMN updated_at TEXT DEFAULT ''");
-  } catch { /* already exists */ }
+  for (const sql of SCHEMA_INDEXES) {
+    safeExec('index', sql);
+  }
 
-  // Column migrations
   for (const [table, col, type] of COLUMN_MIGRATIONS) {
     try {
-      rawDb.exec(`ALTER TABLE ${table} ADD COLUMN ${col} ${type}`);
-      console.log(`[db] Migration: added ${table}.${col}`);
-    } catch { /* already exists */ }
+      sqlDb.run(`ALTER TABLE ${table} ADD COLUMN ${col} ${type}`);
+    } catch {
+      /* already exists */
+    }
   }
 
-  // Cleanup: drop obsolete author_id column
-  try {
-    rawDb.exec('DROP INDEX IF EXISTS idx_books_author_id');
-    const cols = rawDb.pragma('table_info(books)') as Array<{ name: string }>;
-    const hasAuthorId = cols.some(r => r.name === 'author_id');
-    if (hasAuthorId) {
-      rawDb.exec('ALTER TABLE books DROP COLUMN author_id');
-      console.log('[db] Cleanup: dropped books.author_id');
-    }
-  } catch { /* DROP COLUMN may fail on older SQLite */ }
+  const sizeMB = (db.export().length / 1024 / 1024).toFixed(1);
+  console.log(`[db] Connected to reading-room.db (sql.js, ${sizeMB} MB)`);
 
-  const sizeMB = (fs.statSync(DB_PATH).size / 1024 / 1024).toFixed(1);
-  console.log(`[db] Connected to reading-room.db (better-sqlite3, WAL, ${sizeMB} MB)`);
+  forceSave();
+
   return db;
 }
