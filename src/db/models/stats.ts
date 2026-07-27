@@ -11,14 +11,39 @@ export function getSummary(): Summary {
   const d = getDb()!;
   const row = d.prepare('SELECT * FROM summary WHERE id = 1').get();
   if (!row) return { totalBooks: 0, finishedCount: 0, totalNoteCount: 0, notebookBooksCount: 0, categories: [], topAuthors: [], archives: [] };
+
+  // Normalize: handle both old (string array) and new ({name} object) formats
+  let categories: Array<{ name: string; count?: number }> = [];
+  try {
+    const raw = JSON.parse((row.categories as string) || '[]');
+    if (raw.length > 0 && typeof raw[0] === 'string') {
+      categories = (raw as string[]).map(name => ({ name }));
+    } else {
+      categories = raw as Array<{ name: string; count?: number }>;
+    }
+  } catch { /* ignore */ }
+
+  let archives: Array<{ name: string; count: number }> = [];
+  try {
+    const raw = JSON.parse((row.archives as string) || '[]');
+    if (raw.length > 0 && typeof raw[0] === 'object' && !('name' in raw[0])) {
+      archives = (raw as Array<Record<string, unknown>>).map(a => ({
+        name: (a.title as string) || (a.name as string) || '未知',
+        count: (a.notes as number) ?? (a.count as number) ?? 0,
+      }));
+    } else {
+      archives = raw as Array<{ name: string; count: number }>;
+    }
+  } catch { /* ignore */ }
+
   return {
     totalBooks: row.total_books as number,
     finishedCount: row.finished_count as number,
     totalNoteCount: row.total_note_count as number,
     notebookBooksCount: row.notebook_books_count as number,
-    categories: JSON.parse((row.categories as string) || '[]'),
+    categories,
     topAuthors: JSON.parse((row.top_authors as string) || '[]'),
-    archives: JSON.parse((row.archives as string) || '[]'),
+    archives,
   };
 }
 

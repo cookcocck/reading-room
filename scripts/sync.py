@@ -528,7 +528,9 @@ def populate_summary(conn):
         cats = conn.execute(
             "SELECT DISTINCT category FROM books WHERE category != '' ORDER BY category"
         ).fetchall()
-        categories = json.dumps([c[0] for c in cats], ensure_ascii=False)
+        categories = json.dumps(
+            [{"name": c[0]} for c in cats], ensure_ascii=False
+        )
 
         authors = conn.execute("""
             SELECT author, COUNT(*) as cnt FROM books
@@ -539,15 +541,14 @@ def populate_summary(conn):
         )
 
         archive_rows = conn.execute("""
-            SELECT b.id, b.title, b.author, b.cover, b.category,
-                   COALESCE(MIN(h.create_time), 0) as first_time,
-                   COUNT(h.bookmark_id) as note_cnt
+            SELECT b.title,
+                   COALESCE(COUNT(h.bookmark_id), 0) +
+                   COALESCE((SELECT COUNT(*) FROM reviews r WHERE r.book_id = b.id), 0) as total_notes
             FROM books b LEFT JOIN highlights h ON b.id = h.book_id
-            WHERE b.finished = 1 GROUP BY b.id ORDER BY first_time ASC
+            WHERE b.finished = 1 GROUP BY b.id ORDER BY b.update_time DESC
         """).fetchall()
         archives = json.dumps([
-            {"id": r[0], "title": r[1], "author": r[2], "cover": r[3],
-             "category": r[4], "date": r[5], "notes": r[6]}
+            {"name": r[0], "count": r[1]}
             for r in archive_rows
         ], ensure_ascii=False)
 
