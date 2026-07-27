@@ -2408,13 +2408,13 @@ h3 {
 }
 
 .qt-text {
-  font-family: var(--font-display); font-size: var(--text-subhead);
-  font-weight: 400; color: var(--ink); line-height: 1.8;
+  font-family: var(--font-display); font-size: var(--text-pullquote);
+  font-weight: 400; color: var(--ink); line-height: 1.7;
   margin: 0; padding: 0; border: none;
   font-style: normal;
 }
 
-.qt-card--long .qt-text { font-size: 0.8125rem; line-height: 1.75; }
+.qt-card--long .qt-text { font-size: 1.0625rem; line-height: 1.7; }
 
 .qt-meta {
   margin-top: var(--space-4);
