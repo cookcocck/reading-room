@@ -11,7 +11,7 @@
   <header class="ad-hero">
     <h1 class="ad-hero-name"><%= author.author %></h1>
     <p class="ad-hero-byline">
-      <span><%= books.length %> 部作品</span>
+      <span><%= totalBooks %> 部作品</span>
       <% if (totalReadTime > 0) { %>
       <span class="ad-hero-dot">·</span>
       <span><%= helpers.formatTime(totalReadTime) %></span>
@@ -26,6 +26,42 @@
       <% } %>
     </p>
   </header>
+
+  <!-- Stats Row -->
+  <div class="ad-stats-row">
+    <div class="ad-stat-card">
+      <div class="ad-stat-value"><%= totalBooks %></div>
+      <div class="ad-stat-label">部作品</div>
+    </div>
+    <div class="ad-stat-card">
+      <div class="ad-stat-value"><%= finishedPct %>%</div>
+      <div class="ad-stat-label">已读完</div>
+      <% if (totalBooks > 0) { %>
+      <div class="ad-stat-bar"><div class="ad-stat-bar-fill" style="width:<%= finishedPct %>%"></div></div>
+      <% } %>
+    </div>
+    <div class="ad-stat-card">
+      <div class="ad-stat-value"><%= helpers.formatTime(totalReadTime) %></div>
+      <div class="ad-stat-label">累计阅读</div>
+    </div>
+    <div class="ad-stat-card">
+      <div class="ad-stat-value"><%= totalNotes %></div>
+      <div class="ad-stat-label">条笔记</div>
+    </div>
+    <div class="ad-stat-card">
+      <div class="ad-stat-value"><%= helpers.formatTime(avgReadTime) %></div>
+      <div class="ad-stat-label">平均时长</div>
+    </div>
+  </div>
+
+  <!-- Category Tags -->
+  <% if (categories.length > 0) { %>
+  <div class="ad-tags">
+    <% categories.forEach(function(cat) { %>
+    <span class="ad-tag"><%= cat.name %><span class="ad-tag-count"><%= cat.count %></span></span>
+    <% }); %>
+  </div>
+  <% } %>
 
   <!-- Reading Timeline -->
   <% if (firstRead) { %>
@@ -42,12 +78,21 @@
   </div>
   <% } %>
 
-  <!-- Category Tags -->
-  <% if (categories.length > 0) { %>
-  <div class="ad-tags">
-    <% categories.forEach(function(cat) { %>
-    <span class="ad-tag"><%= cat.name %><span class="ad-tag-count"><%= cat.count %></span></span>
-    <% }); %>
+  <!-- Monthly Activity Sparkline -->
+  <% if (monthlyActivity.length > 0) { %>
+  <div class="ad-monthly">
+    <div class="ad-monthly-head">
+      <span class="ad-monthly-title">阅读节奏</span>
+      <span class="ad-monthly-sub">按月累计阅读时长</span>
+    </div>
+    <div class="ad-monthly-bars">
+      <% monthlyActivity.forEach(function(m) { %>
+        <div class="ad-monthly-col">
+          <div class="ad-monthly-bar" style="height:<%= Math.max((m.seconds / maxMonthlySec) * 64, 2) %>px"></div>
+          <span class="ad-monthly-label"><%= m.month.slice(5) %>月</span>
+        </div>
+      <% }); %>
+    </div>
   </div>
   <% } %>
 
@@ -55,7 +100,7 @@
   <section class="ad-section">
     <div class="ad-section-head">
       <h2 class="ad-section-title">作品</h2>
-      <span class="ad-section-count"><%= books.length %> 本</span>
+      <span class="ad-section-count"><%= totalBooks %> 本</span>
     </div>
     <div class="ad-book-list">
       <% books.forEach(function(book, i) { %>
@@ -92,16 +137,16 @@
   </section>
 
   <!-- Highlights -->
-  <% if (highlights.length > 0) { %>
   <section class="ad-section">
     <div class="ad-section-head">
-      <h2 class="ad-section-title">划线</h2>
-      <span class="ad-section-count"><%= highlights.length %> 条</span>
+      <h2 class="ad-section-title">精彩摘录</h2>
+      <span class="ad-section-count"><%= totalHighlights %> 条</span>
     </div>
+    <% if (highlights.length > 0) { %>
     <div class="ad-quotes">
       <% highlights.forEach(function(h) { %>
       <blockquote class="ad-quote">
-        <p class="ad-quote-text"><%= h.mark_text.replace(/"/g, '&quot;') %></p>
+        <p class="ad-quote-text"><%= h.mark_text %></p>
         <cite class="ad-quote-cite">
           《<%= h.book_title %>》
           <% if (h.chapter_title) { %><span class="ad-quote-chapter"><%= h.chapter_title %></span><% } %>
@@ -109,20 +154,26 @@
       </blockquote>
       <% }); %>
     </div>
+    <% } else { %>
+    <div class="ad-empty">
+      <div class="ad-empty-icon">✍️</div>
+      <div class="ad-empty-text">暂无划线摘录</div>
+      <div class="ad-empty-sub">阅读时划下喜欢的句子，它们会出现在这里</div>
+    </div>
+    <% } %>
   </section>
-  <% } %>
 
   <!-- Reviews -->
-  <% if (reviews.length > 0) { %>
   <section class="ad-section">
     <div class="ad-section-head">
-      <h2 class="ad-section-title">想法</h2>
-      <span class="ad-section-count"><%= reviews.length %> 条</span>
+      <h2 class="ad-section-title">我的想法</h2>
+      <span class="ad-section-count"><%= totalReviews %> 条</span>
     </div>
+    <% if (reviews.length > 0) { %>
     <div class="ad-reviews-grid">
       <% reviews.forEach(function(r) { %>
       <article class="ad-review">
-        <p class="ad-review-text"><%= r.content.replace(/"/g, '&quot;') %></p>
+        <p class="ad-review-text"><%= r.content %></p>
         <footer class="ad-review-footer">
           <span class="ad-review-book">《<%= r.book_title %>》</span>
           <% if (r.star > 0) { %>
@@ -132,7 +183,13 @@
       </article>
       <% }); %>
     </div>
+    <% } else { %>
+    <div class="ad-empty">
+      <div class="ad-empty-icon">💭</div>
+      <div class="ad-empty-text">暂无书评想法</div>
+      <div class="ad-empty-sub">记录阅读时的感悟，它们会出现在这里</div>
+    </div>
+    <% } %>
   </section>
-  <% } %>
 
 </div>

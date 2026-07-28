@@ -342,6 +342,30 @@ router.get('/author/:name', (req: Request, res: Response) => {
     ? allTimestamps[allTimestamps.length - 1]
     : (books.length > 0 ? books[0].update_time : 0);
 
+  // ── Extra stats ──
+  const finishedPct = books.length > 0
+    ? Math.round((entry.finishedCount / books.length) * 100)
+    : 0;
+  const avgReadTime = books.length > 0
+    ? Math.round(entry.totalReadTime / books.length)
+    : 0;
+  const totalHighlights = highlights.length;
+  const totalReviews = reviews.length;
+
+  // Monthly reading activity for sparkline
+  const monthMap = new Map<string, number>();
+  for (const b of books) {
+    if (b.last_read_time > 0) {
+      const d = new Date(b.last_read_time * 1000);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      monthMap.set(key, (monthMap.get(key) || 0) + (b.read_time || 0));
+    }
+  }
+  const monthlyActivity = Array.from(monthMap.entries())
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([month, seconds]) => ({ month, seconds }));
+  const maxMonthlySec = Math.max(...monthlyActivity.map(m => m.seconds), 1);
+
   res.render('author-detail', {
     title: entry.author,
     author: entry,
@@ -358,6 +382,12 @@ router.get('/author/:name', (req: Request, res: Response) => {
     helpers: { formatTime, formatTimestamp },
     path: '/authors',
     firstRead, lastRead,
+    finishedPct,
+    avgReadTime,
+    totalHighlights,
+    totalReviews,
+    monthlyActivity,
+    maxMonthlySec,
   });
 });
 
