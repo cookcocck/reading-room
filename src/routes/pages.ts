@@ -299,6 +299,7 @@ router.get('/authors', (_req: Request, res: Response) => {
 
 // ─── Author Detail ───
 router.get('/author/:name', (req: Request, res: Response) => {
+  try {
   const authorName = decodeURIComponent(req.params.name as string);
   const entry = getAuthorByName(authorName);
   if (!entry) {
@@ -389,6 +390,10 @@ router.get('/author/:name', (req: Request, res: Response) => {
     monthlyActivity,
     maxMonthlySec,
   });
+  } catch (err) {
+    console.error('[author-detail] error:', err);
+    res.status(500).send(`Internal Server Error: ${(err as Error).message}`);
+  }
 });
 
 // ─── Quotes ───

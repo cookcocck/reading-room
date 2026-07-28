@@ -83,6 +83,7 @@ export function getAuthorsAll(): AuthorEntry[] {
 
   const books = d.prepare(`
     SELECT b.id, b.title, b.author, b.cover, b.finished, b.read_time, b.update_time, b.category,
+      b.last_read_time,
       n.total_notes AS totalNotes
     FROM books b
     LEFT JOIN notebooks n ON b.id = n.book_id
@@ -116,7 +117,13 @@ export function getAuthorsAll(): AuthorEntry[] {
 
 export function getAuthorByName(name: string): AuthorEntry | undefined {
   const all = getAuthorsAll();
-  return all.find(a => a.author === name);
+  // 优先精确匹配，否则做宽松匹配（去空格、忽略末尾点号等）
+  const trimmed = name.trim();
+  const exact = all.find(a => a.author === trimmed);
+  if (exact) return exact;
+  const norm = (s: string) => s.replace(/\s+/g, '').replace(/[·\.。]+$/g, '').toLowerCase();
+  const target = norm(trimmed);
+  return all.find(a => norm(a.author) === target);
 }
 
 export function getAuthorHighlights(author: string): Array<{
