@@ -4,19 +4,26 @@ import type { Classic } from '../types';
 
 const router = Router();
 
-// ─── 经典篇目 · 列表 ───
+// ─── 经典篇目 · 列表（按作者分组） ───
 router.get('/', (_req: Request, res: Response) => {
   const metas = getAllClassicMetas();
 
+  const groupsMap = new Map<string, { author: string; dynasty: string; items: typeof metas }>();
+  metas.forEach(m => {
+    if (!groupsMap.has(m.author)) {
+      groupsMap.set(m.author, { author: m.author, dynasty: m.dynasty, items: [] });
+    }
+    groupsMap.get(m.author)!.items.push(m);
+  });
+  const authorGroups = Array.from(groupsMap.values());
   const dynasties = Array.from(new Set(metas.map(m => m.dynasty)));
-  const authors = Array.from(new Set(metas.map(m => m.author)));
 
   res.render('classics', {
     title: '经典篇目',
-    metas,
+    authorGroups,
     totalCount: metas.length,
+    authorCount: authorGroups.length,
     dynastyCount: dynasties.length,
-    authorCount: authors.length,
     isClassics: true,
     path: '/classics',
   });

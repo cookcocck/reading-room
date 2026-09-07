@@ -1,5 +1,5 @@
 <!-- ═══════════════════════════════════════════════════════
-   CLASSICS — 经典篇目
+   CLASSICS — 经典篇目（按作者分类）
    ═══════════════════════════════════════════════════════ -->
 <div class="cls-page">
 
@@ -34,19 +34,36 @@
     <span class="cls-legend-hint">字词下加点线者均可点击</span>
   </div>
 
-  <!-- Grid -->
-  <div class="cls-grid">
-    <% metas.forEach(function(m) { %>
-    <a class="cls-card" href="/classics/<%= m.id %>">
-      <div class="cls-card-top">
-        <span class="cls-card-genre"><%= m.genre %></span>
-        <span class="cls-card-period"><%= m.period %></span>
+  <!-- Authors Grid -->
+  <div class="cls-authors-grid">
+    <% authorGroups.forEach(function(g, gi) { %>
+    <div class="cls-author-card">
+      <div class="cls-author-cover" aria-hidden="true">
+        <span class="cls-author-cover-char"><%= g.author.charAt(0) %></span>
+        <span class="cls-author-cover-count"><%= g.items.length %>篇</span>
       </div>
-      <h2 class="cls-card-title"><%= m.title %></h2>
-      <p class="cls-card-author"><%= m.author %> · <%= m.dynasty %></p>
-      <blockquote class="cls-card-quote">“<%= m.quote %>”</blockquote>
-      <span class="cls-card-enter">进入阅读 →</span>
-    </a>
+      <div class="cls-author-body">
+        <h2 class="cls-author-name"><%= g.author %></h2>
+        <p class="cls-author-meta">
+          <span><%= g.items.length %> 篇</span>
+          <span class="cls-sep">·</span>
+          <span><%= g.dynasty %></span>
+          <span class="cls-sep">·</span>
+          <span><% var genres = Array.from(new Set(g.items.map(function(x){ return x.genre; }))); %><%= genres.join(' / ') %></span>
+        </p>
+        <ul class="cls-author-list">
+          <% g.items.forEach(function(m) { %>
+          <li class="cls-author-item">
+            <a class="cls-author-link" href="/classics/<%= m.id %>"><%= m.title %></a>
+            <span class="cls-author-tags">
+              <i class="cls-tag cls-tag--genre"><%= m.genre %></i>
+              <i class="cls-tag"><%= m.period %>学段</i>
+            </span>
+          </li>
+          <% }); %>
+        </ul>
+      </div>
+    </div>
     <% }); %>
   </div>
 
