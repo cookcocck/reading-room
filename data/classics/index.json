@@ -1,0 +1,47 @@
+[
+  {
+    "id": "yueyanglouji",
+    "title": "岳阳楼记",
+    "author": "范仲淹",
+    "dynasty": "北宋",
+    "genre": "散文",
+    "period": "初中",
+    "quote": "先天下之忧而忧，后天下之乐而乐"
+  },
+  {
+    "id": "chibifu",
+    "title": "赤壁赋",
+    "author": "苏轼",
+    "dynasty": "北宋",
+    "genre": "赋",
+    "period": "高中",
+    "quote": "寄蜉蝣于天地，渺沧海之一粟"
+  },
+  {
+    "id": "shuidiaogetou",
+    "title": "水调歌头·明月几时有",
+    "author": "苏轼",
+    "dynasty": "北宋",
+    "genre": "词",
+    "period": "初中",
+    "quote": "但愿人长久，千里共婵娟"
+  },
+  {
+    "id": "jingsiyesi",
+    "title": "静夜思",
+    "author": "李白",
+    "dynasty": "唐",
+    "genre": "诗",
+    "period": "小学",
+    "quote": "举头望明月，低头思故乡"
+  },
+  {
+    "id": "jianmihengbiao",
+    "title": "荐祢衡表",
+    "author": "孔融",
+    "dynasty": "东汉",
+    "genre": "表",
+    "period": "高中",
+    "quote": "鸷鸟累百，不如一鹗"
+  }
+]

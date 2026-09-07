@@ -1,0 +1,182 @@
+{
+  "id": "jianmihengbiao",
+  "title": "荐祢衡表",
+  "author": "孔融",
+  "dynasty": "东汉",
+  "genre": "表",
+  "period": "高中",
+  "quote": "鸷鸟累百，不如一鹗",
+  "background": "孔融爱才，向汉献帝上表举荐平民祢衡（字正平），盛赞其才学品德，请求召见任用。文章骈散结合，文气慷慨，典故密集，是东汉末年著名的表文，《文选》收录。",
+  "paragraphs": [
+    {
+      "text": "臣闻洪水横流，帝思俾乂，旁求四方，以招贤俊。昔孝武继统，将弘祖业，畴咨熙载，群士响臻。陛下睿圣，纂承基绪，遭遇厄运，劳谦日昃。维岳降神，异人并出。",
+      "highlights": [],
+      "annotations": [
+        { "term": "俾乂", "phonetic": "bì yì", "definition": "使天下治理安定。俾，使；乂，治理。" },
+        { "term": "旁求", "phonetic": "páng qiú", "definition": "广泛寻求。旁，广。" },
+        { "term": "孝武", "phonetic": "xiào wǔ", "definition": "汉武帝刘彻。继统：继承帝统。" },
+        { "term": "畴咨", "phonetic": "chóu zī", "definition": "访求、访问。语出《尚书》。" },
+        { "term": "熙载", "phonetic": "xī zài", "definition": "发扬光大事业。熙，兴盛。" },
+        { "term": "响臻", "phonetic": "xiǎng zhēn", "definition": "如响应声，纷纷到来。" },
+        { "term": "睿圣", "phonetic": "ruì shèng", "definition": "聪明圣明。" },
+        { "term": "纂承基绪", "phonetic": "zuǎn chéng jī xù", "definition": "继承基业。纂，继承；绪，基业。" },
+        { "term": "劳谦日昃", "phonetic": "láo qiān rì zè", "definition": "勤劳谦逊，太阳西斜仍勤于政务。昃，太阳偏西。" },
+        { "term": "维岳降神", "phonetic": "wéi yuè jiàng shén", "definition": "语出《诗经·大雅·崧高》：\u201c维岳降神，生甫及申。\u201d谓高山降下神灵，喻贤才降生。" }
+      ],
+      "translation": "我听说上古洪水泛滥成灾，帝舜想要使天下得到治理，就广泛到四方寻求贤才俊杰。从前汉武帝继承帝位，想要弘扬祖宗的基业，访求贤才以光大事业，四方之士如响应声纷纷到来。陛下聪明圣明，继承帝位，遭遇艰难时局，日夜勤劳谦逊。高山降下神灵之气，非凡的人才一并出现。"
+    },
+    {
+      "text": "窃见处士平原祢衡，年二十四，字正平，淑质贞亮，英才卓跞。初涉艺文，升堂睹奥，目所一见，辄诵于口，耳所暂闻，不忘于心。性与道合，思若有神。弘羊潜计，安世默识，以衡准之，诚不足怪。",
+      "highlights": [
+        { "type": "exam", "text": "淑质贞亮，英才卓跞" },
+        { "type": "rhetoric", "text": "目所一见，辄诵于口，耳所暂闻，不忘于心" }
+      ],
+      "annotations": [
+        { "term": "处士", "phonetic": "chǔ shì", "definition": "有才德而不出仕的人。" },
+        { "term": "淑质贞亮", "phonetic": "shū zhì zhēn liàng", "definition": "资质美好，心性正直诚信。贞，正直；亮，诚信。" },
+        { "term": "卓跞", "phonetic": "zhuó luò", "definition": "卓越超群。" },
+        { "term": "艺文", "phonetic": "yì wén", "definition": "典籍文章。" },
+        { "term": "升堂睹奥", "phonetic": "shēng táng dǔ ào", "definition": "登堂入室，看到精深的奥义，喻学问达到高深境地。" },
+        { "term": "辄", "phonetic": "zhé", "definition": "就，总是。" },
+        { "term": "暂闻", "phonetic": "zàn wén", "definition": "短暂地听到。暂，短时间。" },
+        { "term": "弘羊潜计", "phonetic": "hóng yáng qián jì", "definition": "桑弘羊（西汉理财家）精于算计。潜计，深于计算。" },
+        { "term": "安世默识", "phonetic": "ān shì mò zhì", "definition": "张安世（西汉大臣）过目不忘。识，记住。" },
+        { "term": "以衡准之", "phonetic": "yǐ héng zhǔn zhī", "definition": "用祢衡来比较衡量他们。准，衡量、比照。" }
+      ],
+      "translation": "我私下看到平民祢衡，平原郡人，二十四岁，字正平。资质美好，心性正直诚信，才华卓越超群。刚刚涉猎典籍文章，就已登堂入室，看到精深的奥义；眼睛看过一遍就能背诵出口，耳朵听过一次就不会忘在心里。天性与大道相合，思维如有神助。桑弘羊的深谋算计、张安世的过目不忘，用来衡量祢衡，实在不值得奇怪。"
+    },
+    {
+      "text": "忠果正直，志怀霜雪，见善若惊，疾恶若仇。任座抗行，史鱼厉节，殆无以过也。鸷鸟累百，不如一鹗。使衡立朝，必有可观。",
+      "highlights": [
+        { "type": "exam", "text": "见善若惊，疾恶若仇" },
+        { "type": "famous", "text": "鸷鸟累百，不如一鹗" }
+      ],
+      "annotations": [
+        { "term": "忠果正直", "phonetic": "zhōng guǒ zhèng zhí", "definition": "忠诚果敢，正直无私。" },
+        { "term": "志怀霜雪", "phonetic": "zhì huái shuāng xuě", "definition": "心志如霜雪般高洁。" },
+        { "term": "见善若惊", "phonetic": "jiàn shàn ruò jīng", "definition": "见到善行便欣喜，喻向善之心迫切。" },
+        { "term": "疾恶若仇", "phonetic": "jí è ruò chóu", "definition": "憎恨恶行如同仇敌。" },
+        { "term": "任座抗行", "phonetic": "rén zuò kàng xíng", "definition": "任座，战国魏文侯时直臣，敢于当面直言；抗行，高洁不屈的行为。" },
+        { "term": "史鱼厉节", "phonetic": "shǐ yú lì jié", "definition": "史鱼，春秋卫国大夫，以正直著称；厉节，砥砺节操。" },
+        { "term": "殆", "phonetic": "dài", "definition": "大概，恐怕。殆无以过也：大概没有超过他的。" },
+        { "term": "鸷鸟累百，不如一鹗", "phonetic": "zhì niǎo lěi bǎi，bù rú yī è", "definition": "鸷鸟，猛禽；鹗，鱼鹰，喻杰出人才。一百只猛禽也比不上一只鹗鸟。" },
+        { "term": "立朝", "phonetic": "lì cháo", "definition": "在朝廷任职。" },
+        { "term": "可观", "phonetic": "kě guān", "definition": "值得看的表现、成就。" }
+      ],
+      "translation": "他忠诚果敢，正直无私，志向高洁如霜雪，见到善行便欣喜，憎恨恶行如同仇敌。任座的高洁行为、史鱼的砥砺节操，大概也没有超过他的。一百只猛禽也比不上一只鱼鹰。如果让祢衡在朝廷任职，一定会有可观的表现。"
+    },
+    {
+      "text": "飞辩骋辞，溢气坌涌，解疑释结，临敌有余。昔贾谊求试属国，诡系单于；终军欲以长缨，牵致劲越。弱冠慷慨，前世美之。近日路粹、严象，亦用异才擢拜台郎，衡宜与为比。",
+      "highlights": [],
+      "annotations": [
+        { "term": "飞辩骋辞", "phonetic": "fēi biàn chěng cí", "definition": "施展雄辩之才，驰骋言辞。" },
+        { "term": "溢气坌涌", "phonetic": "yì qì bèn yǒng", "definition": "才气横溢，奔涌而出。坌，涌出。" },
+        { "term": "属国", "phonetic": "shǔ guó", "definition": "典属国，汉代掌管民族事务的官职。" },
+        { "term": "诡系单于", "phonetic": "guǐ xì chán yú", "definition": "诡，求；设法制住匈奴单于。事见贾谊向汉文帝自请任属国之官以制匈奴。" },
+        { "term": "长缨", "phonetic": "cháng yīng", "definition": "长绳。终军曾言\u201c愿受长缨，必羁南越王而致之阙下\u201d。" },
+        { "term": "劲越", "phonetic": "jìng yuè", "definition": "强大的南越国。" },
+        { "term": "弱冠", "phonetic": "ruò guàn", "definition": "二十岁左右。古代男子二十岁行冠礼。" },
+        { "term": "路粹、严象", "phonetic": "lù cuì、yán xiàng", "definition": "孔融举荐过的两位才士。" },
+        { "term": "擢拜台郎", "phonetic": "zhuó bài tái láng", "definition": "提拔授予尚书台郎官。擢，提拔。" }
+      ],
+      "translation": "他能施展雄辩之才，驰骋言辞，才气横溢，奔涌而出，解除疑难，化解症结，面对敌手绰绰有余。从前贾谊请求担任典属国，设法制住匈奴单于；终军想用一条长缨，把强大的南越王牵到汉朝朝廷。他们二十岁出头便意气风发，前代的人都赞美他们。近日的路粹、严象，也是因为有非凡的才能被提拔为尚书台郎，祢衡应当能与他们相比。"
+    },
+    {
+      "text": "如得龙跃天衢，振翼云汉，扬声紫微，垂光虹蜺，足以昭近署之多士，增四门之穆穆。钧天广乐，必有奇丽之观；帝室皇居，必蓄非常之宝。若衡等辈，不可多得。",
+      "highlights": [
+        { "type": "famous", "text": "如得龙跃天衢，振翼云汉，扬声紫微，垂光虹蜺" },
+        { "type": "famous", "text": "若衡等辈，不可多得" }
+      ],
+      "annotations": [
+        { "term": "天衢", "phonetic": "tiān qú", "definition": "天上的大道。衢，大路。" },
+        { "term": "云汉", "phonetic": "yún hàn", "definition": "银河、天河。" },
+        { "term": "紫微", "phonetic": "zǐ wēi", "definition": "星座名，代指帝王宫殿。" },
+        { "term": "虹蜺", "phonetic": "hóng ní", "definition": "彩虹。蜺，同\u201c霓\u201d。" },
+        { "term": "近署", "phonetic": "jìn shǔ", "definition": "朝廷近旁的官署。" },
+        { "term": "四门", "phonetic": "sì mén", "definition": "四方之门。语出《尚书》\u201c宾于四门，四门穆穆\u201d。" },
+        { "term": "穆穆", "phonetic": "mù mù", "definition": "庄严肃敬的样子。" },
+        { "term": "钧天广乐", "phonetic": "jūn tiān guǎng yuè", "definition": "天上仙乐。典出《史记·赵世家》。" },
+        { "term": "奇丽之观", "phonetic": "qí lì zhī guān", "definition": "奇异华丽的景象。" },
+        { "term": "非常之宝", "phonetic": "fēi cháng zhī bǎo", "definition": "不寻常的珍宝，喻祢衡。" },
+        { "term": "等辈", "phonetic": "děng bèi", "definition": "这一类的人。" }
+      ],
+      "translation": "如果他能像龙一样跃上天空的大道，振动羽翼于银河之间，扬声于紫微宫阙，垂放光芒如彩虹，就足以使朝廷近署的众多才士生辉，增加四方之门庄严肃穆的气氛。天上的盛大乐曲，必定有奇异华丽的景观；帝王皇室，必定积蓄不寻常的珍宝。像祢衡这样的人，是不可多得的。"
+    },
+    {
+      "text": "《激楚》《阳阿》，至妙之容，掌技者之所贪；飞兔、騕袅，绝足奔放，良御之所急也。臣等区区，敢不以闻。",
+      "highlights": [
+        { "type": "rhetoric", "text": "《激楚》《阳阿》，至妙之容，掌技者之所贪；飞兔、騕袅，绝足奔放，良御之所急也" }
+      ],
+      "annotations": [
+        { "term": "《激楚》《阳阿》", "phonetic": "jī chǔ、yáng ē", "definition": "古乐曲名，代指绝妙的乐舞。" },
+        { "term": "至妙之容", "phonetic": "zhì miào zhī róng", "definition": "最美妙的姿容、表演。" },
+        { "term": "掌技者", "phonetic": "zhǎng jì zhě", "definition": "掌管技艺的人，指乐官。" },
+        { "term": "飞兔、騕袅", "phonetic": "fēi tù、yǎo niǎo", "definition": "古代骏马名。" },
+        { "term": "绝足奔放", "phonetic": "jué zú bēn fàng", "definition": "奔驰迅疾。绝足，跑得极快的足力。" },
+        { "term": "良御", "phonetic": "liáng yù", "definition": "优秀的驾车者。" },
+        { "term": "区区", "phonetic": "qū qū", "definition": "诚挚、微薄之意。" },
+        { "term": "敢不以闻", "phonetic": "gǎn bù yǐ wén", "definition": "哪里敢不把这件事报告给您。闻，使……听到。" }
+      ],
+      "translation": "《激楚》《阳阿》这些最美妙的乐舞，是掌管技艺的人所贪求的；飞兔、騕袅这些奔驰迅疾的骏马，是优秀驾车者所急需的。我们这些人虽然微不足道，哪里敢不把这件事报告给陛下呢。"
+    },
+    {
+      "text": "陛下笃慎取士，必须效试，乞令衡以褐衣召见。如无可观采，臣等受面欺之罪。",
+      "highlights": [],
+      "annotations": [
+        { "term": "笃慎", "phonetic": "dǔ shèn", "definition": "诚实慎重。" },
+        { "term": "效试", "phonetic": "xiào shì", "definition": "考核检验。" },
+        { "term": "褐衣", "phonetic": "hè yī", "definition": "粗布衣，指平民身份。" },
+        { "term": "可观采", "phonetic": "kě guān cǎi", "definition": "值得观赏采纳。" },
+        { "term": "面欺", "phonetic": "miàn qī", "definition": "当面欺骗。" }
+      ],
+      "translation": "陛下取士慎重，必须经过考核检验，请求让祢衡穿着平民的粗布衣裳来朝见。如果他没有什么值得观赏采纳的，我们甘愿承受当面欺骗的罪名。"
+    }
+  ],
+  "allusions": [
+    {
+      "title": "洪水横流，帝思俾乂",
+      "source": "《尚书》",
+      "content": "化用《尚书》尧舜时期治水求贤的典故，以天下患难之际急需贤才，为举荐祢衡张本。"
+    },
+    {
+      "title": "维岳降神",
+      "source": "《诗经·大雅·崧高》",
+      "content": "原句\u201c维岳降神，生甫及申\u201d，古人认为贤人降生是山川灵秀之气所钟，用以衬托祢衡之异才。"
+    },
+    {
+      "title": "弘羊潜计",
+      "source": "《汉书·张汤传》",
+      "content": "桑弘羊，西汉武帝时理财名臣，善以心算计度天下财赋，喻祢衡才思精敏。"
+    },
+    {
+      "title": "安世默识",
+      "source": "《汉书·张安世传》",
+      "content": "张安世，西汉名臣，能默记三箧之书的内容，喻祢衡过目不忘。"
+    },
+    {
+      "title": "任座抗行",
+      "source": "《吕氏春秋》",
+      "content": "任座，战国魏文侯时直臣，曾当面说魏文侯\u201c君不肖\u201d，文侯反而尊他为上客，喻祢衡刚直敢言。"
+    },
+    {
+      "title": "史鱼厉节",
+      "source": "《论语·卫灵公》",
+      "content": "史鱼，春秋卫国大夫，死前以\u201c尸谏\u201d劝卫灵公进贤退佞，喻祢衡节操坚贞。"
+    },
+    {
+      "title": "贾谊求试属国",
+      "source": "《汉书·贾谊传》",
+      "content": "贾谊向汉文帝请求担任典属国之官以制服匈奴单于，喻祢衡有济世之志。"
+    },
+    {
+      "title": "终军请缨",
+      "source": "《汉书·终军传》",
+      "content": "终军向汉武帝请求\u201c愿受长缨，必羁南越王而致之阙下\u201d，喻主动请命、建功立业。"
+    },
+    {
+      "title": "钧天广乐",
+      "source": "《史记·赵世家》",
+      "content": "赵简子梦游天帝之所闻\u201c钧天广乐\u201d，指天上的仙乐，喻祢衡之才如仙界奇宝，不可多得。"
+    }
+  ]
+}

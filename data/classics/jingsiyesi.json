@@ -1,0 +1,31 @@
+{
+  "id": "jingsiyesi",
+  "title": "静夜思",
+  "author": "李白",
+  "dynasty": "唐",
+  "genre": "诗",
+  "period": "小学",
+  "quote": "举头望明月，低头思故乡",
+  "background": "此诗当作于唐玄宗开元年间李白寓居扬州时。二十字写尽月夜思乡之情，语言朴素自然，明白如话，却意蕴深长，是流传最广的唐诗之一。",
+  "paragraphs": [
+    {
+      "text": "床前明月光，疑是地上霜。举头望明月，低头思故乡。",
+      "highlights": [
+        { "type": "famous", "text": "床前明月光，疑是地上霜。举头望明月，低头思故乡。" }
+      ],
+      "annotations": [
+        { "term": "床", "phonetic": "chuáng", "definition": "一说指井栏，一说指坐卧之具。此处取\u201c井栏\u201d说更合古意，即院中井边。" },
+        { "term": "疑", "phonetic": "yí", "definition": "好像，仿佛。" },
+        { "term": "举头", "phonetic": "jǔ tóu", "definition": "抬头。举，抬起。" }
+      ],
+      "translation": "明亮的月光洒在床前，好像地上泛起一层白霜。抬头望着天上的明月，低头思念远方的故乡。"
+    }
+  ],
+  "allusions": [
+    {
+      "title": "望月思乡",
+      "source": "乐府古题",
+      "content": "望月怀远是中国诗歌的永恒母题。李白以\u201c举头\u201d\u201c低头\u201d两个动作，将月光、霜色与乡愁凝成一体，语浅情深，后人难以企及。"
+    }
+  ]
+}

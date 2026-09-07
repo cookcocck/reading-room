@@ -4,6 +4,7 @@ import compression from 'compression';
 import path from 'path';
 import pagesRouter from './routes/pages';
 import apiRouter from './routes/api';
+import classicsRouter from './routes/classics';
 import { getDb, initDb, closeDb } from './db/connection';
 
 const app = express();
@@ -55,6 +56,7 @@ app.use(express.static(path.join(__dirname, '..', 'public'), {
 
 // ─── Routes ───
 app.use('/api', apiRouter);
+app.use('/classics', classicsRouter);
 app.use('/', pagesRouter);
 
 // ─── Start ───

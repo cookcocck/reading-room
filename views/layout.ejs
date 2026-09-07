@@ -16,6 +16,9 @@
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
   <!-- Main stylesheet -->
   <link rel="stylesheet" href="/css/main.css?v=45">
+  <% if (typeof isClassics !== 'undefined' && isClassics) { %>
+  <link rel="stylesheet" href="/css/classics.css?v=7">
+  <% } %>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='2' fill='%231a2744'/><text x='16' y='22' text-anchor='middle' font-size='16' fill='white'>读</text></svg>">
 </head>
 <body>
@@ -40,6 +43,7 @@
           <a href="/notebooks" class="nav-link <%= path === '/notebooks' ? 'active' : '' %>">笔记</a>
           <a href="/quotes" class="nav-link <%= path === '/quotes' ? 'active' : '' %>">金句</a>
           <a href="/booklists" class="nav-link <%= path === '/booklists' ? 'active' : '' %>">书单</a>
+          <a href="/classics" class="nav-link <%= path === '/classics' ? 'active' : '' %>">经典</a>
           <a href="/stats" class="nav-link <%= path === '/stats' ? 'active' : '' %>">统计</a>
           <a href="/search" class="nav-link <%= path === '/search' ? 'active' : '' %>" title="搜索">🔍</a>
           <button id="theme-toggle" class="theme-toggle" aria-label="切换主题">◐</button>
@@ -91,6 +95,9 @@
   <% } %>
   <% if (typeof heatmap !== 'undefined') { %>
   <script src="/js/heatmap.js" defer></script>
+  <% } %>
+  <% if (typeof isClassics !== 'undefined' && isClassics) { %>
+  <script src="/js/classics.js?v=7" defer></script>
   <% } %>
 </body>
 </html>

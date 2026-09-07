@@ -1,0 +1,53 @@
+<!-- ═══════════════════════════════════════════════════════
+   CLASSICS — 经典篇目
+   ═══════════════════════════════════════════════════════ -->
+<div class="cls-page">
+
+  <!-- Breadcrumb -->
+  <nav class="bd-breadcrumb">
+    <a href="/" class="bd-breadcrumb-home">阅读书房</a>
+    <span class="bd-breadcrumb-sep">/</span>
+    <span class="bd-breadcrumb-current">经典篇目</span>
+  </nav>
+
+  <!-- Hero -->
+  <header class="cls-hero">
+    <div class="cls-hero-decor" aria-hidden="true">文</div>
+    <div class="cls-hero-body">
+      <div class="cls-hero-kicker">CLASSICS · 古代文学名篇</div>
+      <h1 class="cls-hero-title">经典篇目</h1>
+      <p class="cls-hero-sub">原文逐句可点读：重点句子分级标注，点击字词弹出释义、典故与白话翻译。</p>
+      <div class="cls-hero-stats">
+        <div class="cls-stat-card"><span class="cls-stat-value"><%= totalCount %></span><span class="cls-stat-label">篇目</span></div>
+        <div class="cls-stat-card"><span class="cls-stat-value"><%= authorCount %></span><span class="cls-stat-label">作者</span></div>
+        <div class="cls-stat-card"><span class="cls-stat-value"><%= dynastyCount %></span><span class="cls-stat-label">朝代</span></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Legend -->
+  <div class="cls-legend">
+    <span class="cls-legend-label">阅读页高亮：</span>
+    <span class="cls-legend-item"><i class="cls-legend-dot cls-legend-dot--famous"></i>名句</span>
+    <span class="cls-legend-item"><i class="cls-legend-dot cls-legend-dot--exam"></i>考点句</span>
+    <span class="cls-legend-item"><i class="cls-legend-dot cls-legend-dot--rhetoric"></i>修辞句</span>
+    <span class="cls-legend-hint">字词下加点线者均可点击</span>
+  </div>
+
+  <!-- Grid -->
+  <div class="cls-grid">
+    <% metas.forEach(function(m) { %>
+    <a class="cls-card" href="/classics/<%= m.id %>">
+      <div class="cls-card-top">
+        <span class="cls-card-genre"><%= m.genre %></span>
+        <span class="cls-card-period"><%= m.period %></span>
+      </div>
+      <h2 class="cls-card-title"><%= m.title %></h2>
+      <p class="cls-card-author"><%= m.author %> · <%= m.dynasty %></p>
+      <blockquote class="cls-card-quote">“<%= m.quote %>”</blockquote>
+      <span class="cls-card-enter">进入阅读 →</span>
+    </a>
+    <% }); %>
+  </div>
+
+</div>

@@ -1,0 +1,97 @@
+<!-- ═══════════════════════════════════════════════════════
+   CLASSIC DETAIL — 名篇阅读页
+   原文可点读：重点句分级高亮 + 点击字词侧栏释义
+   ═══════════════════════════════════════════════════════ -->
+<div class="cls-detail">
+
+  <script id="cls-data" type="application/json"><%- classicDataJson %></script>
+
+  <!-- Breadcrumb -->
+  <nav class="bd-breadcrumb">
+    <a href="/" class="bd-breadcrumb-home">阅读书房</a>
+    <span class="bd-breadcrumb-sep">/</span>
+    <a href="/classics" class="bd-breadcrumb-link">经典篇目</a>
+    <span class="bd-breadcrumb-sep">/</span>
+    <span class="bd-breadcrumb-current"><%= classic.title %></span>
+  </nav>
+
+  <!-- Hero -->
+  <header class="cls-d-hero">
+    <div class="cls-d-decor" aria-hidden="true"><%= classic.title.charAt(0) %></div>
+    <div class="cls-d-head">
+      <div class="cls-d-meta">
+        <span class="cls-d-genre"><%= classic.genre %></span>
+        <span class="cls-d-period"><%= classic.period %>学段</span>
+      </div>
+      <h1 class="cls-d-title"><%= classic.title %></h1>
+      <p class="cls-d-author"><%= classic.author %> · <%= classic.dynasty %></p>
+      <p class="cls-d-stats"><%= segmentCount %> 段 · <%= annotationCount %> 处注释 · <%= allusionCount %> 则典故</p>
+    </div>
+    <% if (classic.background) { %>
+    <div class="cls-d-background">
+      <span class="cls-d-bg-label">篇目背景</span>
+      <p><%= classic.background %></p>
+    </div>
+    <% } %>
+  </header>
+
+  <!-- Toolbar -->
+  <div class="cls-toolbar">
+    <div class="cls-tool-group cls-tool-group--size">
+      <button class="cls-tool-btn" id="cls-font-minus" title="缩小字号" aria-label="缩小字号">A<sup>−</sup></button>
+      <button class="cls-tool-btn" id="cls-font-plus" title="放大字号" aria-label="放大字号">A<sup>＋</sup></button>
+    </div>
+    <div class="cls-tool-group">
+      <button class="cls-tool-btn" data-toggle="phonetic" title="显示字词拼音">注音</button>
+      <button class="cls-tool-btn" data-toggle="translation" title="原文下显示白话翻译">翻译</button>
+      <button class="cls-tool-btn is-on" data-toggle="highlight" title="开关重点句高亮">高亮</button>
+      <button class="cls-tool-btn" data-toggle="vertical" title="竖排阅读">竖排</button>
+    </div>
+    <div class="cls-tool-legend">
+      <span class="cls-legend-item"><i class="cls-legend-dot cls-legend-dot--famous"></i>名句</span>
+      <span class="cls-legend-item"><i class="cls-legend-dot cls-legend-dot--exam"></i>考点</span>
+      <span class="cls-legend-item"><i class="cls-legend-dot cls-legend-dot--rhetoric"></i>修辞</span>
+    </div>
+  </div>
+
+  <!-- 阅读三栏：典故 | 原文 | 释义·翻译 -->
+  <div class="cls-read" id="cls-read">
+
+    <!-- 左栏：典故 -->
+    <aside class="cls-side cls-side--left" id="cls-side-left">
+      <section class="cls-mod" id="cls-mod-allusion">
+        <h3 class="cls-mod-title">典故<span class="cls-sec-count"><%= allusionCount %></span></h3>
+        <div class="cls-mod-body" id="cls-allusion-body"></div>
+      </section>
+    </aside>
+
+    <!-- 中栏：原文 -->
+    <div class="cls-text" id="cls-text">
+      <% classic.paragraphs.forEach(function(p, i) { %>
+      <section class="cls-para" data-para="<%= i %>">
+        <span class="cls-para-index"><%= String(i + 1).padStart(2, '0') %></span>
+        <p class="cls-para-text"><%- p.html %></p>
+        <p class="cls-para-trans"><%= p.translation %></p>
+      </section>
+      <% }); %>
+      <div class="cls-text-end">— 完 —</div>
+    </div>
+
+    <!-- 右栏：释义 -->
+    <aside class="cls-side" id="cls-side">
+
+      <section class="cls-mod" id="cls-mod-meaning">
+        <h3 class="cls-mod-title">释义</h3>
+        <div class="cls-mod-body" id="cls-meaning-body">
+          <div class="cls-panel-empty">
+            <div class="cls-empty-mark">注</div>
+            <p>点击正文中带点线的字词，<br>释义会出现在这里。</p>
+          </div>
+        </div>
+      </section>
+
+    </aside>
+
+  </div>
+
+</div>

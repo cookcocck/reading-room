@@ -411,3 +411,47 @@ export interface IndexContext extends LayoutContext {
   annual2026: AnnualData;
   hpStats: HomepageStats;
 }
+
+// ─── Classics (经典篇目) ───
+
+export interface ClassicMeta {
+  id: string;
+  title: string;
+  author: string;
+  dynasty: string;
+  genre: string;
+  period: string;
+  quote: string;
+}
+
+export interface ClassicHighlight {
+  type: 'famous' | 'exam' | 'rhetoric';
+  text: string;
+}
+
+export interface ClassicAnnotation {
+  term: string;
+  phonetic: string;
+  definition: string;
+}
+
+export interface ClassicParagraph {
+  text: string;
+  highlights: ClassicHighlight[];
+  annotations: ClassicAnnotation[];
+  translation: string;
+  /** 服务端渲染后的 HTML（含高亮与可点击字词标记） */
+  html?: string;
+}
+
+export interface ClassicAllusion {
+  title: string;
+  source: string;
+  content: string;
+}
+
+export interface Classic extends ClassicMeta {
+  background: string;
+  paragraphs: ClassicParagraph[];
+  allusions: ClassicAllusion[];
+}
