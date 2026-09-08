@@ -43,5 +43,41 @@
     "genre": "表",
     "period": "高中",
     "quote": "鸷鸟累百，不如一鹗"
+  },
+  {
+    "id": "duangexing",
+    "title": "短歌行",
+    "author": "曹操",
+    "dynasty": "东汉",
+    "genre": "乐府诗",
+    "period": "高中",
+    "quote": "月明星稀，乌鹊南飞。绕树三匝，何枝可依"
+  },
+  {
+    "id": "haolixing",
+    "title": "蒿里行",
+    "author": "曹操",
+    "dynasty": "东汉",
+    "genre": "乐府诗",
+    "period": "高中",
+    "quote": "白骨露于野，千里无鸡鸣"
+  },
+  {
+    "id": "kuhanxing",
+    "title": "苦寒行",
+    "author": "曹操",
+    "dynasty": "东汉",
+    "genre": "乐府诗",
+    "period": "高中",
+    "quote": "北上太行山，艰哉何巍巍"
+  },
+  {
+    "id": "rangxianzimingbenzhi",
+    "title": "让县自明本志令",
+    "author": "曹操",
+    "dynasty": "东汉",
+    "genre": "令",
+    "period": "高中",
+    "quote": "设使国家无有孤，不知当几人称帝，几人称王"
   }
 ]
