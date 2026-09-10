@@ -18,7 +18,7 @@ if not API_KEY:
     print("  export WEREAD_API_KEY=wrk-xxxxxxxx")
     exit(1)
 GATEWAY = "https://i.weread.qq.com/api/agent/gateway"
-SKILL_VERSION = "1.0.3"
+SKILL_VERSION = "1.0.4"
 DATA_DIR = Path(__file__).parent.parent / "src" / "data"
 NOTEBOOKS_FILE = DATA_DIR / "notebooks.json"
 OUTPUT_FILE = DATA_DIR / "notes_detail.json"

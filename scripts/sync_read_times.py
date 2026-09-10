@@ -29,7 +29,7 @@ from pathlib import Path
 # ─── Config ───
 
 API_URL = "https://i.weread.qq.com/api/agent/gateway"
-SKILL_VERSION = "1.0.3"
+SKILL_VERSION = "1.0.4"
 
 DB_PATH = Path(__file__).resolve().parent.parent / "db" / "reading-room.db"
 API_KEY = os.environ.get("WEREAD_API_KEY", "")

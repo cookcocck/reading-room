@@ -24,7 +24,7 @@ DB_PATH = ROOT_DIR / "db" / "reading-room.db"
 PROGRESS_FILE = SCRIPT_DIR / "migrate_reviews_progress.json"
 
 GATEWAY = "https://i.weread.qq.com/api/agent/gateway"
-SKILL_VERSION = "1.0.3"
+SKILL_VERSION = "1.0.4"
 DELAY = 1.0  # seconds between API calls
 
 session = requests.Session()

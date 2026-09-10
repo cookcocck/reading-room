@@ -35,7 +35,7 @@ DB_PATH = ROOT_DIR / "db" / "reading-room.db"
 
 API_KEY = os.environ.get("WEREAD_API_KEY", "")
 GATEWAY = "https://i.weread.qq.com/api/agent/gateway"
-SKILL_VERSION = "1.0.3"
+SKILL_VERSION = "1.0.4"
 
 
 # ─── API Client ──────────────────────────────────────────────────────────────

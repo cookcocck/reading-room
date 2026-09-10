@@ -40,7 +40,7 @@ if not API_KEY:
     sys.exit(1)
 
 GATEWAY = "https://i.weread.qq.com/api/agent/gateway"
-SKILL_VERSION = "1.0.3"
+SKILL_VERSION = "1.0.4"
 DELAY = 1.0  # seconds between API calls
 BATCH_DELAY = 0.5  # seconds between books for highlight/review fetch
 
@@ -578,7 +578,7 @@ def sync_kv_store(conn):
 
     for mode, kv_name in [("overall", "overall"), ("annually", "annual")]:
         try:
-            data = call_api("/readdata/detail", mode=mode)
+            data = call_api("/readdata/detail", {"mode": mode})
             if not data:
                 log(f"  [!] Empty response for '{mode}' — skipping")
                 continue
