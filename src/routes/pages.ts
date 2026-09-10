@@ -342,6 +342,13 @@ router.get('/author/:name', (req: Request, res: Response) => {
     ? allTimestamps[allTimestamps.length - 1]
     : (books.length > 0 ? books[0].update_time : 0);
 
+  // ── Extra stats ──
+  const finishedPct = books.length > 0
+    ? Math.round((entry.finishedCount / books.length) * 100)
+    : 0;
+  const totalHighlights = highlights.length;
+  const totalReviews = reviews.length;
+
   res.render('author-detail', {
     title: entry.author,
     author: entry,
@@ -358,6 +365,9 @@ router.get('/author/:name', (req: Request, res: Response) => {
     helpers: { formatTime, formatTimestamp },
     path: '/authors',
     firstRead, lastRead,
+    finishedPct,
+    totalHighlights,
+    totalReviews,
   });
 });
 
