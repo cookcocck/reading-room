@@ -6605,3 +6605,366 @@ h3 {
   .cw-grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; }
   .bg-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
 }
+
+
+/* ═══ Pixel Theme (Stardew Valley Style) ═══ */
+.pixel-theme {
+  /* 覆盖颜色变量 */
+  --paper: #f5e6c8;
+  --paper-warm: #ede0b8;
+  --ink: #3d2817;
+  --ink-soft: #5a4028;
+  --ink-muted: #8a7050;
+  --ink-faint: #b8a080;
+  --accent: #5a9c3e;
+  --accent-bright: #7bc04e;
+  --accent-secondary: #d4502a;
+  --rule: #c4a574;
+  --rule-thin: #d4b896;
+  --bg-soft: #ede0b8;
+  --surface: #fff8e8;
+  --ink-secondary: #5a4028;
+  --accent2: #d4502a;
+  --accent-dim: #a8c890;
+  --radius: 0 !important;
+  --radius-sm: 0 !important;
+  --radius-lg: 0 !important;
+  /* 像素字体 */
+  --font-display: 'Press Start 2P', 'ZCOOL KuaiLe', cursive;
+  --font-body: 'VT323', 'ZCOOL KuaiLe', monospace;
+  --font-mono: 'VT323', monospace;
+  --font-cjk: 'ZCOOL KuaiLe', 'VT323', cursive;
+}
+
+.pixel-theme body, .pixel-theme {
+  font-family: 'VT323', 'ZCOOL KuaiLe', monospace !important;
+  background: #f5e6c8 !important;
+  color: #3d2817 !important;
+  image-rendering: pixelated;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+}
+
+.pixel-theme main {
+  background: #f5e6c8 !important;
+}
+
+/* 所有圆角归零 */
+.pixel-theme * {
+  border-radius: 0 !important;
+}
+
+/* ═══ 导航栏 ═══ */
+.pixel-theme .nav {
+  background: #6b4423 !important;
+  border-bottom: 4px solid #3d2817 !important;
+  box-shadow: 0 4px 0 rgba(0,0,0,0.2) !important;
+}
+.pixel-theme .nav-brand {
+  font-family: 'Press Start 2P', cursive !important;
+  font-size: 12px !important;
+  color: #f0c040 !important;
+  text-shadow: 2px 2px 0 #3d2817 !important;
+  letter-spacing: 1px;
+}
+.pixel-theme .nav-link {
+  font-family: 'ZCOOL KuaiLe', cursive !important;
+  font-size: 16px !important;
+  color: #f5e6c8 !important;
+  padding: 8px 14px !important;
+  border: 2px solid transparent !important;
+  transition: none !important;
+}
+.pixel-theme .nav-link:hover {
+  background: #8b5a2b !important;
+  border: 2px solid #f0c040 !important;
+  color: #fff8e8 !important;
+}
+.pixel-theme .nav-link.active {
+  background: #5a9c3e !important;
+  border: 2px solid #3d7a28 !important;
+  color: #fff !important;
+  box-shadow: inset -2px -2px 0 #3d7a28, inset 2px 2px 0 #7bc04e !important;
+}
+.pixel-theme .theme-toggle {
+  color: #f0c040 !important;
+  border: 2px solid #f0c040 !important;
+  background: #8b5a2b !important;
+  font-size: 14px !important;
+}
+
+/* ═══ 标题 ═══ */
+.pixel-theme h1, .pixel-theme h2, .pixel-theme h3, .pixel-theme h4 {
+  font-family: 'ZCOOL KuaiLe', 'Press Start 2P', cursive !important;
+  color: #3d2817 !important;
+  letter-spacing: 1px;
+}
+.pixel-theme h1 {
+  font-size: 28px !important;
+  text-shadow: 3px 3px 0 rgba(107,68,35,0.2) !important;
+}
+.pixel-theme h2 {
+  font-size: 22px !important;
+  border-bottom: 3px dashed #c4a574 !important;
+  padding-bottom: 10px !important;
+}
+.pixel-theme h3 {
+  font-size: 18px !important;
+}
+
+/* ═══ 卡片/面板 ═══ */
+.pixel-theme .card, .pixel-theme .panel, .pixel-theme article, .pixel-theme .stat-card,
+.pixel-theme .book-card, .pixel-theme .quote-card, .pixel-theme .notebook-card,
+.pixel-theme .author-card, .pixel-theme .booklist-card {
+  background: #fff8e8 !important;
+  border: 3px solid #6b4423 !important;
+  box-shadow: 
+    inset -3px -3px 0 #d4b896,
+    inset 3px 3px 0 #ffffff,
+    4px 4px 0 rgba(61,40,23,0.25) !important;
+  border-radius: 0 !important;
+}
+.pixel-theme .card:hover, .pixel-theme .book-card:hover {
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 
+    inset -3px -3px 0 #d4b896,
+    inset 3px 3px 0 #ffffff,
+    6px 6px 0 rgba(61,40,23,0.3) !important;
+}
+
+/* ═══ 按钮 ═══ */
+.pixel-theme button, .pixel-theme .btn, .pixel-theme input[type="submit"],
+.pixel-theme .share-modal-btn {
+  font-family: 'ZCOOL KuaiLe', cursive !important;
+  font-size: 16px !important;
+  background: #5a9c3e !important;
+  border: 3px solid #3d7a28 !important;
+  color: #fff !important;
+  padding: 10px 20px !important;
+  box-shadow: 
+    inset -3px -3px 0 #3d7a28,
+    inset 3px 3px 0 #7bc04e,
+    3px 3px 0 rgba(0,0,0,0.25) !important;
+  cursor: pointer !important;
+  transition: none !important;
+  border-radius: 0 !important;
+  text-shadow: 1px 1px 0 #3d7a28 !important;
+}
+.pixel-theme button:hover, .pixel-theme .btn:hover {
+  background: #7bc04e !important;
+}
+.pixel-theme button:active, .pixel-theme .btn:active {
+  transform: translate(2px, 2px) !important;
+  box-shadow: 
+    inset 3px 3px 0 #3d7a28,
+    inset -3px -3px 0 #7bc04e,
+    1px 1px 0 rgba(0,0,0,0.25) !important;
+}
+
+/* ═══ 输入框 ═══ */
+.pixel-theme input, .pixel-theme textarea, .pixel-theme select {
+  font-family: 'VT323', 'ZCOOL KuaiLe', monospace !important;
+  font-size: 18px !important;
+  background: #fff8e8 !important;
+  border: 3px solid #6b4423 !important;
+  color: #3d2817 !important;
+  padding: 8px 12px !important;
+  box-shadow: inset 2px 2px 0 rgba(0,0,0,0.1) !important;
+  border-radius: 0 !important;
+}
+.pixel-theme input:focus, .pixel-theme textarea:focus {
+  outline: none !important;
+  border-color: #5a9c3e !important;
+  box-shadow: inset 2px 2px 0 rgba(0,0,0,0.1), 0 0 0 2px #7bc04e !important;
+}
+
+/* ═══ 链接 ═══ */
+.pixel-theme a {
+  color: #5a9c3e !important;
+  text-decoration: none !important;
+}
+.pixel-theme a:hover {
+  color: #d4502a !important;
+  text-decoration: underline !important;
+}
+
+/* ═══ 进度条 ═══ */
+.pixel-theme .progress, .pixel-theme progress, .pixel-theme .progress-bar {
+  background: #3d2817 !important;
+  border: 2px solid #6b4423 !important;
+  box-shadow: inset 2px 2px 0 rgba(0,0,0,0.3) !important;
+  border-radius: 0 !important;
+}
+.pixel-theme .progress-fill, .pixel-theme .progress-bar-fill {
+  background: repeating-linear-gradient(90deg, 
+    #5a9c3e 0px, #5a9c3e 8px,
+    #7bc04e 8px, #7bc04e 16px) !important;
+  box-shadow: inset -2px -2px 0 rgba(0,0,0,0.2), inset 2px 2px 0 rgba(255,255,255,0.2) !important;
+}
+
+/* ═══ 表格 ═══ */
+.pixel-theme table {
+  border-collapse: collapse !important;
+  border: 3px solid #6b4423 !important;
+}
+.pixel-theme th {
+  background: #6b4423 !important;
+  color: #f0c040 !important;
+  font-family: 'ZCOOL KuaiLe', cursive !important;
+  font-size: 16px !important;
+  padding: 10px 14px !important;
+  border: 2px solid #3d2817 !important;
+  text-shadow: 1px 1px 0 #3d2817 !important;
+}
+.pixel-theme td {
+  background: #fff8e8 !important;
+  color: #3d2817 !important;
+  padding: 8px 14px !important;
+  border: 2px solid #c4a574 !important;
+  font-size: 16px !important;
+}
+.pixel-theme tr:nth-child(even) td {
+  background: #f5e6c8 !important;
+}
+
+/* ═══ 标签/徽章 ═══ */
+.pixel-theme .tag, .pixel-theme .badge, .pixel-theme .label {
+  font-family: 'ZCOOL KuaiLe', cursive !important;
+  font-size: 13px !important;
+  background: #5a9c3e !important;
+  border: 2px solid #3d7a28 !important;
+  color: #fff !important;
+  padding: 3px 10px !important;
+  box-shadow: inset -1px -1px 0 #3d7a28, inset 1px 1px 0 #7bc04e !important;
+  border-radius: 0 !important;
+}
+
+/* ═══ 弹窗 ═══ */
+.pixel-theme .modal, .pixel-theme .share-modal-body {
+  background: #fff8e8 !important;
+  border: 4px solid #6b4423 !important;
+  box-shadow: 
+    inset -4px -4px 0 #d4b896,
+    inset 4px 4px 0 #ffffff,
+    8px 8px 0 rgba(0,0,0,0.3) !important;
+  border-radius: 0 !important;
+}
+.pixel-theme .modal-header, .pixel-theme .share-modal-header {
+  background: #6b4423 !important;
+  border-bottom: 3px solid #3d2817 !important;
+  color: #f0c040 !important;
+  font-family: 'ZCOOL KuaiLe', cursive !important;
+}
+
+/* ═══ 页脚 ═══ */
+.pixel-theme .footer {
+  background: #6b4423 !important;
+  border-top: 4px solid #3d2817 !important;
+  color: #f5e6c8 !important;
+}
+.pixel-theme .footer a {
+  color: #f0c040 !important;
+}
+
+/* ═══ 回到顶部按钮 ═══ */
+.pixel-theme .back-to-top {
+  background: #5a9c3e !important;
+  border: 3px solid #3d7a28 !important;
+  color: #fff !important;
+  box-shadow: inset -2px -2px 0 #3d7a28, inset 2px 2px 0 #7bc04e, 3px 3px 0 rgba(0,0,0,0.25) !important;
+  font-size: 18px !important;
+}
+
+/* ═══ 页面加载器 ═══ */
+.pixel-theme .page-loader {
+  background: #f5e6c8 !important;
+}
+.pixel-theme .loader-ring {
+  border: 4px solid #c4a574 !important;
+  border-top-color: #5a9c3e !important;
+}
+.pixel-theme .loader-text {
+  font-family: 'Press Start 2P', cursive !important;
+  color: #6b4423 !important;
+  font-size: 12px !important;
+}
+
+/* ═══ 阅读进度条 ═══ */
+.pixel-theme .reading-progress-bar {
+  background: #5a9c3e !important;
+  height: 4px !important;
+}
+
+/* ═══ 书籍封面 ═══ */
+.pixel-theme .book-cover, .pixel-theme .cover-img {
+  border: 3px solid #6b4423 !important;
+  box-shadow: 3px 3px 0 rgba(61,40,23,0.25) !important;
+  image-rendering: pixelated !important;
+}
+
+/* ═══ 统计数字 ═══ */
+.pixel-theme .stat-value, .pixel-theme .number, .pixel-theme .big-number {
+  font-family: 'Press Start 2P', cursive !important;
+  color: #5a9c3e !important;
+  text-shadow: 2px 2px 0 #3d7a28 !important;
+}
+
+/* ═══ 引用/金句 ═══ */
+.pixel-theme blockquote, .pixel-theme .quote {
+  background: #fff8e8 !important;
+  border-left: 6px solid #f0c040 !important;
+  border: 3px solid #6b4423 !important;
+  border-left-width: 6px !important;
+  padding: 16px 20px !important;
+  font-family: 'ZCOOL KuaiLe', cursive !important;
+  font-size: 18px !important;
+  box-shadow: 4px 4px 0 rgba(61,40,23,0.15) !important;
+}
+
+/* ═══ 分隔线 ═══ */
+.pixel-theme hr, .pixel-theme .divider {
+  border: none !important;
+  border-top: 3px dashed #c4a574 !important;
+  margin: 24px 0 !important;
+}
+
+/* ═══ 英雄区/头部 ═══ */
+.pixel-theme .hero, .pixel-theme .page-header {
+  background: linear-gradient(180deg, #87ceeb 0%, #c8e8b8 100%) !important;
+  border-bottom: 4px solid #6b4423 !important;
+  padding: 40px 24px !important;
+}
+
+/* ═══ 滚动条 ═══ */
+.pixel-theme ::-webkit-scrollbar {
+  width: 16px !important;
+}
+.pixel-theme ::-webkit-scrollbar-track {
+  background: #ede0b8 !important;
+  border-left: 2px solid #c4a574 !important;
+}
+.pixel-theme ::-webkit-scrollbar-thumb {
+  background: #8b5a2b !important;
+  border: 2px solid #6b4423 !important;
+  box-shadow: inset -2px -2px 0 #5a3a1b, inset 2px 2px 0 #ab7a4b !important;
+}
+.pixel-theme ::-webkit-scrollbar-thumb:hover {
+  background: #a86a3b !important;
+}
+
+/* ═══ 选中文字 ═══ */
+.pixel-theme ::selection {
+  background: #f0c040 !important;
+  color: #3d2817 !important;
+}
+
+/* ═══ 响应式微调 ═══ */
+@media (max-width: 768px) {
+  .pixel-theme .nav-link {
+    font-size: 14px !important;
+    padding: 6px 10px !important;
+  }
+  .pixel-theme h1 { font-size: 22px !important; }
+  .pixel-theme h2 { font-size: 18px !important; }
+}
+
