@@ -1,18 +1,18 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
-sync.py — 服务器端 WeRead 增量数据同步脚本
+sync.py 鈥?鏈嶅姟鍣ㄧ WeRead 澧為噺鏁版嵁鍚屾鑴氭湰
 
-通过 WeRead Agent API Gateway 拉取书架、笔记本、划线和想法数据，
-增量更新到 SQLite 数据库。设计为每 4 小时由 cron 触发运行。
+閫氳繃 WeRead Agent API Gateway 鎷夊彇涔︽灦銆佺瑪璁版湰銆佸垝绾垮拰鎯虫硶鏁版嵁锛?
+澧為噺鏇存柊鍒?SQLite 鏁版嵁搴撱€傝璁′负姣?4 灏忔椂鐢?cron 瑙﹀彂杩愯銆?
 
-用法:
-  python scripts/sync.py           # 完整同步（首次运行）
-  python scripts/sync.py --quick    # 增量同步（仅笔记数变化的书）
-  python scripts/sync.py --restart  # 同步完成后重启 PM2
+鐢ㄦ硶:
+  python scripts/sync.py           # 瀹屾暣鍚屾锛堥娆¤繍琛岋級
+  python scripts/sync.py --quick    # 澧為噺鍚屾锛堜粎绗旇鏁板彉鍖栫殑涔︼級
+  python scripts/sync.py --restart  # 鍚屾瀹屾垚鍚庨噸鍚?PM2
 
-环境变量:
-  WEREAD_API_KEY  微信读书 API Key（必需）
-  PM2_APP_NAME    PM2 应用名（默认 reading-room，用于 --restart）
+鐜鍙橀噺:
+  WEREAD_API_KEY  寰俊璇讳功 API Key锛堝繀闇€锛?
+  PM2_APP_NAME    PM2 搴旂敤鍚嶏紙榛樿 reading-room锛岀敤浜?--restart锛?
 """
 
 import json
@@ -27,7 +27,7 @@ import requests
 from datetime import datetime
 from pathlib import Path
 
-# ─── Config ──────────────────────────────────────────────────────────────────
+# 鈹€鈹€鈹€ Config 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
 SCRIPT_DIR = Path(__file__).parent
 ROOT_DIR = SCRIPT_DIR.parent
 DB_PATH = ROOT_DIR / "db" / "reading-room.db"
@@ -40,13 +40,13 @@ if not API_KEY:
     sys.exit(1)
 
 GATEWAY = "https://i.weread.qq.com/api/agent/gateway"
-SKILL_VERSION = "1.0.3"
+SKILL_VERSION = "1.0.4"
 DELAY = 1.0  # seconds between API calls
 BATCH_DELAY = 0.5  # seconds between books for highlight/review fetch
 
 PM2_APP_NAME = os.environ.get("PM2_APP_NAME", "reading-room")
 
-# ─── Blacklist: books to exclude from sync ──────────────────────────────────
+# 鈹€鈹€鈹€ Blacklist: books to exclude from sync 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
 # Reads from config/blacklist.txt (one ID per line, # comments supported).
 # Falls back to empty set if file is missing.
 
@@ -65,7 +65,7 @@ def _load_blacklist() -> set:
 BLOCKED_BOOK_IDS = _load_blacklist()
 
 
-# ─── API Client ──────────────────────────────────────────────────────────────
+# 鈹€鈹€鈹€ API Client 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
 
 session = requests.Session()
 session.headers.update({
@@ -89,7 +89,7 @@ def call_api(api_name: str, params: dict = None) -> dict:
     return result
 
 
-# ─── Cover URL upgrade ────────────────────────────────────────────────────────
+# 鈹€鈹€鈹€ Cover URL upgrade 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
 
 def upgrade_cover_url(url: str) -> str:
     """Replace WeRead t<N>_ or s_ thumbnail with t7_ (~400px) for sharp rendering."""
@@ -98,7 +98,7 @@ def upgrade_cover_url(url: str) -> str:
     return re.sub(r"/[st]\d*_", "/t7_", url)
 
 
-# ─── Logging ─────────────────────────────────────────────────────────────────
+# 鈹€鈹€鈹€ Logging 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
 
 def log(msg: str):
     """Timestamped log to stdout."""
@@ -106,7 +106,7 @@ def log(msg: str):
     print(f"[{ts}] {msg}")
 
 
-# ─── Database ────────────────────────────────────────────────────────────────
+# 鈹€鈹€鈹€ Database 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
 
 def get_conn():
     """Get a writable SQLite connection."""
@@ -118,15 +118,15 @@ def get_conn():
 
 
 def ensure_tables(conn):
-    """Ensure all required tables exist — reads DDL from schema.sql (single source of truth)."""
+    """Ensure all required tables exist 鈥?reads DDL from schema.sql (single source of truth)."""
     schema_sql = SCRIPT_DIR / "schema.sql"
     if schema_sql.exists():
         conn.executescript(schema_sql.read_text(encoding="utf-8"))
         log("  [schema] Applied schema.sql")
     else:
-        log("  [WARN] schema.sql not found — tables may be incomplete")
+        log("  [WARN] schema.sql not found 鈥?tables may be incomplete")
 
-    # ── Schema migration: add missing columns to existing tables ──
+    # 鈹€鈹€ Schema migration: add missing columns to existing tables 鈹€鈹€
     # These handle databases created by older versions that may lack newer columns.
     _migrate_columns(conn, "sync_log", {
         "id":                None,
@@ -189,7 +189,7 @@ def get_existing_notebook_counts(conn) -> dict:
     return {r["book_id"]: dict(r) for r in rows}
 
 
-# ─── Phase 1: Bookshelf Sync ─────────────────────────────────────────────────
+# 鈹€鈹€鈹€ Phase 1: Bookshelf Sync 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
 
 def sync_shelf(conn) -> int:
     """Fetch /shelf/sync and upsert books, skipping blacklisted IDs."""
@@ -230,7 +230,7 @@ def sync_shelf(conn) -> int:
     return count
 
 
-# ─── Phase 2: Notebooks Sync ─────────────────────────────────────────────────
+# 鈹€鈹€鈹€ Phase 2: Notebooks Sync 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
 
 def sync_notebooks(conn) -> dict:
     """Fetch /user/notebooks (paginated) and upsert notebook stats.
@@ -284,7 +284,7 @@ def sync_notebooks(conn) -> dict:
     return new_counts
 
 
-# ─── Phase 3: Highlights & Reviews Sync ──────────────────────────────────────
+# 鈹€鈹€鈹€ Phase 3: Highlights & Reviews Sync 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
 
 def fetch_highlights(book_id: str) -> list:
     """Fetch highlights for a single book."""
@@ -345,7 +345,7 @@ def fetch_reviews(book_id: str) -> list:
         return None
 
 
-# ─── Phase 3.5: Book Progress Sync ────────────────────────────────────────────
+# 鈹€鈹€鈹€ Phase 3.5: Book Progress Sync 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
 
 def fetch_book_progress(book_id: str) -> dict:
     """Fetch per-book reading progress from /book/getprogress.
@@ -482,7 +482,7 @@ def detect_changed_books(
     return changed
 
 
-# ─── Sync Log ────────────────────────────────────────────────────────────────
+# 鈹€鈹€鈹€ Sync Log 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
 
 def write_sync_log(conn, sync_id: int, status: str, stats: dict, errors: str = None):
     """Update sync_log entry."""
@@ -504,12 +504,12 @@ def write_sync_log(conn, sync_id: int, status: str, stats: dict, errors: str = N
     conn.commit()
 
 
-# ─── Compute summary table ──────────────────────────────────────────────────
+# 鈹€鈹€鈹€ Compute summary table 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
 
 def populate_summary(conn):
     """Compute summary row from existing books/highlights/reviews data.
     Called automatically after every sync so the summary table is always
-    up to date — even if the table was just created by schema.sql.
+    up to date 鈥?even if the table was just created by schema.sql.
     """
     log("[Summary] Computing from local data...")
     try:
@@ -565,7 +565,7 @@ def populate_summary(conn):
         log(f"  [!] Summary computation failed: {e}")
 
 
-# ─── Phase 6: KV Store refresh ───────────────────────────────────────────────
+# 鈹€鈹€鈹€ Phase 6: KV Store refresh 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
 
 def sync_kv_store(conn):
     """Fetch aggregated reading stats from WeRead API and store in kv_store.
@@ -577,9 +577,9 @@ def sync_kv_store(conn):
 
     for mode, kv_name in [("overall", "overall"), ("annually", "annual")]:
         try:
-            data = call_api("/readdata/detail", mode=mode)
+            data = call_api("/readdata/detail", {"mode": mode})
             if not data:
-                log(f"  [!] Empty response for '{mode}' — skipping")
+                log(f"  [!] Empty response for '{mode}' 鈥?skipping")
                 continue
 
             # Upgrade cover URLs in the JSON data before storing
@@ -611,7 +611,7 @@ def _upgrade_covers_in_obj(obj):
                 _upgrade_covers_in_obj(val)
 
 
-# ─── PM2 Restart ─────────────────────────────────────────────────────────────
+# 鈹€鈹€鈹€ PM2 Restart 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
 
 def restart_pm2():
     """Restart the Node.js server via PM2."""
@@ -627,12 +627,12 @@ def restart_pm2():
         else:
             log(f"  [!] PM2 restart failed (rc={result.returncode}): {result.stderr.strip()}")
     except FileNotFoundError:
-        log("  [!] pm2 command not found — is PM2 installed?")
+        log("  [!] pm2 command not found 鈥?is PM2 installed?")
     except Exception as e:
         log(f"  [!] PM2 restart error: {e}")
 
 
-# ─── Main ────────────────────────────────────────────────────────────────────
+# 鈹€鈹€鈹€ Main 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
 
 def main():
     quick_mode = "--quick" in sys.argv
@@ -652,7 +652,7 @@ def main():
     conn = get_conn()
     ensure_tables(conn)
 
-    # ── Cleanup: remove any blacklisted books that snuck into the DB ──
+    # 鈹€鈹€ Cleanup: remove any blacklisted books that snuck into the DB 鈹€鈹€
     blocked_placeholders = ",".join("?" for _ in BLOCKED_BOOK_IDS)
     blocked_list = list(BLOCKED_BOOK_IDS)
     for table in ("highlights", "reviews", "notebooks"):
@@ -715,7 +715,7 @@ def main():
 
             time.sleep(BATCH_DELAY)
 
-        # Phase 4: Progress backfill — fill read_time for books that don't have it yet
+        # Phase 4: Progress backfill 鈥?fill read_time for books that don't have it yet
         gap_books = conn.execute(
             "SELECT id, title FROM books WHERE read_time = 0 ORDER BY title"
         ).fetchall()
@@ -739,7 +739,7 @@ def main():
                     log(f"    [!] {e}")
                 time.sleep(BATCH_DELAY)
         else:
-            log("[Phase 4] Progress backfill: all books have read_time — nothing to do")
+            log("[Phase 4] Progress backfill: all books have read_time 鈥?nothing to do")
 
         # Phase 5: Compute summary table
         populate_summary(conn)

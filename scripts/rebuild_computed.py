@@ -1,24 +1,24 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
-rebuild_computed.py — 从 API + 现有数据重建计算/统计表
+rebuild_computed.py 鈥?浠?API + 鐜版湁鏁版嵁閲嶅缓璁＄畻/缁熻琛?
 
-当数据库被重建（sync.py --restart）后，以下表的数据为空：
-  - reading_sessions (每日阅读秒数)
-  - reading_trends   (月度阅读趋势)
-  - summary          (汇总统计)
-  - kv_store         (键值聚合)
+褰撴暟鎹簱琚噸寤猴紙sync.py --restart锛夊悗锛屼互涓嬭〃鐨勬暟鎹负绌猴細
+  - reading_sessions (姣忔棩闃呰绉掓暟)
+  - reading_trends   (鏈堝害闃呰瓒嬪娍)
+  - summary          (姹囨€荤粺璁?
+  - kv_store         (閿€艰仛鍚?
 
-此脚本尝试通过 /readdata/detail API 获取原始数据，并能从现有
-books/highlights/reviews 表计算 summary 等派生数据。
+姝よ剼鏈皾璇曢€氳繃 /readdata/detail API 鑾峰彇鍘熷鏁版嵁锛屽苟鑳戒粠鐜版湁
+books/highlights/reviews 琛ㄨ绠?summary 绛夋淳鐢熸暟鎹€?
 
-用法:
-  python scripts/rebuild_computed.py           # 从 API 获取 + 计算
-  python scripts/rebuild_computed.py --local   # 仅从数据库本地计算(不调API)
-  python scripts/rebuild_computed.py --dry-run # 仅打印将要做什么，不写入
+鐢ㄦ硶:
+  python scripts/rebuild_computed.py           # 浠?API 鑾峰彇 + 璁＄畻
+  python scripts/rebuild_computed.py --local   # 浠呬粠鏁版嵁搴撴湰鍦拌绠?涓嶈皟API)
+  python scripts/rebuild_computed.py --dry-run # 浠呮墦鍗板皢瑕佸仛浠€涔堬紝涓嶅啓鍏?
 
-依赖:
-  - WEREAD_API_KEY 环境变量 (除非 --local 模式)
-  - 数据库文件 db/reading-room.db 必须存在
+渚濊禆:
+  - WEREAD_API_KEY 鐜鍙橀噺 (闄ら潪 --local 妯″紡)
+  - 鏁版嵁搴撴枃浠?db/reading-room.db 蹇呴』瀛樺湪
 """
 
 import json
@@ -35,10 +35,10 @@ DB_PATH = ROOT_DIR / "db" / "reading-room.db"
 
 API_KEY = os.environ.get("WEREAD_API_KEY", "")
 GATEWAY = "https://i.weread.qq.com/api/agent/gateway"
-SKILL_VERSION = "1.0.3"
+SKILL_VERSION = "1.0.4"
 
 
-# ─── API Client ──────────────────────────────────────────────────────────────
+# 鈹€鈹€鈹€ API Client 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
 
 def call_api(api_name: str, **params) -> dict:
     """Call WeRead Agent API Gateway."""
@@ -68,7 +68,7 @@ def call_api(api_name: str, **params) -> dict:
         return {}
 
 
-# ─── Helpers ─────────────────────────────────────────────────────────────────
+# 鈹€鈹€鈹€ Helpers 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
 
 def get_conn():
     conn = sqlite3.connect(str(DB_PATH))
@@ -82,7 +82,7 @@ def log(msg: str):
     print(f"[{ts}] {msg}")
 
 
-# ─── Rebuild: Summary (computed locally) ─────────────────────────────────────
+# 鈹€鈹€鈹€ Rebuild: Summary (computed locally) 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
 
 def rebuild_summary(conn):
     """Compute summary row from existing books/highlights/reviews data."""
@@ -159,12 +159,12 @@ def rebuild_summary(conn):
         f"{total_note_count} notes, {notebook_books_count} notebooks")
 
 
-# ─── Rebuild: reading_sessions & trends (from API) ───────────────────────────
+# 鈹€鈹€鈹€ Rebuild: reading_sessions & trends (from API) 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
 
 def rebuild_from_readdata(conn, dry_run=False):
     """Try to fetch reading sessions/trends from /readdata/detail API."""
     if not API_KEY:
-        log("[API] WEREAD_API_KEY not set — skipping API data fetch")
+        log("[API] WEREAD_API_KEY not set 鈥?skipping API data fetch")
         return
 
     log("[API] Fetching /readdata/detail?mode=overall ...")
@@ -180,21 +180,21 @@ def rebuild_from_readdata(conn, dry_run=False):
             log(f"  overall top-level keys: {keys}")
         return
 
-    # ── Reading sessions (daily heatmap) ──
+    # 鈹€鈹€ Reading sessions (daily heatmap) 鈹€鈹€
     sessions_added = _extract_sessions(conn, overall, "overall")
     sessions_added += _extract_sessions(conn, annually, "annually")
 
     if sessions_added > 0:
         log(f"  [reading_sessions] Added {sessions_added} days")
     else:
-        log("  [reading_sessions] No daily data from API — table stays empty")
+        log("  [reading_sessions] No daily data from API 鈥?table stays empty")
 
-    # ── Reading trends (monthly aggregation from sessions) ──
+    # 鈹€鈹€ Reading trends (monthly aggregation from sessions) 鈹€鈹€
     if sessions_added > 0:
         trends_added = _compute_trends(conn)
         log(f"  [reading_trends] Computed {trends_added} months from sessions")
 
-    # ── KV Store (overall / annual stats) ──
+    # 鈹€鈹€ KV Store (overall / annual stats) 鈹€鈹€
     if overall:
         conn.execute(
             "INSERT OR REPLACE INTO kv_store (name, value, updated_at) VALUES (?, ?, datetime('now'))",
@@ -293,7 +293,7 @@ def _compute_trends(conn) -> int:
     return len(rows)
 
 
-# ─── Main ────────────────────────────────────────────────────────────────────
+# 鈹€鈹€鈹€ Main 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
 
 def main():
     local_only = "--local" in sys.argv
@@ -311,15 +311,15 @@ def main():
 
     conn = get_conn()
 
-    # 1. Summary — always from local data (no API needed)
+    # 1. Summary 鈥?always from local data (no API needed)
     if dry_run:
         log("[dry-run] Would rebuild summary from local data")
     else:
         rebuild_summary(conn)
 
-    # 2. Reading sessions, trends, kv_store — try API first
+    # 2. Reading sessions, trends, kv_store 鈥?try API first
     if local_only:
-        log("[local] Skipping API — will only compute from existing data")
+        log("[local] Skipping API 鈥?will only compute from existing data")
     else:
         rebuild_from_readdata(conn, dry_run=dry_run)
 
@@ -329,7 +329,7 @@ def main():
         cnt = conn.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
         label = f"  [{table}]"
         if cnt == 0:
-            label += " ⚠️  EMPTY"
+            label += " 鈿狅笍  EMPTY"
         log(f"{label} {cnt} rows")
 
     conn.close()

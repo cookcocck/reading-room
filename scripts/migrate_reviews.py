@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
-Migrate reviews (想法/点评) from WeRead API into the SQLite database.
+Migrate reviews (鎯虫硶/鐐硅瘎) from WeRead API into the SQLite database.
 Fetches reviews for all books that have reviewCount > 0 in notebooks table.
 Supports resume on interruption.
 """
@@ -11,7 +11,7 @@ import time
 import requests
 from pathlib import Path
 
-# ─── Config ───
+# 鈹€鈹€鈹€ Config 鈹€鈹€鈹€
 API_KEY = os.environ.get("WEREAD_API_KEY", "")
 if not API_KEY:
     print("ERROR: Set WEREAD_API_KEY environment variable first")
@@ -24,7 +24,7 @@ DB_PATH = ROOT_DIR / "db" / "reading-room.db"
 PROGRESS_FILE = SCRIPT_DIR / "migrate_reviews_progress.json"
 
 GATEWAY = "https://i.weread.qq.com/api/agent/gateway"
-SKILL_VERSION = "1.0.3"
+SKILL_VERSION = "1.0.4"
 DELAY = 1.0  # seconds between API calls
 
 session = requests.Session()
@@ -119,10 +119,10 @@ def main():
             ORDER BY n.sort DESC
         ''').fetchall()
     except sqlite3.OperationalError as e:
-        print(f"[!] notebooks table not found ({e}) — falling back to books with highlights")
+        print(f"[!] notebooks table not found ({e}) 鈥?falling back to books with highlights")
 
     if not rows:
-        print("[!] notebooks table is empty — falling back to books with highlights")
+        print("[!] notebooks table is empty 鈥?falling back to books with highlights")
         try:
             rows = conn.execute('''
                 SELECT DISTINCT h.book_id, b.title, 0 AS review_count

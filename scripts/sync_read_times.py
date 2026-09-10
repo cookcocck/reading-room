@@ -1,5 +1,5 @@
-#!/usr/bin/env python3
-"""sync_read_times.py — Fetch per-book reading time from WeRead API.
+﻿#!/usr/bin/env python3
+"""sync_read_times.py 鈥?Fetch per-book reading time from WeRead API.
 
 Uses /readdata/detail?mode=overall to get readLongest[] which contains
 accurate per-book readTime (NOT the broken recordReadingTime from
@@ -26,10 +26,10 @@ import urllib.request
 import urllib.error
 from pathlib import Path
 
-# ─── Config ───
+# 鈹€鈹€鈹€ Config 鈹€鈹€鈹€
 
 API_URL = "https://i.weread.qq.com/api/agent/gateway"
-SKILL_VERSION = "1.0.3"
+SKILL_VERSION = "1.0.4"
 
 DB_PATH = Path(__file__).resolve().parent.parent / "db" / "reading-room.db"
 API_KEY = os.environ.get("WEREAD_API_KEY", "")
@@ -120,7 +120,7 @@ def main():
         cur.execute("ALTER TABLE books ADD COLUMN read_time INTEGER DEFAULT 0")
         conn.commit()
 
-    # ─── Fetch from API ───
+    # 鈹€鈹€鈹€ Fetch from API 鈹€鈹€鈹€
 
     all_read_times = {}  # bookId -> {title, readTime}
 
@@ -139,13 +139,13 @@ def main():
     print(f"\n[INFO] Got {len(all_read_times)} unique books with reading time from API")
 
     if not all_read_times:
-        print("[WARN] No reading time data from API — books.read_time will not be updated.")
+        print("[WARN] No reading time data from API 鈥?books.read_time will not be updated.")
         conn.close()
         return
 
-    # ─── Update database ───
+    # 鈹€鈹€鈹€ Update database 鈹€鈹€鈹€
 
-    # Build a title→readTime map as fallback for books not matched by bookId
+    # Build a title鈫抮eadTime map as fallback for books not matched by bookId
     title_map = {}
     for entry in all_read_times.values():
         title_map[entry["title"]] = entry["readTime"]
@@ -159,10 +159,10 @@ def main():
         if cur.rowcount > 0:
             h = entry["readTime"] // 3600
             m = (entry["readTime"] % 3600) // 60
-            print(f"  [✓] {entry['title']}: {h}h {m}m (bookId match)")
+            print(f"  [鉁揮 {entry['title']}: {h}h {m}m (bookId match)")
             updated += 1
         else:
-            # book not in our DB by bookId — try title match
+            # book not in our DB by bookId 鈥?try title match
             cur.execute(
                 "UPDATE books SET read_time = ? WHERE title = ? AND read_time = 0",
                 (entry["readTime"], entry["title"]),
@@ -170,7 +170,7 @@ def main():
             if cur.rowcount > 0:
                 h = entry["readTime"] // 3600
                 m = (entry["readTime"] % 3600) // 60
-                print(f"  [✓] {entry['title']}: {h}h {m}m (title match)")
+                print(f"  [鉁揮 {entry['title']}: {h}h {m}m (title match)")
                 updated += 1
             else:
                 print(f"  [?] {entry['title']}: not found in DB or already has read_time")
