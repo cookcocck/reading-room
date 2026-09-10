@@ -6326,27 +6326,94 @@ h3 {
 .cw-overlay-badge { position: absolute; top: 8px; right: 8px; background: var(--accent); color: #fff; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
 .cw-item.finished::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); }
 
-/* ─── Badges ─── */
-.bg-container { max-width: 1200px; margin: 0 auto; padding: 48px 32px 80px; }
-.bg-hero { text-align: center; margin-bottom: 48px; position: relative; }
-.bg-hero-ornament { font-family: 'Noto Serif SC', serif; font-size: 120px; font-weight: 900; color: var(--accent); opacity: 0.06; position: absolute; top: -20px; left: 50%; transform: translateX(-50%); letter-spacing: 0.1em; user-select: none; }
-.bg-hero-title { font-family: 'Noto Serif SC', serif; font-size: 42px; font-weight: 700; color: var(--ink); margin: 0 0 12px; position: relative; }
-.bg-hero-lede { color: var(--ink-muted); font-size: 15px; margin: 0 0 20px; position: relative; }
-.bg-hero-lede strong { color: var(--accent); font-weight: 700; font-size: 18px; }
-.bg-hero-rule { width: 60px; height: 2px; background: var(--accent); margin: 0 auto; opacity: 0.4; }
-.bg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-.bg-card { background: var(--paper); border: 1px solid var(--rule); border-radius: 12px; padding: 24px 20px; text-align: center; position: relative; transition: transform 0.3s, box-shadow 0.3s; }
-.bg-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
-.bg-card.earned { border-color: var(--accent); background: linear-gradient(135deg, var(--paper) 0%, color-mix(in srgb, var(--accent) 5%, var(--paper)) 100%); }
-.bg-card.locked { opacity: 0.5; filter: grayscale(0.7); }
-.bg-icon { font-size: 40px; margin-bottom: 12px; }
-.bg-name { font-family: 'Noto Serif SC', serif; font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
-.bg-desc { font-size: 12px; color: var(--ink-muted); margin-bottom: 14px; line-height: 1.5; }
-.bg-progress-track { height: 4px; background: var(--rule-thin); border-radius: 2px; overflow: hidden; margin-bottom: 6px; }
-.bg-progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.6s ease; }
-.bg-card.locked .bg-progress-fill { background: var(--ink-muted); }
-.bg-progress-text { font-size: 11px; color: var(--ink-faint); }
-.bg-earned-badge { position: absolute; top: 10px; right: 10px; background: var(--accent); color: #fff; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
+/* ─── Badges (Medal Style) ─── */
+.bg-container { max-width: 1100px; margin: 0 auto; padding: 48px 32px 80px; }
+.bg-hero { display: flex; align-items: center; justify-content: center; gap: 24px; margin-bottom: 48px; position: relative; }
+.bg-laurel { width: 50px; height: 80px; color: #c9a96e; flex-shrink: 0; }
+.bg-laurel svg { width: 100%; height: 100%; }
+.bg-hero-text { text-align: center; }
+.bg-hero-sub { font-size: 13px; color: rgba(201,169,110,0.7); letter-spacing: 0.2em; margin-bottom: 6px; text-transform: uppercase; }
+.bg-hero-title { font-family: 'Noto Serif SC', serif; font-size: 32px; font-weight: 700; color: #e8dcc8; margin: 0; }
+.bg-hero-count { color: #c9a96e; font-size: 42px; }
+.bg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 28px 20px; }
+
+/* 六边形勋章 */
+.bg-medal-item { text-align: center; cursor: pointer; position: relative; transition: transform 0.3s; }
+.bg-medal-item:hover { transform: translateY(-4px); }
+.bg-medal { width: 110px; height: 126px; margin: 0 auto 12px; position: relative;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+.bg-medal-inner { position: absolute; inset: 4px;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.bg-medal-icon { font-size: 36px; margin-bottom: 2px; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3)); }
+.bg-medal-target { font-family: 'Noto Serif SC', serif; font-size: 16px; font-weight: 700; color: rgba(255,255,255,0.9); text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+.bg-medal-shine { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.25) 0%, transparent 40%, transparent 60%, rgba(0,0,0,0.15) 100%);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); pointer-events: none; }
+.bg-medal-name { font-size: 13px; color: rgba(232,220,200,0.8); font-weight: 500; }
+.bg-medal-lock { position: absolute; top: 38px; left: 50%; transform: translateX(-50%); font-size: 20px; opacity: 0.8; }
+
+/* 已获得勋章 - 6种颜色主题 */
+.bg-medal-item.earned .bg-medal { background: linear-gradient(145deg, #e8c87a, #b8943f, #e8c87a); box-shadow: 0 4px 16px rgba(201,169,110,0.3); }
+.theme-0 .bg-medal-inner { background: linear-gradient(160deg, #4a90d9, #2c5f8a); }
+.theme-1 .bg-medal-inner { background: linear-gradient(160deg, #3db8a0, #1f7a68); }
+.theme-2 .bg-medal-inner { background: linear-gradient(160deg, #d97a4a, #8a4a2c); }
+.theme-3 .bg-medal-inner { background: linear-gradient(160deg, #9b6dd9, #5c3a8a); }
+.theme-4 .bg-medal-inner { background: linear-gradient(160deg, #d94a6b, #8a2c44); }
+.theme-5 .bg-medal-inner { background: linear-gradient(160deg, #6ba3d9, #3a688a); }
+
+/* 未获得勋章 - 灰色 */
+.bg-medal-item.locked .bg-medal { background: linear-gradient(145deg, #555, #333, #555); opacity: 0.5; }
+.bg-medal-item.locked .bg-medal-inner { background: linear-gradient(160deg, #3a3a3a, #222); }
+.bg-medal-item.locked .bg-medal-icon { filter: grayscale(1) opacity(0.5); }
+.bg-medal-item.locked .bg-medal-target { color: rgba(255,255,255,0.3); }
+.bg-medal-item.locked .bg-medal-name { color: rgba(255,255,255,0.3); }
+
+/* 弹窗 */
+.bg-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+.bg-modal-card { background: linear-gradient(180deg, #1e2438 0%, #151929 100%); border-radius: 20px; padding: 40px 36px 32px; max-width: 380px; width: 90%; text-align: center; position: relative; border: 1px solid rgba(201,169,110,0.2); box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+.bg-modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: rgba(255,255,255,0.4); font-size: 18px; cursor: pointer; width: 32px; height: 32px; border-radius: 50%; transition: all 0.2s; }
+.bg-modal-close:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.bg-modal-ribbon { width: 60px; height: 50px; margin: 0 auto -10px; background: linear-gradient(180deg, #8b2c2c, #6b1f1f); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 75%, 0 100%); position: relative; z-index: 1; }
+.bg-modal-medal { width: 160px; height: 184px; margin: 0 auto 20px; position: relative; z-index: 2;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  background: linear-gradient(145deg, #e8c87a, #b8943f, #e8c87a);
+  box-shadow: 0 8px 32px rgba(201,169,110,0.4);
+}
+.bg-modal-medal-inner { position: absolute; inset: 5px;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.bg-modal-medal.theme-0 .bg-modal-medal-inner { background: linear-gradient(160deg, #4a90d9, #2c5f8a); }
+.bg-modal-medal.theme-1 .bg-modal-medal-inner { background: linear-gradient(160deg, #3db8a0, #1f7a68); }
+.bg-modal-medal.theme-2 .bg-modal-medal-inner { background: linear-gradient(160deg, #d97a4a, #8a4a2c); }
+.bg-modal-medal.theme-3 .bg-modal-medal-inner { background: linear-gradient(160deg, #9b6dd9, #5c3a8a); }
+.bg-modal-medal.theme-4 .bg-modal-medal-inner { background: linear-gradient(160deg, #d94a6b, #8a2c44); }
+.bg-modal-medal.theme-5 .bg-modal-medal-inner { background: linear-gradient(160deg, #6ba3d9, #3a688a); }
+.bg-modal-medal.locked { background: linear-gradient(145deg, #555, #333, #555); opacity: 0.6; }
+.bg-modal-medal.locked .bg-modal-medal-inner { background: linear-gradient(160deg, #3a3a3a, #222); }
+.bg-modal-icon { font-size: 52px; margin-bottom: 4px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+.bg-modal-target { font-family: 'Noto Serif SC', serif; font-size: 22px; font-weight: 700; color: rgba(255,255,255,0.95); text-shadow: 0 2px 4px rgba(0,0,0,0.4); }
+.bg-modal-title { font-family: 'Noto Serif SC', serif; font-size: 24px; font-weight: 700; color: #e8dcc8; margin: 0 0 8px; }
+.modal-desc { font-size: 14px; color: rgba(232,220,200,0.6); margin: 0 0 20px; }
+.bg-modal-progress { margin-bottom: 16px; }
+.bg-modal-progress-track { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; margin-bottom: 8px; }
+.bg-modal-progress-fill { height: 100%; background: linear-gradient(90deg, #c9a96e, #e8c87a); border-radius: 3px; transition: width 0.5s; }
+.bg-modal-progress-text { font-size: 12px; color: rgba(232,220,200,0.5); }
+.bg-modal-status { display: inline-block; padding: 6px 20px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+.bg-modal-status.earned { background: rgba(201,169,110,0.15); color: #c9a96e; border: 1px solid rgba(201,169,110,0.3); }
+.bg-modal-status.locked { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.1); }
+
+@media (max-width: 768px) {
+  .bg-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 20px 12px; }
+  .bg-medal { width: 80px; height: 92px; }
+  .bg-medal-icon { font-size: 26px; }
+  .bg-medal-target { font-size: 12px; }
+  .bg-medal-name { font-size: 11px; }
+  .bg-hero-title { font-size: 24px; }
+  .bg-hero-count { font-size: 32px; }
+}
 
 /* ─── Timeline ─── */
 .tl-container { max-width: 900px; margin: 0 auto; padding: 48px 32px 80px; }

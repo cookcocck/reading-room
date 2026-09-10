@@ -1,35 +1,106 @@
 <!-- ═══════════════════════════════════════════
-   BADGES — Reading Achievements
+   BADGES — Reading Achievements (Medal Style)
    ═══════════════════════════════════════════ -->
+
+<style>
+  body { background: #12151f !important; }
+  main { background: #12151f !important; }
+  .nav { background: rgba(18,21,31,0.95) !important; border-bottom: 1px solid rgba(201,169,110,0.15) !important; }
+  .nav-brand, .nav-link { color: rgba(232,220,200,0.7) !important; }
+  .nav-link:hover, .nav-link.active { color: #c9a96e !important; }
+  .theme-toggle { color: rgba(232,220,200,0.7) !important; }
+</style>
 
 <div class="bg-container">
 
   <header class="bg-hero">
-    <div class="bg-hero-ornament" aria-hidden="true">勋章</div>
-    <h1 class="bg-hero-title">阅读勋章</h1>
-    <p class="bg-hero-lede">
-      <span>已获得 <strong><%= earnedCount %></strong> / <%= totalBadges %> 枚</span>
-    </p>
-    <div class="bg-hero-rule"></div>
+    <div class="bg-laurel left">
+      <svg viewBox="0 0 60 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M30 95 C20 80, 5 60, 10 40 C15 20, 30 5, 30 5" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.6"/>
+        <ellipse cx="18" cy="75" rx="6" ry="10" transform="rotate(-30 18 75)" fill="currentColor" opacity="0.4"/>
+        <ellipse cx="12" cy="58" rx="6" ry="10" transform="rotate(-40 12 58)" fill="currentColor" opacity="0.5"/>
+        <ellipse cx="14" cy="40" rx="6" ry="10" transform="rotate(-25 14 40)" fill="currentColor" opacity="0.45"/>
+        <ellipse cx="22" cy="25" rx="6" ry="10" transform="rotate(-15 22 25)" fill="currentColor" opacity="0.5"/>
+      </svg>
+    </div>
+    <div class="bg-hero-text">
+      <div class="bg-hero-sub">记录我的阅读成就</div>
+      <h1 class="bg-hero-title">我的勋章 <span class="bg-hero-count"><%= earnedCount %></span></h1>
+    </div>
+    <div class="bg-laurel right">
+      <svg viewBox="0 0 60 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: scaleX(-1)">
+        <path d="M30 95 C20 80, 5 60, 10 40 C15 20, 30 5, 30 5" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.6"/>
+        <ellipse cx="18" cy="75" rx="6" ry="10" transform="rotate(-30 18 75)" fill="currentColor" opacity="0.4"/>
+        <ellipse cx="12" cy="58" rx="6" ry="10" transform="rotate(-40 12 58)" fill="currentColor" opacity="0.5"/>
+        <ellipse cx="14" cy="40" rx="6" ry="10" transform="rotate(-25 14 40)" fill="currentColor" opacity="0.45"/>
+        <ellipse cx="22" cy="25" rx="6" ry="10" transform="rotate(-15 22 25)" fill="currentColor" opacity="0.5"/>
+      </svg>
+    </div>
   </header>
 
   <div class="bg-grid">
-    <% badges.forEach(function(badge) { %>
-    <div class="bg-card <%= badge.earned ? 'earned' : 'locked' %>">
-      <div class="bg-icon"><%= badge.icon %></div>
-      <div class="bg-name"><%= badge.name %></div>
-      <div class="bg-desc"><%= badge.desc %></div>
-      <div class="bg-progress-track">
-        <div class="bg-progress-fill" style="width: <%= Math.min(100, Math.round(badge.progress / badge.target * 100)) %>%"></div>
+    <% badges.forEach(function(badge, idx) { %>
+    <div class="bg-medal-item <%= badge.earned ? 'earned' : 'locked' %> theme-<%= idx % 6 %>" onclick="showBadgeDetail(<%= idx %>)">
+      <div class="bg-medal">
+        <div class="bg-medal-inner">
+          <div class="bg-medal-icon"><%= badge.icon %></div>
+          <div class="bg-medal-target"><%= badge.target %><%= badge.unit || '' %></div>
+        </div>
+        <div class="bg-medal-shine"></div>
       </div>
-      <div class="bg-progress-text">
-        <%= badge.progress %><%= badge.unit || '' %> / <%= badge.target %><%= badge.unit || '' %>
-      </div>
-      <% if (badge.earned) { %>
-      <div class="bg-earned-badge">✓ 已获得</div>
+      <div class="bg-medal-name"><%= badge.name %></div>
+      <% if (!badge.earned) { %>
+      <div class="bg-medal-lock">🔒</div>
       <% } %>
     </div>
     <% }); %>
   </div>
 
 </div>
+
+<!-- ═══ 勋章详情弹窗 ═══ -->
+<div class="bg-modal" id="badgeModal" onclick="if(event.target===this)closeBadgeDetail()">
+  <div class="bg-modal-card">
+    <button class="bg-modal-close" onclick="closeBadgeDetail()">✕</button>
+    <div class="bg-modal-ribbon"></div>
+    <div class="bg-modal-medal" id="modalMedal">
+      <div class="bg-modal-medal-inner">
+        <div class="bg-modal-icon" id="modalIcon"></div>
+        <div class="bg-modal-target" id="modalTarget"></div>
+      </div>
+    </div>
+    <h2 class="bg-modal-title" id="modalTitle"></h2>
+    <p class="modal-desc" id="modalDesc"></p>
+    <div class="bg-modal-progress">
+      <div class="bg-modal-progress-track">
+        <div class="bg-modal-progress-fill" id="modalProgressFill"></div>
+      </div>
+      <div class="bg-modal-progress-text" id="modalProgressText"></div>
+    </div>
+    <div class="bg-modal-status" id="modalStatus"></div>
+  </div>
+</div>
+
+<script>
+const badgeData = <%- JSON.stringify(badges) %>;
+function showBadgeDetail(idx) {
+  const b = badgeData[idx];
+  const modal = document.getElementById('badgeModal');
+  document.getElementById('modalIcon').textContent = b.icon;
+  document.getElementById('modalTarget').textContent = b.target + (b.unit || '');
+  document.getElementById('modalTitle').textContent = b.name;
+  document.getElementById('modalDesc').textContent = b.desc;
+  const pct = Math.min(100, Math.round(b.progress / b.target * 100));
+  document.getElementById('modalProgressFill').style.width = pct + '%';
+  document.getElementById('modalProgressText').textContent = b.progress + (b.unit || '') + ' / ' + b.target + (b.unit || '');
+  document.getElementById('modalStatus').textContent = b.earned ? '✓ 已获得' : '未获得';
+  document.getElementById('modalStatus').className = 'bg-modal-status ' + (b.earned ? 'earned' : 'locked');
+  const medal = document.getElementById('modalMedal');
+  medal.className = 'bg-modal-medal theme-' + (idx % 6) + ' ' + (b.earned ? 'earned' : 'locked');
+  modal.style.display = 'flex';
+}
+function closeBadgeDetail() {
+  document.getElementById('badgeModal').style.display = 'none';
+}
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeBadgeDetail(); });
+</script>
