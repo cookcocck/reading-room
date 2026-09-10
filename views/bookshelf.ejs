@@ -87,13 +87,6 @@
         <% } %>
       </a>
 
-      <!-- 使用中进度条 -->
-      <% if (isReading) { %>
-      <div class="sd-item-progress">
-        <div class="sd-item-progress-fill" style="width:<%= Math.min(b.progress || 0, 100) %>%"></div>
-      </div>
-      <% } %>
-
       <!-- 物品信息 -->
       <div class="sd-item-info">
         <div class="sd-item-name"><a href="/book/<%= b.id %>"><%= b.title %></a></div>
@@ -106,6 +99,12 @@
           <span class="sd-item-status status-<%= isReading ? 'blue' : (isFinished ? 'green' : 'gray') %>"><%= statusLabel %></span>
           <% } %>
         </div>
+        <!-- 使用中进度条 -->
+        <% if (isReading) { %>
+        <div class="sd-item-progress">
+          <div class="sd-item-progress-fill" style="width:<%= Math.min(b.progress || 0, 100) %>%"></div>
+        </div>
+        <% } %>
       </div>
     </div>
     <% }); %>
