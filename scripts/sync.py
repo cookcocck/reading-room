@@ -616,6 +616,40 @@ def _upgrade_covers_in_obj(obj):
 
 # ─── PM2 Restart ─────────────────────────────────────────────────────────────
 
+def stop_pm2():
+    """Stop the Node.js server via PM2 (before sync to avoid overwriting DB)."""
+    log(f"[PM2] Stopping app: {PM2_APP_NAME}")
+    try:
+        result = subprocess.run(
+            ["pm2", "stop", PM2_APP_NAME],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            universal_newlines=True, timeout=30,
+        )
+        if result.returncode == 0:
+            log(f"  [+] PM2 stopped")
+        else:
+            log(f"  [!] PM2 stop failed (rc={result.returncode}): {result.stderr.strip()}")
+    except Exception as e:
+        log(f"  [!] PM2 stop error: {e}")
+
+
+def start_pm2():
+    """Start the Node.js server via PM2 (after sync completes)."""
+    log(f"[PM2] Starting app: {PM2_APP_NAME}")
+    try:
+        result = subprocess.run(
+            ["pm2", "restart", PM2_APP_NAME],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            universal_newlines=True, timeout=30,
+        )
+        if result.returncode == 0:
+            log(f"  [+] PM2 started OK")
+        else:
+            log(f"  [!] PM2 start failed (rc={result.returncode}): {result.stderr.strip()}")
+    except Exception as e:
+        log(f"  [!] PM2 start error: {e}")
+
+
 def restart_pm2():
     """Restart the Node.js server via PM2."""
     log(f"[Restart] Restarting PM2 app: {PM2_APP_NAME}")
@@ -644,6 +678,12 @@ def main():
     log("=" * 60)
     log(f"WeRead Sync started (mode={'quick' if quick_mode else 'full'})")
     log("=" * 60)
+
+    # Stop PM2 before sync — Node uses sql.js in-memory and will overwrite
+    # the DB file with stale data if it writes while we're syncing.
+    if do_restart:
+        stop_pm2()
+        time.sleep(1)  # let PM2 fully release the file
 
     if not DB_PATH.exists():
         import os as _os
@@ -771,7 +811,7 @@ def main():
 
     # Restart PM2 if requested
     if do_restart:
-        restart_pm2()
+        start_pm2()
 
     return 0
 
