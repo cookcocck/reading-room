@@ -13,6 +13,14 @@ const PORT: number = Number(process.env.PORT) || 3000;
 // ─── Compression ───
 app.use(compression());
 
+// No Cache: prevent stale pages after deployments
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  next();
+});
+
 // ─── EJS Layout ───
 app.use(expressLayouts);
 app.use(express.json());
