@@ -11,19 +11,10 @@
   <header class="ad-hero">
     <h1 class="ad-hero-name"><%= author.author %></h1>
     <p class="ad-hero-byline">
-      <span><%= totalBooks %> 部作品</span>
-      <% if (totalReadTime > 0) { %>
-      <span class="ad-hero-dot">·</span>
-      <span><%= helpers.formatTime(totalReadTime) %></span>
-      <% } %>
-      <% if (totalFinished > 0) { %>
-      <span class="ad-hero-dot">·</span>
-      <span>读完 <%= totalFinished %> 部</span>
-      <% } %>
-      <% if (totalNotes > 0) { %>
-      <span class="ad-hero-dot">·</span>
-      <span><%= totalNotes %> 条笔记</span>
-      <% } %>
+      <% if (totalBooks > 0) { %><span><%= totalBooks %> 部作品</span><% } %>
+      <% if (totalReadTime > 0) { %><span class="ad-hero-dot">·</span><span>累计阅读 <%= helpers.formatTime(totalReadTime) %></span><% } %>
+      <% if (totalFinished > 0) { %><span class="ad-hero-dot">·</span><span>读完 <%= totalFinished %> 部</span><% } %>
+      <% if (totalHighlights > 0) { %><span class="ad-hero-dot">·</span><span><%= totalHighlights %> 条摘录</span><% } %>
     </p>
   </header>
 
@@ -31,10 +22,10 @@
   <div class="ad-stats-row">
     <div class="ad-stat-card">
       <div class="ad-stat-value"><%= totalBooks %></div>
-      <div class="ad-stat-label">部作品</div>
+      <div class="ad-stat-label">收录作品</div>
     </div>
     <div class="ad-stat-card">
-      <div class="ad-stat-value"><%= finishedPct %>%</div>
+      <div class="ad-stat-value"><%= totalFinished %><span class="ad-stat-unit">/ <%= totalBooks %></span></div>
       <div class="ad-stat-label">已读完</div>
       <% if (totalBooks > 0) { %>
       <div class="ad-stat-bar"><div class="ad-stat-bar-fill" style="width:<%= finishedPct %>%"></div></div>
@@ -45,62 +36,35 @@
       <div class="ad-stat-label">累计阅读</div>
     </div>
     <div class="ad-stat-card">
-      <div class="ad-stat-value"><%= totalNotes %></div>
-      <div class="ad-stat-label">条笔记</div>
-    </div>
-    <div class="ad-stat-card">
-      <div class="ad-stat-value"><%= helpers.formatTime(avgReadTime) %></div>
-      <div class="ad-stat-label">平均时长</div>
+      <div class="ad-stat-value"><%= totalHighlights %></div>
+      <div class="ad-stat-label">精彩摘录</div>
     </div>
   </div>
 
-  <!-- Category Tags -->
-  <% if (categories.length > 0) { %>
-  <div class="ad-tags">
-    <% categories.forEach(function(cat) { %>
-    <span class="ad-tag"><%= cat.name %><span class="ad-tag-count"><%= cat.count %></span></span>
-    <% }); %>
-  </div>
-  <% } %>
-
-  <!-- Reading Timeline -->
-  <% if (firstRead) { %>
-  <div class="ad-timeline">
-    <div class="ad-timeline-bar"></div>
-    <div class="ad-timeline-points">
-      <span class="ad-timeline-date"><%= helpers.formatTimestamp(firstRead) %></span>
-      <span class="ad-timeline-label">首次阅读</span>
-    </div>
-    <div class="ad-timeline-points ad-timeline-end">
-      <span class="ad-timeline-date"><%= helpers.formatTimestamp(lastRead) %></span>
-      <span class="ad-timeline-label">最近阅读</span>
-    </div>
-  </div>
-  <% } %>
-
-  <!-- Monthly Activity Sparkline -->
-  <% if (monthlyActivity.length > 0) { %>
-  <div class="ad-monthly">
-    <div class="ad-monthly-head">
-      <span class="ad-monthly-title">阅读节奏</span>
-      <span class="ad-monthly-sub">按月累计阅读时长</span>
-    </div>
-    <div class="ad-monthly-bars">
-      <% monthlyActivity.forEach(function(m) { %>
-        <div class="ad-monthly-col">
-          <div class="ad-monthly-bar" style="height:<%= Math.max((m.seconds / maxMonthlySec) * 64, 2) %>px"></div>
-          <span class="ad-monthly-label"><%= m.month.slice(5) %>月</span>
-        </div>
+  <!-- Category Tags + Reading Span -->
+  <div class="ad-meta-row">
+    <% if (categories.length > 0) { %>
+    <div class="ad-tags">
+      <% categories.forEach(function(cat) { %>
+      <span class="ad-tag"><%= cat.name %><span class="ad-tag-count"><%= cat.count %></span></span>
       <% }); %>
     </div>
+    <% } %>
+    <% if (firstRead) { %>
+    <div class="ad-span">
+      <span class="ad-span-label">阅读跨度</span>
+      <span class="ad-span-date"><%= helpers.formatTimestamp(firstRead) %></span>
+      <span class="ad-span-arrow">→</span>
+      <span class="ad-span-date"><%= helpers.formatTimestamp(lastRead) %></span>
+    </div>
+    <% } %>
   </div>
-  <% } %>
 
   <!-- Books Section -->
   <section class="ad-section">
     <div class="ad-section-head">
       <h2 class="ad-section-title">作品</h2>
-      <span class="ad-section-count"><%= totalBooks %> 本</span>
+      <span class="ad-section-count"><%= totalBooks %> 本 · 按阅读时长排序</span>
     </div>
     <div class="ad-book-list">
       <% books.forEach(function(book, i) { %>
@@ -109,7 +73,7 @@
           <% if (book.cover) { %>
           <img src="<%= book.cover %>" alt="<%= book.title %>" loading="lazy" />
           <% } else { %>
-          <div class="ad-book-cover-empty"><%= i + 1 %></div>
+          <div class="ad-book-cover-empty"><%= book.title.charAt(0) %></div>
           <% } %>
         </div>
         <div class="ad-book-info">
@@ -117,15 +81,18 @@
             <h3 class="ad-book-title"><%= book.title %></h3>
             <% if (book.finished) { %>
             <span class="ad-book-badge ad-book-badge--done">已读</span>
+            <% } else if (book.read_time > 0) { %>
+            <span class="ad-book-badge ad-book-badge--reading">在读</span>
             <% } else { %>
-            <span class="ad-book-badge">在读</span>
+            <span class="ad-book-badge ad-book-badge--wish">想读</span>
             <% } %>
           </div>
           <div class="ad-book-details">
             <% if (book.category) { %><span class="ad-book-cat"><%= book.category %></span><% } %>
-            <span class="ad-book-time"><%= helpers.formatTime(book.read_time || 0) %></span>
+            <% if (book.read_time > 0) { %><span class="ad-book-time"><%= helpers.formatTime(book.read_time) %></span><% } %>
+            <% if (book.progress > 0) { %><span class="ad-book-progress-pct"><%= book.progress %>%</span><% } %>
           </div>
-          <% if (maxReadTime > 0) { %>
+          <% if (maxReadTime > 0 && book.read_time > 0) { %>
           <div class="ad-book-progress">
             <div class="ad-book-progress-fill" style="width: <%= Math.max((book.read_time || 0) / maxReadTime * 100, 1) %>%"></div>
           </div>
@@ -156,7 +123,6 @@
     </div>
     <% } else { %>
     <div class="ad-empty">
-      <div class="ad-empty-icon">✍️</div>
       <div class="ad-empty-text">暂无划线摘录</div>
       <div class="ad-empty-sub">阅读时划下喜欢的句子，它们会出现在这里</div>
     </div>
@@ -185,7 +151,6 @@
     </div>
     <% } else { %>
     <div class="ad-empty">
-      <div class="ad-empty-icon">💭</div>
       <div class="ad-empty-text">暂无书评想法</div>
       <div class="ad-empty-sub">记录阅读时的感悟，它们会出现在这里</div>
     </div>
