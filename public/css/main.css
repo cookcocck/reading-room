@@ -9075,7 +9075,7 @@ h3 {
 
 /* 基础字体放大 */
 .pixel-theme {
-  font-size: 17px;
+  font-size: 19px;
 }
 
 /* 像素字体（Press Start 2P）统一放大 */
@@ -9119,7 +9119,7 @@ h3 {
 .pixel-theme .sd-task-reward,
 .pixel-theme .sd-skill-level,
 .pixel-theme .sd-farm-num {
-  font-size: 1.15em;
+  font-size: 1.35em;
 }
 
 /* 中文字体（ZCOOL KuaiLe）放大 */
@@ -9157,7 +9157,7 @@ h3 {
 .pixel-theme .sd-skill-name,
 .pixel-theme .sd-farm-label,
 .pixel-theme .sd-section-label {
-  font-size: 1.1em;
+  font-size: 1.25em;
 }
 
 /* 数字字体（VT323）放大 */
@@ -9177,33 +9177,33 @@ h3 {
 .pixel-theme .sd-home-exp-text,
 .pixel-theme .sd-task-progress-text,
 .pixel-theme .sd-skill-progress {
-  font-size: 1.15em;
+  font-size: 1.3em;
 }
 
 /* 首页特定放大 */
 .pixel-theme .sd-home-status {
-  font-size: 15px;
+  font-size: 17px;
 }
 .pixel-theme .sd-npc-dialog-text {
-  font-size: 18px;
+  font-size: 20px;
 }
 .pixel-theme .sd-task-item-title {
-  font-size: 16px;
+  font-size: 18px;
 }
 .pixel-theme .sd-task-item-progress {
-  font-size: 14px;
-}
-.pixel-theme .sd-skill-item-name {
   font-size: 16px;
 }
+.pixel-theme .sd-skill-item-name {
+  font-size: 18px;
+}
 .pixel-theme .sd-skill-item-level {
-  font-size: 14px;
+  font-size: 16px;
 }
 .pixel-theme .sd-farm-card-num {
-  font-size: 24px;
+  font-size: 28px;
 }
 .pixel-theme .sd-farm-card-label {
-  font-size: 14px;
+  font-size: 16px;
 }
 
 /* 页面标题放大 */
