@@ -1,5 +1,5 @@
 <!-- ═══════════════════════════════════════════
-   BADGES — Reading Achievements (Premium Medal Style)
+   BADGES — Deluxe Medal Style (Ribbon + Double Ring + Embossed)
    ═══════════════════════════════════════════ -->
 
 <div class="bg-container">
@@ -15,7 +15,7 @@
       </svg>
     </div>
     <div class="bg-hero-text">
-      <div class="bg-hero-sub">记录我的阅读成就</div>
+      <div class="bg-hero-sub">ACHIEVEMENTS</div>
       <h1 class="bg-hero-title">我的勋章 <span class="bg-hero-count"><%= earnedCount %></span><span class="bg-hero-total"> / <%= totalBadges %></span></h1>
     </div>
     <div class="bg-laurel right">
@@ -32,19 +32,32 @@
   <div class="bg-grid">
     <% badges.forEach(function(badge, idx) { %>
     <div class="bg-medal-item <%= badge.earned ? 'earned' : 'locked' %> theme-<%= idx % 6 %>" onclick="showBadgeDetail(<%= idx %>)">
+      <!-- 绶带 -->
+      <div class="bg-medal-ribbon">
+        <div class="bg-medal-ribbon-fold"></div>
+      </div>
+      <!-- 勋章主体 -->
       <div class="bg-medal">
-        <div class="bg-medal-ring"></div>
+        <!-- 外圈金属 -->
+        <div class="bg-medal-outer"></div>
+        <!-- 内圈金属 -->
+        <div class="bg-medal-inner"></div>
+        <!-- 珠点纹装饰 -->
+        <div class="bg-medal-studs"></div>
+        <!-- 彩色核心 -->
         <div class="bg-medal-core">
           <div class="bg-medal-glow"></div>
           <div class="bg-medal-icon"><%= badge.icon %></div>
           <div class="bg-medal-target"><%= badge.target %><%= badge.unit || '' %></div>
+          <div class="bg-medal-number">No.<%= String(idx + 1).padStart(3, '0') %></div>
         </div>
+        <!-- 光泽扫过 -->
         <div class="bg-medal-shine"></div>
       </div>
       <div class="bg-medal-name"><%= badge.name %></div>
       <% if (!badge.earned) { %>
       <div class="bg-medal-lock">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
         </svg>
       </div>
@@ -61,11 +74,14 @@
     <button class="bg-modal-close" onclick="closeBadgeDetail()">✕</button>
     <div class="bg-modal-ribbon"></div>
     <div class="bg-modal-medal" id="modalMedal">
-      <div class="bg-modal-ring"></div>
+      <div class="bg-modal-outer"></div>
+      <div class="bg-modal-inner"></div>
+      <div class="bg-modal-studs"></div>
       <div class="bg-modal-core">
         <div class="bg-modal-glow"></div>
         <div class="bg-modal-icon" id="modalIcon"></div>
         <div class="bg-modal-target" id="modalTarget"></div>
+        <div class="bg-modal-number" id="modalNumber"></div>
       </div>
     </div>
     <h2 class="bg-modal-title" id="modalTitle"></h2>
@@ -86,6 +102,7 @@ function showBadgeDetail(idx) {
   const b = badgeData[idx];
   document.getElementById('modalIcon').textContent = b.icon;
   document.getElementById('modalTarget').textContent = b.target + (b.unit || '');
+  document.getElementById('modalNumber').textContent = 'No.' + String(idx + 1).padStart(3, '0');
   document.getElementById('modalTitle').textContent = b.name;
   document.getElementById('modalDesc').textContent = b.desc;
   const pct = Math.min(100, Math.round(b.progress / b.target * 100));
