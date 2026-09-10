@@ -439,7 +439,7 @@ def sync_book_notes(conn, book_id: str, book_title: str) -> tuple:
 
 
 def detect_changed_books(
-    conn, new_notebooks: dict, quick_mode: bool
+    conn, new_notebooks: dict, quick_mode: bool, existing_counts: dict = None
 ) -> list:
     """Detect which books need highlights/reviews refresh.
     Returns list of (book_id, title) tuples.
@@ -456,7 +456,8 @@ def detect_changed_books(
         return [(r["book_id"], r["title"] or r["book_id"]) for r in rows]
 
     # Quick mode: only books with changed note counts
-    existing = get_existing_notebook_counts(conn)
+    # Use pre-Phase2 snapshot to avoid comparing identical data
+    existing = existing_counts if existing_counts is not None else get_existing_notebook_counts(conn)
     changed = []
     for book_id, new in new_notebooks.items():
         old = existing.get(book_id, {})
@@ -685,11 +686,12 @@ def main():
         # Phase 1: Bookshelf
         stats["books"] = sync_shelf(conn)
 
-        # Phase 2: Notebooks
+        # Phase 2: Notebooks (snapshot existing counts BEFORE writing)
+        existing_notebook_counts = get_existing_notebook_counts(conn) if quick_mode else None
         new_notebooks = sync_notebooks(conn)
 
         # Phase 3: Highlights, Reviews & Progress
-        changed_books = detect_changed_books(conn, new_notebooks, quick_mode)
+        changed_books = detect_changed_books(conn, new_notebooks, quick_mode, existing_notebook_counts)
 
         # Filter out blacklisted books
         changed_books = [
