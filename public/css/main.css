@@ -9513,3 +9513,85 @@ h3 {
 
 /* ═══ End Item Card Size Boost ═══ */
 
+
+
+/* ═══ Icon Button Fix for Pixel Theme ═══ */
+/* 修复星露谷主题下小图标按钮被全局button样式撑大的问题 */
+
+.pixel-theme .bd-share-btn,
+.pixel-theme .bd-shuffle-btn,
+.pixel-theme .bl-icon-btn,
+.pixel-theme .bl-remove-btn,
+.pixel-theme .search-btn {
+  width: 32px !important;
+  height: 32px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 2px solid #6b4423 !important;
+  border-radius: 4px !important;
+  color: #6b4423 !important;
+  box-shadow: inset -2px -2px 0 #d4b896, inset 2px 2px 0 #fff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-shadow: none !important;
+  font-size: 0 !important;
+}
+
+.pixel-theme .bd-share-btn svg,
+.pixel-theme .bd-shuffle-btn svg,
+.pixel-theme .bl-icon-btn svg,
+.pixel-theme .bl-remove-btn svg,
+.pixel-theme .search-btn svg {
+  width: 16px !important;
+  height: 16px !important;
+  display: block !important;
+  color: #6b4423 !important;
+}
+
+.pixel-theme .bd-share-btn:hover,
+.pixel-theme .bd-shuffle-btn:hover,
+.pixel-theme .bl-icon-btn:hover,
+.pixel-theme .bl-remove-btn:hover,
+.pixel-theme .search-btn:hover {
+  background: #5a9c3e !important;
+  border-color: #3d7a28 !important;
+  color: #fff !important;
+  box-shadow: inset -2px -2px 0 #3d7a28, inset 2px 2px 0 #7bc04e !important;
+}
+
+.pixel-theme .bd-share-btn:hover svg,
+.pixel-theme .bd-shuffle-btn:hover svg,
+.pixel-theme .bl-icon-btn:hover svg,
+.pixel-theme .bl-remove-btn:hover svg,
+.pixel-theme .search-btn:hover svg {
+  color: #fff !important;
+}
+
+.pixel-theme .bd-share-btn:active,
+.pixel-theme .bd-shuffle-btn:active,
+.pixel-theme .bl-icon-btn:active,
+.pixel-theme .bl-remove-btn:active,
+.pixel-theme .search-btn:active {
+  transform: translate(1px, 1px) !important;
+  box-shadow: inset 2px 2px 0 rgba(0,0,0,0.2) !important;
+}
+
+/* 书单删除按钮特殊：红色 */
+.pixel-theme .bl-delete-btn,
+.pixel-theme .bl-remove-btn {
+  border-color: #a03030 !important;
+  color: #a03030 !important;
+  box-shadow: inset -2px -2px 0 #e0b0b0, inset 2px 2px 0 #fff !important;
+}
+
+.pixel-theme .bl-delete-btn:hover,
+.pixel-theme .bl-remove-btn:hover {
+  background: #d4502a !important;
+  border-color: #a03030 !important;
+  color: #fff !important;
+  box-shadow: inset -2px -2px 0 #a03030, inset 2px 2px 0 #e88060 !important;
+}
+
+/* ═══ End Icon Button Fix ═══ */
+
