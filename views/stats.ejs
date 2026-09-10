@@ -1,9 +1,65 @@
 <!-- ═══════════════════════════════════════════
-   STATS — Editorial Infographics
+   STATS — Stardew Valley Character Status Panel
    ═══════════════════════════════════════════ -->
 
+<%
+var totalHours = Math.round((overall.totalReadTimeSec || 0) / 3600);
+var playerLevel = Math.floor(totalHours / 50) + 1;
+var expInLevel = totalHours % 50;
+var expPercent = Math.round(expInLevel / 50 * 100);
+var stats_attrs = [
+  { name: '力量', icon: '💪', value: summary.totalBooks, max: 200, desc: '藏书量', level: Math.floor(summary.totalBooks / 20) + 1 },
+  { name: '智力', icon: '🧠', value: summary.totalNoteCount || 0, max: 2000, desc: '笔记数', level: Math.floor((summary.totalNoteCount || 0) / 200) + 1 },
+  { name: '敏捷', icon: '⚡', value: Math.round(totalHours / Math.max(overall.readDays || 1, 1) * 10), max: 500, desc: '日均x10', level: Math.floor(Math.round(totalHours / Math.max(overall.readDays || 1, 1) * 10) / 50) + 1 },
+  { name: '耐力', icon: '❤️', value: 0, max: 30, desc: '连续天数', level: 1 },
+  { name: '魅力', icon: '✨', value: summary.finishedCount, max: 100, desc: '已读完', level: Math.floor(summary.finishedCount / 10) + 1 },
+  { name: '幸运', icon: '🍀', value: Math.round((summary.finishedCount / Math.max(summary.totalBooks, 1)) * 100), max: 100, desc: '读完率%', level: Math.floor(Math.round((summary.finishedCount / Math.max(summary.totalBooks, 1)) * 100) / 20) + 1 },
+];
+var charTitle = totalHours >= 500 ? '时间领主' : (totalHours >= 200 ? '阅读大师' : (totalHours >= 100 ? '书虫' : (totalHours >= 50 ? '阅读达人' : '初读者')));
+%>
+
+<div class="sd-stats-page">
+
+  <div class="sd-char-card">
+    <div class="sd-char-avatar">👨‍🌾</div>
+    <div class="sd-char-info">
+      <div class="sd-char-name">农场主</div>
+      <div class="sd-char-title"><%= charTitle %></div>
+      <div class="sd-char-level">Lv.<%= playerLevel %></div>
+      <div class="sd-char-exp">
+        <div class="sd-char-exp-bar"><div class="sd-char-exp-fill" style="width: <%= expPercent %>%"></div></div>
+        <span class="sd-char-exp-text">EXP <%= expInLevel %>/50</span>
+      </div>
+    </div>
+    <div class="sd-char-stats-mini">
+      <div class="sd-char-mini-item"><span class="sd-char-mini-num"><%= totalHours.toLocaleString() %>h</span><span class="sd-char-mini-label">总阅读</span></div>
+      <div class="sd-char-mini-item"><span class="sd-char-mini-num"><%= (overall.readDays || 0).toLocaleString() %></span><span class="sd-char-mini-label">天数</span></div>
+      <div class="sd-char-mini-item"><span class="sd-char-mini-num"><%= summary.finishedCount %></span><span class="sd-char-mini-label">通关</span></div>
+    </div>
+  </div>
+
+  <div class="sd-attr-panel">
+    <div class="sd-panel-title">⚔️ 角色属性</div>
+    <div class="sd-attr-grid">
+      <% stats_attrs.forEach(function(attr) {
+        var pct = Math.min(100, Math.round(attr.value / attr.max * 100));
+      %>
+      <div class="sd-attr-item">
+        <div class="sd-attr-icon"><%= attr.icon %></div>
+        <div class="sd-attr-info">
+          <div class="sd-attr-name"><%= attr.name %> <span class="sd-attr-lv">Lv.<%= attr.level %></span></div>
+          <div class="sd-attr-bar"><div class="sd-attr-bar-fill" style="width: <%= pct %>%"></div></div>
+          <div class="sd-attr-val"><%= attr.value.toLocaleString() %>/<%= attr.max %> · <%= attr.desc %></div>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+  </div>
+
+  <div class="sd-charts-area">
+
 <div class="container-wide">
-  <h1 style="margin-top: var(--space-8);">统计</h1>
+  <h1 style="margin-top: var(--space-8);">📊 冒险数据</h1>
 
   <!-- Time Masthead -->
   <div class="time-masthead">
@@ -599,3 +655,7 @@
   })();
 })();
 </script>
+
+  </div><!-- /sd-charts-area -->
+
+</div><!-- /sd-stats-page -->
