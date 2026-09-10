@@ -9475,3 +9475,41 @@ h3 {
 
 /* ═══ End Booklist Modal Stardew Style ═══ */
 
+
+
+/* ═══ Item Card Size Boost ═══ */
+/* 放大书架页书籍卡片 */
+
+.pixel-theme .sd-item-grid {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.pixel-theme .sd-item-card {
+  padding: 16px;
+  gap: 16px;
+}
+
+.pixel-theme .sd-item-icon-wrap {
+  width: 90px;
+}
+
+.pixel-theme .sd-item-name {
+  font-size: 18px !important;
+}
+
+.pixel-theme .sd-item-source {
+  font-size: 15px !important;
+}
+
+.pixel-theme .sd-item-value {
+  font-size: 15px !important;
+}
+
+.pixel-theme .sd-item-status {
+  font-size: 9px !important;
+  padding: 4px 8px;
+}
+
+/* ═══ End Item Card Size Boost ═══ */
+
