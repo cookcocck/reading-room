@@ -1,118 +1,161 @@
 <!-- ═══════════════════════════════════════════
-   BADGES — Deluxe Medal Style (Ribbon + Double Ring + Embossed)
+   BADGES — Stardew Valley Achievement Style
    ═══════════════════════════════════════════ -->
 
-<div class="bg-container">
+<%
+// 稀有度分配
+var rarityMap = {
+  'first-book': 'copper',
+  'bookworm': 'copper',
+  'reader': 'silver',
+  'deep-reader': 'silver',
+  'thinker': 'silver',
+  'streak': 'silver',
+  'night-owl': 'silver',
+  'early-bird': 'silver',
+  'year-star': 'silver',
+  'scholar': 'gold',
+  'collector': 'gold',
+  'highlight-hoarder': 'gold',
+  'streak-30': 'gold',
+  'marathon': 'gold',
+  'master': 'iridium',
+  'time-lord': 'iridium',
+};
+var rarityNames = { copper: '普通', silver: '稀有', gold: '史诗', iridium: '传说' };
+var rarityColors = { copper: '#b87333', silver: '#c0c0c0', gold: '#ffd700', iridium: '#9b59b6' };
 
-  <header class="bg-hero">
-    <div class="bg-laurel left">
-      <svg viewBox="0 0 60 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M30 95 C20 80, 5 60, 10 40 C15 20, 30 5, 30 5" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.5"/>
-        <ellipse cx="18" cy="75" rx="6" ry="10" transform="rotate(-30 18 75)" fill="currentColor" opacity="0.3"/>
-        <ellipse cx="12" cy="58" rx="6" ry="10" transform="rotate(-40 12 58)" fill="currentColor" opacity="0.4"/>
-        <ellipse cx="14" cy="40" rx="6" ry="10" transform="rotate(-25 14 40)" fill="currentColor" opacity="0.35"/>
-        <ellipse cx="22" cy="25" rx="6" ry="10" transform="rotate(-15 22 25)" fill="currentColor" opacity="0.4"/>
-      </svg>
-    </div>
-    <div class="bg-hero-text">
-      <div class="bg-hero-sub">ACHIEVEMENTS</div>
-      <h1 class="bg-hero-title">我的勋章 <span class="bg-hero-count"><%= earnedCount %></span><span class="bg-hero-total"> / <%= totalBadges %></span></h1>
-    </div>
-    <div class="bg-laurel right">
-      <svg viewBox="0 0 60 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: scaleX(-1)">
-        <path d="M30 95 C20 80, 5 60, 10 40 C15 20, 30 5, 30 5" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.5"/>
-        <ellipse cx="18" cy="75" rx="6" ry="10" transform="rotate(-30 18 75)" fill="currentColor" opacity="0.3"/>
-        <ellipse cx="12" cy="58" rx="6" ry="10" transform="rotate(-40 12 58)" fill="currentColor" opacity="0.4"/>
-        <ellipse cx="14" cy="40" rx="6" ry="10" transform="rotate(-25 14 40)" fill="currentColor" opacity="0.35"/>
-        <ellipse cx="22" cy="25" rx="6" ry="10" transform="rotate(-15 22 25)" fill="currentColor" opacity="0.4"/>
-      </svg>
-    </div>
-  </header>
+// 分类
+var categories = [
+  { name: '📚 阅读量', ids: ['first-book', 'bookworm', 'reader', 'scholar', 'master'] },
+  { name: '📖 深度阅读', ids: ['deep-reader', 'thinker', 'highlight-hoarder', 'marathon'] },
+  { name: '🔥 坚持与习惯', ids: ['streak', 'streak-30', 'night-owl', 'early-bird'] },
+  { name: '🏆 收藏与成就', ids: ['collector', 'year-star', 'time-lord'] },
+];
 
-  <div class="bg-grid">
-    <% badges.forEach(function(badge, idx) { %>
-    <div class="bg-medal-item <%= badge.earned ? 'earned' : 'locked' %> theme-<%= idx % 6 %>" onclick="showBadgeDetail(<%= idx %>)">
-      <!-- 绶带 -->
-      <div class="bg-medal-ribbon">
-        <div class="bg-medal-ribbon-fold"></div>
-      </div>
-      <!-- 勋章主体 -->
-      <div class="bg-medal">
-        <!-- 外圈金属 -->
-        <div class="bg-medal-outer"></div>
-        <!-- 内圈金属 -->
-        <div class="bg-medal-inner"></div>
-        <!-- 珠点纹装饰 -->
-        <div class="bg-medal-studs"></div>
-        <!-- 彩色核心 -->
-        <div class="bg-medal-core">
-          <div class="bg-medal-glow"></div>
-          <div class="bg-medal-icon"><%= badge.icon %></div>
-          <div class="bg-medal-target"><%= badge.target %><%= badge.unit || '' %></div>
-          <div class="bg-medal-number">No.<%= String(idx + 1).padStart(3, '0') %></div>
-        </div>
-        <!-- 光泽扫过 -->
-        <div class="bg-medal-shine"></div>
-      </div>
-      <div class="bg-medal-name"><%= badge.name %></div>
-      <% if (!badge.earned) { %>
-      <div class="bg-medal-lock">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
-        </svg>
-      </div>
-      <% } %>
+var badgeMap = {};
+badges.forEach(function(b) { badgeMap[b.id] = b; });
+%>
+
+<div class="sd-achievements">
+
+  <!-- 顶部状态栏 -->
+  <div class="sd-ach-header">
+    <div class="sd-ach-title">
+      <span class="sd-ach-icon">🏆</span>
+      <span>成就系统</span>
     </div>
-    <% }); %>
+    <div class="sd-ach-stats">
+      <div class="sd-ach-stat">
+        <span class="sd-ach-stat-num"><%= earnedCount %></span>
+        <span class="sd-ach-stat-label">已解锁</span>
+      </div>
+      <div class="sd-ach-stat">
+        <span class="sd-ach-stat-num"><%= totalBadges %></span>
+        <span class="sd-ach-stat-label">总数</span>
+      </div>
+      <div class="sd-ach-stat">
+        <span class="sd-ach-stat-num"><%= Math.round(earnedCount / totalBadges * 100) %>%</span>
+        <span class="sd-ach-stat-label">完成度</span>
+      </div>
+    </div>
   </div>
+
+  <!-- 总进度条 -->
+  <div class="sd-ach-overall">
+    <div class="sd-ach-overall-bar">
+      <div class="sd-ach-overall-fill" style="width: <%= earnedCount / totalBadges * 100 %>%"></div>
+    </div>
+    <div class="sd-ach-overall-text"><%= earnedCount %> / <%= totalBadges %> 成就已解锁</div>
+  </div>
+
+  <% categories.forEach(function(cat) { %>
+  <!-- 分类 -->
+  <div class="sd-ach-category">
+    <div class="sd-ach-cat-title"><%= cat.name %></div>
+    <div class="sd-ach-grid">
+      <% cat.ids.forEach(function(bid) {
+        var badge = badgeMap[bid];
+        if (!badge) return;
+        var rarity = rarityMap[bid] || 'copper';
+        var pct = Math.min(100, Math.round(badge.progress / badge.target * 100));
+      %>
+      <div class="sd-ach-card <%= badge.earned ? 'unlocked' : 'locked' %> rarity-<%= rarity %>" onclick="showAchDetail('<%= bid %>')">
+        <!-- 木质卡片顶部 -->
+        <div class="sd-ach-card-top">
+          <div class="sd-ach-badge">
+            <% if (badge.earned) { %>
+              <div class="sd-ach-badge-icon"><%= badge.icon %></div>
+            <% } else { %>
+              <div class="sd-ach-badge-icon sd-ach-locked">?</div>
+            <% } %>
+            <div class="sd-ach-badge-frame"></div>
+          </div>
+          <div class="sd-ach-rarity"><%= rarityNames[rarity] %></div>
+        </div>
+        <!-- 卡片内容 -->
+        <div class="sd-ach-card-body">
+          <div class="sd-ach-name"><%= badge.earned ? badge.name : '???' %></div>
+          <div class="sd-ach-desc"><%= badge.desc %></div>
+          <!-- 进度条 -->
+          <div class="sd-ach-progress">
+            <div class="sd-ach-progress-bar">
+              <div class="sd-ach-progress-fill" style="width: <%= pct %>%"></div>
+            </div>
+            <div class="sd-ach-progress-text"><%= badge.progress %><%= badge.unit || '' %> / <%= badge.target %><%= badge.unit || '' %></div>
+          </div>
+        </div>
+        <!-- 解锁标记 -->
+        <% if (badge.earned) { %>
+        <div class="sd-ach-check">✓</div>
+        <% } %>
+      </div>
+      <% }); %>
+    </div>
+  </div>
+  <% }); %>
 
 </div>
 
-<!-- ═══ 勋章详情弹窗 ═══ -->
-<div class="bg-modal" id="badgeModal" onclick="if(event.target===this)closeBadgeDetail()">
-  <div class="bg-modal-card">
-    <button class="bg-modal-close" onclick="closeBadgeDetail()">✕</button>
-    <div class="bg-modal-ribbon"></div>
-    <div class="bg-modal-medal" id="modalMedal">
-      <div class="bg-modal-outer"></div>
-      <div class="bg-modal-inner"></div>
-      <div class="bg-modal-studs"></div>
-      <div class="bg-modal-core">
-        <div class="bg-modal-glow"></div>
-        <div class="bg-modal-icon" id="modalIcon"></div>
-        <div class="bg-modal-target" id="modalTarget"></div>
-        <div class="bg-modal-number" id="modalNumber"></div>
-      </div>
-    </div>
-    <h2 class="bg-modal-title" id="modalTitle"></h2>
-    <p class="modal-desc" id="modalDesc"></p>
-    <div class="bg-modal-progress">
-      <div class="bg-modal-progress-track">
-        <div class="bg-modal-progress-fill" id="modalProgressFill"></div>
-      </div>
-      <div class="bg-modal-progress-text" id="modalProgressText"></div>
-    </div>
-    <div class="bg-modal-status" id="modalStatus"></div>
+<!-- ═══ 成就详情弹窗 ═══ -->
+<div class="sd-modal" id="achModal" onclick="if(event.target===this)closeAchDetail()">
+  <div class="sd-modal-card">
+    <button class="sd-modal-close" onclick="closeAchDetail()">✕</button>
+    <div id="achModalContent"></div>
   </div>
 </div>
 
 <script>
-const badgeData = <%- JSON.stringify(badges) %>;
-function showBadgeDetail(idx) {
-  const b = badgeData[idx];
-  document.getElementById('modalIcon').textContent = b.icon;
-  document.getElementById('modalTarget').textContent = b.target + (b.unit || '');
-  document.getElementById('modalNumber').textContent = 'No.' + String(idx + 1).padStart(3, '0');
-  document.getElementById('modalTitle').textContent = b.name;
-  document.getElementById('modalDesc').textContent = b.desc;
-  const pct = Math.min(100, Math.round(b.progress / b.target * 100));
-  document.getElementById('modalProgressFill').style.width = pct + '%';
-  document.getElementById('modalProgressText').textContent = b.progress + (b.unit || '') + ' / ' + b.target + (b.unit || '');
-  document.getElementById('modalStatus').textContent = b.earned ? '✓ 已获得' : '未获得';
-  document.getElementById('modalStatus').className = 'bg-modal-status ' + (b.earned ? 'earned' : 'locked');
-  document.getElementById('modalMedal').className = 'bg-modal-medal theme-' + (idx % 6) + ' ' + (b.earned ? 'earned' : 'locked');
-  document.getElementById('badgeModal').style.display = 'flex';
+var badgeData = <%- JSON.stringify(badges) %>;
+var rarityMap2 = <%- JSON.stringify(rarityMap) %>;
+var rarityNames2 = <%- JSON.stringify(rarityNames) %>;
+
+function showAchDetail(bid) {
+  var badge = badgeData.find(function(b) { return b.id === bid; });
+  if (!badge) return;
+  var rarity = rarityMap2[bid] || 'copper';
+  var pct = Math.min(100, Math.round(badge.progress / badge.target * 100));
+  var html = '';
+  html += '<div class="sd-modal-badge rarity-' + rarity + ' ' + (badge.earned ? 'unlocked' : 'locked') + '">';
+  html += '<div class="sd-modal-badge-icon">' + (badge.earned ? badge.icon : '?') + '</div>';
+  html += '<div class="sd-modal-badge-frame"></div>';
+  html += '</div>';
+  html += '<div class="sd-modal-name">' + (badge.earned ? badge.name : '???') + '</div>';
+  html += '<div class="sd-modal-rarity rarity-' + rarity + '">' + rarityNames2[rarity] + '成就</div>';
+  html += '<div class="sd-modal-desc">' + badge.desc + '</div>';
+  html += '<div class="sd-modal-progress">';
+  html += '<div class="sd-modal-progress-bar"><div class="sd-modal-progress-fill" style="width:' + pct + '%"></div></div>';
+  html += '<div class="sd-modal-progress-text">' + badge.progress + (badge.unit || '') + ' / ' + badge.target + (badge.unit || '') + '</div>';
+  html += '</div>';
+  if (badge.earned) {
+    html += '<div class="sd-modal-unlocked">🎉 已解锁！</div>';
+  } else {
+    html += '<div class="sd-modal-locked">🔒 尚未解锁</div>';
+  }
+  document.getElementById('achModalContent').innerHTML = html;
+  document.getElementById('achModal').style.display = 'flex';
 }
-function closeBadgeDetail() { document.getElementById('badgeModal').style.display = 'none'; }
-document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeBadgeDetail(); });
+function closeAchDetail() {
+  document.getElementById('achModal').style.display = 'none';
+}
 </script>

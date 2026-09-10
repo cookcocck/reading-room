@@ -7354,3 +7354,369 @@ h3 {
 
 /* ═══ End Pixel Game UI ═══ */
 
+
+
+/* ═══ Stardew Achievements ═══ */
+.pixel-theme .sd-achievements {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* 顶部标题栏 */
+.pixel-theme .sd-ach-header {
+  background: #6b4423;
+  border: 4px solid #3d2817;
+  box-shadow: inset -4px -4px 0 #4a3020, inset 4px 4px 0 #8a5a30, 6px 6px 0 rgba(0,0,0,0.2);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.pixel-theme .sd-ach-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 16px;
+  color: #f0c040;
+  text-shadow: 3px 3px 0 #3d2817;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.pixel-theme .sd-ach-icon {
+  font-size: 24px;
+  animation: bounce 1s steps(2) infinite;
+}
+@keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+.pixel-theme .sd-ach-stats {
+  display: flex;
+  gap: 24px;
+}
+.pixel-theme .sd-ach-stat {
+  text-align: center;
+}
+.pixel-theme .sd-ach-stat-num {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 18px;
+  color: #fff8e8;
+  display: block;
+  text-shadow: 2px 2px 0 #3d2817;
+}
+.pixel-theme .sd-ach-stat-label {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 12px;
+  color: #d4b896;
+}
+
+/* 总进度条 */
+.pixel-theme .sd-ach-overall {
+  background: #fff8e8;
+  border: 3px solid #6b4423;
+  box-shadow: inset -2px -2px 0 #d4b896, inset 2px 2px 0 #fff, 4px 4px 0 rgba(0,0,0,0.15);
+  padding: 12px 16px;
+  margin-bottom: 24px;
+}
+.pixel-theme .sd-ach-overall-bar {
+  height: 20px;
+  background: #3d2817;
+  border: 2px solid #2a1a0a;
+  margin-bottom: 8px;
+  box-shadow: inset 2px 2px 0 rgba(0,0,0,0.3);
+}
+.pixel-theme .sd-ach-overall-fill {
+  height: 100%;
+  background: repeating-linear-gradient(90deg, #f0c040 0px, #f0c040 8px, #ffd700 8px, #ffd700 16px);
+  box-shadow: inset -1px -1px 0 rgba(0,0,0,0.2), inset 1px 1px 0 rgba(255,255,255,0.3);
+  transition: width 0.5s;
+}
+.pixel-theme .sd-ach-overall-text {
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+  color: #6b4423;
+  text-align: center;
+}
+
+/* 分类 */
+.pixel-theme .sd-ach-category {
+  margin-bottom: 28px;
+}
+.pixel-theme .sd-ach-cat-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 12px;
+  color: #6b4423;
+  margin-bottom: 14px;
+  padding-left: 12px;
+  border-left: 6px solid #5a9c3e;
+  letter-spacing: 1px;
+}
+
+/* 成就网格 */
+.pixel-theme .sd-ach-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+/* 成就卡片 */
+.pixel-theme .sd-ach-card {
+  background: #fff8e8;
+  border: 3px solid #6b4423;
+  box-shadow: inset -3px -3px 0 #d4b896, inset 3px 3px 0 #fff, 4px 4px 0 rgba(61,40,23,0.2);
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.1s;
+}
+.pixel-theme .sd-ach-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: inset -3px -3px 0 #d4b896, inset 3px 3px 0 #fff, 6px 6px 0 rgba(61,40,23,0.25);
+}
+.pixel-theme .sd-ach-card:active {
+  transform: translate(2px, 2px);
+  box-shadow: inset -3px -3px 0 #d4b896, inset 3px 3px 0 #fff, 2px 2px 0 rgba(61,40,23,0.2);
+}
+
+/* 卡片顶部（徽章区域） */
+.pixel-theme .sd-ach-card-top {
+  background: #f5e6c8;
+  border-bottom: 3px solid #c4a574;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+/* 徽章主体 */
+.pixel-theme .sd-ach-badge {
+  width: 56px;
+  height: 56px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pixel-theme .sd-ach-badge-icon {
+  font-size: 28px;
+  z-index: 2;
+  filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.2));
+}
+.pixel-theme .sd-ach-badge-icon.sd-ach-locked {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 20px;
+  color: #8a7050;
+}
+.pixel-theme .sd-ach-badge-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 4px solid;
+  box-shadow: inset -2px -2px 0 rgba(0,0,0,0.2), inset 2px 2px 0 rgba(255,255,255,0.3);
+}
+.pixel-theme .rarity-copper .sd-ach-badge-frame { border-color: #b87333; background: rgba(184,115,51,0.15); }
+.pixel-theme .rarity-silver .sd-ach-badge-frame { border-color: #a0a0a0; background: rgba(160,160,160,0.15); }
+.pixel-theme .rarity-gold .sd-ach-badge-frame { border-color: #daa520; background: rgba(218,165,32,0.2); }
+.pixel-theme .rarity-iridium .sd-ach-badge-frame { border-color: #8e44ad; background: rgba(142,68,173,0.2); }
+
+/* 稀有度标签 */
+.pixel-theme .sd-ach-rarity {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 8px;
+  padding: 4px 8px;
+  border: 2px solid;
+}
+.pixel-theme .rarity-copper .sd-ach-rarity { color: #8b5a2b; border-color: #b87333; background: rgba(184,115,51,0.1); }
+.pixel-theme .rarity-silver .sd-ach-rarity { color: #606060; border-color: #a0a0a0; background: rgba(160,160,160,0.1); }
+.pixel-theme .rarity-gold .sd-ach-rarity { color: #b8860b; border-color: #daa520; background: rgba(218,165,32,0.15); }
+.pixel-theme .rarity-iridium .sd-ach-rarity { color: #6c3483; border-color: #8e44ad; background: rgba(142,68,173,0.15); }
+
+/* 卡片内容 */
+.pixel-theme .sd-ach-card-body {
+  padding: 12px 14px;
+}
+.pixel-theme .sd-ach-name {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 17px;
+  color: #3d2817;
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+.pixel-theme .sd-ach-desc {
+  font-family: 'VT323', monospace;
+  font-size: 14px;
+  color: #8a7050;
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+/* 进度条 */
+.pixel-theme .sd-ach-progress {
+  margin-top: 8px;
+}
+.pixel-theme .sd-ach-progress-bar {
+  height: 10px;
+  background: #3d2817;
+  border: 2px solid #2a1a0a;
+  margin-bottom: 4px;
+}
+.pixel-theme .sd-ach-progress-fill {
+  height: 100%;
+  background: repeating-linear-gradient(90deg, #5a9c3e 0px, #5a9c3e 5px, #7bc04e 5px, #7bc04e 10px);
+}
+.pixel-theme .sd-ach-progress-text {
+  font-family: 'VT323', monospace;
+  font-size: 13px;
+  color: #8a7050;
+  text-align: right;
+}
+
+/* 未解锁状态 */
+.pixel-theme .sd-ach-card.locked {
+  opacity: 0.7;
+}
+.pixel-theme .sd-ach-card.locked .sd-ach-badge-icon {
+  filter: grayscale(1) opacity(0.5);
+}
+.pixel-theme .sd-ach-card.locked .sd-ach-name {
+  color: #8a7050;
+}
+
+/* 解锁标记 */
+.pixel-theme .sd-ach-check {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 28px;
+  height: 28px;
+  background: #5a9c3e;
+  border: 3px solid #3d7a28;
+  color: #fff;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+  animation: pop 0.3s;
+}
+@keyframes pop { 0% { transform: scale(0); } 70% { transform: scale(1.2); } 100% { transform: scale(1); } }
+
+/* 已解锁卡片发光 */
+.pixel-theme .sd-ach-card.unlocked.rarity-gold {
+  box-shadow: inset -3px -3px 0 #d4b896, inset 3px 3px 0 #fff, 4px 4px 0 rgba(61,40,23,0.2), 0 0 12px rgba(218,165,32,0.3);
+}
+.pixel-theme .sd-ach-card.unlocked.rarity-iridium {
+  box-shadow: inset -3px -3px 0 #d4b896, inset 3px 3px 0 #fff, 4px 4px 0 rgba(61,40,23,0.2), 0 0 12px rgba(142,68,173,0.4);
+}
+
+/* ═══ 弹窗 ═══ */
+.pixel-theme .sd-modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+.pixel-theme .sd-modal-card {
+  background: #fff8e8;
+  border: 5px solid #6b4423;
+  box-shadow: inset -4px -4px 0 #d4b896, inset 4px 4px 0 #fff, 8px 8px 0 rgba(0,0,0,0.3);
+  padding: 32px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  position: relative;
+}
+.pixel-theme .sd-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  background: #d4502a;
+  border: 3px solid #a03015;
+  color: #fff;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: inset -2px -2px 0 rgba(0,0,0,0.2), inset 2px 2px 0 rgba(255,255,255,0.2);
+}
+.pixel-theme .sd-modal-badge {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 20px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pixel-theme .sd-modal-badge-icon {
+  font-size: 48px;
+  z-index: 2;
+}
+.pixel-theme .sd-modal-badge-frame {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border: 6px solid;
+  box-shadow: inset -3px -3px 0 rgba(0,0,0,0.2), inset 3px 3px 0 rgba(255,255,255,0.3);
+}
+.pixel-theme .sd-modal-name {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 24px;
+  color: #3d2817;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+.pixel-theme .sd-modal-rarity {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  display: inline-block;
+  padding: 6px 12px;
+  border: 2px solid;
+  margin-bottom: 16px;
+}
+.pixel-theme .sd-modal-desc {
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  color: #6b4423;
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+.pixel-theme .sd-modal-progress-bar {
+  height: 16px;
+  background: #3d2817;
+  border: 2px solid #2a1a0a;
+  margin-bottom: 6px;
+}
+.pixel-theme .sd-modal-progress-fill {
+  height: 100%;
+  background: repeating-linear-gradient(90deg, #5a9c3e 0px, #5a9c3e 8px, #7bc04e 8px, #7bc04e 16px);
+}
+.pixel-theme .sd-modal-progress-text {
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+  color: #8a7050;
+  margin-bottom: 16px;
+}
+.pixel-theme .sd-modal-unlocked {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 14px;
+  color: #5a9c3e;
+  text-shadow: 2px 2px 0 #3d7a28;
+  animation: bounce 0.5s steps(2) infinite;
+}
+.pixel-theme .sd-modal-locked {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 12px;
+  color: #8a7050;
+}
+
+/* ═══ End Stardew Achievements ═══ */
+
