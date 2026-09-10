@@ -1,13 +1,12 @@
-/* ═══════════════════════════════════════════════════════════
-   Editorial Design System
+﻿/* 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?   Editorial Design System
    A literary magazine aesthetic for a personal reading room.
    Typography-driven. Confident. Slightly arrogant.
-   ═══════════════════════════════════════════════════════════ */
+   鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?*/
 
-/* ─── Fonts ─── */
-/* Loaded via <link> in layout.ejs — @import removed for performance */
+/* 鈹€鈹€鈹€ Fonts 鈹€鈹€鈹€ */
+/* Loaded via <link> in layout.ejs 鈥?@import removed for performance */
 
-/* ─── Variables ─── */
+/* 鈹€鈹€鈹€ Variables 鈹€鈹€鈹€ */
 :root {
   /* Paper */
   --paper: #faf9f5;
@@ -29,7 +28,7 @@
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
   --font-cjk: 'Noto Serif SC', 'Source Han Serif SC', serif;
 
-  /* Scale — editorial uses fewer, more deliberate sizes */
+  /* Scale 鈥?editorial uses fewer, more deliberate sizes */
   --text-caption: 0.75rem;     /* 12px */
   --text-body: 0.9375rem;      /* 15px */
   --text-body-lg: 1.0625rem;   /* 17px */
@@ -40,7 +39,7 @@
   --text-display: 3.25rem;     /* 52px */
   --text-pullquote: 1.375rem;  /* 22px */
 
-  /* Spacing — generous, deliberate */
+  /* Spacing 鈥?generous, deliberate */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -53,15 +52,15 @@
   --space-16: 7rem;
 
   /* Layout */
-  --col-width: 72rem;        /* ~1152px — prose reading */
-  --col-wide: 120rem;        /* ~1920px — stats, heatmap, lists */
-  --col-bookshelf: 90rem;    /* ~1440px — book card grids */
+  --col-width: 72rem;        /* ~1152px 鈥?prose reading */
+  --col-wide: 120rem;        /* ~1920px 鈥?stats, heatmap, lists */
+  --col-bookshelf: 90rem;    /* ~1440px 鈥?book card grids */
   --nav-height: 3.5rem;
   --radius: 0;            /* editorial: no rounded corners */
   --radius-sm: 4px;
   --radius-lg: 12px;
 
-  /* Semantic aliases — used across components */
+  /* Semantic aliases 鈥?used across components */
   --surface: var(--paper);
   --ink-secondary: var(--ink-soft);
   --accent2: var(--accent-secondary);
@@ -79,7 +78,7 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Dark theme — still editorial, but ink on dark paper */
+/* Dark theme 鈥?still editorial, but ink on dark paper */
 [data-theme="dark"] {
   --paper: #111110;
   --paper-warm: #161615;
@@ -96,7 +95,7 @@
   --accent-dim: #1e2a3a;
 }
 
-/* ─── Reset ─── */
+/* 鈹€鈹€鈹€ Reset 鈹€鈹€鈹€ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html {
@@ -130,7 +129,7 @@ img { max-width: 100%; display: block; }
   color: var(--paper);
 }
 
-/* ─── Navigation ─── */
+/* 鈹€鈹€鈹€ Navigation 鈹€鈹€鈹€ */
 .nav {
   position: sticky;
   top: 0;
@@ -206,7 +205,7 @@ img { max-width: 100%; display: block; }
   transform: rotate(15deg);
 }
 
-/* ─── Layout Containers ─── */
+/* 鈹€鈹€鈹€ Layout Containers 鈹€鈹€鈹€ */
 .site-wrapper {
   min-height: 100vh;
   display: flex;
@@ -237,7 +236,7 @@ main {
   padding-bottom: var(--space-16);
 }
 
-/* ─── Typography ─── */
+/* 鈹€鈹€鈹€ Typography 鈹€鈹€鈹€ */
 h1, h2, h3, h4 {
   font-family: var(--font-display);
   font-weight: 700;
@@ -261,7 +260,7 @@ h3 {
   letter-spacing: 0;
 }
 
-/* Section rule — thin line separating major sections */
+/* Section rule 鈥?thin line separating major sections */
 .section-rule {
   border: none;
   border-top: 1px solid var(--rule);
@@ -273,7 +272,7 @@ h3 {
   border-top-color: var(--rule-thin);
 }
 
-/* Section header — numbered, editorial style */
+/* Section header 鈥?numbered, editorial style */
 .section-kicker {
   font-family: var(--font-body);
   font-size: 0.875rem;
@@ -330,7 +329,7 @@ h3 {
   to { transform: rotate(360deg); }
 }
 
-/* Freshly inserted items — subtle fade-in */
+/* Freshly inserted items 鈥?subtle fade-in */
 .book-highlights.inserting .detail-highlight,
 .book-reviews.inserting .detail-review {
   animation: fadeIn 0.35s var(--ease-out) both;
@@ -353,7 +352,7 @@ h3 {
   letter-spacing: -0.01em;
 }
 
-/* ─── Hero ─── */
+/* 鈹€鈹€鈹€ Hero 鈹€鈹€鈹€ */
 .hero {
   padding: var(--space-16) 0 var(--space-10);
 }
@@ -387,7 +386,7 @@ h3 {
   font-style: italic;
 }
 
-/* ─── Stats Row ─── */
+/* 鈹€鈹€鈹€ Stats Row 鈹€鈹€鈹€ */
 .stats-hed {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -426,7 +425,7 @@ h3 {
   color: var(--ink-faint);
 }
 
-/* ─── Heatmap ─── */
+/* 鈹€鈹€鈹€ Heatmap 鈹€鈹€鈹€ */
 .heatmap-container {
   margin: var(--space-10) 0;
   padding: var(--space-8) 0;
@@ -523,7 +522,7 @@ h3 {
   border-radius: 2px;
 }
 
-/* ─── Reading Now (List Style, not Cards) ─── */
+/* 鈹€鈹€鈹€ Reading Now (List Style, not Cards) 鈹€鈹€鈹€ */
 .reading-now-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -584,7 +583,7 @@ h3 {
   margin-top: var(--space-1);
 }
 
-/* ─── Section Head (shared) — kicker + refresh button ─── */
+/* 鈹€鈹€鈹€ Section Head (shared) 鈥?kicker + refresh button 鈹€鈹€鈹€ */
 .section-head {
   display: flex;
   align-items: center;
@@ -596,7 +595,7 @@ h3 {
   margin-bottom: 0;
 }
 
-/* Shared shuffle button — used by bd-shuffle-btn on book detail, hm-shuffle-btn on homepage */
+/* Shared shuffle button 鈥?used by bd-shuffle-btn on book detail, hm-shuffle-btn on homepage */
 .hm-shuffle-btn {
   display: inline-flex;
   align-items: center;
@@ -624,7 +623,7 @@ h3 {
   transform: rotate(180deg);
 }
 
-/* ─── Highlights — Pull Quote Style ─── */
+/* 鈹€鈹€鈹€ Highlights 鈥?Pull Quote Style 鈹€鈹€鈹€ */
 .highlights-list {
   columns: 2;
   column-gap: var(--space-8);
@@ -655,10 +654,10 @@ h3 {
   font-weight: 400;
 }
 .highlight-source::before {
-  content: '— ';
+  content: '鈥?';
 }
 
-/* Book Card Grid — masonry-style card layout for bookshelf & highlights */
+/* Book Card Grid 鈥?masonry-style card layout for bookshelf & highlights */
 .book-card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
@@ -742,7 +741,7 @@ h3 {
   letter-spacing: 0.02em;
 }
 
-/* ─── Bookshelf — Editorial Catalog ─── */
+/* 鈹€鈹€鈹€ Bookshelf 鈥?Editorial Catalog 鈹€鈹€鈹€ */
 .catalog-header {
   padding: var(--space-12) 0 var(--space-6);
 }
@@ -764,7 +763,7 @@ h3 {
   flex-wrap: wrap;
 }
 
-/* ─── Pill toggle group (全部 / 在读 / 已读完) ─── */
+/* 鈹€鈹€鈹€ Pill toggle group (鍏ㄩ儴 / 鍦ㄨ / 宸茶瀹? 鈹€鈹€鈹€ */
 .filter-pill-group {
   display: inline-flex;
   background: var(--rule-thin);
@@ -794,7 +793,7 @@ h3 {
   box-shadow: 0 1px 4px rgba(0,0,0,0.10);
 }
 
-/* ─── Breadcrumb when a category is selected ─── */
+/* 鈹€鈹€鈹€ Breadcrumb when a category is selected 鈹€鈹€鈹€ */
 .filter-breadcrumb {
   display: inline-flex;
   align-items: center;
@@ -821,7 +820,7 @@ h3 {
 }
 .filter-breadcrumb-clear:hover { color: #fff; }
 
-/* ─── Category chips ─── */
+/* 鈹€鈹€鈹€ Category chips 鈹€鈹€鈹€ */
 .category-chips {
   display: flex;
   gap: var(--space-2);
@@ -865,7 +864,7 @@ h3 {
   border-color: var(--ink-soft);
 }
 
-/* Legacy — keep for any stray references */
+/* Legacy 鈥?keep for any stray references */
 .filter-option {
   font-family: var(--font-body);
   font-size: var(--text-body);
@@ -897,7 +896,7 @@ h3 {
   border-bottom-color: var(--ink);
 }
 
-/* Book List — editorial catalog style */
+/* Book List 鈥?editorial catalog style */
 .book-list {
   display: grid;
   grid-template-columns: 1fr;
@@ -971,10 +970,9 @@ h3 {
   text-transform: uppercase;
 }
 
-/* ═══════════════════════════════════════════
-   NOTEBOOKS — Premium Redesign
+/* 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?   NOTEBOOKS 鈥?Premium Redesign
    Typography-driven, confident, editorial.
-   ═══════════════════════════════════════════ */
+   鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?*/
 
 .nb-container {
   max-width: var(--col-wide);
@@ -982,7 +980,7 @@ h3 {
   padding: 0 var(--space-6);
 }
 
-/* ── Hero ── */
+/* 鈹€鈹€ Hero 鈹€鈹€ */
 .nb-hero {
   position: relative;
   padding: var(--space-12) 0 var(--space-8);
@@ -1042,7 +1040,7 @@ h3 {
   opacity: 0.4;
 }
 
-/* ── Section Title ── */
+/* 鈹€鈹€ Section Title 鈹€鈹€ */
 .nb-section-title {
   font-family: var(--font-display);
   font-size: var(--text-body-lg);
@@ -1052,26 +1050,26 @@ h3 {
   letter-spacing: -0.01em;
 }
 
-/* ── Rule ── */
+/* 鈹€鈹€ Rule 鈹€鈹€ */
 .nb-rule {
   border: none;
   border-top: 1px solid var(--rule-thin);
   margin: var(--space-10) 0;
 }
 
-/* ── Books Section ── */
+/* 鈹€鈹€ Books Section 鈹€鈹€ */
 .nb-books-section {
   margin-bottom: var(--space-10);
 }
 
-/* ── Book Grid ── */
+/* 鈹€鈹€ Book Grid 鈹€鈹€ */
 .nb-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: var(--space-6) var(--space-5);
 }
 
-/* ── Book Card ── */
+/* 鈹€鈹€ Book Card 鈹€鈹€ */
 .nb-card {
   display: flex;
   flex-direction: column;
@@ -1084,7 +1082,7 @@ h3 {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Cover ── */
+/* 鈹€鈹€ Cover 鈹€鈹€ */
 .nb-card-cover {
   position: relative;
   display: block;
@@ -1126,7 +1124,7 @@ h3 {
   color: var(--ink-faint);
 }
 
-/* ── Card Body ── */
+/* 鈹€鈹€ Card Body 鈹€鈹€ */
 .nb-card-body {
   padding: var(--space-3) var(--space-2);
   display: flex;
@@ -1183,7 +1181,7 @@ h3 {
   color: var(--ink-muted);
 }
 
-/* ── Empty State ── */
+/* 鈹€鈹€ Empty State 鈹€鈹€ */
 .nb-empty {
   text-align: center;
   padding: var(--space-10) var(--space-6);
@@ -1205,9 +1203,8 @@ h3 {
   margin-top: var(--space-2);
 }
 
-/* ═══════════════════════════════════════════
-   NOTES FEED — Recent Notes Timeline
-   ═══════════════════════════════════════════ */
+/* 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?   NOTES FEED 鈥?Recent Notes Timeline
+   鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?*/
 
 .nb-feed-section {
   margin-bottom: var(--space-10);
@@ -1314,7 +1311,7 @@ h3 {
   margin-left: auto;
 }
 
-/* ─── Pagination ─── */
+/* 鈹€鈹€鈹€ Pagination 鈹€鈹€鈹€ */
 .pagination {
   display: flex;
   justify-content: center;
@@ -1342,7 +1339,7 @@ h3 {
   color: var(--paper);
 }
 
-/* ─── Stats Page — Editorial Infographics ─── */
+/* 鈹€鈹€鈹€ Stats Page 鈥?Editorial Infographics 鈹€鈹€鈹€ */
 .stats-section {
   margin: var(--space-10) 0;
 }
@@ -1419,7 +1416,7 @@ h3 {
   font-weight: 500;
 }
 
-/* Year progress ring — editorial style */
+/* Year progress ring 鈥?editorial style */
 .year-marker {
   display: flex;
   align-items: center;
@@ -1475,7 +1472,7 @@ h3 {
 }
 .weekday-bar:hover { opacity: 0.7; }
 
-/* Trend cards — refined */
+/* Trend cards 鈥?refined */
 .trend-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -1528,7 +1525,7 @@ h3 {
 }
 .trend-card.peak .trend-sparkline-bar { background: var(--accent); }
 
-/* ─── Stats: Progress Rings ─── */
+/* 鈹€鈹€鈹€ Stats: Progress Rings 鈹€鈹€鈹€ */
 .st-rings-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -1563,7 +1560,7 @@ h3 {
   margin-top: 2px;
 }
 
-/* ─── Stats: Calendar Heatmap ─── */
+/* 鈹€鈹€鈹€ Stats: Calendar Heatmap 鈹€鈹€鈹€ */
 .st-heatmap-wrap {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -1587,7 +1584,7 @@ h3 {
   stroke-width: 1;
 }
 
-/* ─── Stats: Weekday Distribution ─── */
+/* 鈹€鈹€鈹€ Stats: Weekday Distribution 鈹€鈹€鈹€ */
 .st-weekday-wrap {
   padding: var(--space-4) 0;
 }
@@ -1652,9 +1649,8 @@ h3 {
 [data-theme="dark"] .st-ring-sub { color: var(--ink-faint); }
 [data-theme="dark"] .st-heatmap rect:hover { stroke: var(--ink); }
 
-/* ═══════════════════════════════════════════
-   ANNUAL — 年度书单
-   ═══════════════════════════════════════════ */
+/* 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?   ANNUAL 鈥?骞村害涔﹀崟
+   鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?*/
 
 .an-container {
   max-width: var(--col-wide);
@@ -1829,9 +1825,7 @@ h3 {
 .an-empty-sub { font-size: var(--text-subhead); color: var(--ink-faint); margin-top: var(--space-2); }
 
 
-/* ═══════════════════════════════════════════
-   AUTHORS — 作者图谱
-   ═══════════════════════════════════════════ */
+/* 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?   AUTHORS 鈥?浣滆€呭浘璋?   鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?*/
 
 .au-container {
   max-width: var(--col-wide);
@@ -1962,9 +1956,8 @@ h3 {
 
 .au-empty { text-align: center; padding: var(--space-10) 0; color: var(--ink-muted); }
 
-/* ═══════════════════════════════════════════
-   AUTHOR DETAIL — 作者详情页
-   ═══════════════════════════════════════════ */
+/* 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?   AUTHOR DETAIL 鈥?浣滆€呰鎯呴〉
+   鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?*/
 
 .ad-page {
   max-width: 960px;
@@ -2053,7 +2046,7 @@ h3 {
 .ad-tags { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .ad-tag { font-family: var(--font-body); font-size: 0.75rem; color: var(--ink-soft); background: var(--bg-soft); border: 1px solid var(--rule-thin); padding: 4px 10px; }
 .ad-tag-count { color: var(--ink-muted); margin-left: 4px; }
-.ad-tag-count::before { content: '×'; }
+.ad-tag-count::before { content: '脳'; }
 .ad-span { font-family: var(--font-body); font-size: 0.8125rem; color: var(--ink-muted); display: flex; align-items: center; gap: var(--space-2); }
 .ad-span-label { color: var(--ink-faint); letter-spacing: 0.05em; }
 .ad-span-date { color: var(--ink-soft); font-weight: 500; }
@@ -2093,7 +2086,7 @@ h3 {
 .ad-quote-text { font-family: var(--font-cjk); font-size: 1.0625rem; line-height: 1.9; color: var(--ink-soft); margin: 0 0 var(--space-3); }
 .ad-quote-cite { display: flex; gap: var(--space-3); font-family: var(--font-body); font-size: 0.8125rem; font-style: normal; color: var(--ink-muted); }
 .ad-quote-chapter { color: var(--ink-faint); }
-.ad-quote-chapter::before { content: '— '; }
+.ad-quote-chapter::before { content: '鈥?'; }
 
 .ad-reviews-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-4); }
 @media (max-width: 640px) { .ad-reviews-grid { grid-template-columns: 1fr; } }
@@ -2156,7 +2149,7 @@ h3 {
   max-width: 220px;
 }
 
-/* Masonry wall — CSS columns */
+/* Masonry wall 鈥?CSS columns */
 .qt-wall {
   column-count: 3;
   column-gap: var(--space-5);
@@ -2240,9 +2233,8 @@ h3 {
 .qt-empty { text-align: center; padding: var(--space-12) 0; color: var(--ink-muted); }
 .qt-empty-icon { font-size: var(--text-display); margin-bottom: var(--space-4); }
 
-/* ═══════════════════════════════════════════
-   BOOKLISTS — 书单推荐
-   ═══════════════════════════════════════════ */
+/* 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?   BOOKLISTS 鈥?涔﹀崟鎺ㄨ崘
+   鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?*/
 
 .bl-container {
   max-width: var(--col-wide);
@@ -2539,14 +2531,14 @@ h3 {
   background: var(--paper); color: var(--ink); border-color: var(--rule);
 }
 
-/* Dark — Author Detail */
+/* Dark 鈥?Author Detail */
 [data-theme="dark"] .ad-book:hover { background: var(--rule-thin); }
 [data-theme="dark"] .ad-review { background: var(--paper); border-color: var(--rule); }
 [data-theme="dark"] .ad-tag { background: var(--rule-thin); }
 [data-theme="dark"] .ad-book-badge { background: var(--rule-thin); }
 [data-theme="dark"] .ad-book-cover-empty { background: var(--rule-thin); }
 
-/* ─── About Page — Manifesto ─── */
+/* 鈹€鈹€鈹€ About Page 鈥?Manifesto 鈹€鈹€鈹€ */
 .about-section {
   padding: var(--space-12) 0;
 }
@@ -2590,7 +2582,7 @@ h3 {
   margin: var(--space-8) 0;
 }
 
-/* ─── Book Detail Page ─── */
+/* 鈹€鈹€鈹€ Book Detail Page 鈹€鈹€鈹€ */
 .back-link {
   display: inline-block;
   font-family: var(--font-body);
@@ -2606,7 +2598,7 @@ h3 {
   max-width: var(--col-wide);
 }
 
-/* ─── Book Detail — Two-column top section ─── */
+/* 鈹€鈹€鈹€ Book Detail 鈥?Two-column top section 鈹€鈹€鈹€ */
 .book-detail-top {
   display: grid;
   grid-template-columns: 1fr;
@@ -2721,7 +2713,7 @@ h3 {
   letter-spacing: 0.06em;
 }
 
-/* ─── Highlights & Reviews — Premium Cards ─── */
+/* 鈹€鈹€鈹€ Highlights & Reviews 鈥?Premium Cards 鈹€鈹€鈹€ */
 
 .book-highlights,
 .book-reviews {
@@ -2775,7 +2767,7 @@ h3 {
   height: 4px;
 }
 
-/* ── Highlight card: large watermark quote mark ── */
+/* 鈹€鈹€ Highlight card: large watermark quote mark 鈹€鈹€ */
 .detail-highlight::after {
   content: '\201C';
   position: absolute;
@@ -2822,7 +2814,7 @@ h3 {
   z-index: 1;
 }
 
-/* ── Review card: clean personal note ── */
+/* 鈹€鈹€ Review card: clean personal note 鈹€鈹€ */
 .detail-review p.review-content {
   font-family: var(--font-body);
   font-size: var(--text-pullquote);
@@ -2833,7 +2825,7 @@ h3 {
   z-index: 1;
 }
 
-/* ── Review card: original quote (abstract) ── */
+/* 鈹€鈹€ Review card: original quote (abstract) 鈹€鈹€ */
 .detail-review .review-quote {
   position: relative;
   margin: 0 0 var(--space-5) 0;
@@ -2857,7 +2849,7 @@ h3 {
   background: var(--rule);
 }
 
-/* ── Review share button ── */
+/* 鈹€鈹€ Review share button 鈹€鈹€ */
 .detail-review {
   position: relative;
 }
@@ -2918,7 +2910,7 @@ h3 {
   flex-shrink: 0;
 }
 
-/* ── Dark theme ── */
+/* 鈹€鈹€ Dark theme 鈹€鈹€ */
 [data-theme="dark"] .detail-highlight,
 [data-theme="dark"] .detail-review {
   background: var(--paper-warm);
@@ -2942,7 +2934,7 @@ h3 {
 }
 [data-theme="dark"] .book-detail-cover { box-shadow: 0 2px 16px rgba(0,0,0,0.40); }
 
-/* ── Review Star Ratings ── */
+/* 鈹€鈹€ Review Star Ratings 鈹€鈹€ */
 .review-stars {
   color: #d4a017;
   font-size: 0.75rem;
@@ -2950,9 +2942,8 @@ h3 {
   margin-right: var(--space-2);
 }
 
-/* ═══════════════════════════════════════════
-   Book Detail — Insight Row (阅读足迹 + 章节热度)
-   ═══════════════════════════════════════════ */
+/* 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?   Book Detail 鈥?Insight Row (闃呰瓒宠抗 + 绔犺妭鐑害)
+   鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?*/
 
 /* Full-width intro section above the insight row */
 .detail-intro-section {
@@ -2984,7 +2975,7 @@ h3 {
   margin-bottom: var(--space-4);
 }
 
-/* Monthly bars inside card — suppress extra top margin */
+/* Monthly bars inside card 鈥?suppress extra top margin */
 .detail-insight-card .monthly-bars {
   margin-top: 0;
 }
@@ -2993,7 +2984,7 @@ h3 {
   padding: var(--space-2) 0;
 }
 
-/* ── Book Intro ── */
+/* 鈹€鈹€ Book Intro 鈹€鈹€ */
 .book-intro-body {
   overflow: hidden;
   transition: max-height 0.4s var(--ease-out);
@@ -3029,7 +3020,7 @@ h3 {
   color: var(--accent);
 }
 
-/* ── Chapter Engagement Bars ── */
+/* 鈹€鈹€ Chapter Engagement Bars 鈹€鈹€ */
 .chapter-bars {
   display: flex;
   flex-direction: column;
@@ -3100,7 +3091,7 @@ h3 {
 .chap-dot.hl { background: var(--accent-bright); }
 .chap-dot.rv { background: var(--accent-secondary); }
 
-/* ── Dark theme overrides ── */
+/* 鈹€鈹€ Dark theme overrides 鈹€鈹€ */
 [data-theme="dark"] .detail-insight-card {
   background: var(--paper-warm);
   border-color: var(--rule);
@@ -3122,7 +3113,7 @@ h3 {
 [data-theme="dark"] .deep-think-item:hover { background: var(--bg-soft); }
 [data-theme="dark"] .radar-chart polygon[fill-opacity] { fill-opacity: 0.18; }
 
-/* ─── Footer ─── */
+/* 鈹€鈹€鈹€ Footer 鈹€鈹€鈹€ */
 .footer {
   border-top: 1px solid var(--rule);
   padding: var(--space-8) 0;
@@ -3144,7 +3135,7 @@ h3 {
 }
 .footer a:hover { color: var(--ink); }
 
-/* ─── Empty State ─── */
+/* 鈹€鈹€鈹€ Empty State 鈹€鈹€鈹€ */
 .empty-state {
   text-align: center;
   padding: var(--space-16) var(--space-6);
@@ -3162,14 +3153,13 @@ h3 {
   color: var(--ink-muted);
 }
 
-/* ─── Monthly bar (distinct from yearly) ─── */
+/* 鈹€鈹€鈹€ Monthly bar (distinct from yearly) 鈹€鈹€鈹€ */
 .month-fill {
   background: var(--accent);
 }
 
-/* ═══════════════════════════════════════════
-   BOOK DETAIL — Monthly Reading Activity
-   ═══════════════════════════════════════════ */
+/* 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?   BOOK DETAIL 鈥?Monthly Reading Activity
+   鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?*/
 
 .book-monthly-activity {
   margin: 0;
@@ -3275,7 +3265,7 @@ h3 {
 }
 
 
-/* Book detail top section — collapse to single column */
+/* Book detail top section 鈥?collapse to single column */
 @media (max-width: 860px) {
   .book-detail-top {
     grid-template-columns: 1fr;
@@ -3311,7 +3301,7 @@ h3 {
   }
 }
 
-/* ─── Radar Chart ─── */
+/* 鈹€鈹€鈹€ Radar Chart 鈹€鈹€鈹€ */
 .radar-wrap {
   display: flex;
   justify-content: center;
@@ -3323,7 +3313,7 @@ h3 {
   height: auto;
 }
 
-/* ─── Deep Thinking Ranking ─── */
+/* 鈹€鈹€鈹€ Deep Thinking Ranking 鈹€鈹€鈹€ */
 .deep-think-list {
   display: flex;
   flex-direction: column;
@@ -3416,7 +3406,7 @@ h3 {
   text-align: right;
 }
 
-/* ─── Intensity Trend ─── */
+/* 鈹€鈹€鈹€ Intensity Trend 鈹€鈹€鈹€ */
 .intensity-grid {
   display: flex;
   flex-direction: column;
@@ -3461,7 +3451,7 @@ h3 {
   text-align: right;
 }
 
-/* ─── Reading Timeline Scatter ─── */
+/* 鈹€鈹€鈹€ Reading Timeline Scatter 鈹€鈹€鈹€ */
 .timeline-wrap {
   margin: var(--space-4) 0;
   overflow-x: auto;
@@ -3493,7 +3483,7 @@ h3 {
   flex-shrink: 0;
 }
 
-/* ─── Milestone Timeline ─── */
+/* 鈹€鈹€鈹€ Milestone Timeline 鈹€鈹€鈹€ */
 .milestone-timeline {
   display: flex;
   flex-direction: column;
@@ -3560,7 +3550,7 @@ h3 {
   margin-top: var(--space-1);
 }
 
-/* ─── Top Authors & Categories ─── */
+/* 鈹€鈹€鈹€ Top Authors & Categories 鈹€鈹€鈹€ */
 .author-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -3635,7 +3625,7 @@ h3 {
   color: var(--ink-muted);
 }
 
-/* ─── Page Loader — Minimal ─── */
+/* 鈹€鈹€鈹€ Page Loader 鈥?Minimal 鈹€鈹€鈹€ */
 .page-loader {
   position: fixed;
   inset: 0;
@@ -3668,7 +3658,7 @@ h3 {
   letter-spacing: 0.06em;
 }
 
-/* ─── Reading Progress Bar ─── */
+/* 鈹€鈹€鈹€ Reading Progress Bar 鈹€鈹€鈹€ */
 .reading-progress-bar {
   position: fixed;
   top: 0;
@@ -3680,7 +3670,7 @@ h3 {
   transition: width 0.1s linear;
 }
 
-/* ─── Back to Top ─── */
+/* 鈹€鈹€鈹€ Back to Top 鈹€鈹€鈹€ */
 .back-to-top {
   position: fixed;
   bottom: var(--space-8);
@@ -3709,7 +3699,7 @@ h3 {
   border-color: var(--ink);
 }
 
-/* ─── Animation (subtle) ─── */
+/* 鈹€鈹€鈹€ Animation (subtle) 鈹€鈹€鈹€ */
 .fade-in {
   animation: fadeIn 0.4s var(--ease-out) both;
 }
@@ -3719,7 +3709,7 @@ h3 {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Stagger — reduced delays, content visible immediately */
+/* Stagger 鈥?reduced delays, content visible immediately */
 .stagger > * { animation: fadeIn 0.3s var(--ease-out) both; }
 .stagger > *:nth-child(1) { animation-delay: 0s; }
 .stagger > *:nth-child(2) { animation-delay: 0.03s; }
@@ -3730,7 +3720,7 @@ h3 {
 .stagger > *:nth-child(7) { animation-delay: 0.18s; }
 .stagger > *:nth-child(8) { animation-delay: 0.21s; }
 
-/* ─── Dark: Notebooks Page ─── */
+/* 鈹€鈹€鈹€ Dark: Notebooks Page 鈹€鈹€鈹€ */
 [data-theme="dark"] .nb-hero-ornament { opacity: 0.2; }
 [data-theme="dark"] .nb-card-cover { background: var(--rule); }
 [data-theme="dark"] .nb-feed-item { border-color: var(--rule); }
@@ -3739,7 +3729,7 @@ h3 {
 [data-theme="dark"] .nb-feed-highlight .nb-feed-icon { background: rgba(253, 179, 50, 0.18); }
 [data-theme="dark"] .nb-feed-review .nb-feed-icon { background: rgba(66, 135, 245, 0.15); }
 
-/* ─── Responsive ─── */
+/* 鈹€鈹€鈹€ Responsive 鈹€鈹€鈹€ */
 @media (max-width: 720px) {
   :root {
     --text-display: 2.25rem;
@@ -3862,7 +3852,7 @@ h3 {
   .nb-feed-meta { font-size: 0.625rem; }
 }
 
-/* ─── Custom Scrollbar — editorial, understated ─── */
+/* 鈹€鈹€鈹€ Custom Scrollbar 鈥?editorial, understated 鈹€鈹€鈹€ */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
@@ -3878,7 +3868,7 @@ h3 {
   scrollbar-color: var(--ink-faint) transparent;
 }
 
-/* ─── Highlight Share Button ─── */
+/* 鈹€鈹€鈹€ Highlight Share Button 鈹€鈹€鈹€ */
 .highlight-share-btn {
   position: absolute;
   bottom: var(--space-4);
@@ -3920,7 +3910,7 @@ h3 {
   transform: scale(0.95);
 }
 
-/* ─── Share Modal ─── */
+/* 鈹€鈹€鈹€ Share Modal 鈹€鈹€鈹€ */
 .share-modal {
   position: fixed;
   inset: 0;
@@ -4061,7 +4051,7 @@ h3 {
   color: var(--ink);
 }
 
-/* ─── Dark theme: share modal ─── */
+/* 鈹€鈹€鈹€ Dark theme: share modal 鈹€鈹€鈹€ */
 [data-theme="dark"] .share-modal-backdrop {
   background: rgba(0,0,0,0.70);
 }
@@ -4086,9 +4076,9 @@ h3 {
   background: var(--ink);
 }
 
-/* ══════════════════════════════════════
+/* 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲
    QUICK STATS + STREAK (Homepage)
-   ══════════════════════════════════════ */
+   鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲 */
 
 .quick-stats {
   display: grid;
@@ -4131,9 +4121,9 @@ h3 {
   .quick-stats { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* ══════════════════════════════════════
+/* 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲
    SEARCH PAGE
-   ══════════════════════════════════════ */
+   鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲 */
 
 .search-hero {
   text-align: center;
@@ -4255,10 +4245,9 @@ h3 {
 .search-empty { text-align: center; padding: 80px 0; color: var(--ink-muted); font-size: var(--text-headline); }
 .search-hint { text-align: center; padding: 60px 0; color: var(--ink-muted); font-size: var(--text-pullquote); font-style: italic; }
 
-/* ═══════════════════════════════════════════════════════════
-   BOOKSHELF — Redesigned (bs-)
+/* 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?   BOOKSHELF 鈥?Redesigned (bs-)
    Curated collection with depth, hierarchy, breathing room.
-   ═══════════════════════════════════════════════════════════ */
+   鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?*/
 
 .bs-container {
   max-width: var(--col-wide);
@@ -4266,7 +4255,7 @@ h3 {
   padding: 0 var(--space-6);
 }
 
-/* ── Hero ── */
+/* 鈹€鈹€ Hero 鈹€鈹€ */
 .bs-hero {
   position: relative;
   padding: var(--space-12) 0 var(--space-8);
@@ -4327,7 +4316,7 @@ h3 {
   opacity: 0.4;
 }
 
-/* ── Toolbar ── */
+/* 鈹€鈹€ Toolbar 鈹€鈹€ */
 .bs-toolbar {
   display: flex;
   align-items: center;
@@ -4336,7 +4325,7 @@ h3 {
   flex-wrap: wrap;
 }
 
-/* ── Filter Pills ── */
+/* 鈹€鈹€ Filter Pills 鈹€鈹€ */
 .bs-filter-pills {
   display: inline-flex;
   background: var(--rule-thin);
@@ -4367,7 +4356,7 @@ h3 {
   box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
 }
 
-/* ── Sort ── */
+/* 鈹€鈹€ Sort 鈹€鈹€ */
 .bs-sort-wrap {
   margin-left: auto;
   display: flex;
@@ -4406,7 +4395,7 @@ h3 {
   color: var(--ink);
 }
 
-/* ── Breadcrumb ── */
+/* 鈹€鈹€ Breadcrumb 鈹€鈹€ */
 .bs-breadcrumb {
   display: inline-flex;
   align-items: center;
@@ -4433,7 +4422,7 @@ h3 {
 }
 .bs-breadcrumb-clear:hover { color: #fff; }
 
-/* ── Categories ── */
+/* 鈹€鈹€ Categories 鈹€鈹€ */
 .bs-categories {
   display: flex;
   gap: var(--space-1);
@@ -4471,14 +4460,14 @@ h3 {
   border: 1px dashed var(--rule);
 }
 
-/* ── Book Grid ── */
+/* 鈹€鈹€ Book Grid 鈹€鈹€ */
 .bs-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: var(--space-6) var(--space-5);
 }
 
-/* ── Card ── */
+/* 鈹€鈹€ Card 鈹€鈹€ */
 .bs-card {
   display: flex;
   flex-direction: column;
@@ -4491,7 +4480,7 @@ h3 {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Cover ── */
+/* 鈹€鈹€ Cover 鈹€鈹€ */
 .bs-card-cover {
   position: relative;
   display: block;
@@ -4539,7 +4528,7 @@ h3 {
   transform: scale(1.03);
 }
 
-/* ── Wish button (on cover) ── */
+/* 鈹€鈹€ Wish button (on cover) 鈹€鈹€ */
 .bs-card-wish {
   position: absolute;
   top: 8px;
@@ -4584,7 +4573,7 @@ h3 {
   fill: #fff !important;
 }
 
-/* ── Progress bar ── */
+/* 鈹€鈹€ Progress bar 鈹€鈹€ */
 .bs-card-progress {
   width: 100%;
   height: 3px;
@@ -4602,7 +4591,7 @@ h3 {
   min-width: 0;
 }
 
-/* ── Card body ── */
+/* 鈹€鈹€ Card body 鈹€鈹€ */
 .bs-card-body {
   padding: var(--space-3) var(--space-1) 0;
   display: flex;
@@ -4643,7 +4632,7 @@ h3 {
   white-space: nowrap;
 }
 
-/* ── Card footer: time + status ── */
+/* 鈹€鈹€ Card footer: time + status 鈹€鈹€ */
 .bs-card-foot {
   display: flex;
   align-items: center;
@@ -4668,7 +4657,7 @@ h3 {
   opacity: 0.5;
 }
 
-/* ── Status indicators ── */
+/* 鈹€鈹€ Status indicators 鈹€鈹€ */
 .bs-card-status {
   display: inline-block;
   font-family: var(--font-body);
@@ -4696,7 +4685,7 @@ h3 {
   background: color-mix(in srgb, var(--accent2) 12%, transparent);
 }
 
-/* ── Card state accents (subtle top border on cover hover) ── */
+/* 鈹€鈹€ Card state accents (subtle top border on cover hover) 鈹€鈹€ */
 .bs-card--reading .bs-card-cover {
   /* reading books get a subtle accent glow */
 }
@@ -4709,7 +4698,7 @@ h3 {
   50% { opacity: 1; }
 }
 
-/* ── Empty state ── */
+/* 鈹€鈹€ Empty state 鈹€鈹€ */
 .bs-empty {
   text-align: center;
   padding: var(--space-16) var(--space-6);
@@ -4727,7 +4716,7 @@ h3 {
   color: var(--ink-muted);
 }
 
-/* ── Dark theme ── */
+/* 鈹€鈹€ Dark theme 鈹€鈹€ */
 [data-theme="dark"] .bs-hero-ornament {
   opacity: 0.2;
 }
@@ -4773,7 +4762,7 @@ h3 {
   background: color-mix(in srgb, var(--accent2) 20%, transparent);
 }
 
-/* ── Responsive ── */
+/* 鈹€鈹€ Responsive 鈹€鈹€ */
 @media (max-width: 900px) {
   .bs-grid {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -4809,7 +4798,7 @@ h3 {
   }
 }
 
-/* ── Notebooks small-screen ── */
+/* 鈹€鈹€ Notebooks small-screen 鈹€鈹€ */
 @media (max-width: 640px) {
   .nb-container {
     padding: 0 var(--space-4);
@@ -4835,9 +4824,9 @@ h3 {
   }
 }
 
-/* ══════════════════════════════════════
+/* 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲
    LEGACY BOOKSHELF (kept for compat)
-   ══════════════════════════════════════ */
+   鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲 */
 
 .sort-select-wrap { margin-left: auto; }
 .sort-select {
@@ -4876,9 +4865,9 @@ h3 {
 .wish-btn:hover { transform: scale(1.3); }
 .wish-btn.active { background: var(--accent-glass); }
 
-/* ══════════════════════════════════════
+/* 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲
    AUTHOR CHART (Stats Page)
-   ══════════════════════════════════════ */
+   鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲 */
 
 .author-chart { display: flex; flex-direction: column; gap: var(--space-sm); }
 .author-bar { display: flex; align-items: center; gap: var(--space-sm); }
@@ -4900,9 +4889,9 @@ h3 {
 .yoy-indicator.up { background: rgba(16, 185, 129, 0.1); color: #10b981; }
 .yoy-indicator.down { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
 
-/* ══════════════════════════════════════
+/* 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲
    STAR RATING (Book Detail)
-   ══════════════════════════════════════ */
+   鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲 */
 
 .book-rating-row {
   display: flex;
@@ -4950,10 +4939,9 @@ h3 {
 .toc-chapter-name { flex: 1; color: var(--ink-secondary); }
 .toc-chapter-count { font-weight: 600; color: var(--ink-muted); font-family: var(--font-mono); }
 
-/* ═══════════════════════════════════════════════════════════════════
-   BOOK DETAIL — Redesigned (bd-)
+/* 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?   BOOK DETAIL 鈥?Redesigned (bd-)
    Premium editorial layout with depth, breathing room, and craft.
-   ═══════════════════════════════════════════════════════════════════ */
+   鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?*/
 
 .bd-container {
   max-width: calc(10 * 160px + 9 * var(--space-6));
@@ -4967,7 +4955,7 @@ h3 {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Breadcrumb ── */
+/* 鈹€鈹€ Breadcrumb 鈹€鈹€ */
 .bd-breadcrumb {
   display: flex;
   align-items: center;
@@ -5000,7 +4988,7 @@ h3 {
   max-width: 30em;
 }
 
-/* ═══ Hero ═══ */
+/* 鈺愨晲鈺?Hero 鈺愨晲鈺?*/
 .bd-hero {
   position: relative;
   display: grid;
@@ -5028,7 +5016,7 @@ h3 {
   z-index: 0;
 }
 
-/* ── Cover ── */
+/* 鈹€鈹€ Cover 鈹€鈹€ */
 .bd-hero-cover {
   position: relative;
   width: 100%;
@@ -5079,7 +5067,7 @@ h3 {
   user-select: none;
 }
 
-/* ── Cover progress ring ── */
+/* 鈹€鈹€ Cover progress ring 鈹€鈹€ */
 .bd-cover-progress {
   position: absolute;
   bottom: 12px;
@@ -5117,7 +5105,7 @@ h3 {
   color: var(--accent-bright);
 }
 
-/* ── Hero body (right column) ── */
+/* 鈹€鈹€ Hero body (right column) 鈹€鈹€ */
 .bd-hero-body {
   position: relative;
   z-index: 1;
@@ -5184,7 +5172,7 @@ h3 {
   margin: 0 0 var(--space-5) 0;
 }
 
-/* ── Star Rating ── */
+/* 鈹€鈹€ Star Rating 鈹€鈹€ */
 .bd-hero-rating {
   display: flex;
   gap: 1px;
@@ -5207,7 +5195,7 @@ h3 {
   color: #c49216;
 }
 
-/* ── Stats Cards ── */
+/* 鈹€鈹€ Stats Cards 鈹€鈹€ */
 .bd-stats {
   display: flex;
   gap: var(--space-3);
@@ -5272,7 +5260,7 @@ h3 {
   text-transform: uppercase;
 }
 
-/* ═══ Divider ═══ */
+/* 鈺愨晲鈺?Divider 鈺愨晲鈺?*/
 .bd-divider {
   display: flex;
   align-items: center;
@@ -5296,7 +5284,7 @@ h3 {
   line-height: 1;
 }
 
-/* ═══ Book Intro ═══ */
+/* 鈺愨晲鈺?Book Intro 鈺愨晲鈺?*/
 .bd-intro {
   margin-bottom: var(--space-4);
 }
@@ -5369,7 +5357,7 @@ h3 {
   color: var(--accent);
 }
 
-/* ═══ Insight Grid (Footprint + Chapter Activity) ═══ */
+/* 鈺愨晲鈺?Insight Grid (Footprint + Chapter Activity) 鈺愨晲鈺?*/
 .bd-insight-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -5399,7 +5387,7 @@ h3 {
   letter-spacing: -0.01em;
 }
 
-/* ── Monthly Bars ── */
+/* 鈹€鈹€ Monthly Bars 鈹€鈹€ */
 .bd-monthly-bars {
   display: flex;
   flex-direction: column;
@@ -5470,7 +5458,7 @@ h3 {
   margin: 0;
 }
 
-/* ── Chapter Bars ── */
+/* 鈹€鈹€ Chapter Bars 鈹€鈹€ */
 .bd-chapter-bars {
   display: flex;
   flex-direction: column;
@@ -5544,7 +5532,7 @@ h3 {
 .bd-chap-dot--hl { background: var(--accent-bright); }
 .bd-chap-dot--rv { background: var(--accent-secondary); }
 
-/* ═══ Notes Section — Ink & Parchment ═══ */
+/* 鈺愨晲鈺?Notes Section 鈥?Ink & Parchment 鈺愨晲鈺?*/
 
 /* Section Ornamental Header */
 .bd-notes-section {
@@ -5653,7 +5641,7 @@ h3 {
   background: var(--accent-secondary);
 }
 
-/* ── Shuffle button ── */
+/* 鈹€鈹€ Shuffle button 鈹€鈹€ */
 .bd-shuffle-btn {
   display: flex;
   align-items: center;
@@ -5691,7 +5679,7 @@ h3 {
   gap: var(--space-6);
 }
 
-/* ═══ Highlight Cards — Left accent bar style ═══ */
+/* 鈺愨晲鈺?Highlight Cards 鈥?Left accent bar style 鈺愨晲鈺?*/
 .bd-hl-card {
   position: relative;
   padding: var(--space-8) var(--space-10) var(--space-6) var(--space-10);
@@ -5800,7 +5788,7 @@ h3 {
   text-transform: uppercase;
 }
 
-/* ═══ Review Cards — Soft thought bubble style ═══ */
+/* 鈺愨晲鈺?Review Cards 鈥?Soft thought bubble style 鈺愨晲鈺?*/
 .bd-rv-card {
   position: relative;
   padding: var(--space-8) var(--space-10) var(--space-6) var(--space-10);
@@ -5926,7 +5914,7 @@ h3 {
   letter-spacing: .04em;
 }
 
-/* ── Share button ── */
+/* 鈹€鈹€ Share button 鈹€鈹€ */
 .bd-share-btn {
   width: 26px;
   height: 26px;
@@ -5971,7 +5959,7 @@ h3 {
   border-color: var(--accent-secondary);
 }
 
-/* ── Empty state ── */
+/* 鈹€鈹€ Empty state 鈹€鈹€ */
 .bd-empty-block {
   padding: var(--space-10) var(--space-4);
   text-align: center;
@@ -5983,7 +5971,7 @@ h3 {
   letter-spacing: .03em;
 }
 
-/* ═══ Notes TOC ═══ */
+/* 鈺愨晲鈺?Notes TOC 鈺愨晲鈺?*/
 .bd-toc {
   margin-bottom: var(--space-8);
 }
@@ -6034,7 +6022,7 @@ h3 {
   flex-shrink: 0;
 }
 
-/* ═══ Footer Nav ═══ */
+/* 鈺愨晲鈺?Footer Nav 鈺愨晲鈺?*/
 .bd-footer-nav {
   display: flex;
   justify-content: center;
@@ -6066,9 +6054,8 @@ h3 {
   background: var(--rule-thin);
 }
 
-/* ═══════════════════════════════════════
-   DARK THEME OVERRIDES
-   ═══════════════════════════════════════ */
+/* 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?   DARK THEME OVERRIDES
+   鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?*/
 
 [data-theme="dark"] .bd-hero-decor {
   opacity: 0.04;
@@ -6142,7 +6129,7 @@ h3 {
   color: #e8b830;
 }
 
-/* ── Notes Section Dark ── */
+/* 鈹€鈹€ Notes Section Dark 鈹€鈹€ */
 [data-theme="dark"] .bd-hl-card {
   background: var(--paper-warm);
   border-left-color: rgba(147,191,236,.35);
@@ -6203,9 +6190,8 @@ h3 {
   background: var(--paper-warm);
 }
 
-/* ═══════════════════════════════════════
-   RESPONSIVE
-   ═══════════════════════════════════════ */
+/* 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?   RESPONSIVE
+   鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?*/
 
 @media (max-width: 800px) {
   .bd-hero {
@@ -6300,11 +6286,10 @@ h3 {
 }
 
 
-/* ═══════════════════════════════════════════
-   NEW FEATURES: Covers / Badges / Timeline / Report
-   ═══════════════════════════════════════════ */
+/* 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?   NEW FEATURES: Covers / Badges / Timeline / Report
+   鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?*/
 
-/* ─── Cover Wall ─── */
+/* 鈹€鈹€鈹€ Cover Wall 鈹€鈹€鈹€ */
 .cw-container { max-width: 1400px; margin: 0 auto; padding: 48px 32px 80px; }
 .cw-hero { text-align: center; margin-bottom: 48px; position: relative; }
 .cw-hero-ornament { font-family: 'Noto Serif SC', serif; font-size: 120px; font-weight: 900; color: var(--accent); opacity: 0.06; position: absolute; top: -20px; left: 50%; transform: translateX(-50%); letter-spacing: 0.1em; user-select: none; }
@@ -6326,7 +6311,7 @@ h3 {
 .cw-overlay-badge { position: absolute; top: 8px; right: 8px; background: var(--accent); color: #fff; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
 .cw-item.finished::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); }
 
-/* ─── Badges (Deluxe Medal Style) ─── */
+/* 鈹€鈹€鈹€ Badges (Deluxe Medal Style) 鈹€鈹€鈹€ */
 .bg-container { max-width: 1200px; margin: 0 auto; padding: 48px 32px 80px; }
 .bg-hero { display: flex; align-items: center; justify-content: center; gap: 24px; margin-bottom: 56px; }
 .bg-laurel { width: 52px; height: 80px; flex-shrink: 0; color: var(--accent); }
@@ -6338,7 +6323,7 @@ h3 {
 .bg-hero-total { color: var(--ink-faint); font-size: 22px; font-weight: 400; }
 .bg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 56px 32px; }
 
-/* ═══ 勋章项 ═══ */
+/* 鈺愨晲鈺?鍕嬬珷椤?鈺愨晲鈺?*/
 .bg-medal-item { text-align: center; cursor: pointer; position: relative; transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
 .bg-medal-item:hover { transform: translateY(-8px) scale(1.03); }
 .bg-medal-item:hover .bg-medal { filter: drop-shadow(0 14px 32px rgba(184,148,63,0.4)); }
@@ -6347,29 +6332,29 @@ h3 {
 @keyframes breathe { 0%,100% { filter: drop-shadow(0 6px 16px rgba(184,148,63,0.2)); } 50% { filter: drop-shadow(0 8px 24px rgba(184,148,63,0.35)); } }
 @keyframes shineSweep { 0% { transform: translateX(-120%) skewX(-20deg); opacity: 0; } 30% { opacity: 0.7; } 100% { transform: translateX(120%) skewX(-20deg); opacity: 0; } }
 
-/* ═══ 绶带 ═══ */
+/* 鈺愨晲鈺?缁跺甫 鈺愨晲鈺?*/
 .bg-medal-ribbon { width: 90px; height: 56px; margin: 0 auto -8px; position: relative; z-index: 1; }
 .bg-medal-ribbon::before, .bg-medal-ribbon::after { content: ''; position: absolute; top: 0; width: 38px; height: 56px; }
 .bg-medal-ribbon::before { left: 6px; background: linear-gradient(90deg, var(--ribbon-dark), var(--ribbon-mid)); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%); transform: skewY(8deg); }
 .bg-medal-ribbon::after { right: 6px; background: linear-gradient(90deg, var(--ribbon-mid), var(--ribbon-light)); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%); transform: skewY(-8deg); }
 .bg-medal-ribbon-fold { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 20px; height: 24px; background: linear-gradient(180deg, var(--ribbon-light), var(--ribbon-dark)); border-radius: 0 0 8px 8px; z-index: 2; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
 
-/* ═══ 勋章主体 ═══ */
+/* 鈺愨晲鈺?鍕嬬珷涓讳綋 鈺愨晲鈺?*/
 .bg-medal { width: 224px; height: 256px; margin: 0 auto 16px; position: relative; transition: filter 0.4s; }
 
-/* 外圈金属 */
+/* 澶栧湀閲戝睘 */
 .bg-medal-outer { position: absolute; inset: 0;
   clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
   background: linear-gradient(145deg, #fae8a8 0%, #e8c84a 12%, #d4af37 30%, #b8942f 48%, #a07d28 52%, #d4af37 70%, #f5e1a0 88%, #e8c84a 100%);
   box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.2);
 }
-/* 内圈金属 */
+/* 鍐呭湀閲戝睘 */
 .bg-medal-inner { position: absolute; inset: 10px;
   clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
   background: linear-gradient(145deg, #e8c84a 0%, #d4af37 25%, #b8942f 50%, #d4af37 75%, #e8c84a 100%);
   box-shadow: inset 0 1px 2px rgba(255,255,255,0.3), inset 0 -1px 2px rgba(0,0,0,0.15);
 }
-/* 珠点纹 */
+/* 鐝犵偣绾?*/
 .bg-medal-studs { position: absolute; inset: 14px;
   clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
   background: radial-gradient(circle, rgba(255,240,200,0.9) 2px, transparent 2.5px);
@@ -6379,18 +6364,18 @@ h3 {
   opacity: 0.7;
 }
 
-/* 彩色核心 */
+/* 褰╄壊鏍稿績 */
 .bg-medal-core { position: absolute; inset: 22px; border-radius: 50%;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   overflow: hidden;
   box-shadow: inset 0 2px 8px rgba(255,255,255,0.3), inset 0 -4px 12px rgba(0,0,0,0.25), 0 0 0 2px rgba(212,175,55,0.5);
 }
-/* 中心高光 */
+/* 涓績楂樺厜 */
 .bg-medal-glow { position: absolute; inset: 0; border-radius: 50%;
   background: radial-gradient(ellipse at 32% 22%, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.2) 25%, transparent 55%);
   pointer-events: none;
 }
-/* 光泽扫过 */
+/* 鍏夋辰鎵繃 */
 .bg-medal-shine { position: absolute; inset: 22px; border-radius: 50%;
   background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.5) 50%, transparent 70%);
   pointer-events: none; transform: translateX(-120%) skewX(-20deg); opacity: 0;
@@ -6412,7 +6397,7 @@ h3 {
   backdrop-filter: blur(4px);
 }
 
-/* 6种颜色主题 - 核心 + 绶带 */
+/* 6绉嶉鑹蹭富棰?- 鏍稿績 + 缁跺甫 */
 .theme-0 { --ribbon-light: #8cc8f5; --ribbon-mid: #4a90d9; --ribbon-dark: #2a6ba8; }
 .theme-0 .bg-medal-core { background: radial-gradient(circle at 32% 28%, #8cc8f5 0%, #4a90d9 40%, #2a6ba8 75%, #1a4a78 100%); }
 .theme-1 { --ribbon-light: #7ee0c8; --ribbon-mid: #2fa892; --ribbon-dark: #1a7a68; }
@@ -6426,7 +6411,7 @@ h3 {
 .theme-5 { --ribbon-light: #9cccf5; --ribbon-mid: #5a9ad4; --ribbon-dark: #3068a8; }
 .theme-5 .bg-medal-core { background: radial-gradient(circle at 32% 28%, #9cccf5 0%, #5a9ad4 40%, #3068a8 75%, #1a4878 100%); }
 
-/* 未获得 - 灰化 */
+/* 鏈幏寰?- 鐏板寲 */
 .bg-medal-item.locked .bg-medal-ribbon::before { background: linear-gradient(90deg, #888, #aaa); }
 .bg-medal-item.locked .bg-medal-ribbon::after { background: linear-gradient(90deg, #aaa, #ccc); }
 .bg-medal-item.locked .bg-medal-ribbon-fold { background: linear-gradient(180deg, #ccc, #888); }
@@ -6441,7 +6426,7 @@ h3 {
 .bg-medal-item.locked .bg-medal { animation: none; }
 .bg-medal-item.locked:hover .bg-medal { filter: drop-shadow(0 6px 16px rgba(0,0,0,0.15)); }
 
-/* ═══ 弹窗 ═══ */
+/* 鈺愨晲鈺?寮圭獥 鈺愨晲鈺?*/
 .bg-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(8px); animation: bgFadeIn 0.25s ease; }
 @keyframes bgFadeIn { from { opacity: 0; } to { opacity: 1; } }
 .bg-modal-card { background: var(--card); border-radius: 28px; padding: 52px 40px 36px; max-width: 440px; width: 90%; text-align: center; position: relative; border: 1px solid var(--border); box-shadow: 0 32px 80px rgba(0,0,0,0.3); animation: bgCardIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
@@ -6518,7 +6503,7 @@ h3 {
   .bg-laurel { width: 38px; height: 58px; }
 }
 
-/* ─── Timeline ─── */
+/* 鈹€鈹€鈹€ Timeline 鈹€鈹€鈹€ */
 .tl-container { max-width: 900px; margin: 0 auto; padding: 48px 32px 80px; }
 .tl-hero { text-align: center; margin-bottom: 48px; position: relative; }
 .tl-hero-ornament { font-family: 'Noto Serif SC', serif; font-size: 120px; font-weight: 900; color: var(--accent); opacity: 0.06; position: absolute; top: -20px; left: 50%; transform: translateX(-50%); letter-spacing: 0.1em; user-select: none; }
@@ -6544,7 +6529,7 @@ h3 {
 .tl-book-author { font-size: 13px; color: var(--ink-muted); margin-bottom: 4px; }
 .tl-book-time { font-size: 12px; color: var(--accent); }
 
-/* ─── Annual Report ─── */
+/* 鈹€鈹€鈹€ Annual Report 鈹€鈹€鈹€ */
 .rp-container { max-width: 1100px; margin: 0 auto; padding: 48px 32px 80px; }
 .rp-hero { text-align: center; margin-bottom: 40px; }
 .rp-year-select { margin-bottom: 16px; display: flex; gap: 8px; justify-content: center; }
@@ -6607,9 +6592,9 @@ h3 {
 }
 
 
-/* ═══ Pixel Theme (Stardew Valley Style) ═══ */
+/* 鈺愨晲鈺?Pixel Theme (Stardew Valley Style) 鈺愨晲鈺?*/
 .pixel-theme {
-  /* 覆盖颜色变量 */
+  /* 瑕嗙洊棰滆壊鍙橀噺 */
   --paper: #f5e6c8;
   --paper-warm: #ede0b8;
   --ink: #3d2817;
@@ -6629,7 +6614,7 @@ h3 {
   --radius: 0 !important;
   --radius-sm: 0 !important;
   --radius-lg: 0 !important;
-  /* 像素字体 */
+  /* 鍍忕礌瀛椾綋 */
   --font-display: 'Press Start 2P', 'ZCOOL KuaiLe', cursive;
   --font-body: 'VT323', 'ZCOOL KuaiLe', monospace;
   --font-mono: 'VT323', monospace;
@@ -6649,12 +6634,12 @@ h3 {
   background: #f5e6c8 !important;
 }
 
-/* 所有圆角归零 */
+/* 鎵€鏈夊渾瑙掑綊闆?*/
 .pixel-theme * {
   border-radius: 0 !important;
 }
 
-/* ═══ 导航栏 ═══ */
+/* 鈺愨晲鈺?瀵艰埅鏍?鈺愨晲鈺?*/
 .pixel-theme .nav {
   background: #6b4423 !important;
   border-bottom: 4px solid #3d2817 !important;
@@ -6693,7 +6678,7 @@ h3 {
   font-size: 14px !important;
 }
 
-/* ═══ 标题 ═══ */
+/* 鈺愨晲鈺?鏍囬 鈺愨晲鈺?*/
 .pixel-theme h1, .pixel-theme h2, .pixel-theme h3, .pixel-theme h4 {
   font-family: 'ZCOOL KuaiLe', 'Press Start 2P', cursive !important;
   color: #3d2817 !important;
@@ -6712,7 +6697,7 @@ h3 {
   font-size: 18px !important;
 }
 
-/* ═══ 卡片/面板 ═══ */
+/* 鈺愨晲鈺?鍗＄墖/闈㈡澘 鈺愨晲鈺?*/
 .pixel-theme .card, .pixel-theme .panel, .pixel-theme article, .pixel-theme .stat-card,
 .pixel-theme .book-card, .pixel-theme .quote-card, .pixel-theme .notebook-card,
 .pixel-theme .author-card, .pixel-theme .booklist-card {
@@ -6732,7 +6717,7 @@ h3 {
     6px 6px 0 rgba(61,40,23,0.3) !important;
 }
 
-/* ═══ 按钮 ═══ */
+/* 鈺愨晲鈺?鎸夐挳 鈺愨晲鈺?*/
 .pixel-theme button, .pixel-theme .btn, .pixel-theme input[type="submit"],
 .pixel-theme .share-modal-btn {
   font-family: 'ZCOOL KuaiLe', cursive !important;
@@ -6761,7 +6746,7 @@ h3 {
     1px 1px 0 rgba(0,0,0,0.25) !important;
 }
 
-/* ═══ 输入框 ═══ */
+/* 鈺愨晲鈺?杈撳叆妗?鈺愨晲鈺?*/
 .pixel-theme input, .pixel-theme textarea, .pixel-theme select {
   font-family: 'VT323', 'ZCOOL KuaiLe', monospace !important;
   font-size: 18px !important;
@@ -6778,7 +6763,7 @@ h3 {
   box-shadow: inset 2px 2px 0 rgba(0,0,0,0.1), 0 0 0 2px #7bc04e !important;
 }
 
-/* ═══ 链接 ═══ */
+/* 鈺愨晲鈺?閾炬帴 鈺愨晲鈺?*/
 .pixel-theme a {
   color: #5a9c3e !important;
   text-decoration: none !important;
@@ -6788,7 +6773,7 @@ h3 {
   text-decoration: underline !important;
 }
 
-/* ═══ 进度条 ═══ */
+/* 鈺愨晲鈺?杩涘害鏉?鈺愨晲鈺?*/
 .pixel-theme .progress, .pixel-theme progress, .pixel-theme .progress-bar {
   background: #3d2817 !important;
   border: 2px solid #6b4423 !important;
@@ -6802,7 +6787,7 @@ h3 {
   box-shadow: inset -2px -2px 0 rgba(0,0,0,0.2), inset 2px 2px 0 rgba(255,255,255,0.2) !important;
 }
 
-/* ═══ 表格 ═══ */
+/* 鈺愨晲鈺?琛ㄦ牸 鈺愨晲鈺?*/
 .pixel-theme table {
   border-collapse: collapse !important;
   border: 3px solid #6b4423 !important;
@@ -6827,7 +6812,7 @@ h3 {
   background: #f5e6c8 !important;
 }
 
-/* ═══ 标签/徽章 ═══ */
+/* 鈺愨晲鈺?鏍囩/寰界珷 鈺愨晲鈺?*/
 .pixel-theme .tag, .pixel-theme .badge, .pixel-theme .label {
   font-family: 'ZCOOL KuaiLe', cursive !important;
   font-size: 13px !important;
@@ -6839,7 +6824,7 @@ h3 {
   border-radius: 0 !important;
 }
 
-/* ═══ 弹窗 ═══ */
+/* 鈺愨晲鈺?寮圭獥 鈺愨晲鈺?*/
 .pixel-theme .modal, .pixel-theme .share-modal-body {
   background: #fff8e8 !important;
   border: 4px solid #6b4423 !important;
@@ -6856,7 +6841,7 @@ h3 {
   font-family: 'ZCOOL KuaiLe', cursive !important;
 }
 
-/* ═══ 页脚 ═══ */
+/* 鈺愨晲鈺?椤佃剼 鈺愨晲鈺?*/
 .pixel-theme .footer {
   background: #6b4423 !important;
   border-top: 4px solid #3d2817 !important;
@@ -6866,7 +6851,7 @@ h3 {
   color: #f0c040 !important;
 }
 
-/* ═══ 回到顶部按钮 ═══ */
+/* 鈺愨晲鈺?鍥炲埌椤堕儴鎸夐挳 鈺愨晲鈺?*/
 .pixel-theme .back-to-top {
   background: #5a9c3e !important;
   border: 3px solid #3d7a28 !important;
@@ -6875,7 +6860,7 @@ h3 {
   font-size: 18px !important;
 }
 
-/* ═══ 页面加载器 ═══ */
+/* 鈺愨晲鈺?椤甸潰鍔犺浇鍣?鈺愨晲鈺?*/
 .pixel-theme .page-loader {
   background: #f5e6c8 !important;
 }
@@ -6889,27 +6874,27 @@ h3 {
   font-size: 12px !important;
 }
 
-/* ═══ 阅读进度条 ═══ */
+/* 鈺愨晲鈺?闃呰杩涘害鏉?鈺愨晲鈺?*/
 .pixel-theme .reading-progress-bar {
   background: #5a9c3e !important;
   height: 4px !important;
 }
 
-/* ═══ 书籍封面 ═══ */
+/* 鈺愨晲鈺?涔︾睄灏侀潰 鈺愨晲鈺?*/
 .pixel-theme .book-cover, .pixel-theme .cover-img {
   border: 3px solid #6b4423 !important;
   box-shadow: 3px 3px 0 rgba(61,40,23,0.25) !important;
   image-rendering: pixelated !important;
 }
 
-/* ═══ 统计数字 ═══ */
+/* 鈺愨晲鈺?缁熻鏁板瓧 鈺愨晲鈺?*/
 .pixel-theme .stat-value, .pixel-theme .number, .pixel-theme .big-number {
   font-family: 'Press Start 2P', cursive !important;
   color: #5a9c3e !important;
   text-shadow: 2px 2px 0 #3d7a28 !important;
 }
 
-/* ═══ 引用/金句 ═══ */
+/* 鈺愨晲鈺?寮曠敤/閲戝彞 鈺愨晲鈺?*/
 .pixel-theme blockquote, .pixel-theme .quote {
   background: #fff8e8 !important;
   border-left: 6px solid #f0c040 !important;
@@ -6921,21 +6906,21 @@ h3 {
   box-shadow: 4px 4px 0 rgba(61,40,23,0.15) !important;
 }
 
-/* ═══ 分隔线 ═══ */
+/* 鈺愨晲鈺?鍒嗛殧绾?鈺愨晲鈺?*/
 .pixel-theme hr, .pixel-theme .divider {
   border: none !important;
   border-top: 3px dashed #c4a574 !important;
   margin: 24px 0 !important;
 }
 
-/* ═══ 英雄区/头部 ═══ */
+/* 鈺愨晲鈺?鑻遍泟鍖?澶撮儴 鈺愨晲鈺?*/
 .pixel-theme .hero, .pixel-theme .page-header {
   background: linear-gradient(180deg, #87ceeb 0%, #c8e8b8 100%) !important;
   border-bottom: 4px solid #6b4423 !important;
   padding: 40px 24px !important;
 }
 
-/* ═══ 滚动条 ═══ */
+/* 鈺愨晲鈺?婊氬姩鏉?鈺愨晲鈺?*/
 .pixel-theme ::-webkit-scrollbar {
   width: 16px !important;
 }
@@ -6952,13 +6937,13 @@ h3 {
   background: #a86a3b !important;
 }
 
-/* ═══ 选中文字 ═══ */
+/* 鈺愨晲鈺?閫変腑鏂囧瓧 鈺愨晲鈺?*/
 .pixel-theme ::selection {
   background: #f0c040 !important;
   color: #3d2817 !important;
 }
 
-/* ═══ 响应式微调 ═══ */
+/* 鈺愨晲鈺?鍝嶅簲寮忓井璋?鈺愨晲鈺?*/
 @media (max-width: 768px) {
   .pixel-theme .nav-link {
     font-size: 14px !important;
@@ -6970,7 +6955,7 @@ h3 {
 
 
 
-/* ═══ Pixel Game UI ═══ */
+/* 鈺愨晲鈺?Pixel Game UI 鈺愨晲鈺?*/
 .pixel-theme .game-status-bar {
   background: #6b4423;
   border-bottom: 4px solid #3d2817;
@@ -7071,7 +7056,7 @@ h3 {
   color: #f5e6c8;
 }
 
-/* NPC 对话框 */
+/* NPC 瀵硅瘽妗?*/
 .pixel-theme .npc-dialog {
   display: flex;
   align-items: flex-end;
@@ -7134,7 +7119,7 @@ h3 {
   line-height: 1.5;
 }
 
-/* 两列布局 */
+/* 涓ゅ垪甯冨眬 */
 .pixel-theme .game-two-col {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -7145,7 +7130,7 @@ h3 {
   .pixel-theme .game-two-col { grid-template-columns: 1fr; }
 }
 
-/* 游戏面板 */
+/* 娓告垙闈㈡澘 */
 .pixel-theme .game-panel {
   background: #fff8e8;
   border: 4px solid #6b4423;
@@ -7163,7 +7148,7 @@ h3 {
   letter-spacing: 1px;
 }
 
-/* 任务列表 */
+/* 浠诲姟鍒楄〃 */
 .pixel-theme .task-list {
   display: flex;
   flex-direction: column;
@@ -7224,7 +7209,7 @@ h3 {
   white-space: nowrap;
 }
 
-/* 技能列表 */
+/* 鎶€鑳藉垪琛?*/
 .pixel-theme .skill-list {
   display: flex;
   flex-direction: column;
@@ -7274,7 +7259,7 @@ h3 {
   box-shadow: inset -1px -1px 0 rgba(0,0,0,0.2), inset 1px 1px 0 rgba(255,255,255,0.2);
 }
 
-/* 农场统计 */
+/* 鍐滃満缁熻 */
 .pixel-theme .farm-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -7309,7 +7294,7 @@ h3 {
   margin-top: 6px;
 }
 
-/* 阅读进度条 */
+/* 闃呰杩涘害鏉?*/
 .pixel-theme .reading-item-progress {
   height: 10px;
   background: #3d2817;
@@ -7332,7 +7317,7 @@ h3 {
   text-shadow: 1px 1px 0 #000;
 }
 
-/* 季节底部装饰 */
+/* 瀛ｈ妭搴曢儴瑁呴グ */
 .pixel-theme .season-footer {
   text-align: center;
   font-size: 24px;
@@ -7341,7 +7326,7 @@ h3 {
   opacity: 0.7;
 }
 
-/* 热力图像素化 */
+/* 鐑姏鍥惧儚绱犲寲 */
 .pixel-theme .heatmap-cell {
   border: 1px solid rgba(107,68,35,0.3) !important;
   border-radius: 0 !important;
@@ -7352,18 +7337,18 @@ h3 {
 .pixel-theme .heatmap-cell.level-3 { background: #5a9c3e !important; }
 .pixel-theme .heatmap-cell.level-4 { background: #3d7a28 !important; }
 
-/* ═══ End Pixel Game UI ═══ */
+/* 鈺愨晲鈺?End Pixel Game UI 鈺愨晲鈺?*/
 
 
 
-/* ═══ Stardew Achievements ═══ */
+/* 鈺愨晲鈺?Stardew Achievements 鈺愨晲鈺?*/
 .pixel-theme .sd-achievements {
-  max-width: 1100px;
+  max-width: var(--col-wide);
   margin: 0 auto;
   padding: 20px;
 }
 
-/* 顶部标题栏 */
+/* 椤堕儴鏍囬鏍?*/
 .pixel-theme .sd-ach-header {
   background: #6b4423;
   border: 4px solid #3d2817;
@@ -7410,7 +7395,7 @@ h3 {
   color: #d4b896;
 }
 
-/* 总进度条 */
+/* 鎬昏繘搴︽潯 */
 .pixel-theme .sd-ach-overall {
   background: #fff8e8;
   border: 3px solid #6b4423;
@@ -7438,7 +7423,7 @@ h3 {
   text-align: center;
 }
 
-/* 分类 */
+/* 鍒嗙被 */
 .pixel-theme .sd-ach-category {
   margin-bottom: 28px;
 }
@@ -7452,14 +7437,14 @@ h3 {
   letter-spacing: 1px;
 }
 
-/* 成就网格 */
+/* 鎴愬氨缃戞牸 */
 .pixel-theme .sd-ach-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 16px;
 }
 
-/* 成就卡片 */
+/* 鎴愬氨鍗＄墖 */
 .pixel-theme .sd-ach-card {
   background: #fff8e8;
   border: 3px solid #6b4423;
@@ -7478,7 +7463,7 @@ h3 {
   box-shadow: inset -3px -3px 0 #d4b896, inset 3px 3px 0 #fff, 2px 2px 0 rgba(61,40,23,0.2);
 }
 
-/* 卡片顶部（徽章区域） */
+/* 鍗＄墖椤堕儴锛堝窘绔犲尯鍩燂級 */
 .pixel-theme .sd-ach-card-top {
   background: #f5e6c8;
   border-bottom: 3px solid #c4a574;
@@ -7489,7 +7474,7 @@ h3 {
   position: relative;
 }
 
-/* 徽章主体 */
+/* 寰界珷涓讳綋 */
 .pixel-theme .sd-ach-badge {
   width: 56px;
   height: 56px;
@@ -7522,7 +7507,7 @@ h3 {
 .pixel-theme .rarity-gold .sd-ach-badge-frame { border-color: #daa520; background: rgba(218,165,32,0.2); }
 .pixel-theme .rarity-iridium .sd-ach-badge-frame { border-color: #8e44ad; background: rgba(142,68,173,0.2); }
 
-/* 稀有度标签 */
+/* 绋€鏈夊害鏍囩 */
 .pixel-theme .sd-ach-rarity {
   font-family: 'Press Start 2P', cursive;
   font-size: 8px;
@@ -7534,7 +7519,7 @@ h3 {
 .pixel-theme .rarity-gold .sd-ach-rarity { color: #b8860b; border-color: #daa520; background: rgba(218,165,32,0.15); }
 .pixel-theme .rarity-iridium .sd-ach-rarity { color: #6c3483; border-color: #8e44ad; background: rgba(142,68,173,0.15); }
 
-/* 卡片内容 */
+/* 鍗＄墖鍐呭 */
 .pixel-theme .sd-ach-card-body {
   padding: 12px 14px;
 }
@@ -7553,7 +7538,7 @@ h3 {
   line-height: 1.3;
 }
 
-/* 进度条 */
+/* 杩涘害鏉?*/
 .pixel-theme .sd-ach-progress {
   margin-top: 8px;
 }
@@ -7574,7 +7559,7 @@ h3 {
   text-align: right;
 }
 
-/* 未解锁状态 */
+/* 鏈В閿佺姸鎬?*/
 .pixel-theme .sd-ach-card.locked {
   opacity: 0.7;
 }
@@ -7585,7 +7570,7 @@ h3 {
   color: #8a7050;
 }
 
-/* 解锁标记 */
+/* 瑙ｉ攣鏍囪 */
 .pixel-theme .sd-ach-check {
   position: absolute;
   top: -8px;
@@ -7605,7 +7590,7 @@ h3 {
 }
 @keyframes pop { 0% { transform: scale(0); } 70% { transform: scale(1.2); } 100% { transform: scale(1); } }
 
-/* 已解锁卡片发光 */
+/* 宸茶В閿佸崱鐗囧彂鍏?*/
 .pixel-theme .sd-ach-card.unlocked.rarity-gold {
   box-shadow: inset -3px -3px 0 #d4b896, inset 3px 3px 0 #fff, 4px 4px 0 rgba(61,40,23,0.2), 0 0 12px rgba(218,165,32,0.3);
 }
@@ -7613,7 +7598,7 @@ h3 {
   box-shadow: inset -3px -3px 0 #d4b896, inset 3px 3px 0 #fff, 4px 4px 0 rgba(61,40,23,0.2), 0 0 12px rgba(142,68,173,0.4);
 }
 
-/* ═══ 弹窗 ═══ */
+/* 鈺愨晲鈺?寮圭獥 鈺愨晲鈺?*/
 .pixel-theme .sd-modal {
   display: none;
   position: fixed;
@@ -7718,18 +7703,18 @@ h3 {
   color: #8a7050;
 }
 
-/* ═══ End Stardew Achievements ═══ */
+/* 鈺愨晲鈺?End Stardew Achievements 鈺愨晲鈺?*/
 
 
 
-/* ═══ Stardew Inventory ═══ */
+/* 鈺愨晲鈺?Stardew Inventory 鈺愨晲鈺?*/
 .pixel-theme .sd-inventory {
-  max-width: 1200px;
+  max-width: var(--col-wide);
   margin: 0 auto;
   padding: 20px;
 }
 
-/* 仓库标题栏 */
+/* 浠撳簱鏍囬鏍?*/
 .pixel-theme .sd-inv-header {
   background: #6b4423;
   border: 4px solid #3d2817;
@@ -7773,7 +7758,7 @@ h3 {
   color: #d4b896;
 }
 
-/* 筛选菜单 */
+/* 绛涢€夎彍鍗?*/
 .pixel-theme .sd-inv-menu {
   display: flex;
   align-items: center;
@@ -7807,7 +7792,7 @@ h3 {
   box-shadow: inset -2px -2px 0 #3d7a28, inset 2px 2px 0 #7bc04e;
 }
 
-/* 下拉选择 */
+/* 涓嬫媺閫夋嫨 */
 .pixel-theme .sd-inv-select {
   font-family: 'ZCOOL KuaiLe', cursive;
   font-size: 14px;
@@ -7820,7 +7805,7 @@ h3 {
   outline: none;
 }
 
-/* 分类标签 */
+/* 鍒嗙被鏍囩 */
 .pixel-theme .sd-inv-cats {
   display: flex;
   flex-wrap: wrap;
@@ -7845,14 +7830,14 @@ h3 {
   box-shadow: inset -2px -2px 0 #4a3020, inset 2px 2px 0 #8a5a30;
 }
 
-/* 物品网格 */
+/* 鐗╁搧缃戞牸 */
 .pixel-theme .sd-item-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 16px;
 }
 
-/* 物品卡片 */
+/* 鐗╁搧鍗＄墖 */
 .pixel-theme .sd-item-card {
   background: #fff8e8;
   border: 3px solid #6b4423;
@@ -7870,17 +7855,17 @@ h3 {
   box-shadow: inset -3px -3px 0 #d4b896, inset 3px 3px 0 #fff, 6px 6px 0 rgba(61,40,23,0.25);
 }
 
-/* 稀有度边框 */
+/* 绋€鏈夊害杈规 */
 .pixel-theme .sd-item-card.rarity-common { border-color: #6b4423; }
 .pixel-theme .sd-item-card.rarity-uncommon { border-color: #5a9c3e; }
 .pixel-theme .sd-item-card.rarity-rare { border-color: #daa520; box-shadow: inset -3px -3px 0 #d4b896, inset 3px 3px 0 #fff, 4px 4px 0 rgba(61,40,23,0.2), 0 0 8px rgba(218,165,32,0.2); }
 .pixel-theme .sd-item-card.rarity-epic { border-color: #8e44ad; box-shadow: inset -3px -3px 0 #d4b896, inset 3px 3px 0 #fff, 4px 4px 0 rgba(61,40,23,0.2), 0 0 10px rgba(142,68,173,0.3); }
 
-/* 未获得状态 */
+/* 鏈幏寰楃姸鎬?*/
 .pixel-theme .sd-item-card.locked { opacity: 0.65; }
 .pixel-theme .sd-item-card.locked .sd-item-img { filter: grayscale(0.7) brightness(0.8); }
 
-/* 物品图标区 */
+/* 鐗╁搧鍥炬爣鍖?*/
 .pixel-theme .sd-item-icon-wrap {
   position: relative;
   display: block;
@@ -7903,7 +7888,7 @@ h3 {
   font-size: 48px;
 }
 
-/* 状态标记 */
+/* 鐘舵€佹爣璁?*/
 .pixel-theme .sd-item-badge {
   position: absolute;
   top: 6px;
@@ -7922,7 +7907,7 @@ h3 {
 .pixel-theme .sd-badge-blue { background: #5dade2; border-color: #2e86c1; color: #fff; }
 .pixel-theme .sd-badge-gray { background: #95a5a6; border-color: #7f8c8d; color: #fff; }
 
-/* 想读按钮 */
+/* 鎯宠鎸夐挳 */
 .pixel-theme .sd-item-wish {
   position: absolute;
   top: 6px;
@@ -7942,7 +7927,7 @@ h3 {
 .pixel-theme .sd-item-wish.active { background: #d4502a; color: #fff; }
 .pixel-theme .sd-item-wish:hover { transform: scale(1.1); }
 
-/* 进度条 */
+/* 杩涘害鏉?*/
 .pixel-theme .sd-item-progress {
   height: 8px;
   background: #3d2817;
@@ -7953,7 +7938,7 @@ h3 {
   background: repeating-linear-gradient(90deg, #5dade2 0px, #5dade2 5px, #85c1e9 5px, #85c1e9 10px);
 }
 
-/* 物品信息 */
+/* 鐗╁搧淇℃伅 */
 .pixel-theme .sd-item-info {
   padding: 10px 12px;
 }
@@ -7997,7 +7982,7 @@ h3 {
 .pixel-theme .sd-item-status.status-blue { color: #2e86c1; border-color: #5dade2; background: rgba(93,173,226,0.1); }
 .pixel-theme .sd-item-status.status-gray { color: #7f8c8d; border-color: #95a5a6; background: rgba(149,165,166,0.1); }
 
-/* 空状态 */
+/* 绌虹姸鎬?*/
 .pixel-theme .sd-inv-empty {
   text-align: center;
   padding: 60px 20px;
@@ -8012,18 +7997,18 @@ h3 {
   font-size: 18px;
 }
 
-/* ═══ End Stardew Inventory ═══ */
+/* 鈺愨晲鈺?End Stardew Inventory 鈺愨晲鈺?*/
 
 
 
-/* ═══ Stardew Stats ═══ */
+/* 鈺愨晲鈺?Stardew Stats 鈺愨晲鈺?*/
 .pixel-theme .sd-stats-page {
-  max-width: 1100px;
+  max-width: var(--col-wide);
   margin: 0 auto;
   padding: 20px;
 }
 
-/* 角色卡片 */
+/* 瑙掕壊鍗＄墖 */
 .pixel-theme .sd-char-card {
   background: linear-gradient(135deg, #6b4423 0%, #8a5a30 100%);
   border: 4px solid #3d2817;
@@ -8111,7 +8096,7 @@ h3 {
   color: #d4b896;
 }
 
-/* 属性面板 */
+/* 灞炴€ч潰鏉?*/
 .pixel-theme .sd-attr-panel {
   background: #fff8e8;
   border: 4px solid #6b4423;
@@ -8185,9 +8170,9 @@ h3 {
   color: #8a7050;
 }
 
-/* 图表区域 */
+/* 鍥捐〃鍖哄煙 */
 .pixel-theme .sd-charts-area {
-  /* 图表区域用游戏面板风格包装 */
+  /* 鍥捐〃鍖哄煙鐢ㄦ父鎴忛潰鏉块鏍煎寘瑁?*/
 }
 .pixel-theme .sd-charts-area .chart-block,
 .pixel-theme .sd-charts-area .time-masthead {
@@ -8213,15 +8198,15 @@ h3 {
   border-color: #b8860b !important;
 }
 
-/* ═══ End Stardew Stats ═══ */
+/* 鈺愨晲鈺?End Stardew Stats 鈺愨晲鈺?*/
 
 
 
-/* ═══ Stardew Pages ═══ */
+/* 鈺愨晲鈺?Stardew Pages 鈺愨晲鈺?*/
 
-/* ─── 冒险日志 Timeline ─── */
+/* 鈹€鈹€鈹€ 鍐掗櫓鏃ュ織 Timeline 鈹€鈹€鈹€ */
 .pixel-theme .sd-adventure-log {
-  max-width: 900px;
+  max-width: var(--col-wide);
   margin: 0 auto;
   padding: 20px;
 }
@@ -8378,9 +8363,9 @@ h3 {
   color: #5a9c3e;
 }
 
-/* ─── 通关结算 Report ─── */
+/* 鈹€鈹€鈹€ 閫氬叧缁撶畻 Report 鈹€鈹€鈹€ */
 .pixel-theme .sd-year-results {
-  max-width: 1000px;
+  max-width: var(--col-wide);
   margin: 0 auto;
   padding: 20px;
 }
@@ -8715,9 +8700,9 @@ h3 {
   color: #d4b896;
 }
 
-/* ─── 收藏品画廊 Covers ─── */
+/* 鈹€鈹€鈹€ 鏀惰棌鍝佺敾寤?Covers 鈹€鈹€鈹€ */
 .pixel-theme .sd-gallery {
-  max-width: 1200px;
+  max-width: var(--col-wide);
   margin: 0 auto;
   padding: 20px;
 }
@@ -8880,9 +8865,9 @@ h3 {
 .pixel-theme .sd-status-done { color: #7bc04e; border-color: #5a9c3e; }
 .pixel-theme .sd-status-new { color: #bdc3c7; border-color: #7f8c8d; }
 
-/* ─── NPC图鉴 Authors ─── */
+/* 鈹€鈹€鈹€ NPC鍥鹃壌 Authors 鈹€鈹€鈹€ */
 .pixel-theme .sd-npc-compendium {
-  max-width: 1100px;
+  max-width: var(--col-wide);
   margin: 0 auto;
   padding: 20px;
 }
@@ -9081,5 +9066,5 @@ h3 {
   font-size: 18px;
 }
 
-/* ═══ End Stardew Pages ═══ */
+/* 鈺愨晲鈺?End Stardew Pages 鈺愨晲鈺?*/
 
