@@ -1,156 +1,190 @@
 <!-- ═══════════════════════════════════════════
-   ANNUAL REPORT — Year in Reading
+   ANNUAL REPORT — Stardew Valley Year End Results
    ═══════════════════════════════════════════ -->
 
-<div class="rp-container">
+<%
+// 评级计算
+var score = 0;
+if (stats.bookCount >= 30) score += 30;
+else if (stats.bookCount >= 15) score += 20;
+else if (stats.bookCount >= 5) score += 10;
+if (stats.readTime >= 180000) score += 30;
+else if (stats.readTime >= 90000) score += 20;
+else if (stats.readTime >= 36000) score += 10;
+if (stats.readDays >= 200) score += 20;
+else if (stats.readDays >= 100) score += 15;
+else if (stats.readDays >= 50) score += 10;
+if (stats.highlightCount >= 500) score += 20;
+else if (stats.highlightCount >= 200) score += 10;
 
-  <header class="rp-hero">
-    <div class="rp-year-select">
-      <% availableYears.forEach(function(y) { %>
-      <a href="/report?year=<%= y %>" class="rp-year-link <%= y === year ? 'active' : '' %>"><%= y %></a>
-      <% }); %>
+var grade = score >= 80 ? 'S' : (score >= 60 ? 'A' : (score >= 40 ? 'B' : (score >= 20 ? 'C' : 'D')));
+var gradeColors = { S: '#f0c040', A: '#5a9c3e', B: '#5dade2', C: '#e67e22', D: '#95a5a6' };
+%>
+
+<div class="sd-year-results">
+
+  <!-- 年份选择 -->
+  <div class="sd-result-year-select">
+    <% availableYears.forEach(function(y) { %>
+    <a href="/report?year=<%= y %>" class="sd-year-tab <%= y === year ? 'active' : '' %>"><%= y %></a>
+    <% }); %>
+  </div>
+
+  <!-- 通关结算标题 -->
+  <header class="sd-result-header">
+    <div class="sd-result-title">🎮 <%= year %> 年度通关结算</div>
+    <div class="sd-result-grade">
+      <div class="sd-grade-badge" style="background: <%= gradeColors[grade] %>;">
+        <span class="sd-grade-letter"><%= grade %></span>
+      </div>
+      <div class="sd-grade-label">综合评级</div>
+      <div class="sd-grade-score"><%= score %> 分</div>
     </div>
-    <h1 class="rp-title"><%= year %> 年度阅读报告</h1>
-    <div class="rp-hero-rule"></div>
   </header>
 
-  <!-- ═══ 核心数据 ═══ -->
-  <section class="rp-stats">
-    <div class="rp-stat-card">
-      <div class="rp-stat-num"><%= stats.bookCount %></div>
-      <div class="rp-stat-label">读完书籍</div>
+  <!-- 核心战绩 -->
+  <section class="sd-result-stats">
+    <div class="sd-result-card">
+      <div class="sd-result-icon">📚</div>
+      <div class="sd-result-num"><%= stats.bookCount %></div>
+      <div class="sd-result-label">通关书籍</div>
     </div>
-    <div class="rp-stat-card">
-      <div class="rp-stat-num"><%= helpers.formatTime(stats.readTime) %></div>
-      <div class="rp-stat-label">阅读时长</div>
+    <div class="sd-result-card">
+      <div class="sd-result-icon">⏱️</div>
+      <div class="sd-result-num"><%= helpers.formatTime(stats.readTime) %></div>
+      <div class="sd-result-label">游戏时长</div>
     </div>
-    <div class="rp-stat-card">
-      <div class="rp-stat-num"><%= stats.readDays %></div>
-      <div class="rp-stat-label">阅读天数</div>
+    <div class="sd-result-card">
+      <div class="sd-result-icon">📅</div>
+      <div class="sd-result-num"><%= stats.readDays %></div>
+      <div class="sd-result-label">活跃天数</div>
     </div>
-    <div class="rp-stat-card">
-      <div class="rp-stat-num"><%= stats.highlightCount %></div>
-      <div class="rp-stat-label">划线标记</div>
+    <div class="sd-result-card">
+      <div class="sd-result-icon">🔖</div>
+      <div class="sd-result-num"><%= stats.highlightCount %></div>
+      <div class="sd-result-label">收集标记</div>
     </div>
-    <div class="rp-stat-card">
-      <div class="rp-stat-num"><%= stats.reviewCount %></div>
-      <div class="rp-stat-label">想法笔记</div>
+    <div class="sd-result-card">
+      <div class="sd-result-icon">💭</div>
+      <div class="sd-result-num"><%= stats.reviewCount %></div>
+      <div class="sd-result-label">成就想法</div>
     </div>
   </section>
 
-  <!-- ═══ 月度趋势 ═══ -->
-  <section class="rp-section">
-    <h2 class="rp-section-title">月度阅读节奏</h2>
-    <div class="rp-bars">
+  <!-- 月度节奏 -->
+  <section class="sd-result-section">
+    <div class="sd-section-title">📊 月度冒险节奏</div>
+    <div class="sd-month-bars">
       <% monthlyData.forEach(function(m) { %>
-      <div class="rp-bar-col">
-        <div class="rp-bar" style="height: <%= Math.max(4, Math.round(m.count / maxMonthly * 100)) %>%"></div>
-        <div class="rp-bar-label"><%= m.month %>月</div>
+      <div class="sd-month-col">
+        <div class="sd-month-bar" style="height: <%= Math.max(8, Math.round(m.count / maxMonthly * 100)) %>%"></div>
+        <div class="sd-month-label"><%= m.month %>月</div>
       </div>
       <% }); %>
     </div>
   </section>
 
-  <!-- ═══ 最爱作者 + 分类 ═══ -->
-  <div class="rp-two-col">
-    <section class="rp-section">
-      <h2 class="rp-section-title">最爱作者</h2>
-      <div class="rp-author-list">
+  <!-- 最爱作者 + 分类 -->
+  <div class="sd-result-two-col">
+    <section class="sd-result-section">
+      <div class="sd-section-title">👥 最佳队友（作者）</div>
+      <div class="sd-rank-list">
         <% topAuthors.forEach(function(a, i) { %>
-        <div class="rp-author-item">
-          <span class="rp-author-rank"><%= i + 1 %></span>
-          <span class="rp-author-name"><%= a.name %></span>
-          <span class="rp-author-meta"><%= a.count %> 本 · <%= helpers.formatTime(a.time) %></span>
+        <div class="sd-rank-item">
+          <span class="sd-rank-num sd-rank-<%= i < 3 ? 'top' : 'normal' %>"><%= i + 1 %></span>
+          <span class="sd-rank-name"><%= a.name %></span>
+          <span class="sd-rank-meta"><%= a.count %> 场 · <%= helpers.formatTime(a.time) %></span>
         </div>
         <% }); %>
       </div>
     </section>
 
-    <section class="rp-section">
-      <h2 class="rp-section-title">分类分布</h2>
-      <div class="rp-cat-list">
+    <section class="sd-result-section">
+      <div class="sd-section-title">🗺️ 探索区域（分类）</div>
+      <div class="sd-cat-list">
         <% categories.slice(0, 8).forEach(function(c) { %>
-        <div class="rp-cat-item">
-          <span class="rp-cat-name"><%= c.name %></span>
-          <div class="rp-cat-bar"><div class="rp-cat-fill" style="width: <%= Math.round(c.count / categories[0].count * 100) %>%"></div></div>
-          <span class="rp-cat-count"><%= c.count %></span>
+        <div class="sd-cat-item">
+          <span class="sd-cat-name"><%= c.name %></span>
+          <div class="sd-cat-bar"><div class="sd-cat-fill" style="width: <%= Math.round(c.count / categories[0].count * 100) %>%"></div></div>
+          <span class="sd-cat-count"><%= c.count %></span>
         </div>
         <% }); %>
       </div>
     </section>
   </div>
 
-  <!-- ═══ 阅读习惯 ═══ -->
-  <div class="rp-two-col">
-    <section class="rp-section">
-      <h2 class="rp-section-title">时段分布</h2>
-      <div class="rp-hour-grid">
+  <!-- 阅读习惯 -->
+  <div class="sd-result-two-col">
+    <section class="sd-result-section">
+      <div class="sd-section-title">🕐 活跃时段</div>
+      <div class="sd-hour-grid">
         <% hourData.forEach(function(cnt, h) { %>
-        <div class="rp-hour-cell" style="opacity: <%= 0.15 + (cnt / maxHour) * 0.85 %>" title="<%= h %>时: <%= cnt %>条">
-          <span class="rp-hour-num"><%= h %></span>
+        <div class="sd-hour-cell" style="opacity: <%= 0.15 + (cnt / maxHour) * 0.85 %>" title="<%= h %>时: <%= cnt %>条">
+          <span class="sd-hour-num"><%= h %></span>
         </div>
         <% }); %>
       </div>
-      <div class="rp-hour-legend">
-        <span>少</span>
-        <div class="rp-hour-legend-bars">
-          <span style="opacity:0.15"></span>
-          <span style="opacity:0.35"></span>
-          <span style="opacity:0.55"></span>
-          <span style="opacity:0.75"></span>
-          <span style="opacity:1"></span>
-        </div>
-        <span>多</span>
-      </div>
     </section>
 
-    <section class="rp-section">
-      <h2 class="rp-section-title">星期分布</h2>
-      <div class="rp-weekday-bars">
+    <section class="sd-result-section">
+      <div class="sd-section-title">📆 星期分布</div>
+      <div class="sd-weekday-bars">
         <% weekdayData.forEach(function(d) { %>
-        <div class="rp-weekday-col">
-          <div class="rp-weekday-bar" style="height: <%= Math.max(4, Math.round(d.count / Math.max.apply(null, weekdayData.map(function(x){return x.count;}) || [1]) * 100)) %>%"></div>
-          <div class="rp-weekday-label"><%= d.name %></div>
+        <div class="sd-weekday-col">
+          <div class="sd-weekday-bar" style="height: <%= Math.max(8, Math.round(d.count / Math.max.apply(null, weekdayData.map(function(x){return x.count;}) || [1]) * 100)) %>%"></div>
+          <div class="sd-weekday-label"><%= d.name %></div>
         </div>
         <% }); %>
       </div>
     </section>
   </div>
 
-  <!-- ═══ 之最 ═══ -->
-  <section class="rp-section">
-    <h2 class="rp-section-title">年度之最</h2>
-    <div class="rp-superlatives">
+  <!-- 年度之最 -->
+  <% if (longestDay || longestBook) { %>
+  <section class="sd-result-section">
+    <div class="sd-section-title">🏆 年度MVP</div>
+    <div class="sd-mvp-grid">
       <% if (longestDay) { %>
-      <div class="rp-super-card">
-        <div class="rp-super-label">最长单日</div>
-        <div class="rp-super-value"><%= longestDay.d %></div>
-        <div class="rp-super-sub"><%= longestDay.cnt %> 条标记</div>
+      <div class="sd-mvp-card">
+        <div class="sd-mvp-icon">⚡</div>
+        <div class="sd-mvp-label">最长单日</div>
+        <div class="sd-mvp-value"><%= longestDay.d %></div>
+        <div class="sd-mvp-sub"><%= longestDay.cnt %> 条标记</div>
       </div>
       <% } %>
       <% if (longestBook) { %>
-      <div class="rp-super-card">
-        <div class="rp-super-label">耗时最久</div>
-        <div class="rp-super-value"><%= longestBook.title %></div>
-        <div class="rp-super-sub"><%= helpers.formatTime(longestBook.read_time) %></div>
+      <div class="sd-mvp-card">
+        <div class="sd-mvp-icon">🐢</div>
+        <div class="sd-mvp-label">耗时最久</div>
+        <div class="sd-mvp-value"><%= longestBook.title %></div>
+        <div class="sd-mvp-sub"><%= helpers.formatTime(longestBook.read_time) %></div>
       </div>
       <% } %>
     </div>
   </section>
+  <% } %>
 
-  <!-- ═══ 书单 ═══ -->
-  <section class="rp-section">
-    <h2 class="rp-section-title">年度书单</h2>
-    <div class="rp-book-grid">
+  <!-- 年度书单 -->
+  <section class="sd-result-section">
+    <div class="sd-section-title">📖 通关图鉴（<%= books.length %> 本）</div>
+    <div class="sd-book-grid">
       <% books.forEach(function(book) { %>
-      <a href="/book/<%= book.id %>" class="rp-book-item">
+      <a href="/book/<%= book.id %>" class="sd-book-item">
         <% if (book.cover) { %>
-        <img src="<%= book.cover %>" alt="<%= book.title %>" class="rp-book-cover" loading="lazy">
+        <img src="<%= book.cover %>" alt="<%= book.title %>" class="sd-book-cover" loading="lazy">
+        <% } else { %>
+        <span class="sd-book-cover-fallback">📖</span>
         <% } %>
-        <div class="rp-book-title"><%= book.title %></div>
+        <div class="sd-book-title"><%= book.title %></div>
       </a>
       <% }); %>
     </div>
   </section>
+
+  <!-- 下一年预告 -->
+  <div class="sd-next-year">
+    <div class="sd-next-title">🔮 下一年目标</div>
+    <div class="sd-next-hint">继续冒险，解锁更多成就！</div>
+  </div>
 
 </div>

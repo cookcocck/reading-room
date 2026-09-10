@@ -8215,3 +8215,871 @@ h3 {
 
 /* ═══ End Stardew Stats ═══ */
 
+
+
+/* ═══ Stardew Pages ═══ */
+
+/* ─── 冒险日志 Timeline ─── */
+.pixel-theme .sd-adventure-log {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+.pixel-theme .sd-log-header {
+  background: #6b4423;
+  border: 4px solid #3d2817;
+  box-shadow: inset -4px -4px 0 #4a3020, inset 4px 4px 0 #8a5a30, 6px 6px 0 rgba(0,0,0,0.2);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.pixel-theme .sd-log-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 14px;
+  color: #f0c040;
+  text-shadow: 2px 2px 0 #3d2817;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pixel-theme .sd-log-stats { display: flex; gap: 20px; }
+.pixel-theme .sd-log-stat { text-align: center; }
+.pixel-theme .sd-log-num {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 14px;
+  color: #fff8e8;
+  display: block;
+  text-shadow: 2px 2px 0 #3d2817;
+}
+.pixel-theme .sd-log-label {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 12px;
+  color: #d4b896;
+}
+.pixel-theme .sd-log-chapter { margin-bottom: 32px; }
+.pixel-theme .sd-chapter-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 3px dashed #c4a574;
+}
+.pixel-theme .sd-chapter-badge {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  background: #5a9c3e;
+  color: #fff;
+  padding: 6px 10px;
+  border: 2px solid #3d7a28;
+  text-shadow: 1px 1px 0 #3d7a28;
+}
+.pixel-theme .sd-chapter-title {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 22px;
+  color: #6b4423;
+  margin: 0;
+}
+.pixel-theme .sd-chapter-count {
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+  color: #8a7050;
+  margin-left: auto;
+}
+.pixel-theme .sd-log-path { position: relative; padding-left: 32px; }
+.pixel-theme .sd-log-node {
+  position: relative;
+  margin-bottom: 16px;
+}
+.pixel-theme .sd-node-marker {
+  position: absolute;
+  left: -32px;
+  top: 12px;
+  width: 20px;
+  height: 20px;
+}
+.pixel-theme .sd-node-dot {
+  width: 16px;
+  height: 16px;
+  background: #f0c040;
+  border: 3px solid #6b4423;
+  box-shadow: 0 0 0 2px #f5e6c8;
+}
+.pixel-theme .sd-node-line {
+  position: absolute;
+  left: 7px;
+  top: 19px;
+  width: 4px;
+  height: calc(100% + 16px);
+  background: #c4a574;
+}
+.pixel-theme .sd-event-card {
+  background: #fff8e8;
+  border: 3px solid #6b4423;
+  box-shadow: inset -3px -3px 0 #d4b896, inset 3px 3px 0 #fff, 4px 4px 0 rgba(61,40,23,0.15);
+  padding: 12px 16px;
+}
+.pixel-theme .sd-event-date {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 9px;
+  color: #8a7050;
+  margin-bottom: 8px;
+}
+.pixel-theme .sd-event-book {
+  display: flex;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+.pixel-theme .sd-event-cover {
+  width: 50px;
+  height: 70px;
+  object-fit: cover;
+  border: 2px solid #6b4423;
+  flex-shrink: 0;
+}
+.pixel-theme .sd-event-cover-fallback {
+  width: 50px;
+  height: 70px;
+  background: #f5e6c8;
+  border: 2px solid #6b4423;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+.pixel-theme .sd-event-info { flex: 1; min-width: 0; }
+.pixel-theme .sd-event-title {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 17px;
+  color: #3d2817;
+  margin-bottom: 2px;
+}
+.pixel-theme .sd-event-author {
+  font-family: 'VT323', monospace;
+  font-size: 14px;
+  color: #8a7050;
+  margin-bottom: 4px;
+}
+.pixel-theme .sd-event-time {
+  font-family: 'VT323', monospace;
+  font-size: 13px;
+  color: #6b4423;
+  margin-bottom: 4px;
+}
+.pixel-theme .sd-event-reward {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 8px;
+  color: #5a9c3e;
+}
+
+/* ─── 通关结算 Report ─── */
+.pixel-theme .sd-year-results {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+.pixel-theme .sd-result-year-select {
+  display: flex;
+  gap: 0;
+  margin-bottom: 16px;
+  border: 3px solid #6b4423;
+  width: fit-content;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
+}
+.pixel-theme .sd-year-tab {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 11px;
+  padding: 10px 16px;
+  background: #fff8e8;
+  color: #6b4423;
+  text-decoration: none;
+  border-right: 2px solid #c4a574;
+}
+.pixel-theme .sd-year-tab:last-child { border-right: none; }
+.pixel-theme .sd-year-tab.active {
+  background: #5a9c3e;
+  color: #fff;
+  text-shadow: 1px 1px 0 #3d7a28;
+}
+.pixel-theme .sd-result-header {
+  background: linear-gradient(135deg, #6b4423, #8a5a30);
+  border: 4px solid #3d2817;
+  box-shadow: inset -4px -4px 0 #4a3020, inset 4px 4px 0 #a07040, 6px 6px 0 rgba(0,0,0,0.2);
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.pixel-theme .sd-result-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 16px;
+  color: #f0c040;
+  text-shadow: 3px 3px 0 #3d2817;
+}
+.pixel-theme .sd-result-grade { text-align: center; }
+.pixel-theme .sd-grade-badge {
+  width: 70px;
+  height: 70px;
+  border: 4px solid #3d2817;
+  box-shadow: inset -3px -3px 0 rgba(0,0,0,0.2), inset 3px 3px 0 rgba(255,255,255,0.3), 0 0 16px rgba(240,192,64,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 8px;
+}
+.pixel-theme .sd-grade-letter {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 32px;
+  color: #3d2817;
+  text-shadow: 2px 2px 0 rgba(255,255,255,0.3);
+}
+.pixel-theme .sd-grade-label {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 13px;
+  color: #d4b896;
+}
+.pixel-theme .sd-grade-score {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  color: #fff8e8;
+  margin-top: 4px;
+}
+.pixel-theme .sd-result-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.pixel-theme .sd-result-card {
+  background: #fff8e8;
+  border: 3px solid #6b4423;
+  box-shadow: inset -3px -3px 0 #d4b896, inset 3px 3px 0 #fff, 4px 4px 0 rgba(61,40,23,0.15);
+  padding: 16px;
+  text-align: center;
+}
+.pixel-theme .sd-result-icon { font-size: 28px; margin-bottom: 8px; }
+.pixel-theme .sd-result-num {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 14px;
+  color: #5a9c3e;
+  text-shadow: 2px 2px 0 #3d7a28;
+  margin-bottom: 4px;
+}
+.pixel-theme .sd-result-label {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 13px;
+  color: #8a7050;
+}
+.pixel-theme .sd-result-section {
+  background: #fff8e8;
+  border: 3px solid #6b4423;
+  box-shadow: inset -3px -3px 0 #d4b896, inset 3px 3px 0 #fff, 4px 4px 0 rgba(61,40,23,0.15);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+.pixel-theme .sd-section-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 11px;
+  color: #6b4423;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 2px dashed #c4a574;
+}
+.pixel-theme .sd-result-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+@media (max-width: 768px) {
+  .pixel-theme .sd-result-two-col { grid-template-columns: 1fr; }
+}
+.pixel-theme .sd-month-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 100px;
+  padding-top: 10px;
+}
+.pixel-theme .sd-month-col { flex: 1; text-align: center; }
+.pixel-theme .sd-month-bar {
+  background: linear-gradient(180deg, #7bc04e, #5a9c3e);
+  border: 1px solid #3d7a28;
+  min-height: 8px;
+  margin: 0 auto;
+  width: 80%;
+  box-shadow: inset -1px -1px 0 rgba(0,0,0,0.2);
+}
+.pixel-theme .sd-month-label {
+  font-family: 'VT323', monospace;
+  font-size: 12px;
+  color: #8a7050;
+  margin-top: 4px;
+}
+.pixel-theme .sd-rank-list { display: flex; flex-direction: column; gap: 8px; }
+.pixel-theme .sd-rank-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  background: #f5e6c8;
+  border: 2px solid #c4a574;
+}
+.pixel-theme .sd-rank-num {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #bdc3c7;
+  color: #fff;
+  border: 2px solid #7f8c8d;
+  flex-shrink: 0;
+}
+.pixel-theme .sd-rank-num.top { background: #f0c040; border-color: #daa520; color: #3d2817; }
+.pixel-theme .sd-rank-name {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 15px;
+  color: #3d2817;
+  flex: 1;
+}
+.pixel-theme .sd-rank-meta {
+  font-family: 'VT323', monospace;
+  font-size: 13px;
+  color: #8a7050;
+}
+.pixel-theme .sd-cat-list { display: flex; flex-direction: column; gap: 8px; }
+.pixel-theme .sd-cat-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pixel-theme .sd-cat-name {
+  font-family: 'VT323', monospace;
+  font-size: 14px;
+  color: #6b4423;
+  width: 70px;
+  flex-shrink: 0;
+}
+.pixel-theme .sd-cat-bar {
+  flex: 1;
+  height: 12px;
+  background: #3d2817;
+  border: 1px solid #2a1a0a;
+}
+.pixel-theme .sd-cat-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #5a9c3e, #7bc04e);
+}
+.pixel-theme .sd-cat-count {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 9px;
+  color: #8a7050;
+  width: 24px;
+  text-align: right;
+}
+.pixel-theme .sd-hour-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 4px;
+}
+.pixel-theme .sd-hour-cell {
+  aspect-ratio: 1;
+  background: #5a9c3e;
+  border: 1px solid #3d7a28;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pixel-theme .sd-hour-num {
+  font-family: 'VT323', monospace;
+  font-size: 11px;
+  color: #fff;
+  text-shadow: 1px 1px 0 #3d7a28;
+}
+.pixel-theme .sd-weekday-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 80px;
+}
+.pixel-theme .sd-weekday-col { flex: 1; text-align: center; }
+.pixel-theme .sd-weekday-bar {
+  background: linear-gradient(180deg, #f0c040, #daa520);
+  border: 1px solid #b8860b;
+  min-height: 8px;
+  margin: 0 auto;
+  width: 70%;
+}
+.pixel-theme .sd-weekday-label {
+  font-family: 'VT323', monospace;
+  font-size: 12px;
+  color: #8a7050;
+  margin-top: 4px;
+}
+.pixel-theme .sd-mvp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+.pixel-theme .sd-mvp-card {
+  background: linear-gradient(135deg, #f5e6c8, #ede0b8);
+  border: 3px solid #f0c040;
+  box-shadow: inset -2px -2px 0 #d4b896, inset 2px 2px 0 #fff, 0 0 12px rgba(240,192,64,0.3);
+  padding: 16px;
+  text-align: center;
+}
+.pixel-theme .sd-mvp-icon { font-size: 32px; margin-bottom: 8px; }
+.pixel-theme .sd-mvp-label {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 9px;
+  color: #daa520;
+  margin-bottom: 6px;
+}
+.pixel-theme .sd-mvp-value {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 18px;
+  color: #3d2817;
+  margin-bottom: 4px;
+}
+.pixel-theme .sd-mvp-sub {
+  font-family: 'VT323', monospace;
+  font-size: 14px;
+  color: #8a7050;
+}
+.pixel-theme .sd-book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 12px;
+}
+.pixel-theme .sd-book-item {
+  text-decoration: none;
+  color: inherit;
+  text-align: center;
+}
+.pixel-theme .sd-book-cover {
+  width: 100%;
+  aspect-ratio: 3/4;
+  object-fit: cover;
+  border: 3px solid #6b4423;
+  box-shadow: 2px 2px 0 rgba(61,40,23,0.2);
+}
+.pixel-theme .sd-book-cover-fallback {
+  width: 100%;
+  aspect-ratio: 3/4;
+  background: #f5e6c8;
+  border: 3px solid #6b4423;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+}
+.pixel-theme .sd-book-title {
+  font-family: 'VT323', monospace;
+  font-size: 13px;
+  color: #6b4423;
+  margin-top: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pixel-theme .sd-next-year {
+  text-align: center;
+  padding: 24px;
+  background: #6b4423;
+  border: 4px solid #3d2817;
+  box-shadow: inset -4px -4px 0 #4a3020, inset 4px 4px 0 #8a5a30;
+  margin-top: 20px;
+}
+.pixel-theme .sd-next-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 14px;
+  color: #f0c040;
+  text-shadow: 2px 2px 0 #3d2817;
+  margin-bottom: 8px;
+}
+.pixel-theme .sd-next-hint {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 16px;
+  color: #d4b896;
+}
+
+/* ─── 收藏品画廊 Covers ─── */
+.pixel-theme .sd-gallery {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+.pixel-theme .sd-gallery-header {
+  background: #6b4423;
+  border: 4px solid #3d2817;
+  box-shadow: inset -4px -4px 0 #4a3020, inset 4px 4px 0 #8a5a30, 6px 6px 0 rgba(0,0,0,0.2);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.pixel-theme .sd-gallery-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 14px;
+  color: #f0c040;
+  text-shadow: 2px 2px 0 #3d2817;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pixel-theme .sd-gallery-stats { display: flex; gap: 20px; }
+.pixel-theme .sd-gallery-stat { text-align: center; }
+.pixel-theme .sd-gallery-num {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 13px;
+  color: #fff8e8;
+  display: block;
+  text-shadow: 2px 2px 0 #3d2817;
+}
+.pixel-theme .sd-gallery-num.sd-green { color: #7bc04e; }
+.pixel-theme .sd-gallery-label {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 11px;
+  color: #d4b896;
+}
+.pixel-theme .sd-gallery-progress {
+  background: #fff8e8;
+  border: 3px solid #6b4423;
+  box-shadow: inset -2px -2px 0 #d4b896, inset 2px 2px 0 #fff, 4px 4px 0 rgba(61,40,23,0.15);
+  padding: 12px 16px;
+  margin-bottom: 20px;
+}
+.pixel-theme .sd-progress-bar {
+  height: 16px;
+  background: #3d2817;
+  border: 2px solid #2a1a0a;
+  margin-bottom: 6px;
+}
+.pixel-theme .sd-progress-fill {
+  height: 100%;
+  background: repeating-linear-gradient(90deg, #f0c040 0px, #f0c040 8px, #ffd700 8px, #ffd700 16px);
+}
+.pixel-theme .sd-progress-text {
+  font-family: 'VT323', monospace;
+  font-size: 15px;
+  color: #6b4423;
+  text-align: center;
+}
+.pixel-theme .sd-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+}
+.pixel-theme .sd-gallery-item {
+  animation: galleryFadeIn 0.3s both;
+}
+@keyframes galleryFadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+.pixel-theme .sd-gallery-link { text-decoration: none; color: inherit; }
+.pixel-theme .sd-gallery-frame {
+  position: relative;
+  background: #fff8e8;
+  border: 4px solid #6b4423;
+  box-shadow: inset -3px -3px 0 #d4b896, inset 3px 3px 0 #fff, 4px 4px 0 rgba(61,40,23,0.2);
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  transition: transform 0.1s;
+}
+.pixel-theme .sd-gallery-item:hover .sd-gallery-frame {
+  transform: translate(-2px, -2px);
+  box-shadow: inset -3px -3px 0 #d4b896, inset 3px 3px 0 #fff, 6px 6px 0 rgba(61,40,23,0.25);
+}
+.pixel-theme .sd-gallery-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pixel-theme .sd-gallery-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  background: #f5e6c8;
+}
+.pixel-theme .sd-gallery-item.uncollected .sd-gallery-cover {
+  filter: grayscale(0.8) brightness(0.7);
+}
+.pixel-theme .sd-gallery-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 24px;
+  height: 24px;
+  background: #5a9c3e;
+  border: 2px solid #3d7a28;
+  color: #fff;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+}
+.pixel-theme .sd-gallery-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(61,40,23,0.92);
+  padding: 10px;
+  transform: translateY(100%);
+  transition: transform 0.15s;
+}
+.pixel-theme .sd-gallery-item:hover .sd-gallery-overlay {
+  transform: translateY(0);
+}
+.pixel-theme .sd-gallery-name {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 14px;
+  color: #f0c040;
+  margin-bottom: 2px;
+}
+.pixel-theme .sd-gallery-author {
+  font-family: 'VT323', monospace;
+  font-size: 13px;
+  color: #d4b896;
+  margin-bottom: 4px;
+}
+.pixel-theme .sd-gallery-time {
+  font-family: 'VT323', monospace;
+  font-size: 12px;
+  color: #bdc3c7;
+  margin-bottom: 4px;
+}
+.pixel-theme .sd-gallery-status {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 8px;
+  display: inline-block;
+  padding: 3px 6px;
+  border: 1px solid;
+}
+.pixel-theme .sd-status-done { color: #7bc04e; border-color: #5a9c3e; }
+.pixel-theme .sd-status-new { color: #bdc3c7; border-color: #7f8c8d; }
+
+/* ─── NPC图鉴 Authors ─── */
+.pixel-theme .sd-npc-compendium {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+}
+.pixel-theme .sd-npc-header {
+  background: #6b4423;
+  border: 4px solid #3d2817;
+  box-shadow: inset -4px -4px 0 #4a3020, inset 4px 4px 0 #8a5a30, 6px 6px 0 rgba(0,0,0,0.2);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.pixel-theme .sd-npc-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 14px;
+  color: #f0c040;
+  text-shadow: 2px 2px 0 #3d2817;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pixel-theme .sd-npc-stats { display: flex; gap: 20px; }
+.pixel-theme .sd-npc-stat { text-align: center; }
+.pixel-theme .sd-npc-num {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 12px;
+  color: #fff8e8;
+  display: block;
+  text-shadow: 2px 2px 0 #3d2817;
+}
+.pixel-theme .sd-npc-label {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 11px;
+  color: #d4b896;
+}
+.pixel-theme .sd-npc-toolbar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.pixel-theme .sd-npc-search {
+  flex: 1;
+  min-width: 200px;
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 15px;
+  padding: 10px 14px;
+  background: #fff8e8;
+  border: 3px solid #6b4423;
+  color: #3d2817;
+  box-shadow: inset -2px -2px 0 #d4b896, inset 2px 2px 0 #fff;
+  outline: none;
+}
+.pixel-theme .sd-npc-search:focus { border-color: #5a9c3e; }
+.pixel-theme .sd-npc-sort {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 14px;
+  padding: 10px 14px;
+  background: #fff8e8;
+  border: 3px solid #6b4423;
+  color: #3d2817;
+  box-shadow: inset -2px -2px 0 #d4b896, inset 2px 2px 0 #fff;
+  cursor: pointer;
+  outline: none;
+}
+.pixel-theme .sd-npc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.pixel-theme .sd-npc-card {
+  background: #fff8e8;
+  border: 3px solid #6b4423;
+  box-shadow: inset -3px -3px 0 #d4b896, inset 3px 3px 0 #fff, 4px 4px 0 rgba(61,40,23,0.15);
+  display: flex;
+  gap: 14px;
+  padding: 14px;
+  animation: npcFadeIn 0.3s both;
+  transition: transform 0.1s;
+}
+@keyframes npcFadeIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.pixel-theme .sd-npc-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: inset -3px -3px 0 #d4b896, inset 3px 3px 0 #fff, 6px 6px 0 rgba(61,40,23,0.2);
+}
+.pixel-theme .sd-npc-card.rank-legendary {
+  border-color: #8e44ad;
+  box-shadow: inset -3px -3px 0 #d4b896, inset 3px 3px 0 #fff, 4px 4px 0 rgba(61,40,23,0.15), 0 0 10px rgba(142,68,173,0.3);
+}
+.pixel-theme .sd-npc-card.rank-epic {
+  border-color: #daa520;
+  box-shadow: inset -3px -3px 0 #d4b896, inset 3px 3px 0 #fff, 4px 4px 0 rgba(61,40,23,0.15), 0 0 8px rgba(218,165,32,0.25);
+}
+.pixel-theme .sd-npc-avatar-area {
+  position: relative;
+  flex-shrink: 0;
+}
+.pixel-theme .sd-npc-avatar {
+  width: 64px;
+  height: 64px;
+  background: #f5e6c8;
+  border: 3px solid #6b4423;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pixel-theme .sd-npc-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pixel-theme .sd-npc-avatar-fallback { font-size: 28px; }
+.pixel-theme .sd-npc-rank-badge {
+  position: absolute;
+  bottom: -6px;
+  right: -6px;
+  font-size: 12px;
+  background: #f0c040;
+  border: 2px solid #6b4423;
+  padding: 1px 4px;
+  line-height: 1;
+}
+.pixel-theme .sd-npc-info { flex: 1; min-width: 0; }
+.pixel-theme .sd-npc-name {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 18px;
+  color: #3d2817;
+  margin: 0 0 4px 0;
+}
+.pixel-theme .sd-npc-meta {
+  font-family: 'VT323', monospace;
+  font-size: 14px;
+  color: #8a7050;
+  margin-bottom: 8px;
+}
+.pixel-theme .sd-npc-affinity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.pixel-theme .sd-affinity-bar {
+  flex: 1;
+  height: 10px;
+  background: #3d2817;
+  border: 1px solid #2a1a0a;
+}
+.pixel-theme .sd-affinity-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #d4502a, #e74c3c);
+}
+.pixel-theme .sd-affinity-text {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 8px;
+  color: #d4502a;
+  width: 36px;
+  text-align: right;
+}
+.pixel-theme .sd-npc-works {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.pixel-theme .sd-npc-work {
+  font-family: 'VT323', monospace;
+  font-size: 13px;
+  color: #6b4423;
+  padding: 2px 0;
+}
+.pixel-theme .sd-npc-work a {
+  color: #6b4423;
+  text-decoration: none;
+}
+.pixel-theme .sd-npc-work a:hover { color: #5a9c3e; }
+.pixel-theme .sd-npc-work-more {
+  font-family: 'VT323', monospace;
+  font-size: 12px;
+  color: #8a7050;
+  font-style: italic;
+}
+.pixel-theme .sd-npc-empty {
+  text-align: center;
+  padding: 40px;
+  color: #8a7050;
+}
+.pixel-theme .sd-npc-empty-icon { font-size: 48px; margin-bottom: 12px; }
+.pixel-theme .sd-npc-empty p {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 18px;
+}
+
+/* ═══ End Stardew Pages ═══ */
+

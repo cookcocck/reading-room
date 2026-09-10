@@ -1,40 +1,62 @@
 <!-- ═══════════════════════════════════════════
-   TIMELINE — Reading Journey
+   TIMELINE — Stardew Valley Adventure Log
    ═══════════════════════════════════════════ -->
 
-<div class="tl-container">
+<div class="sd-adventure-log">
 
-  <header class="tl-hero">
-    <div class="tl-hero-ornament" aria-hidden="true">时间线</div>
-    <h1 class="tl-hero-title">阅读时间线</h1>
-    <p class="tl-hero-lede">
-      <span>共读完 <strong><%= total %></strong> 本书</span>
-    </p>
-    <div class="tl-hero-rule"></div>
+  <!-- 标题栏 -->
+  <header class="sd-log-header">
+    <div class="sd-log-title">
+      <span class="sd-log-icon">📜</span>
+      <span>冒险日志</span>
+    </div>
+    <div class="sd-log-stats">
+      <div class="sd-log-stat">
+        <span class="sd-log-num"><%= total %></span>
+        <span class="sd-log-label">已通关</span>
+      </div>
+      <div class="sd-log-stat">
+        <span class="sd-log-num"><%= years.length %></span>
+        <span class="sd-log-label">章节</span>
+      </div>
+    </div>
   </header>
 
-  <% years.forEach(function(year) { %>
-  <section class="tl-year-section">
-    <h2 class="tl-year"><%= year %></h2>
-    <div class="tl-year-count"><%= byYear[year].length %> 本</div>
+  <% years.forEach(function(year, yi) { %>
+  <!-- 年份章节 -->
+  <section class="sd-log-chapter">
+    <div class="sd-chapter-header">
+      <div class="sd-chapter-badge">第 <%= yi + 1 %> 章</div>
+      <h2 class="sd-chapter-title"><%= year %> 年</h2>
+      <div class="sd-chapter-count"><%= byYear[year].length %> 个成就</div>
+    </div>
 
-    <div class="tl-list">
-      <% byYear[year].forEach(function(book, idx) { %>
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div class="tl-line"></div>
-        <div class="tl-content">
-          <div class="tl-date"><%= helpers.formatTimestamp(book.last_read_time) %></div>
-          <a href="/book/<%= book.id %>" class="tl-book">
+    <div class="sd-log-path">
+      <% byYear[year].forEach(function(book, idx) {
+        var isLast = idx === byYear[year].length - 1;
+      %>
+      <div class="sd-log-node">
+        <!-- 路径点 -->
+        <div class="sd-node-marker">
+          <div class="sd-node-dot"></div>
+          <% if (!isLast) { %><div class="sd-node-line"></div><% } %>
+        </div>
+        <!-- 事件卡片 -->
+        <div class="sd-event-card">
+          <div class="sd-event-date">⚔️ <%= helpers.formatTimestamp(book.last_read_time) %></div>
+          <a href="/book/<%= book.id %>" class="sd-event-book">
             <% if (book.cover) { %>
-            <img src="<%= book.cover %>" alt="" class="tl-cover" loading="lazy">
+            <img src="<%= book.cover %>" alt="" class="sd-event-cover" loading="lazy">
+            <% } else { %>
+            <span class="sd-event-cover-fallback">📖</span>
             <% } %>
-            <div class="tl-book-info">
-              <div class="tl-book-title"><%= book.title %></div>
-              <div class="tl-book-author"><%= book.author %></div>
+            <div class="sd-event-info">
+              <div class="sd-event-title"><%= book.title %></div>
+              <div class="sd-event-author"><%= book.author %></div>
               <% if (book.read_time > 0) { %>
-              <div class="tl-book-time">阅读 <%= helpers.formatTime(book.read_time) %></div>
+              <div class="sd-event-time">⏱ 用时 <%= helpers.formatTime(book.read_time) %></div>
               <% } %>
+              <div class="sd-event-reward">🏆 通关奖励 +<%= Math.max(10, Math.round(book.read_time / 3600 * 5)) %> EXP</div>
             </div>
           </a>
         </div>

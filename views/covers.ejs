@@ -1,34 +1,68 @@
 <!-- ═══════════════════════════════════════════
-   COVER WALL — Book Cover Gallery
+   COVER WALL — Stardew Valley Collection Gallery
    ═══════════════════════════════════════════ -->
 
-<div class="cw-container">
+<div class="sd-gallery">
 
-  <header class="cw-hero">
-    <div class="cw-hero-ornament" aria-hidden="true">封面</div>
-    <h1 class="cw-hero-title">封面墙</h1>
-    <p class="cw-hero-lede">
-      <span><%= total %> 册藏书</span>
-      <span class="cw-hero-sep">·</span>
-      <span><%= finished %> 册已读完</span>
-    </p>
-    <div class="cw-hero-rule"></div>
+  <!-- 标题栏 -->
+  <header class="sd-gallery-header">
+    <div class="sd-gallery-title">
+      <span class="sd-gallery-icon">🖼️</span>
+      <span>收藏品画廊</span>
+    </div>
+    <div class="sd-gallery-stats">
+      <div class="sd-gallery-stat">
+        <span class="sd-gallery-num"><%= total %></span>
+        <span class="sd-gallery-label">总藏品</span>
+      </div>
+      <div class="sd-gallery-stat">
+        <span class="sd-gallery-num sd-green"><%= finished %></span>
+        <span class="sd-gallery-label">已收集</span>
+      </div>
+      <div class="sd-gallery-stat">
+        <span class="sd-gallery-num"><%= Math.round(finished / total * 100) %>%</span>
+        <span class="sd-gallery-label">完成度</span>
+      </div>
+    </div>
   </header>
 
-  <div class="cw-grid">
-    <% books.forEach(function(book) { %>
-    <div class="cw-item <%= book.finished ? 'finished' : '' %>">
-      <a href="/book/<%= book.id %>" class="cw-cover-link">
-        <img src="<%= book.cover %>" alt="<%= book.title %>" class="cw-cover" loading="lazy">
-        <div class="cw-overlay">
-          <div class="cw-overlay-title"><%= book.title %></div>
-          <div class="cw-overlay-author"><%= book.author %></div>
-          <% if (book.read_time > 0) { %>
-          <div class="cw-overlay-time"><%= helpers.formatTime(book.read_time) %></div>
+  <!-- 收集进度 -->
+  <div class="sd-gallery-progress">
+    <div class="sd-progress-bar">
+      <div class="sd-progress-fill" style="width: <%= finished / total * 100 %>%"></div>
+    </div>
+    <div class="sd-progress-text">收集进度 <%= finished %> / <%= total %></div>
+  </div>
+
+  <!-- 藏品网格 -->
+  <div class="sd-gallery-grid">
+    <% books.forEach(function(book, idx) { %>
+    <div class="sd-gallery-item <%= book.finished ? 'collected' : 'uncollected' %>"
+         style="animation-delay: <%= Math.min(idx * 20, 500) %>ms">
+      <a href="/book/<%= book.id %>" class="sd-gallery-link">
+        <div class="sd-gallery-frame">
+          <% if (book.cover) { %>
+          <img src="<%= book.cover %>" alt="<%= book.title %>" class="sd-gallery-cover" loading="lazy">
+          <% } else { %>
+          <span class="sd-gallery-placeholder">📖</span>
           <% } %>
+          <!-- 收集标记 -->
           <% if (book.finished) { %>
-          <div class="cw-overlay-badge">已读完</div>
+          <div class="sd-gallery-badge">✓</div>
           <% } %>
+          <!-- 悬停信息 -->
+          <div class="sd-gallery-overlay">
+            <div class="sd-gallery-name"><%= book.title %></div>
+            <div class="sd-gallery-author"><%= book.author %></div>
+            <% if (book.read_time > 0) { %>
+            <div class="sd-gallery-time">⏱ <%= helpers.formatTime(book.read_time) %></div>
+            <% } %>
+            <% if (book.finished) { %>
+            <div class="sd-gallery-status sd-status-done">已收集</div>
+            <% } else { %>
+            <div class="sd-gallery-status sd-status-new">未收集</div>
+            <% } %>
+          </div>
         </div>
       </a>
     </div>

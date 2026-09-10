@@ -1,69 +1,90 @@
-<div class="au-container">
+<!-- ═══════════════════════════════════════════
+   AUTHORS — Stardew Valley NPC Compendium
+   ═══════════════════════════════════════════ -->
 
-  <!-- Hero -->
-  <header class="au-hero">
-    <p class="au-hero-kicker">作者图谱</p>
-    <h1 class="au-hero-title">所有读过的作者</h1>
-    <div class="au-hero-stats">
-      <span class="au-hero-stat"><strong><%= totalAuthors %></strong> 位作者</span>
-      <span class="au-hero-sep">·</span>
-      <span class="au-hero-stat"><strong><%= totalBooks %></strong> 本书</span>
-      <span class="au-hero-sep">·</span>
-      <span class="au-hero-stat"><strong><%= helpers.formatTime(totalTime) %></strong> 阅读</span>
+<div class="sd-npc-compendium">
+
+  <!-- 标题栏 -->
+  <header class="sd-npc-header">
+    <div class="sd-npc-title">
+      <span class="sd-npc-icon">👥</span>
+      <span>NPC图鉴</span>
+    </div>
+    <div class="sd-npc-stats">
+      <div class="sd-npc-stat">
+        <span class="sd-npc-num"><%= totalAuthors %></span>
+        <span class="sd-npc-label">已遇见</span>
+      </div>
+      <div class="sd-npc-stat">
+        <span class="sd-npc-num"><%= totalBooks %></span>
+        <span class="sd-npc-label">互动次数</span>
+      </div>
+      <div class="sd-npc-stat">
+        <span class="sd-npc-num"><%= helpers.formatTime(totalTime) %></span>
+        <span class="sd-npc-label">总交流</span>
+      </div>
     </div>
   </header>
 
-  <!-- Filter -->
-  <div class="au-toolbar">
-    <input class="au-search" id="au-search" type="search" placeholder="搜索作者…" autocomplete="off" />
-    <select class="au-sort" id="au-sort">
-      <option value="count">按书数排序</option>
-      <option value="time">按时长排序</option>
-      <option value="name">按姓名排序</option>
+  <!-- 搜索筛选 -->
+  <div class="sd-npc-toolbar">
+    <input class="sd-npc-search" id="au-search" type="search" placeholder="🔍 搜索NPC…" autocomplete="off" />
+    <select class="sd-npc-sort" id="au-sort">
+      <option value="count">按好感度</option>
+      <option value="time">按交流时长</option>
+      <option value="name">按姓名</option>
     </select>
   </div>
 
-  <!-- Grid -->
-  <div class="au-grid" id="au-grid">
-    <% authors.forEach(function(author, idx) { %>
-    <div class="au-card" data-author="<%= author.author %>" data-count="<%= author.books.length %>" data-time="<%= author.totalReadTime %>"
-         style="animation-delay: <%= Math.min(idx * 0.03, 1.2) %>s">
-      <!-- Cover collage (up to 4 covers) -->
-      <% var covers = author.books.filter(function(b){ return b.cover; }).slice(0, 4); %>
-      <% var colClass = covers.length === 1 ? 'au-collage--1' : covers.length === 2 ? 'au-collage--2' : covers.length === 3 ? 'au-collage--3' : 'au-collage--4'; %>
-      <div class="au-collage">
-        <div class="au-collage-inner <%= colClass %>">
-          <% covers.forEach(function(b) { %>
-          <div class="au-collage-cell"><img src="<%= b.cover %>" alt="<%= b.title %>" loading="lazy" /></div>
-          <% }); %>
-          <% for (var i = covers.length; i < Math.min(4, author.books.length > 1 ? 4 : 1); i++) { %>
-          <div class="au-collage-cell au-collage-placeholder">📖</div>
+  <!-- NPC网格 -->
+  <div class="sd-npc-grid" id="au-grid">
+    <% authors.forEach(function(author, idx) {
+      var affinity = Math.min(100, author.books.length * 10);
+      var npcRank = author.books.length >= 5 ? 'legendary' : (author.books.length >= 3 ? 'epic' : (author.books.length >= 2 ? 'rare' : 'common'));
+    %>
+    <div class="sd-npc-card rank-<%= npcRank %>" data-author="<%= author.author %>" data-count="<%= author.books.length %>" data-time="<%= author.totalReadTime %>"
+         style="animation-delay: <%= Math.min(idx * 30, 600) %>ms">
+      <!-- NPC头像区 -->
+      <div class="sd-npc-avatar-area">
+        <div class="sd-npc-avatar">
+          <% var covers = author.books.filter(function(b){ return b.cover; }).slice(0, 1); %>
+          <% if (covers.length > 0) { %>
+          <img src="<%= covers[0].cover %>" alt="" class="sd-npc-avatar-img" loading="lazy">
+          <% } else { %>
+          <span class="sd-npc-avatar-fallback">👤</span>
           <% } %>
         </div>
+        <div class="sd-npc-rank-badge"><%= npcRank === 'legendary' ? '★★★' : (npcRank === 'epic' ? '★★' : (npcRank === 'rare' ? '★' : '')) %></div>
       </div>
-      <!-- Info -->
-      <div class="au-card-body">
-        <h2 class="au-card-name"><%= author.author %></h2>
-        <p class="au-card-meta">
-          <span><%= author.books.length %> 本</span>
+
+      <!-- NPC信息 -->
+      <div class="sd-npc-info">
+        <h2 class="sd-npc-name"><%= author.author %></h2>
+        <div class="sd-npc-meta">
+          <span>💝 <%= author.books.length %> 心</span>
           <% if (author.totalReadTime > 0) { %>
-          <span class="au-sep">·</span>
-          <span><%= helpers.formatTime(author.totalReadTime) %></span>
+          <span>· ⏱ <%= helpers.formatTime(author.totalReadTime) %></span>
           <% } %>
           <% if (author.finishedCount > 0) { %>
-          <span class="au-sep">·</span>
-          <span><%= author.finishedCount %> 本完成</span>
+          <span>· ✅ <%= author.finishedCount %> 任务</span>
           <% } %>
-        </p>
-        <!-- Mini book list -->
-        <ul class="au-book-list">
+        </div>
+
+        <!-- 好感度条 -->
+        <div class="sd-npc-affinity">
+          <div class="sd-affinity-bar">
+            <div class="sd-affinity-fill" style="width: <%= affinity %>%"></div>
+          </div>
+          <span class="sd-affinity-text"><%= affinity %>%</span>
+        </div>
+
+        <!-- 作品列表 -->
+        <ul class="sd-npc-works">
           <% author.books.slice(0, 3).forEach(function(b) { %>
-          <li class="au-book-item">
-            <a href="/book/<%= b.id %>" class="au-book-link" title="<%= b.title %>"><%= b.title %></a>
-          </li>
+          <li class="sd-npc-work"><a href="/book/<%= b.id %>"><%= b.title %></a></li>
           <% }); %>
           <% if (author.books.length > 3) { %>
-          <li class="au-book-more">…还有 <%= author.books.length - 3 %> 本</li>
+          <li class="sd-npc-work-more">…还有 <%= author.books.length - 3 %> 个任务</li>
           <% } %>
         </ul>
       </div>
@@ -71,8 +92,9 @@
     <% }); %>
   </div>
 
-  <div class="au-empty" id="au-empty" style="display:none">
-    <p>没有找到匹配的作者</p>
+  <div class="sd-npc-empty" id="au-empty" style="display:none">
+    <div class="sd-npc-empty-icon">🔍</div>
+    <p>没有找到匹配的NPC</p>
   </div>
 
 </div>
@@ -83,7 +105,7 @@
   var sortSel = document.getElementById('au-sort');
   var grid    = document.getElementById('au-grid');
   var emptyEl = document.getElementById('au-empty');
-  var cards   = Array.from(grid.querySelectorAll('.au-card'));
+  var cards   = Array.from(grid.querySelectorAll('.sd-npc-card'));
 
   function filter() {
     var q = search.value.trim().toLowerCase();
