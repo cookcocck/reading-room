@@ -43,7 +43,7 @@
       </div>
       <!-- Info -->
       <div class="au-card-body">
-        <h2 class="au-card-name"><a href="/author/<%= encodeURIComponent(author.author) %>" class="au-name-link"><%= author.author %></a></h2>
+        <h2 class="au-card-name"><%= author.author %></h2>
         <p class="au-card-meta">
           <span><%= author.books.length %> 本</span>
           <% if (author.totalReadTime > 0) { %>
