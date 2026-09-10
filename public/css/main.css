@@ -9664,3 +9664,619 @@ h3 {
 
 /* ═══ End Badge Size Boost ═══ */
 
+
+
+/* ═══ Book Detail Stardew Style ═══ */
+/* 书籍详情页面星露谷风格全面覆盖 */
+
+/* 容器 */
+.pixel-theme .bd-container {
+  max-width: var(--col-wide);
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* 面包屑 */
+.pixel-theme .bd-breadcrumb {
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  color: #6b4423;
+  margin-bottom: 16px;
+  padding: 8px 16px;
+  background: #fff8e8;
+  border: 2px solid #c4a574;
+  box-shadow: inset -2px -2px 0 #d4b896, inset 2px 2px 0 #fff;
+}
+.pixel-theme .bd-breadcrumb a {
+  color: #5a9c3e;
+  text-decoration: none;
+}
+.pixel-theme .bd-breadcrumb a:hover {
+  color: #3d7a28;
+  text-decoration: underline;
+}
+.pixel-theme .bd-breadcrumb-sep {
+  color: #c4a574;
+  margin: 0 8px;
+}
+.pixel-theme .bd-breadcrumb-current {
+  color: #3d2817;
+  font-weight: bold;
+}
+
+/* Hero区域 - 物品详情面板 */
+.pixel-theme .bd-hero {
+  background: #fff8e8;
+  border: 4px solid #6b4423;
+  box-shadow: inset -4px -4px 0 #d4b896, inset 4px 4px 0 #fff, 6px 6px 0 rgba(61,40,23,0.2);
+  padding: 24px;
+  margin-bottom: 24px;
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  position: relative;
+}
+.pixel-theme .bd-hero-decor {
+  display: none;
+}
+
+/* 封面 - 物品图标 */
+.pixel-theme .bd-hero-cover {
+  width: 180px;
+  flex-shrink: 0;
+  position: relative;
+  border: 4px solid #6b4423;
+  box-shadow: inset -3px -3px 0 #d4b896, inset 3px 3px 0 #fff, 4px 4px 0 rgba(61,40,23,0.2);
+  background: #f5e6c8;
+}
+.pixel-theme .bd-hero-cover img {
+  width: 100%;
+  display: block;
+}
+.pixel-theme .bd-hero-cover-fallback {
+  width: 100%;
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 64px;
+}
+
+/* 封面进度环 */
+.pixel-theme .bd-cover-progress {
+  position: absolute;
+  bottom: -12px;
+  right: -12px;
+  width: 56px;
+  height: 56px;
+  background: #fff8e8;
+  border: 3px solid #6b4423;
+  box-shadow: inset -2px -2px 0 #d4b896, inset 2px 2px 0 #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pixel-theme .bd-cover-progress-ring {
+  width: 40px;
+  height: 40px;
+}
+.pixel-theme .bd-cover-progress-text {
+  position: absolute;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 8px;
+  color: #5a9c3e;
+}
+
+/* Hero信息区 */
+.pixel-theme .bd-hero-body {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 状态和分类标签 */
+.pixel-theme .bd-hero-meta {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.pixel-theme .bd-hero-category {
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+  padding: 4px 12px;
+  background: #f5e6c8;
+  border: 2px solid #c4a574;
+  color: #6b4423;
+}
+.pixel-theme .bd-hero-status {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  padding: 6px 12px;
+  border: 2px solid;
+}
+.pixel-theme .bd-hero-status--finished {
+  background: #5a9c3e;
+  border-color: #3d7a28;
+  color: #fff;
+  box-shadow: inset -2px -2px 0 #3d7a28, inset 2px 2px 0 #7bc04e;
+}
+.pixel-theme .bd-hero-status--reading {
+  background: #f0c040;
+  border-color: #b8860b;
+  color: #3d2817;
+  box-shadow: inset -2px -2px 0 #b8860b, inset 2px 2px 0 #ffd700;
+}
+
+/* 书名 */
+.pixel-theme .bd-hero-title {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 32px;
+  color: #3d2817;
+  margin: 0 0 8px 0;
+  line-height: 1.3;
+  text-shadow: 2px 2px 0 rgba(107,68,35,0.15);
+}
+.pixel-theme .bd-hero-author {
+  font-family: 'VT323', monospace;
+  font-size: 22px;
+  color: #8a7050;
+  margin: 0 0 20px 0;
+}
+
+/* 统计卡片 - 属性面板 */
+.pixel-theme .bd-stats {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.pixel-theme .bd-stat-card {
+  background: #f5e6c8;
+  border: 3px solid #6b4423;
+  box-shadow: inset -2px -2px 0 #d4b896, inset 2px 2px 0 #fff;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 120px;
+}
+.pixel-theme .bd-stat-icon {
+  width: 36px;
+  height: 36px;
+  background: #fff8e8;
+  border: 2px solid #c4a574;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b4423;
+  flex-shrink: 0;
+}
+.pixel-theme .bd-stat-body {
+  display: flex;
+  flex-direction: column;
+}
+.pixel-theme .bd-stat-value {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 14px;
+  color: #3d2817;
+}
+.pixel-theme .bd-stat-label {
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+  color: #8a7050;
+}
+
+/* 分隔线 */
+.pixel-theme .bd-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 24px 0;
+  gap: 16px;
+}
+.pixel-theme .bd-divider::before,
+.pixel-theme .bd-divider::after {
+  content: '';
+  flex: 1;
+  height: 3px;
+  background: repeating-linear-gradient(90deg, #c4a574 0px, #c4a574 8px, transparent 8px, transparent 16px);
+}
+.pixel-theme .bd-divider-ornament {
+  font-size: 24px;
+  color: #6b4423;
+}
+
+/* 书籍简介 - NPC对话框 */
+.pixel-theme .bd-intro-card {
+  background: #fff8e8;
+  border: 4px solid #6b4423;
+  box-shadow: inset -4px -4px 0 #d4b896, inset 4px 4px 0 #fff, 6px 6px 0 rgba(61,40,23,0.2);
+  padding: 24px;
+  position: relative;
+  margin-bottom: 24px;
+}
+.pixel-theme .bd-intro-quote-mark {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 48px;
+  color: #c4a574;
+  position: absolute;
+  top: 8px;
+  left: 16px;
+  line-height: 1;
+}
+.pixel-theme .bd-intro-body {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 18px;
+  color: #3d2817;
+  line-height: 1.8;
+  padding-left: 40px;
+  max-height: 120px;
+  overflow: hidden;
+  transition: max-height 0.3s;
+}
+.pixel-theme .bd-intro-body--expanded {
+  max-height: none;
+}
+.pixel-theme .bd-intro-body p {
+  margin: 0;
+}
+.pixel-theme .bd-intro-toggle {
+  margin-top: 12px;
+  margin-left: 40px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  padding: 8px 16px;
+  background: #5a9c3e;
+  border: 3px solid #3d7a28;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: inset -2px -2px 0 #3d7a28, inset 2px 2px 0 #7bc04e;
+}
+.pixel-theme .bd-intro-toggle:hover {
+  background: #7bc04e;
+}
+
+/* 双栏洞察区域 */
+.pixel-theme .bd-insight-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+/* 洞察卡片 - 木质面板 */
+.pixel-theme .bd-insight-card {
+  background: #fff8e8;
+  border: 4px solid #6b4423;
+  box-shadow: inset -4px -4px 0 #d4b896, inset 4px 4px 0 #fff, 6px 6px 0 rgba(61,40,23,0.2);
+  padding: 20px;
+}
+.pixel-theme .bd-insight-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 14px;
+  color: #6b4423;
+  margin: 0 0 16px 0;
+  padding-bottom: 12px;
+  border-bottom: 3px dashed #c4a574;
+}
+
+/* 阅读足迹 - 冒险日志 */
+.pixel-theme .bd-monthly-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.pixel-theme .bd-monthly-label {
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+  color: #6b4423;
+  width: 80px;
+  flex-shrink: 0;
+}
+.pixel-theme .bd-monthly-track {
+  flex: 1;
+  height: 24px;
+  background: #3d2817;
+  border: 2px solid #2a1a0a;
+  box-shadow: inset 2px 2px 0 rgba(0,0,0,0.3);
+  position: relative;
+}
+.pixel-theme .bd-monthly-fill {
+  height: 100%;
+  background: repeating-linear-gradient(90deg, #5a9c3e 0px, #5a9c3e 6px, #7bc04e 6px, #7bc04e 12px);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+  min-width: fit-content;
+}
+.pixel-theme .bd-monthly-time {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 8px;
+  color: #fff;
+  text-shadow: 1px 1px 0 #3d7a28;
+  white-space: nowrap;
+}
+
+/* 章节热度 - 探索进度 */
+.pixel-theme .bd-chapter-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.pixel-theme .bd-chapter-label {
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+  color: #6b4423;
+  width: 100px;
+  flex-shrink: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pixel-theme .bd-chapter-track {
+  flex: 1;
+  height: 24px;
+  background: #3d2817;
+  border: 2px solid #2a1a0a;
+  position: relative;
+}
+.pixel-theme .bd-chapter-fill {
+  height: 100%;
+  background: repeating-linear-gradient(90deg, #d4502a 0px, #d4502a 6px, #e88060 6px, #e88060 12px);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+  min-width: fit-content;
+}
+.pixel-theme .bd-chapter-count {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 8px;
+  color: #fff;
+  text-shadow: 1px 1px 0 #a03030;
+  white-space: nowrap;
+}
+.pixel-theme .bd-chapter-detail {
+  font-family: 'VT323', monospace;
+  font-size: 14px;
+  color: #8a7050;
+  width: 60px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.pixel-theme .bd-chap-dot {
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+}
+.pixel-theme .bd-chap-dot--hl {
+  background: #d4502a;
+}
+.pixel-theme .bd-chap-dot--rv {
+  background: #5a9c3e;
+}
+
+/* 划线和想法区域 */
+.pixel-theme .bd-col-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 3px dashed #c4a574;
+}
+.pixel-theme .bd-col-head-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pixel-theme .bd-col-head-icon {
+  font-size: 20px;
+}
+.pixel-theme .bd-col-head-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 14px;
+  color: #6b4423;
+  margin: 0;
+}
+.pixel-theme .bd-col-head-count {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  background: #6b4423;
+  color: #f0c040;
+  padding: 4px 8px;
+}
+
+/* 划线卡片 */
+.pixel-theme .bd-hl-card {
+  background: #fff8e8;
+  border: 3px solid #6b4423;
+  box-shadow: inset -2px -2px 0 #d4b896, inset 2px 2px 0 #fff, 3px 3px 0 rgba(61,40,23,0.15);
+  padding: 16px;
+  margin-bottom: 16px;
+  position: relative;
+}
+.pixel-theme .bd-hl-num {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  color: #c4a574;
+}
+.pixel-theme .bd-hl-text {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 18px;
+  color: #3d2817;
+  line-height: 1.7;
+  margin: 0 0 12px 0;
+  padding-left: 16px;
+  border-left: 4px solid #f0c040;
+}
+.pixel-theme .bd-hl-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.pixel-theme .bd-hl-chapter {
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+  color: #8a7050;
+}
+
+/* 想法卡片 */
+.pixel-theme .bd-rv-card {
+  background: #fff8e8;
+  border: 3px solid #6b4423;
+  box-shadow: inset -2px -2px 0 #d4b896, inset 2px 2px 0 #fff, 3px 3px 0 rgba(61,40,23,0.15);
+  padding: 16px;
+  margin-bottom: 16px;
+  position: relative;
+}
+.pixel-theme .bd-rv-num {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  color: #c4a574;
+}
+.pixel-theme .bd-rv-quote-wrap {
+  background: #f5e6c8;
+  border-left: 4px solid #c4a574;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+}
+.pixel-theme .bd-rv-qmark {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 14px;
+  color: #c4a574;
+}
+.pixel-theme .bd-rv-quote {
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+  color: #8a7050;
+  margin: 4px 0 0 0;
+  font-style: italic;
+}
+.pixel-theme .bd-rv-text {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 18px;
+  color: #3d2817;
+  line-height: 1.7;
+  margin: 0 0 12px 0;
+}
+.pixel-theme .bd-rv-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.pixel-theme .bd-rv-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.pixel-theme .bd-rv-stars {
+  color: #f0c040;
+  font-size: 16px;
+}
+.pixel-theme .bd-rv-chap {
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+  color: #8a7050;
+}
+
+/* 全书笔记分布 */
+.pixel-theme .bd-toc {
+  background: #fff8e8;
+  border: 4px solid #6b4423;
+  box-shadow: inset -4px -4px 0 #d4b896, inset 4px 4px 0 #fff, 6px 6px 0 rgba(61,40,23,0.2);
+  padding: 20px;
+  margin-top: 24px;
+}
+.pixel-theme .bd-toc-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+.pixel-theme .bd-toc-item {
+  background: #f5e6c8;
+  border: 2px solid #c4a574;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pixel-theme .bd-toc-index {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  color: #6b4423;
+  background: #fff8e8;
+  border: 2px solid #c4a574;
+  padding: 4px 6px;
+  flex-shrink: 0;
+}
+.pixel-theme .bd-toc-name {
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+  color: #3d2817;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pixel-theme .bd-toc-count {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 9px;
+  color: #5a9c3e;
+  flex-shrink: 0;
+}
+
+/* 空状态 */
+.pixel-theme .bd-empty-block,
+.pixel-theme .bd-monthly-empty {
+  text-align: center;
+  padding: 24px;
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  color: #8a7050;
+}
+
+/* 响应式 */
+@media (max-width: 900px) {
+  .pixel-theme .bd-hero {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .pixel-theme .bd-hero-cover {
+    width: 160px;
+  }
+  .pixel-theme .bd-hero-meta {
+    justify-content: center;
+  }
+  .pixel-theme .bd-stats {
+    justify-content: center;
+  }
+  .pixel-theme .bd-insight-grid {
+    grid-template-columns: 1fr;
+  }
+  .pixel-theme .bd-intro-body {
+    padding-left: 0;
+  }
+  .pixel-theme .bd-intro-quote-mark {
+    position: static;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .pixel-theme .bd-intro-toggle {
+    margin-left: 0;
+  }
+}
+
+/* ═══ End Book Detail Stardew ═══ */
+
