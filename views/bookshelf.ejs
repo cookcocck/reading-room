@@ -85,20 +85,6 @@
         <% } else { %>
           <span class="sd-item-fallback">📖</span>
         <% } %>
-        <!-- 状态标记 -->
-        <% if (isFinished) { %>
-          <div class="sd-item-badge sd-badge-green">✓</div>
-        <% } else if (isReading) { %>
-          <div class="sd-item-badge sd-badge-blue">▶</div>
-        <% } else if (isWish) { %>
-          <div class="sd-item-badge sd-badge-gray">?</div>
-        <% } %>
-        <!-- 想读按钮 -->
-        <button class="sd-item-wish <%= b.want_to_read ? 'active' : '' %>"
-                onclick="event.preventDefault();event.stopPropagation();toggleWish(this,'<%= b.id %>')"
-                title="<%= b.want_to_read ? '取消想读' : '标记想读' %>">
-          <%= b.want_to_read ? '♥' : '♡' %>
-        </button>
       </a>
 
       <!-- 使用中进度条 -->

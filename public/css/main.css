@@ -9346,3 +9346,132 @@ h3 {
 
 /* ═══ End Item Card Horizontal Layout ═══ */
 
+
+
+/* ═══ Booklist Modal Stardew Style ═══ */
+/* 新建书单弹窗星露谷风格 */
+
+.pixel-theme .bl-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(61, 40, 23, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+.pixel-theme .bl-modal {
+  background: #fff8e8;
+  border: 4px solid #6b4423;
+  box-shadow: inset -4px -4px 0 #d4b896, inset 4px 4px 0 #fff, 8px 8px 0 rgba(61,40,23,0.3);
+  padding: 24px;
+  width: 90%;
+  max-width: 480px;
+  animation: modalPop 0.2s ease-out;
+}
+
+@keyframes modalPop {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.pixel-theme .bl-modal-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 14px;
+  color: #6b4423;
+  margin: 0 0 20px 0;
+  padding-bottom: 12px;
+  border-bottom: 3px dashed #c4a574;
+  text-align: center;
+}
+
+.pixel-theme .bl-label {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 16px;
+  color: #3d2817;
+  display: block;
+  margin-bottom: 8px;
+  margin-top: 16px;
+}
+
+.pixel-theme .bl-label:first-of-type {
+  margin-top: 0;
+}
+
+.pixel-theme .bl-required {
+  color: #d4502a;
+}
+
+.pixel-theme .bl-input,
+.pixel-theme .bl-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 16px;
+  padding: 10px 14px;
+  background: #fff;
+  border: 3px solid #6b4423;
+  box-shadow: inset -2px -2px 0 #d4b896, inset 2px 2px 0 #fff;
+  color: #3d2817;
+  outline: none;
+  resize: vertical;
+}
+
+.pixel-theme .bl-input:focus,
+.pixel-theme .bl-textarea:focus {
+  border-color: #5a9c3e;
+  box-shadow: inset -2px -2px 0 #d4b896, inset 2px 2px 0 #fff, 0 0 0 2px rgba(90,156,62,0.3);
+}
+
+.pixel-theme .bl-textarea {
+  min-height: 80px;
+}
+
+.pixel-theme .bl-modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.pixel-theme .bl-btn-secondary,
+.pixel-theme .bl-btn-primary {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 11px;
+  padding: 12px 24px;
+  border: 3px solid #3d2817;
+  cursor: pointer;
+  transition: transform 0.1s;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+}
+
+.pixel-theme .bl-btn-secondary {
+  background: #bdc3c7;
+  color: #3d2817;
+  box-shadow: inset -3px -3px 0 #7f8c8d, inset 3px 3px 0 #ecf0f1;
+}
+
+.pixel-theme .bl-btn-primary {
+  background: #5a9c3e;
+  color: #fff;
+  box-shadow: inset -3px -3px 0 #3d7a28, inset 3px 3px 0 #7bc04e;
+}
+
+.pixel-theme .bl-btn-secondary:hover,
+.pixel-theme .bl-btn-primary:hover {
+  transform: translate(-1px, -1px);
+}
+
+.pixel-theme .bl-btn-secondary:active,
+.pixel-theme .bl-btn-primary:active {
+  transform: translate(1px, 1px);
+  box-shadow: inset 3px 3px 0 rgba(0,0,0,0.2);
+}
+
+/* ═══ End Booklist Modal Stardew Style ═══ */
+

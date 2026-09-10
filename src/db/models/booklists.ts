@@ -33,7 +33,7 @@ export function createBooklist(name: string, description?: string): Booklist | u
   const now = Math.floor(Date.now() / 1000);
   d.prepare(
     'INSERT INTO booklists (name, description, created_at, updated_at) VALUES (?, ?, ?, ?)'
-  ).all(name, description || '', now, now);
+  ).run(name, description || '', now, now);
   return d.prepare('SELECT * FROM booklists ORDER BY id DESC LIMIT 1').get() as unknown as Booklist;
 }
 
@@ -42,13 +42,13 @@ export function updateBooklist(id: number, name: string, description?: string): 
   const now = Math.floor(Date.now() / 1000);
   d.prepare(
     'UPDATE booklists SET name = ?, description = ?, updated_at = ? WHERE id = ?'
-  ).all(name, description || '', now, id);
+  ).run(name, description || '', now, id);
 }
 
 export function deleteBooklist(id: number): void {
   const d = getDb()!;
-  d.prepare('DELETE FROM booklist_items WHERE list_id = ?').all(id);
-  d.prepare('DELETE FROM booklists WHERE id = ?').all(id);
+  d.prepare('DELETE FROM booklist_items WHERE list_id = ?').run(id);
+  d.prepare('DELETE FROM booklists WHERE id = ?').run(id);
 }
 
 export function addBookToList(listId: number, bookId: string, note?: string): void {
@@ -56,21 +56,21 @@ export function addBookToList(listId: number, bookId: string, note?: string): vo
   const now = Math.floor(Date.now() / 1000);
   d.prepare(
     'INSERT OR IGNORE INTO booklist_items (list_id, book_id, note, added_at) VALUES (?, ?, ?, ?)'
-  ).all(listId, bookId, note || '', now);
-  d.prepare('UPDATE booklists SET updated_at = ? WHERE id = ?').all(now, listId);
+  ).run(listId, bookId, note || '', now);
+  d.prepare('UPDATE booklists SET updated_at = ? WHERE id = ?').run(now, listId);
 }
 
 export function removeBookFromList(listId: number, bookId: string): void {
   const d = getDb()!;
-  d.prepare('DELETE FROM booklist_items WHERE list_id = ? AND book_id = ?').all(listId, bookId);
-  d.prepare('UPDATE booklists SET updated_at = ? WHERE id = ?').all(Math.floor(Date.now() / 1000), listId);
+  d.prepare('DELETE FROM booklist_items WHERE list_id = ? AND book_id = ?').run(listId, bookId);
+  d.prepare('UPDATE booklists SET updated_at = ? WHERE id = ?').run(Math.floor(Date.now() / 1000), listId);
 }
 
 export function updateBooklistItemNote(listId: number, bookId: string, note: string): void {
   const d = getDb()!;
   d.prepare(
     'UPDATE booklist_items SET note = ? WHERE list_id = ? AND book_id = ?'
-  ).all(note || '', listId, bookId);
+  ).run(note || '', listId, bookId);
 }
 
 // ─── Annual Books ───

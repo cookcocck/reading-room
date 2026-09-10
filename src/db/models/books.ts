@@ -112,7 +112,7 @@ export function getBooksSorted(
 
 export function setWantToRead(bookId: string, want: boolean): void {
   const d = getDb()!;
-  d.prepare('UPDATE books SET want_to_read = ? WHERE id = ?').all(want ? 1 : 0, bookId);
+  d.prepare('UPDATE books SET want_to_read = ? WHERE id = ?').run(want ? 1 : 0, bookId);
 }
 
 export function getWantToReadBooks(): Book[] {
@@ -122,7 +122,7 @@ export function getWantToReadBooks(): Book[] {
 
 export function setBookRating(bookId: string, rating: number): void {
   const d = getDb()!;
-  d.prepare('UPDATE books SET user_rating = ? WHERE id = ?').all(rating, bookId);
+  d.prepare('UPDATE books SET user_rating = ? WHERE id = ?').run(rating, bookId);
 }
 
 export function getBookRating(bookId: string): number {
@@ -139,12 +139,12 @@ export function getBookIntro(bookId: string): string {
 
 export function saveBookIntro(bookId: string, intro: string): void {
   const d = getDb()!;
-  d.prepare('UPDATE books SET intro = ? WHERE id = ?').all(intro, bookId);
+  d.prepare('UPDATE books SET intro = ? WHERE id = ?').run(intro, bookId);
 }
 
 export function setBookReadTime(bookId: string, readTimeSec: number): void {
   const d = getDb()!;
-  d.prepare('UPDATE books SET read_time = ? WHERE id = ?').all(readTimeSec, bookId);
+  d.prepare('UPDATE books SET read_time = ? WHERE id = ?').run(readTimeSec, bookId);
 }
 
 export function getBookReadTimeFromDB(bookId: string): number {
