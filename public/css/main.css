@@ -9724,13 +9724,15 @@ h3 {
 .pixel-theme .bd-hero-cover {
   width: 180px;
   flex-shrink: 0;
-  position: relative;
+  position: relative !important;
+  aspect-ratio: auto !important;
   border: 4px solid #6b4423;
   box-shadow: inset -3px -3px 0 #d4b896, inset 3px 3px 0 #fff, 4px 4px 0 rgba(61,40,23,0.2);
   background: #f5e6c8;
   overflow: hidden;
   box-sizing: border-box;
   align-self: flex-start;
+  top: auto !important;
 }
 .pixel-theme .bd-hero-cover img {
   width: 100%;
