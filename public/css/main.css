@@ -9068,3 +9068,164 @@ h3 {
 
 /* 鈺愨晲鈺?End Stardew Pages 鈺愨晲鈺?*/
 
+
+
+/* ═══ Font Size Boost ═══ */
+/* 统一放大星露谷主题下的字体，提升可读性 */
+
+/* 基础字体放大 */
+.pixel-theme {
+  font-size: 17px;
+}
+
+/* 像素字体（Press Start 2P）统一放大 */
+.pixel-theme .sd-log-title,
+.pixel-theme .sd-log-num,
+.pixel-theme .sd-gallery-title,
+.pixel-theme .sd-gallery-num,
+.pixel-theme .sd-npc-title,
+.pixel-theme .sd-npc-num,
+.pixel-theme .sd-result-title,
+.pixel-theme .sd-grade-letter,
+.pixel-theme .sd-grade-score,
+.pixel-theme .sd-result-num,
+.pixel-theme .sd-section-title,
+.pixel-theme .sd-rank-num,
+.pixel-theme .sd-cat-count,
+.pixel-theme .sd-hour-num,
+.pixel-theme .sd-mvp-label,
+.pixel-theme .sd-next-title,
+.pixel-theme .sd-progress-text,
+.pixel-theme .sd-gallery-status,
+.pixel-theme .sd-affinity-text,
+.pixel-theme .sd-chapter-badge,
+.pixel-theme .sd-event-date,
+.pixel-theme .sd-event-reward,
+.pixel-theme .sd-year-tab,
+.pixel-theme .sd-ach-title,
+.pixel-theme .sd-ach-rarity,
+.pixel-theme .sd-ach-progress-text,
+.pixel-theme .sd-inv-title,
+.pixel-theme .sd-inv-num,
+.pixel-theme .sd-inv-filter,
+.pixel-theme .sd-item-status,
+.pixel-theme .sd-stats-title,
+.pixel-theme .sd-stat-num,
+.pixel-theme .sd-attr-level,
+.pixel-theme .sd-home-level,
+.pixel-theme .sd-home-exp,
+.pixel-theme .sd-home-coin,
+.pixel-theme .sd-home-date,
+.pixel-theme .sd-task-reward,
+.pixel-theme .sd-skill-level,
+.pixel-theme .sd-farm-num {
+  font-size: 1.15em;
+}
+
+/* 中文字体（ZCOOL KuaiLe）放大 */
+.pixel-theme .sd-log-label,
+.pixel-theme .sd-chapter-title,
+.pixel-theme .sd-chapter-count,
+.pixel-theme .sd-event-title,
+.pixel-theme .sd-gallery-label,
+.pixel-theme .sd-gallery-name,
+.pixel-theme .sd-npc-label,
+.pixel-theme .sd-npc-name,
+.pixel-theme .sd-grade-label,
+.pixel-theme .sd-result-label,
+.pixel-theme .sd-rank-name,
+.pixel-theme .sd-mvp-value,
+.pixel-theme .sd-mvp-sub,
+.pixel-theme .sd-next-hint,
+.pixel-theme .sd-gallery-author,
+.pixel-theme .sd-npc-work,
+.pixel-theme .sd-npc-work-more,
+.pixel-theme .sd-npc-empty p,
+.pixel-theme .sd-ach-name,
+.pixel-theme .sd-ach-desc,
+.pixel-theme .sd-ach-category,
+.pixel-theme .sd-inv-label,
+.pixel-theme .sd-item-title,
+.pixel-theme .sd-item-author,
+.pixel-theme .sd-stats-label,
+.pixel-theme .sd-attr-name,
+.pixel-theme .sd-home-char-name,
+.pixel-theme .sd-home-char-title,
+.pixel-theme .sd-npc-dialog,
+.pixel-theme .sd-task-title,
+.pixel-theme .sd-task-progress,
+.pixel-theme .sd-skill-name,
+.pixel-theme .sd-farm-label,
+.pixel-theme .sd-section-label {
+  font-size: 1.1em;
+}
+
+/* 数字字体（VT323）放大 */
+.pixel-theme .sd-event-author,
+.pixel-theme .sd-event-time,
+.pixel-theme .sd-month-label,
+.pixel-theme .sd-rank-meta,
+.pixel-theme .sd-cat-name,
+.pixel-theme .sd-weekday-label,
+.pixel-theme .sd-book-title,
+.pixel-theme .sd-gallery-time,
+.pixel-theme .sd-npc-meta,
+.pixel-theme .sd-ach-progress-num,
+.pixel-theme .sd-item-meta,
+.pixel-theme .sd-stat-label,
+.pixel-theme .sd-attr-progress,
+.pixel-theme .sd-home-exp-text,
+.pixel-theme .sd-task-progress-text,
+.pixel-theme .sd-skill-progress {
+  font-size: 1.15em;
+}
+
+/* 首页特定放大 */
+.pixel-theme .sd-home-status {
+  font-size: 15px;
+}
+.pixel-theme .sd-npc-dialog-text {
+  font-size: 18px;
+}
+.pixel-theme .sd-task-item-title {
+  font-size: 16px;
+}
+.pixel-theme .sd-task-item-progress {
+  font-size: 14px;
+}
+.pixel-theme .sd-skill-item-name {
+  font-size: 16px;
+}
+.pixel-theme .sd-skill-item-level {
+  font-size: 14px;
+}
+.pixel-theme .sd-farm-card-num {
+  font-size: 24px;
+}
+.pixel-theme .sd-farm-card-label {
+  font-size: 14px;
+}
+
+/* 页面标题放大 */
+.pixel-theme .sd-log-header,
+.pixel-theme .sd-gallery-header,
+.pixel-theme .sd-npc-header,
+.pixel-theme .sd-result-header {
+  padding: 18px 24px;
+}
+
+/* 卡片内边距增大 */
+.pixel-theme .sd-event-card,
+.pixel-theme .sd-result-card,
+.pixel-theme .sd-result-section,
+.pixel-theme .sd-gallery-frame,
+.pixel-theme .sd-npc-card,
+.pixel-theme .sd-ach-card,
+.pixel-theme .sd-item-card,
+.pixel-theme .sd-stat-card,
+.pixel-theme .sd-farm-card {
+  padding: 16px 20px;
+}
+
+/* ═══ End Font Size Boost ═══ */
+
