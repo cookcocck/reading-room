@@ -307,82 +307,6 @@ var charTitle = totalHours >= 500 ? '时间领主' : (totalHours >= 200 ? '阅�
   </div>
   <% } %>
 
-  <!-- ═══════════════════ 5. 阅读时间线 ═══════════════════ -->
-  <% if (bookTimeline && bookTimeline.length > 0) { %>
-  <hr class="section-rule">
-  <div class="section-kicker">05 · 阅读时间线</div>
-  <p style="font-family: var(--font-body); font-size: var(--text-subhead); color: var(--ink-muted); margin-bottom: var(--space-5);">
-    每本书进入书架的时间 — 一个点就是一次相遇。
-  </p>
-  <%
-    var catColors = {};
-    var palette = ['var(--accent)','var(--accent-secondary)','var(--accent-bright)','var(--ink-soft)','#8b5cf6','#10b981','#f59e0b','#ef4444','#6366f1','#14b8a6'];
-    var ci = 0;
-  %>
-  <div class="timeline-wrap">
-    <svg viewBox="0 0 960 180" class="timeline-chart" xmlns="http://www.w3.org/2000/svg">
-      <% var tMin = Infinity, tMax = -Infinity;
-         bookTimeline.forEach(function(b){
-           if (b.addedAt < tMin) tMin = b.addedAt;
-           if (b.addedAt > tMax) tMax = b.addedAt;
-         });
-         var pad = (tMax - tMin) * 0.05 || 86400 * 30;
-         tMin -= pad; tMax += pad;
-         var pxW = 920, pxL = 40;
-         function tx(ts) { return pxL + ((ts - tMin) / (tMax - tMin)) * pxW; }
-         // year ticks
-         var yrStart = new Date(tMin*1000).getFullYear();
-         var yrEnd = new Date(tMax*1000).getFullYear();
-      %>
-      <!-- year grid lines -->
-      <% for (var y = yrStart; y <= yrEnd; y++) { %>
-      <% var yts = Math.floor(new Date(y,0,1).getTime()/1000); %>
-      <line x1="<%= tx(yts).toFixed(1) %>" y1="10" x2="<%= tx(yts).toFixed(1) %>" y2="170" stroke="var(--rule-thin)" stroke-width="0.5"/>
-      <text x="<%= tx(yts).toFixed(1) %>" y="8" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" fill="var(--ink-muted)"><%= y %></text>
-      <% } %>
-      <!-- dots -->
-      <% var rowY = [60, 90, 120, 150];
-         bookTimeline.forEach(function(b, i) {
-           var cKey = b.category || '其他';
-           if (!catColors[cKey]) { catColors[cKey] = palette[ci % palette.length]; ci++; }
-           var row = i % 4;
-           var bx = tx(b.addedAt);
-           if (bx >= pxL && bx <= pxL + pxW) {
-      %>
-      <circle cx="<%= bx.toFixed(1) %>" cy="<%= rowY[row] %>" r="3.5" fill="<%= catColors[cKey] %>" opacity="0.7">
-        <title><%= b.title %> · <%= b.author %> · <%= formatTimestamp(b.addedAt) %></title>
-      </circle>
-      <% } }); %>
-    </svg>
-  </div>
-  <!-- legend -->
-  <% var cKeys = Object.keys(catColors).sort(); if (cKeys.length > 0) { %>
-  <div class="timeline-legend">
-    <% cKeys.forEach(function(k) { %>
-    <span class="tl-legend-item"><span class="tl-dot" style="background:<%= catColors[k] %>"></span><%= k %></span>
-    <% }); %>
-  </div>
-  <% } %>
-  <% } %>
-
-  <!-- ═══════════════════ 6. 阅读里程碑 ═══════════════════ -->
-  <% if (milestones && milestones.length > 0) { %>
-  <hr class="section-rule">
-  <div class="section-kicker">06 · 阅读里程碑</div>
-  <div class="milestone-timeline">
-    <% milestones.forEach(function(m) { %>
-    <div class="milestone-item">
-      <div class="milestone-dot"><span class="milestone-icon"><%= m.icon %></span></div>
-      <div class="milestone-body">
-        <div class="milestone-label"><%= m.label %></div>
-        <div class="milestone-detail"><%= m.detail %></div>
-        <div class="milestone-date"><%= formatTimestamp(m.ts) %></div>
-      </div>
-    </div>
-    <% }); %>
-  </div>
-  <% } %>
-
   <!-- ═══════════════════ 7. 阅读日历热力图 ═══════════════════ -->
   <hr class="section-rule">
   <div class="section-kicker">07 · 阅读日历</div>
@@ -391,56 +315,8 @@ var charTitle = totalHours >= 500 ? '时间领主' : (totalHours >= 200 ? '阅�
   </p>
   <div class="st-heatmap-wrap" id="st-heatmap"></div>
 
-  <!-- ═══════════════════ 8. 周阅读分布 ═══════════════════ -->
-  <hr class="section-rule">
-  <div class="section-kicker">08 · 周阅读分布</div>
-  <p style="font-family: var(--font-body); font-size: var(--text-subhead); color: var(--ink-muted); margin-bottom: var(--space-5);">
-    一周七天，哪天是你的阅读高峰？
-  </p>
-  <div class="st-weekday-wrap" id="st-weekday"></div>
-
-  <!-- Prefer Authors -->
-  <% if (overall.preferAuthors && overall.preferAuthors.length > 0) { %>
-  <hr class="section-rule">
-  <div class="section-kicker">偏好作者</div>
-  <div class="author-list">
-    <% overall.preferAuthors.forEach(function(a) { %>
-    <div class="author-item">
-      <span class="author-name"><%= a.name %></span>
-      <span class="author-stats"><%= a.count %> 册 · <%= a.readTime %></span>
-    </div>
-    <% }); %>
-  </div>
-  <% } %>
-</div>
-
-<!-- Author Distribution -->
-<div class="container-wide">
-  <div class="section-kicker">作者阅读分布</div>
-  <div class="author-chart" id="author-chart"></div>
-</div>
-
 <script>
 (function() {
-  // ═══════════════════ Author Chart ═══════════════════
-  var authorData = JSON.parse('<%- authorStats %>');
-  if (authorData && authorData.length) {
-    var maxTime = Math.max.apply(null, authorData.map(function(a) { return a.totalTime || 0; }));
-    if (maxTime) {
-      var container = document.getElementById('author-chart');
-      authorData.forEach(function(a) {
-        var pct = Math.max(2, (a.totalTime || 0) / maxTime * 100);
-        var h = Math.floor((a.totalTime || 0) / 3600);
-        var bar = document.createElement('div');
-        bar.className = 'author-bar';
-        bar.innerHTML = '<span class="author-bar-label">' + (a.author || '佚名') + '</span>' +
-          '<span class="author-bar-track"><span class="author-bar-fill" style="width:' + pct.toFixed(0) + '%"></span></span>' +
-          '<span class="author-bar-val">' + h + 'h (' + a.bookCount + '册)</span>';
-        container.appendChild(bar);
-      });
-    }
-  }
-
   // ═══════════════════ Stats Rings ═══════════════════
   (function buildRings() {
     var container = document.getElementById('st-rings-row');
@@ -467,21 +343,16 @@ var charTitle = totalHours >= 500 ? '时间领主' : (totalHours >= 200 ? '阅�
     }
 
     var html = '';
-    // Ring 1: completion
     var pctDone = total > 0 ? Math.round(finished / total * 100) : 0;
     html += ringSVG('阅读完成度', finished, total, '/' + total, 'var(--accent)', pctDone + '% 已完成');
-    // Ring 2: current streak
     html += ringSVG('当前连续', hps.currentStreak || 0, 30, '天', 'var(--accent-bright)', '每日阅读打卡');
-    // Ring 3: max streak
     html += ringSVG('最长连续', hps.maxStreak || 0, Math.max(hps.maxStreak || 30, 30), '天', '#10b981', '历史最佳记录');
-    // Ring 4: total days — overall.readDays is the authoritative count
     var daysMax = Math.max(overallDays, 365);
     daysMax = Math.ceil(daysMax / 100) * 100;
     html += ringSVG('累计阅读', overallDays, daysMax, '天', '#8b5cf6', '总阅读天数');
 
     container.innerHTML = html;
 
-    // Animate rings on scroll
     var animated = false;
     function animateRings() {
       if (animated) return;
@@ -503,33 +374,27 @@ var charTitle = totalHours >= 500 ? '时间领主' : (totalHours >= 200 ? '阅�
   (function buildHeatmap() {
     var container = document.getElementById('st-heatmap');
     if (!container) return;
-    var raw = JSON.parse('<%- heatmapData %>'); // [{date, seconds}, ...]
+    var raw = JSON.parse('<%- heatmapData %>');
 
-    // Aggregate by date
     var map = {};
     raw.forEach(function(r) {
       map[r.date] = (map[r.date] || 0) + r.seconds;
     });
 
-    // Build 53 weeks × 7 days grid, ending at today
     var today = new Date();
     today.setHours(0,0,0,0);
     var endDate = new Date(today);
-    // Round to Saturday (end of week)
     var dayOfWeek = endDate.getDay();
     endDate.setDate(endDate.getDate() + (6 - dayOfWeek));
 
-    // Start 52 weeks ago
     var startDate = new Date(endDate);
     startDate.setDate(startDate.getDate() - 52 * 7 + 1);
-    // Round to Sunday
     startDate.setDate(startDate.getDate() - startDate.getDay());
 
     function fmt(d) {
       return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
     }
 
-    // Find max for color scale
     var maxSec = 0;
     for (var k in map) { if (map[k] > maxSec) maxSec = map[k]; }
     if (maxSec === 0) maxSec = 1;
@@ -556,7 +421,6 @@ var charTitle = totalHours >= 500 ? '时间领主' : (totalHours >= 200 ? '阅�
     var svgW = nWeeks * csz + 40;
     var svgH = 7 * csz + 24;
 
-    // Month labels
     var months = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
     var monthLabels = [];
     var lastMonth = -1;
@@ -569,19 +433,16 @@ var charTitle = totalHours >= 500 ? '时间领主' : (totalHours >= 200 ? '阅�
     });
 
     var svg = '<svg viewBox="0 0 ' + svgW + ' ' + svgH + '" class="st-heatmap" xmlns="http://www.w3.org/2000/svg">';
-    // Day labels (Mon, Wed, Fri)
     var dayLabels = ['','一','','三','','五',''];
     for (var di = 0; di < 7; di++) {
       if (dayLabels[di]) {
         svg += '<text x="2" y="' + ((di * csz) + csz * 0.65 + 20).toFixed(0) + '" font-family="Inter, sans-serif" font-size="9" fill="var(--ink-muted)" text-anchor="start">' + dayLabels[di] + '</text>';
       }
     }
-    // Month labels
     monthLabels.forEach(function(ml) {
       svg += '<text x="' + (ml.x + 30).toFixed(0) + '" y="12" font-family="Inter, sans-serif" font-size="9" fill="var(--ink-muted)">' + ml.label + '</text>';
     });
 
-    // Cells
     weeks.forEach(function(w, wi) {
       for (var di = 0; di < 7; di++) {
         var cd = new Date(startDate);
@@ -599,7 +460,6 @@ var charTitle = totalHours >= 500 ? '时间领主' : (totalHours >= 200 ? '阅�
       }
     });
 
-    // Legend
     var lx = 30, ly = 7 * csz + 24;
     svg += '<text x="' + lx + '" y="' + (ly + 9) + '" font-family="Inter, sans-serif" font-size="9" fill="var(--ink-muted)">少</text>';
     [0.25, 0.5, 0.75, 1].forEach(function(t, i) {
@@ -610,48 +470,6 @@ var charTitle = totalHours >= 500 ? '时间领主' : (totalHours >= 200 ? '阅�
 
     svg += '</svg>';
     container.innerHTML = svg;
-  })();
-
-  // ═══════════════════ Weekday Distribution ═══════════════════
-  (function buildWeekday() {
-    var container = document.getElementById('st-weekday');
-    if (!container) return;
-    var dist = JSON.parse('<%- weekdayDist %>'); // [sun, mon, tue, wed, thu, fri, sat] in seconds
-    var labels = ['周日','周一','周二','周三','周四','周五','周六'];
-    var maxH = Math.max.apply(null, dist) || 1;
-
-    // Build bar chart with a twist — rounded bars with gradient
-    var html = '<div class="st-weekday-chart">';
-    dist.forEach(function(sec, i) {
-      var h = Math.round(sec / 3600 * 10) / 10;
-      var pct = (sec / maxH * 100);
-      var isPeak = pct >= 90;
-      html += '<div class="st-wd-col' + (isPeak ? ' st-wd-peak' : '') + '">' +
-        '<div class="st-wd-bar-wrap">' +
-        '<div class="st-wd-bar" style="--h:' + Math.max(pct, 4).toFixed(0) + '%"></div>' +
-        '</div>' +
-        '<div class="st-wd-val">' + h + 'h</div>' +
-        '<div class="st-wd-label">' + labels[i] + '</div>' +
-      '</div>';
-    });
-    html += '</div>';
-    container.innerHTML = html;
-
-    // Animate bars
-    var animated = false;
-    function animate() {
-      if (animated) return;
-      var rect = container.getBoundingClientRect();
-      if (rect.top < window.innerHeight + 200) {
-        animated = true;
-        container.querySelectorAll('.st-wd-bar').forEach(function(b, i) {
-          b.style.transitionDelay = (i * 0.06) + 's';
-          b.classList.add('st-wd-bar--show');
-        });
-      }
-    }
-    window.addEventListener('scroll', animate, {passive: true});
-    setTimeout(animate, 300);
   })();
 })();
 </script>
