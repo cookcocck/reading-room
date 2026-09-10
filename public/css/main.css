@@ -9263,3 +9263,86 @@ h3 {
 
 /* ═══ End NPC Card Font Fix ═══ */
 
+
+
+/* ═══ Item Card Horizontal Layout ═══ */
+/* 书架页书籍卡片改为横向布局，与作者页NPC卡片对齐 */
+
+.pixel-theme .sd-item-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+}
+
+.pixel-theme .sd-item-icon-wrap {
+  width: 70px;
+  flex-shrink: 0;
+  aspect-ratio: 3/4;
+  border-bottom: none;
+  border: 2px solid #6b4423;
+}
+
+.pixel-theme .sd-item-info {
+  flex: 1;
+  padding: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pixel-theme .sd-item-name {
+  font-size: 16px !important;
+  line-height: 1.3;
+  word-break: break-all;
+}
+
+.pixel-theme .sd-item-source {
+  font-size: 14px !important;
+  color: #8a7050;
+}
+
+.pixel-theme .sd-item-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: auto;
+  padding-top: 6px;
+}
+
+.pixel-theme .sd-item-value {
+  font-family: 'VT323', monospace;
+  font-size: 14px !important;
+  color: #6b4423;
+}
+
+.pixel-theme .sd-item-status {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 8px !important;
+  padding: 3px 6px;
+  border: 1px solid;
+}
+
+/* 使用中进度条移到信息区域底部 */
+.pixel-theme .sd-item-progress {
+  position: static;
+  width: 100%;
+  height: 8px;
+  margin-top: 4px;
+  order: 10;
+}
+
+/* 响应式：窄屏恢复纵向 */
+@media (max-width: 600px) {
+  .pixel-theme .sd-item-card {
+    flex-direction: column;
+  }
+  .pixel-theme .sd-item-icon-wrap {
+    width: 100%;
+  }
+}
+
+/* ═══ End Item Card Horizontal Layout ═══ */
+
