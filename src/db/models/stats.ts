@@ -64,6 +64,10 @@ export function getOverall(): OverallKV {
   rows.forEach((r: Record<string, unknown>) => {
     try {
       const parsed = JSON.parse(r.value as string);
+      // Normalize: WeRead API returns `totalReadTime` (seconds), templates expect `totalReadTimeSec`
+      if (parsed.totalReadTime !== undefined && parsed.totalReadTimeSec === undefined) {
+        parsed.totalReadTimeSec = parsed.totalReadTime;
+      }
       // Check freshness — log warning if stale (but still return data)
       const fetchedAt = (r.fetched_at as number) || 0;
       if (fetchedAt > 0 && now - fetchedAt * 1000 > KV_STALE_MS) {
