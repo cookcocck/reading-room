@@ -1,0 +1,38 @@
+<!-- ═══════════════════════════════════════════
+   COVER WALL — Book Cover Gallery
+   ═══════════════════════════════════════════ -->
+
+<div class="cw-container">
+
+  <header class="cw-hero">
+    <div class="cw-hero-ornament" aria-hidden="true">封面</div>
+    <h1 class="cw-hero-title">封面墙</h1>
+    <p class="cw-hero-lede">
+      <span><%= total %> 册藏书</span>
+      <span class="cw-hero-sep">·</span>
+      <span><%= finished %> 册已读完</span>
+    </p>
+    <div class="cw-hero-rule"></div>
+  </header>
+
+  <div class="cw-grid">
+    <% books.forEach(function(book) { %>
+    <div class="cw-item <%= book.finished ? 'finished' : '' %>">
+      <a href="/book/<%= book.id %>" class="cw-cover-link">
+        <img src="<%= book.cover %>" alt="<%= book.title %>" class="cw-cover" loading="lazy">
+        <div class="cw-overlay">
+          <div class="cw-overlay-title"><%= book.title %></div>
+          <div class="cw-overlay-author"><%= book.author %></div>
+          <% if (book.read_time > 0) { %>
+          <div class="cw-overlay-time"><%= helpers.formatTime(book.read_time) %></div>
+          <% } %>
+          <% if (book.finished) { %>
+          <div class="cw-overlay-badge">已读完</div>
+          <% } %>
+        </div>
+      </a>
+    </div>
+    <% }); %>
+  </div>
+
+</div>

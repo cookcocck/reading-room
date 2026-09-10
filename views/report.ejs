@@ -1,0 +1,156 @@
+<!-- ═══════════════════════════════════════════
+   ANNUAL REPORT — Year in Reading
+   ═══════════════════════════════════════════ -->
+
+<div class="rp-container">
+
+  <header class="rp-hero">
+    <div class="rp-year-select">
+      <% availableYears.forEach(function(y) { %>
+      <a href="/report?year=<%= y %>" class="rp-year-link <%= y === year ? 'active' : '' %>"><%= y %></a>
+      <% }); %>
+    </div>
+    <h1 class="rp-title"><%= year %> 年度阅读报告</h1>
+    <div class="rp-hero-rule"></div>
+  </header>
+
+  <!-- ═══ 核心数据 ═══ -->
+  <section class="rp-stats">
+    <div class="rp-stat-card">
+      <div class="rp-stat-num"><%= stats.bookCount %></div>
+      <div class="rp-stat-label">读完书籍</div>
+    </div>
+    <div class="rp-stat-card">
+      <div class="rp-stat-num"><%= helpers.formatTime(stats.readTime) %></div>
+      <div class="rp-stat-label">阅读时长</div>
+    </div>
+    <div class="rp-stat-card">
+      <div class="rp-stat-num"><%= stats.readDays %></div>
+      <div class="rp-stat-label">阅读天数</div>
+    </div>
+    <div class="rp-stat-card">
+      <div class="rp-stat-num"><%= stats.highlightCount %></div>
+      <div class="rp-stat-label">划线标记</div>
+    </div>
+    <div class="rp-stat-card">
+      <div class="rp-stat-num"><%= stats.reviewCount %></div>
+      <div class="rp-stat-label">想法笔记</div>
+    </div>
+  </section>
+
+  <!-- ═══ 月度趋势 ═══ -->
+  <section class="rp-section">
+    <h2 class="rp-section-title">月度阅读节奏</h2>
+    <div class="rp-bars">
+      <% monthlyData.forEach(function(m) { %>
+      <div class="rp-bar-col">
+        <div class="rp-bar" style="height: <%= Math.max(4, Math.round(m.count / maxMonthly * 100)) %>%"></div>
+        <div class="rp-bar-label"><%= m.month %>月</div>
+      </div>
+      <% }); %>
+    </div>
+  </section>
+
+  <!-- ═══ 最爱作者 + 分类 ═══ -->
+  <div class="rp-two-col">
+    <section class="rp-section">
+      <h2 class="rp-section-title">最爱作者</h2>
+      <div class="rp-author-list">
+        <% topAuthors.forEach(function(a, i) { %>
+        <div class="rp-author-item">
+          <span class="rp-author-rank"><%= i + 1 %></span>
+          <span class="rp-author-name"><%= a.name %></span>
+          <span class="rp-author-meta"><%= a.count %> 本 · <%= helpers.formatTime(a.time) %></span>
+        </div>
+        <% }); %>
+      </div>
+    </section>
+
+    <section class="rp-section">
+      <h2 class="rp-section-title">分类分布</h2>
+      <div class="rp-cat-list">
+        <% categories.slice(0, 8).forEach(function(c) { %>
+        <div class="rp-cat-item">
+          <span class="rp-cat-name"><%= c.name %></span>
+          <div class="rp-cat-bar"><div class="rp-cat-fill" style="width: <%= Math.round(c.count / categories[0].count * 100) %>%"></div></div>
+          <span class="rp-cat-count"><%= c.count %></span>
+        </div>
+        <% }); %>
+      </div>
+    </section>
+  </div>
+
+  <!-- ═══ 阅读习惯 ═══ -->
+  <div class="rp-two-col">
+    <section class="rp-section">
+      <h2 class="rp-section-title">时段分布</h2>
+      <div class="rp-hour-grid">
+        <% hourData.forEach(function(cnt, h) { %>
+        <div class="rp-hour-cell" style="opacity: <%= 0.15 + (cnt / maxHour) * 0.85 %>" title="<%= h %>时: <%= cnt %>条">
+          <span class="rp-hour-num"><%= h %></span>
+        </div>
+        <% }); %>
+      </div>
+      <div class="rp-hour-legend">
+        <span>少</span>
+        <div class="rp-hour-legend-bars">
+          <span style="opacity:0.15"></span>
+          <span style="opacity:0.35"></span>
+          <span style="opacity:0.55"></span>
+          <span style="opacity:0.75"></span>
+          <span style="opacity:1"></span>
+        </div>
+        <span>多</span>
+      </div>
+    </section>
+
+    <section class="rp-section">
+      <h2 class="rp-section-title">星期分布</h2>
+      <div class="rp-weekday-bars">
+        <% weekdayData.forEach(function(d) { %>
+        <div class="rp-weekday-col">
+          <div class="rp-weekday-bar" style="height: <%= Math.max(4, Math.round(d.count / Math.max.apply(null, weekdayData.map(function(x){return x.count;}) || [1]) * 100)) %>%"></div>
+          <div class="rp-weekday-label"><%= d.name %></div>
+        </div>
+        <% }); %>
+      </div>
+    </section>
+  </div>
+
+  <!-- ═══ 之最 ═══ -->
+  <section class="rp-section">
+    <h2 class="rp-section-title">年度之最</h2>
+    <div class="rp-superlatives">
+      <% if (longestDay) { %>
+      <div class="rp-super-card">
+        <div class="rp-super-label">最长单日</div>
+        <div class="rp-super-value"><%= longestDay.d %></div>
+        <div class="rp-super-sub"><%= longestDay.cnt %> 条标记</div>
+      </div>
+      <% } %>
+      <% if (longestBook) { %>
+      <div class="rp-super-card">
+        <div class="rp-super-label">耗时最久</div>
+        <div class="rp-super-value"><%= longestBook.title %></div>
+        <div class="rp-super-sub"><%= helpers.formatTime(longestBook.read_time) %></div>
+      </div>
+      <% } %>
+    </div>
+  </section>
+
+  <!-- ═══ 书单 ═══ -->
+  <section class="rp-section">
+    <h2 class="rp-section-title">年度书单</h2>
+    <div class="rp-book-grid">
+      <% books.forEach(function(book) { %>
+      <a href="/book/<%= book.id %>" class="rp-book-item">
+        <% if (book.cover) { %>
+        <img src="<%= book.cover %>" alt="<%= book.title %>" class="rp-book-cover" loading="lazy">
+        <% } %>
+        <div class="rp-book-title"><%= book.title %></div>
+      </a>
+      <% }); %>
+    </div>
+  </section>
+
+</div>

@@ -1,0 +1,47 @@
+<!-- ═══════════════════════════════════════════
+   TIMELINE — Reading Journey
+   ═══════════════════════════════════════════ -->
+
+<div class="tl-container">
+
+  <header class="tl-hero">
+    <div class="tl-hero-ornament" aria-hidden="true">时间线</div>
+    <h1 class="tl-hero-title">阅读时间线</h1>
+    <p class="tl-hero-lede">
+      <span>共读完 <strong><%= total %></strong> 本书</span>
+    </p>
+    <div class="tl-hero-rule"></div>
+  </header>
+
+  <% years.forEach(function(year) { %>
+  <section class="tl-year-section">
+    <h2 class="tl-year"><%= year %></h2>
+    <div class="tl-year-count"><%= byYear[year].length %> 本</div>
+
+    <div class="tl-list">
+      <% byYear[year].forEach(function(book, idx) { %>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-line"></div>
+        <div class="tl-content">
+          <div class="tl-date"><%= helpers.formatTimestamp(book.last_read_time) %></div>
+          <a href="/book/<%= book.id %>" class="tl-book">
+            <% if (book.cover) { %>
+            <img src="<%= book.cover %>" alt="" class="tl-cover" loading="lazy">
+            <% } %>
+            <div class="tl-book-info">
+              <div class="tl-book-title"><%= book.title %></div>
+              <div class="tl-book-author"><%= book.author %></div>
+              <% if (book.read_time > 0) { %>
+              <div class="tl-book-time">阅读 <%= helpers.formatTime(book.read_time) %></div>
+              <% } %>
+            </div>
+          </a>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+  </section>
+  <% }); %>
+
+</div>

@@ -1,0 +1,35 @@
+<!-- ═══════════════════════════════════════════
+   BADGES — Reading Achievements
+   ═══════════════════════════════════════════ -->
+
+<div class="bg-container">
+
+  <header class="bg-hero">
+    <div class="bg-hero-ornament" aria-hidden="true">勋章</div>
+    <h1 class="bg-hero-title">阅读勋章</h1>
+    <p class="bg-hero-lede">
+      <span>已获得 <strong><%= earnedCount %></strong> / <%= totalBadges %> 枚</span>
+    </p>
+    <div class="bg-hero-rule"></div>
+  </header>
+
+  <div class="bg-grid">
+    <% badges.forEach(function(badge) { %>
+    <div class="bg-card <%= badge.earned ? 'earned' : 'locked' %>">
+      <div class="bg-icon"><%= badge.icon %></div>
+      <div class="bg-name"><%= badge.name %></div>
+      <div class="bg-desc"><%= badge.desc %></div>
+      <div class="bg-progress-track">
+        <div class="bg-progress-fill" style="width: <%= Math.min(100, Math.round(badge.progress / badge.target * 100)) %>%"></div>
+      </div>
+      <div class="bg-progress-text">
+        <%= badge.progress %><%= badge.unit || '' %> / <%= badge.target %><%= badge.unit || '' %>
+      </div>
+      <% if (badge.earned) { %>
+      <div class="bg-earned-badge">✓ 已获得</div>
+      <% } %>
+    </div>
+    <% }); %>
+  </div>
+
+</div>
