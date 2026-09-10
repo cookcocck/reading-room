@@ -56,9 +56,7 @@ app.use(express.static(path.join(__dirname, '..', 'public'), {
   maxAge: '1d',
   etag: true,
   setHeaders(res: Response, filePath: string) {
-    if (filePath.match(/\.(css|js)$/)) {
-      res.setHeader('Cache-Control', 'public, max-age=86400, immutable');
-    }
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
   },
 }));
 
