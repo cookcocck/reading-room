@@ -9595,3 +9595,72 @@ h3 {
 
 /* ═══ End Icon Button Fix ═══ */
 
+
+
+/* ═══ Badge Size Boost ═══ */
+/* 放大勋章页面卡片、字体和图标 */
+
+.pixel-theme .sd-ach-cat-title {
+  font-size: 15px !important;
+  margin-bottom: 18px !important;
+  padding-left: 16px !important;
+  border-left-width: 8px !important;
+}
+
+.pixel-theme .sd-ach-grid {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+  gap: 24px !important;
+}
+
+.pixel-theme .sd-ach-card-top {
+  padding: 20px !important;
+}
+
+.pixel-theme .sd-ach-badge {
+  width: 72px !important;
+  height: 72px !important;
+}
+
+.pixel-theme .sd-ach-badge-icon {
+  font-size: 36px !important;
+}
+
+.pixel-theme .sd-ach-badge-icon.sd-ach-locked {
+  font-size: 26px !important;
+}
+
+.pixel-theme .sd-ach-rarity {
+  font-size: 10px !important;
+  padding: 6px 10px !important;
+}
+
+.pixel-theme .sd-ach-card-body {
+  padding: 16px 18px !important;
+}
+
+.pixel-theme .sd-ach-name {
+  font-size: 20px !important;
+  margin-bottom: 6px !important;
+}
+
+.pixel-theme .sd-ach-desc {
+  font-size: 16px !important;
+  margin-bottom: 14px !important;
+  line-height: 1.4 !important;
+}
+
+.pixel-theme .sd-ach-progress-bar {
+  height: 14px !important;
+}
+
+.pixel-theme .sd-ach-progress-text {
+  font-size: 16px !important;
+  margin-top: 6px !important;
+}
+
+.pixel-theme .sd-ach-category {
+  margin-bottom: 36px !important;
+}
+
+/* ═══ End Badge Size Boost ═══ */
+
