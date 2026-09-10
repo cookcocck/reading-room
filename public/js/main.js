@@ -272,15 +272,6 @@
   }
 
   function buildHighlightCard(text, chapter, bookTitle, bookAuthor) {
-    var paper    = themeColor("#faf9f5", "#161615");
-    var ink      = themeColor("#171717", "#e8e6e0");
-    var inkSoft  = themeColor("#3d3d3d", "#b0aea8");
-    var inkMuted = themeColor("#8a8a85", "#706e68");
-    var rule     = themeColor("#e0ded8", "#2a2a26");
-    var accent   = themeColor("#2c5282", "#93bfec");
-
-    var QL = "\u201C";
-    var MD = "\u2014";
     var LS = "\u300A";
     var RS = "\u300B";
     var DOT = "\u00B7";
@@ -288,86 +279,109 @@
     return (
       '<div id="share-card-inner" style="' +
       "width:1400px;height:900px;" +
-      "background:" + paper + ";" +
+      "background:#6b4423;" +
+      "display:flex;align-items:center;justify-content:center;" +
+      "padding:40px;box-sizing:border-box;position:relative;" +
+      "font-family:'Courier New',monospace;overflow:hidden;" +
+      '">' +
+      '<div style="' +
+      "width:100%;height:100%;background:#fff8e8;" +
+      "border:6px solid #3d2817;" +
+      "box-shadow:inset -6px -6px 0 #d4b896,inset 6px 6px 0 #fff;" +
       "display:flex;flex-direction:column;justify-content:center;align-items:center;" +
-      "padding:90px 110px;box-sizing:border-box;position:relative;" +
-      "font-family:serif;overflow:hidden;" +
+      "padding:80px 100px;box-sizing:border-box;position:relative;" +
       '">' +
       '<div style="' +
-      "position:absolute;top:70px;left:90px;" +
-      "font-size:160px;line-height:1;" +
-      "color:" + accent + ";opacity:0.07;font-family:serif;user-select:none;" +
-      '">' + QL + "</div>" +
-      '<div style="' +
-      "position:absolute;bottom:70px;right:90px;" +
-      "font-size:120px;line-height:1;" +
-      "color:" + accent + ";opacity:0.05;font-family:serif;user-select:none;" +
-      "transform:scaleX(-1);" +
-      '">' + QL + "</div>" +
-      '<div style="' +
-      "position:absolute;top:0;left:90px;right:90px;" +
-      "height:2px;background:" + accent + ";opacity:0.3;" +
+      "position:absolute;top:30px;left:60px;right:60px;height:4px;" +
+      "background:repeating-linear-gradient(90deg,#c4a574 0px,#c4a574 12px,transparent 12px,transparent 24px);" +
       '"></div>' +
       '<div style="' +
-      "position:absolute;bottom:0;left:90px;right:90px;" +
-      "height:2px;background:" + accent + ";opacity:0.3;" +
+      "position:absolute;bottom:30px;left:60px;right:60px;height:4px;" +
+      "background:repeating-linear-gradient(90deg,#c4a574 0px,#c4a574 12px,transparent 12px,transparent 24px);" +
       '"></div>' +
+      '<div style="position:absolute;top:50px;left:50px;font-size:32px;color:#f0c040;">\u2726</div>' +
+      '<div style="position:absolute;top:50px;right:50px;font-size:32px;color:#f0c040;">\u2726</div>' +
+      '<div style="position:absolute;bottom:50px;left:50px;font-size:32px;color:#5a9c3e;">\u273F</div>' +
+      '<div style="position:absolute;bottom:50px;right:50px;font-size:32px;color:#5a9c3e;">\u273F</div>' +
       '<div style="' +
-      "max-width:1050px;text-align:center;position:relative;z-index:1;" +
-      '">' +
+      "position:absolute;top:60px;left:80px;" +
+      "font-size:120px;line-height:1;color:#c4a574;opacity:0.3;" +
+      "font-family:Georgia,serif;user-select:none;" +
+      '">\u201C</div>' +
+      '<div style="max-width:1050px;text-align:center;position:relative;z-index:1;">' +
+      '<div style="' +
+      "display:inline-block;padding:8px 24px;margin-bottom:36px;" +
+      "background:#5a9c3e;border:4px solid #3d7a28;" +
+      "box-shadow:inset -3px -3px 0 #3d7a28,inset 3px 3px 0 #7bc04e;" +
+      "color:#fff;font-size:18px;font-weight:bold;letter-spacing:4px;" +
+      '">\u7ECF\u5178\u5212\u7EBF</div>' +
       "<p style=\"" +
-      "font-family:serif;font-size:36px;line-height:1.7;color:" + ink + ";" +
-      "margin:0 0 32px 0;letter-spacing:0.02em;" +
+      "font-family:'Courier New',monospace;font-size:34px;line-height:1.8;color:#3d2817;" +
+      "margin:0 0 36px 0;letter-spacing:0.02em;font-weight:bold;" +
       "\">" + esc(text) + "</p>" +
       (chapter ? "<p style=\"" +
-      "font-size:17px;color:" + inkMuted + ";margin:0 0 28px 0;letter-spacing:0.08em;" +
-      "\">" + MD + " " + esc(chapter) + "</p>" : "") +
+      "font-size:20px;color:#8a7050;margin:0 0 28px 0;letter-spacing:0.08em;" +
+      "\">\u2014 " + esc(chapter) + "</p>" : "") +
       '<div style="' +
-      "width:70px;height:1px;background:" + rule + ";margin:0 auto 28px auto;" +
+      "width:120px;height:4px;margin:0 auto 28px auto;" +
+      "background:repeating-linear-gradient(90deg,#f0c040 0px,#f0c040 8px,transparent 8px,transparent 16px);" +
       '"></div>' +
       "<p style=\"" +
-      "font-size:18px;color:" + inkSoft + ";margin:0;font-weight:600;letter-spacing:0.04em;" +
+      "font-size:22px;color:#6b4423;margin:0;font-weight:bold;letter-spacing:0.04em;" +
       "\">" + LS + esc(bookTitle) + RS +
       (bookAuthor ? " " + DOT + " " + esc(bookAuthor) : "") +
       "</p>" +
+      '<div style="margin-top:40px;font-size:16px;color:#c4a574;letter-spacing:2px;">\u9605\u8BFB\u4E66\u623F \u00B7 hxb-reading.top</div>' +
+      "</div>" +
       "</div>" +
       "</div>"
     );
   }
 
   function buildReviewCard(quote, review, chapter, bookTitle, bookAuthor) {
-    var paper    = themeColor("#faf9f5", "#161615");
-    var ink      = themeColor("#171717", "#e8e6e0");
-    var inkSoft  = themeColor("#3d3d3d", "#b0aea8");
-    var inkMuted = themeColor("#8a8a85", "#706e68");
-    var accent   = themeColor("#e07a5f", "#d4846e");
-    var accent2  = themeColor("#2c5282", "#93bfec");
-
-    var MD = "\u2014";
+    var LS = "\u300A";
+    var RS = "\u300B";
     var DOT = "\u00B7";
 
     var html = (
       '<div id="share-card-inner" style="' +
       "width:1400px;height:900px;" +
-      "background:" + paper + ";" +
+      "background:#6b4423;" +
+      "display:flex;align-items:center;justify-content:center;" +
+      "padding:40px;box-sizing:border-box;position:relative;" +
+      "font-family:'Courier New',monospace;overflow:hidden;" +
+      '">' +
+      '<div style="' +
+      "width:100%;height:100%;background:#fff8e8;" +
+      "border:6px solid #3d2817;" +
+      "box-shadow:inset -6px -6px 0 #d4b896,inset 6px 6px 0 #fff;" +
       "display:flex;flex-direction:column;justify-content:center;align-items:center;" +
-      "padding:90px 110px;box-sizing:border-box;position:relative;" +
-      "font-family:serif;overflow:hidden;" +
-      '">'
+      "padding:70px 90px;box-sizing:border-box;position:relative;" +
+      '">' +
+      '<div style="' +
+      "position:absolute;top:30px;left:60px;right:60px;height:4px;" +
+      "background:repeating-linear-gradient(90deg,#c4a574 0px,#c4a574 12px,transparent 12px,transparent 24px);" +
+      '"></div>' +
+      '<div style="' +
+      "position:absolute;bottom:30px;left:60px;right:60px;height:4px;" +
+      "background:repeating-linear-gradient(90deg,#c4a574 0px,#c4a574 12px,transparent 12px,transparent 24px);" +
+      '"></div>' +
+      '<div style="position:absolute;top:50px;left:50px;font-size:32px;color:#f0c040;">\u2726</div>' +
+      '<div style="position:absolute;top:50px;right:50px;font-size:32px;color:#f0c040;">\u2726</div>' +
+      '<div style="position:absolute;bottom:50px;left:50px;font-size:32px;color:#d4502a;">\u273F</div>' +
+      '<div style="position:absolute;bottom:50px;right:50px;font-size:32px;color:#d4502a;">\u273F</div>'
     );
 
     if (quote) {
       html += (
         '<div style="' +
-        "position:relative;max-width:1050px;margin-bottom:40px;padding:0 20px;" +
+        "position:relative;max-width:1000px;margin-bottom:32px;padding:16px 24px 16px 32px;" +
+        "background:#f5e6c8;border-left:6px solid #f0c040;" +
+        "border:3px solid #c4a574;box-shadow:inset -2px -2px 0 #d4b896,inset 2px 2px 0 #fff;" +
         '">' +
-        '<div style="' +
-        "position:absolute;left:0;top:0;bottom:0;width:3px;" +
-        "background:" + accent2 + ";opacity:0.25;border-radius:2px;" +
-        '"></div>' +
         "<p style=\"" +
-        "font-family:serif;font-size:22px;line-height:1.6;color:" + ink + ";opacity:0.65;" +
-        "margin:0 0 0 24px;letter-spacing:0.01em;font-style:italic;" +
+        "font-family:'Courier New',monospace;font-size:20px;line-height:1.6;color:#6b4423;" +
+        "margin:0;letter-spacing:0.01em;font-style:italic;" +
         "\">" + esc(quote) + "</p>" +
         "</div>"
       );
@@ -375,35 +389,41 @@
 
     html += (
       '<div style="' +
-      "max-width:1050px;text-align:center;position:relative;z-index:1;" +
-      '">' +
+      "display:inline-block;padding:8px 24px;margin-bottom:28px;" +
+      "background:#d4502a;border:4px solid #a03030;" +
+      "box-shadow:inset -3px -3px 0 #a03030,inset 3px 3px 0 #e88060;" +
+      "color:#fff;font-size:18px;font-weight:bold;letter-spacing:4px;" +
+      '">\u6211\u7684\u60F3\u6CD5</div>'
+    );
+
+    html += (
+      '<div style="max-width:1000px;text-align:center;position:relative;z-index:1;">' +
       "<p style=\"" +
-      "font-family:serif;font-size:32px;line-height:1.75;color:" + ink + ";" +
-      "margin:0 0 28px 0;letter-spacing:0.02em;" +
+      "font-family:'Courier New',monospace;font-size:30px;line-height:1.8;color:#3d2817;" +
+      "margin:0 0 28px 0;letter-spacing:0.02em;font-weight:bold;" +
       "\">" + esc(review) + "</p>"
     );
 
     if (chapter) {
       html += "<p style=\"" +
-        "font-size:15px;color:" + inkMuted + ";margin:0 0 24px 0;letter-spacing:0.08em;" +
-        "\">" + MD + " " + esc(chapter) + "</p>";
+        "font-size:18px;color:#8a7050;margin:0 0 24px 0;letter-spacing:0.08em;" +
+        "\">\u2014 " + esc(chapter) + "</p>";
     }
 
     html += (
       '<div style="' +
-      "width:50px;height:2px;background:" + accent + ";opacity:0.4;margin:0 auto 24px auto;border-radius:1px;" +
+      "width:120px;height:4px;margin:0 auto 24px auto;" +
+      "background:repeating-linear-gradient(90deg,#d4502a 0px,#d4502a 8px,transparent 8px,transparent 16px);" +
       '"></div>' +
       "<p style=\"" +
-      "font-size:13px;color:" + accent + ";margin:0 0 16px 0;letter-spacing:0.2em;text-transform:uppercase;opacity:0.7;" +
-      "\">\u6211\u7684\u60F3\u6CD5</p>" +
-      "<p style=\"" +
-      "font-size:16px;color:" + inkSoft + ";margin:0;font-weight:600;letter-spacing:0.04em;" +
+      "font-size:20px;color:#6b4423;margin:0;font-weight:bold;letter-spacing:0.04em;" +
       "\">" + esc(bookTitle) +
       (bookAuthor ? " " + DOT + " " + esc(bookAuthor) : "") +
-      "</p>"
+      "</p>" +
+      '<div style="margin-top:32px;font-size:16px;color:#c4a574;letter-spacing:2px;">\u9605\u8BFB\u4E66\u623F \u00B7 hxb-reading.top</div>' +
+      "</div></div></div>"
     );
 
-    html += "</div></div>";
     return html;
   }
 
