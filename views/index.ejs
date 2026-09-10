@@ -8,6 +8,14 @@ var heatmapData = typeof heatmap === 'string' ? JSON.parse(heatmap) : (heatmap |
 var heatmapMap = {};
 heatmapData.forEach(function(d) { heatmapMap[d.date] = d.seconds; });
 
+function heatmapLevel(seconds) {
+  if (!seconds || seconds <= 0) return 0;
+  if (seconds < 600) return 1;
+  if (seconds < 1800) return 2;
+  if (seconds < 3600) return 3;
+  return 4;
+}
+
 // Parse monthly 2025 data
 var monthly2025Data = typeof monthly2025 === 'string' ? JSON.parse(monthly2025) : (monthly2025 || []);
 
