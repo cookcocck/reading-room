@@ -654,10 +654,10 @@ h3 {
   font-weight: 400;
 }
 .highlight-source::before {
-  content: '鈥?';
+  content: '\2014\00A0';
 }
 
-/* Book Card Grid 鈥?masonry-style card layout for bookshelf & highlights */
+/* Book Card Grid - masonry-style card layout for bookshelf & highlights */
 .book-card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
