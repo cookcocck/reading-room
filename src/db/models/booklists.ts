@@ -3,13 +3,26 @@ import type { Booklist, BooklistItem, Book } from '../../types';
 
 export function getAllBooklists(): Booklist[] {
   const d = getDb()!;
-  return d.prepare(`
+  const lists = d.prepare(`
     SELECT bl.*, COUNT(bli.id) AS book_count
     FROM booklists bl
     LEFT JOIN booklist_items bli ON bl.id = bli.list_id
     GROUP BY bl.id
     ORDER BY bl.updated_at DESC
-  `).all() as unknown as Booklist[];
+  `).all() as any[];
+
+  for (const list of lists) {
+    list.preview_covers = d.prepare(`
+      SELECT b.cover, b.title
+      FROM booklist_items bli
+      JOIN books b ON bli.book_id = b.id
+      WHERE bli.list_id = ?
+      ORDER BY bli.sort_order ASC, bli.added_at ASC
+      LIMIT 4
+    `).all(list.id);
+  }
+
+  return lists as unknown as Booklist[];
 }
 
 export function getBooklistById(id: number): Booklist | null {

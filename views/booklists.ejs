@@ -27,8 +27,37 @@
   <div class="bl-grid" id="bl-grid">
     <% lists.forEach(function(list) { %>
     <div class="bl-card" data-id="<%= list.id %>">
-      <div class="bl-card-head">
-        <h2 class="bl-card-name"><a href="/booklists/<%= list.id %>"><%= list.name %></a></h2>
+      <!-- Cover preview stack -->
+      <div class="bl-card-covers">
+        <div class="bl-cover-stack">
+          <% var previewBooks = list.preview_covers || []; %>
+          <% if (previewBooks.length > 0) { %>
+            <% previewBooks.forEach(function(book) { %>
+              <% if (book.cover) { %>
+                <img src="<%= book.cover %>" alt="" class="bl-cover-thumb" loading="lazy" />
+              <% } else { %>
+                <div class="bl-cover-thumb bl-cover-fallback-mini">📖</div>
+              <% } %>
+            <% }); %>
+          <% } else { %>
+            <div class="bl-cover-thumb bl-cover-fallback-mini">📚</div>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- Card body -->
+      <div class="bl-card-body">
+        <h2 class="bl-card-name">
+          <a href="/booklists/<%= list.id %>"><%= list.name %></a>
+        </h2>
+        <% if (list.description) { %>
+        <p class="bl-card-desc"><%= list.description %></p>
+        <% } %>
+      </div>
+
+      <!-- Card footer -->
+      <div class="bl-card-foot">
+        <span class="bl-card-count">📖 <%= list.book_count %> 本书</span>
         <div class="bl-card-actions">
           <button class="bl-icon-btn bl-edit-btn" data-id="<%= list.id %>" data-name="<%= list.name %>" data-desc="<%= list.description || '' %>" title="编辑">
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M11.5 2.5l2 2L6 12H4v-2L11.5 2.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
@@ -37,13 +66,6 @@
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 4h10M6 4V2h4v2M5 4l1 9h4l1-9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
           </button>
         </div>
-      </div>
-      <% if (list.description) { %>
-      <p class="bl-card-desc"><%= list.description %></p>
-      <% } %>
-      <div class="bl-card-foot">
-        <span class="bl-card-count"><%= list.book_count %> 本书</span>
-        <a href="/booklists/<%= list.id %>" class="bl-view-link">查看详情 →</a>
       </div>
     </div>
     <% }); %>
