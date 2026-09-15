@@ -298,109 +298,6 @@ router.get('/authors', (_req: Request, res: Response) => {
     path: '/authors',
   });
 });
-<<<<<<< HEAD
-
-// ─── Author Detail ───
-router.get('/author/:name', (req: Request, res: Response) => {
-  try {
-  const authorName = decodeURIComponent(req.params.name as string);
-  const entry = getAuthorByName(authorName);
-  if (!entry) {
-    res.status(404).send('未找到该作者');
-    return;
-  }
-
-  // Sort books by read_time descending, then finished first
-  const books = [...entry.books];
-  books.sort((a, b) => {
-    if ((a.finished ? 1 : 0) !== (b.finished ? 1 : 0)) return (b.finished ? 1 : 0) - (a.finished ? 1 : 0);
-    return (b.read_time || 0) - (a.read_time || 0);
-  });
-
-  // Category distribution
-  const catMap = new Map<string, number>();
-  for (const b of books) {
-    const cat = b.category || '未分类';
-    catMap.set(cat, (catMap.get(cat) || 0) + 1);
-  }
-  const categories = Array.from(catMap.entries())
-    .sort((a, b) => b[1] - a[1])
-    .map(([name, count]) => ({ name, count }));
-
-  // Max read time for relative bar
-  const maxReadTime = Math.max(...books.map(b => b.read_time || 0), 1);
-
-  // Author's highlights & reviews from all books
-  const highlights = getAuthorHighlights(authorName);
-  const reviews = getAuthorReviews(authorName);
-
-  // Reading timeline across months
-  const allTimestamps = books
-    .filter(b => b.last_read_time > 0)
-    .map(b => b.last_read_time)
-    .sort();
-  const firstRead = allTimestamps.length > 0
-    ? allTimestamps[0]
-    : (books.length > 0 ? books[books.length - 1].update_time : 0);
-  const lastRead = allTimestamps.length > 0
-    ? allTimestamps[allTimestamps.length - 1]
-    : (books.length > 0 ? books[0].update_time : 0);
-
-  // ── Extra stats ──
-  const finishedPct = books.length > 0
-    ? Math.round((entry.finishedCount / books.length) * 100)
-    : 0;
-  const avgReadTime = books.length > 0
-    ? Math.round(entry.totalReadTime / books.length)
-    : 0;
-  const totalHighlights = highlights.length;
-  const totalReviews = reviews.length;
-
-  // Monthly reading activity for sparkline
-  const monthMap = new Map<string, number>();
-  for (const b of books) {
-    if (b.last_read_time > 0) {
-      const d = new Date(b.last_read_time * 1000);
-      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-      monthMap.set(key, (monthMap.get(key) || 0) + (b.read_time || 0));
-    }
-  }
-  const monthlyActivity = Array.from(monthMap.entries())
-    .sort((a, b) => a[0].localeCompare(b[0]))
-    .map(([month, seconds]) => ({ month, seconds }));
-  const maxMonthlySec = Math.max(...monthlyActivity.map(m => m.seconds), 1);
-
-  res.render('author-detail', {
-    title: entry.author,
-    author: entry,
-    books: books,
-    categories,
-    maxReadTime,
-    totalBooks: books.length,
-    totalFinished: entry.finishedCount,
-    totalReadTime: entry.totalReadTime,
-    totalNotes: entry.totalNotes,
-    highlights,
-    reviews,
-    formatTime, formatTimestamp,
-    helpers: { formatTime, formatTimestamp },
-    path: '/authors',
-    firstRead, lastRead,
-    finishedPct,
-    avgReadTime,
-    totalHighlights,
-    totalReviews,
-    monthlyActivity,
-    maxMonthlySec,
-  });
-  } catch (err) {
-    console.error('[author-detail] error:', err);
-    res.status(500).send(`Internal Server Error: ${(err as Error).message}`);
-  }
-});
-
-=======
->>>>>>> 542aabb92f70960d9f11a4269ae6417ae3023733
 // ─── Quotes ───
 router.get('/quotes', (req: Request, res: Response) => {
   const bookId = (req.query.book as string) || null;
@@ -455,7 +352,6 @@ router.get('/booklists/:id', (req: Request, res: Response) => {
 });
 
 
-<<<<<<< HEAD
 // ─── Cards (知识卡片库) ───
 router.get('/cards', (_req: Request, res: Response) => {
   const cards = getAllCards();
@@ -465,7 +361,9 @@ router.get('/cards', (_req: Request, res: Response) => {
     cards,
     categories,
     path: '/cards',
-=======
+  });
+});
+
 // ═══════════════════════════════════════════
 // NEW FEATURES: Covers / Badges / Timeline / Report
 // ═══════════════════════════════════════════
@@ -718,8 +616,7 @@ router.get('/report', (req: Request, res: Response) => {
     longestBook,
     books: yearBooks.slice(0, 12),
     helpers: { formatTime, formatTimestamp },
-    path: '/report',
->>>>>>> 542aabb92f70960d9f11a4269ae6417ae3023733
+    path: '/report'
   });
 });
 

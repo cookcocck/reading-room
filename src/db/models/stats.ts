@@ -64,12 +64,7 @@ export function getOverall(): OverallKV {
   rows.forEach((r: Record<string, unknown>) => {
     try {
       const parsed = JSON.parse(r.value as string);
-<<<<<<< HEAD
       // Normalize: WeRead API returns `totalReadTime` (seconds), templates expect `totalReadTimeSec`
-=======
-      // Normalize API field names: WeRead returns totalReadTime (seconds),
-      // templates expect totalReadTimeSec. Map both overall & annual entries.
->>>>>>> 542aabb92f70960d9f11a4269ae6417ae3023733
       if (parsed.totalReadTime !== undefined && parsed.totalReadTimeSec === undefined) {
         parsed.totalReadTimeSec = parsed.totalReadTime;
       }
