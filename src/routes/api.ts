@@ -1,4 +1,7 @@
 import { Router, Request, Response } from 'express';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 import {
   getRecentHighlights, getRandomNotes,
   getBookById, getBookHighlights, getBookReviews,
@@ -8,6 +11,7 @@ import {
   getAllBooklists, getBooklistById,
   createBooklist, updateBooklist, deleteBooklist,
   addBookToList, removeBookFromList, updateBooklistItemNote,
+  createCard, deleteCard, getAllCards,
 } from '../db/models';
 
 const router = Router();
@@ -173,6 +177,49 @@ router.delete('/booklists/:id/books/:bookId', (req: Request, res: Response) => {
 router.put('/booklists/:id/books/:bookId', (req: Request, res: Response) => {
   const { note } = req.body;
   updateBooklistItemNote(parseInt(req.params.id as string), req.params.bookId as string, note);
+  res.json({ ok: true });
+});
+
+
+// ─── Cards: 知识卡片上传/删除 ───
+const UPLOAD_DIR = path.join(__dirname, '..', '..', 'public', 'uploads', 'cards');
+if (!fs.existsSync(UPLOAD_DIR)) {
+  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, UPLOAD_DIR),
+  filename: (_req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    const name = Date.now() + '-' + Math.round(Math.random() * 1e6) + ext;
+    cb(null, name);
+  },
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) cb(null, true);
+    else cb(new Error('Only images allowed'));
+  },
+});
+
+router.post('/cards/upload', upload.single('image'), (req: Request, res: Response) => {
+  if (!req.file) {
+    res.status(400).json({ error: 'No image file' });
+    return;
+  }
+  const title = (req.body.title as string) || '未命名卡片';
+  const category = (req.body.category as string) || '';
+  const imagePath = '/uploads/cards/' + req.file.filename;
+  const id = createCard(title, imagePath, category);
+  res.json({ ok: true, id, imagePath });
+});
+
+router.delete('/cards/:id', (req: Request, res: Response) => {
+  const id = parseInt(req.params.id as string);
+  deleteCard(id);
   res.json({ ok: true });
 });
 

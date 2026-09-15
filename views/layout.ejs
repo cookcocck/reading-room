@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="<%= typeof summary !== 'undefined' ? summary.totalBooks : 0 %> 册藏书 · <%= typeof summary !== 'undefined' ? summary.finishedCount : 0 %> 册已读完">
-  <title><%= title %> — 阅读书房</title>
+  <meta name="description" content="<%= typeof summary !== 'undefined' ? summary.totalBooks : 0 %> 鍐岃棌涔?路 <%= typeof summary !== 'undefined' ? summary.finishedCount : 0 %> 鍐屽凡璇诲畬">
+  <title><%= title %> 鈥?闃呰涔︽埧</title>
   <!-- Preconnect to external origins -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,17 +15,17 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
   <!-- Main stylesheet -->
-  <link rel="stylesheet" href="/css/main.css?v=45">
+  <link rel="stylesheet" href="/css/main.css?v=66">
   <% if (typeof isClassics !== 'undefined' && isClassics) { %>
-  <link rel="stylesheet" href="/css/classics.css?v=9">
+  <link rel="stylesheet" href="/css/classics.css?v=66">
   <% } %>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='2' fill='%231a2744'/><text x='16' y='22' text-anchor='middle' font-size='16' fill='white'>读</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='2' fill='%231a2744'/><text x='16' y='22' text-anchor='middle' font-size='16' fill='white'>璇?/text></svg>">
 </head>
 <body>
   <!-- Page Loader -->
   <div class="page-loader" id="page-loader">
     <div class="loader-ring"></div>
-    <span class="loader-text">阅读书房</span>
+    <span class="loader-text">闃呰涔︽埧</span>
   </div>
 
   <!-- Reading Progress Bar -->
@@ -35,18 +35,19 @@
     <!-- Navigation -->
     <nav class="nav" id="main-nav">
       <div class="nav-inner">
-        <a href="/" class="nav-brand">阅读书房</a>
+        <a href="/" class="nav-brand">闃呰涔︽埧</a>
         <div class="nav-links">
-          <a href="/bookshelf" class="nav-link <%= path === '/bookshelf' ? 'active' : '' %>">书架</a>
-          <a href="/authors" class="nav-link <%= path === '/authors' ? 'active' : '' %>">作者</a>
-          <a href="/annual" class="nav-link <%= path === '/annual' ? 'active' : '' %>">年度</a>
-          <a href="/notebooks" class="nav-link <%= path === '/notebooks' ? 'active' : '' %>">笔记</a>
-          <a href="/quotes" class="nav-link <%= path === '/quotes' ? 'active' : '' %>">金句</a>
-          <a href="/booklists" class="nav-link <%= path === '/booklists' ? 'active' : '' %>">书单</a>
-          <a href="/classics" class="nav-link <%= path === '/classics' ? 'active' : '' %>">经典</a>
-          <a href="/stats" class="nav-link <%= path === '/stats' ? 'active' : '' %>">统计</a>
-          <a href="/search" class="nav-link <%= path === '/search' ? 'active' : '' %>" title="搜索">🔍</a>
-          <button id="theme-toggle" class="theme-toggle" aria-label="切换主题">◐</button>
+          <a href="/bookshelf" class="nav-link <%= path === '/bookshelf' ? 'active' : '' %>">涔︽灦</a>
+          <a href="/authors" class="nav-link <%= path === '/authors' ? 'active' : '' %>">浣滆€?/a>
+          <a href="/annual" class="nav-link <%= path === '/annual' ? 'active' : '' %>">骞村害</a>
+          <a href="/notebooks" class="nav-link <%= path === '/notebooks' ? 'active' : '' %>">绗旇</a>
+          <a href="/quotes" class="nav-link <%= path === '/quotes' ? 'active' : '' %>">閲戝彞</a>
+          <a href="/booklists" class="nav-link <%= path === '/booklists' ? 'active' : '' %>">涔﹀崟</a>
+          <a href="/classics" class="nav-link <%= path === '/classics' ? 'active' : '' %>">缁忓吀</a>
+          <a href="/cards" class="nav-link <%= path === '/cards' ? 'active' : '' %>">鍗＄墖</a>
+          <a href="/stats" class="nav-link <%= path === '/stats' ? 'active' : '' %>">缁熻</a>
+          <a href="/search" class="nav-link <%= path === '/search' ? 'active' : '' %>" title="鎼滅储">馃攳</a>
+          <button id="theme-toggle" class="theme-toggle" aria-label="鍒囨崲涓婚">鈼?/button>
         </div>
       </div>
     </nav>
@@ -57,13 +58,13 @@
     </main>
 
     <!-- Back to Top -->
-    <button class="back-to-top" id="back-to-top" aria-label="回到顶部">↑</button>
+    <button class="back-to-top" id="back-to-top" aria-label="鍥炲埌椤堕儴">鈫?/button>
 
     <!-- Footer -->
     <footer class="footer">
       <div class="footer-inner">
-        <span>数据来自 <a href="https://weread.qq.com" target="_blank" rel="noopener">微信读书</a></span>
-        <span>阅读书房 &copy; <%= new Date().getFullYear() %></span>
+        <span>鏁版嵁鏉ヨ嚜 <a href="https://weread.qq.com" target="_blank" rel="noopener">寰俊璇讳功</a></span>
+        <span>闃呰涔︽埧 &copy; <%= new Date().getFullYear() %></span>
       </div>
     </footer>
   </div>
@@ -76,20 +77,20 @@
     <div class="share-modal-backdrop"></div>
     <div class="share-modal-body">
       <div class="share-modal-header">
-        <span class="share-modal-title">分享卡片预览</span>
-        <button class="share-modal-close" id="share-modal-close" aria-label="关闭">&times;</button>
+        <span class="share-modal-title">鍒嗕韩鍗＄墖棰勮</span>
+        <button class="share-modal-close" id="share-modal-close" aria-label="鍏抽棴">&times;</button>
       </div>
       <div class="share-modal-preview">
-        <img id="share-preview-img" src="" alt="分享卡片预览">
+        <img id="share-preview-img" src="" alt="鍒嗕韩鍗＄墖棰勮">
       </div>
       <div class="share-modal-actions">
-        <button class="share-modal-btn" id="share-download-btn">下载图片</button>
-        <button class="share-modal-btn share-modal-btn-outline" id="share-copy-btn">复制图片</button>
+        <button class="share-modal-btn" id="share-download-btn">涓嬭浇鍥剧墖</button>
+        <button class="share-modal-btn share-modal-btn-outline" id="share-copy-btn">澶嶅埗鍥剧墖</button>
       </div>
     </div>
   </div>
 
-  <script src="/js/main.js?v=10" defer></script>
+  <script src="/js/main.js?v=66" defer></script>
   <% if (typeof needsHtml2Canvas !== 'undefined' && needsHtml2Canvas) { %>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
   <% } %>
@@ -97,7 +98,7 @@
   <script src="/js/heatmap.js" defer></script>
   <% } %>
   <% if (typeof isClassics !== 'undefined' && isClassics) { %>
-  <script src="/js/classics.js?v=7" defer></script>
+  <script src="/js/classics.js?v=66" defer></script>
   <% } %>
 </body>
 </html>

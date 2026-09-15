@@ -1,0 +1,227 @@
+<%- layout('layout') -%%
+<div class="sd-cards-page">
+  <!-- 页面标题 -->
+  <div class="sd-page-header">
+    <h1 class="sd-page-title">🃏 知识卡片库</h1>
+    <p class="sd-page-subtitle">收藏每一张启发你的知识图谱</p>
+  </div>
+
+  <!-- 工具栏 -->
+  <div class="cards-toolbar">
+    <button class="sd-btn sd-btn-green" id="btn-upload-card">
+      ⬆ 上传新卡片
+    </button>
+    <div class="cards-filter" id="cards-filter">
+      <button class="filter-tag active" data-cat="">全部</button>
+      <% categories.forEach(function(cat) { %>
+      <button class="filter-tag" data-cat="<%= cat %>"><%= cat %></button>
+      <% }) %>
+    </div>
+  </div>
+
+  <!-- 卡片网格 -->
+  <div class="cards-grid" id="cards-grid">
+    <% if (cards.length === 0) { %>
+    <div class="cards-empty">
+      <p style="font-size: 48px; margin-bottom: 16px;">📭</p>
+      <p>还没有卡片，上传第一张吧！</p>
+    </div>
+    <% } else { %>
+    <% cards.forEach(function(card) { %>
+    <div class="card-frame" data-id="<%= card.id %>" data-category="<%= card.category %>">
+      <div class="card-image-wrap">
+        <img src="<%= card.image_path %>" alt="<%= card.title %>" loading="lazy">
+        <div class="card-overlay">
+          <button class="card-btn-delete" title="删除">✕</button>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-title"><%= card.title %></div>
+        <% if (card.category) { %>
+        <div class="card-cat"><%= card.category %></div>
+        <% } %>
+      </div>
+    </div>
+    <% }) %>
+    <% } %>
+  </div>
+</div>
+
+<!-- 上传弹窗 -->
+<div class="sd-modal-overlay" id="upload-modal" style="display:none;">
+  <div class="sd-modal">
+    <div class="sd-modal-title">⬆ 上传知识卡片</div>
+    <div class="sd-modal-body">
+      <div class="upload-dropzone" id="dropzone">
+        <input type="file" id="file-input" accept="image/*" style="display:none;">
+        <p style="font-size: 40px; margin-bottom: 8px;">🖼️</p>
+        <p>点击或拖拽图片到这里</p>
+        <p style="font-size: 12px; opacity: 0.6; margin-top: 4px;">支持 PNG / JPG / WebP，最大 10MB</p>
+      </div>
+      <div class="upload-preview" id="upload-preview" style="display:none;">
+        <img id="preview-img" src="" alt="预览">
+      </div>
+      <div class="form-field">
+        <label>卡片标题</label>
+        <input type="text" id="card-title" placeholder="给这张卡片起个名字...">
+      </div>
+      <div class="form-field">
+        <label>分类标签（可选）</label>
+        <input type="text" id="card-category" placeholder="如：哲学 / 历史 / 心理学...">
+      </div>
+    </div>
+    <div class="sd-modal-footer">
+      <button class="sd-btn sd-btn-gray" id="btn-cancel-upload">取消</button>
+      <button class="sd-btn sd-btn-green" id="btn-submit-upload">确认上传</button>
+    </div>
+  </div>
+</div>
+
+<!-- 灯箱 -->
+<div class="sd-lightbox" id="lightbox" style="display:none;">
+  <div class="lightbox-content">
+    <img id="lightbox-img" src="" alt="">
+    <div class="lightbox-caption" id="lightbox-caption"></div>
+  </div>
+  <button class="lightbox-close" id="lightbox-close">✕</button>
+</div>
+
+<script>
+(function() {
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('file-input');
+  const preview = document.getElementById('upload-preview');
+  const previewImg = document.getElementById('preview-img');
+  const modal = document.getElementById('upload-modal');
+  const lightbox = document.getElementById('lightbox');
+  let selectedFile = null;
+
+  // 打开上传弹窗
+  document.getElementById('btn-upload-card').addEventListener('click', function() {
+    modal.style.display = 'flex';
+    dropzone.style.display = 'block';
+    preview.style.display = 'none';
+    selectedFile = null;
+    document.getElementById('card-title').value = '';
+    document.getElementById('card-category').value = '';
+  });
+
+  // 关闭弹窗
+  document.getElementById('btn-cancel-upload').addEventListener('click', function() {
+    modal.style.display = 'none';
+  });
+  modal.addEventListener('click', function(e) {
+    if (e.target === modal) modal.style.display = 'none';
+  });
+
+  // 点击 dropzone 选择文件
+  dropzone.addEventListener('click', function() { fileInput.click(); });
+
+  // 拖拽上传
+  dropzone.addEventListener('dragover', function(e) { e.preventDefault(); dropzone.classList.add('dragover'); });
+  dropzone.addEventListener('dragleave', function() { dropzone.classList.remove('dragover'); });
+  dropzone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    dropzone.classList.remove('dragover');
+    if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
+  });
+
+  fileInput.addEventListener('change', function() {
+    if (fileInput.files.length > 0) handleFile(fileInput.files[0]);
+  });
+
+  function handleFile(file) {
+    if (!file.type.startsWith('image/')) { alert('请选择图片文件'); return; }
+    selectedFile = file;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      previewImg.src = e.target.result;
+      dropzone.style.display = 'none';
+      preview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // 提交上传
+  document.getElementById('btn-submit-upload').addEventListener('click', async function() {
+    if (!selectedFile) { alert('请先选择图片'); return; }
+    const title = document.getElementById('card-title').value.trim();
+    if (!title) { alert('请填写卡片标题'); return; }
+    const category = document.getElementById('card-category').value.trim();
+
+    const formData = new FormData();
+    formData.append('image', selectedFile);
+    formData.append('title', title);
+    formData.append('category', category);
+
+    this.textContent = '上传中...';
+    this.disabled = true;
+
+    try {
+      const res = await fetch('/api/cards/upload', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (data.ok) {
+        location.reload();
+      } else {
+        alert('上传失败: ' + (data.error || '未知错误'));
+      }
+    } catch (e) {
+      alert('上传失败: ' + e.message);
+    }
+  });
+
+  // 灯箱查看
+  document.querySelectorAll('.card-frame').forEach(function(frame) {
+    frame.addEventListener('click', function(e) {
+      if (e.target.closest('.card-btn-delete')) return;
+      const img = frame.querySelector('img');
+      const title = frame.querySelector('.card-title');
+      document.getElementById('lightbox-img').src = img.src;
+      document.getElementById('lightbox-caption').textContent = title.textContent;
+      lightbox.style.display = 'flex';
+    });
+  });
+
+  document.getElementById('lightbox-close').addEventListener('click', function() {
+    lightbox.style.display = 'none';
+  });
+  lightbox.addEventListener('click', function(e) {
+    if (e.target === lightbox) lightbox.style.display = 'none';
+  });
+
+  // 删除卡片
+  document.querySelectorAll('.card-btn-delete').forEach(function(btn) {
+    btn.addEventListener('click', async function(e) {
+      e.stopPropagation();
+      if (!confirm('确定删除这张卡片吗？')) return;
+      const frame = btn.closest('.card-frame');
+      const id = frame.dataset.id;
+      try {
+        const res = await fetch('/api/cards/' + id, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.ok) frame.remove();
+      } catch (e) {
+        alert('删除失败');
+      }
+    });
+  });
+
+  // 分类筛选
+  document.querySelectorAll('#cards-filter .filter-tag').forEach(function(tag) {
+    tag.addEventListener('click', function() {
+      document.querySelectorAll('#cards-filter .filter-tag').forEach(function(t) {
+        t.classList.remove('active');
+      });
+      tag.classList.add('active');
+      const cat = tag.dataset.cat;
+      document.querySelectorAll('.card-frame').forEach(function(frame) {
+        if (!cat || frame.dataset.category === cat) {
+          frame.style.display = '';
+        } else {
+          frame.style.display = 'none';
+        }
+      });
+    });
+  });
+})();
+</script>

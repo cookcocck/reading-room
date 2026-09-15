@@ -12,6 +12,7 @@ import {
   getAuthorsAll, getAuthorByName, getAuthorHighlights, getAuthorReviews,
   getHighlightsPaged, getHighlightsTotal,
   getAllBooklists, getBooklistById,
+  getAllCards, getCardCategories,
 } from '../db/models';
 import { formatTime, formatTimestamp } from '../utils/format';
 import type { Book } from '../types';
@@ -446,6 +447,19 @@ router.get('/booklists/:id', (req: Request, res: Response) => {
     formatTime, formatTimestamp,
     helpers: { formatTime, formatTimestamp },
     path: '/booklists',
+  });
+});
+
+
+// ─── Cards (知识卡片库) ───
+router.get('/cards', (_req: Request, res: Response) => {
+  const cards = getAllCards();
+  const categories = getCardCategories();
+  res.render('cards', {
+    title: '知识卡片库',
+    cards,
+    categories,
+    path: '/cards',
   });
 });
 

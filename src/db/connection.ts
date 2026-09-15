@@ -240,6 +240,13 @@ export const CREATE_TABLES = [
     sort_order INTEGER DEFAULT 0, added_at INTEGER NOT NULL,
     UNIQUE(list_id, book_id)
   )`,
+  `CREATE TABLE IF NOT EXISTS cards (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    image_path TEXT NOT NULL,
+    category TEXT DEFAULT '',
+    created_at INTEGER NOT NULL
+  )`,
 ];
 
 export const CREATE_INDEXES = [
