@@ -19,23 +19,23 @@ export function createTag(name: string, color?: string): Tag | undefined {
   const now = Math.floor(Date.now() / 1000);
   d.prepare(
     'INSERT OR IGNORE INTO tags (name, color, created_at) VALUES (?, ?, ?)'
-  ).all(name, color || '#6366f1', now);
+  ).run(name, color || '#6366f1', now);
   return d.prepare('SELECT * FROM tags WHERE name = ?').get(name) as unknown as Tag | undefined;
 }
 
 export function deleteTag(id: number): void {
   const d = getDb()!;
-  d.prepare('DELETE FROM note_tags WHERE tag_id = ?').all(id);
-  d.prepare('DELETE FROM tags WHERE id = ?').all(id);
+  d.prepare('DELETE FROM note_tags WHERE tag_id = ?').run(id);
+  d.prepare('DELETE FROM tags WHERE id = ?').run(id);
 }
 
 export function setNoteTags(noteId: string, noteType: string, tagIds: number[]): void {
   const d = getDb()!;
-  d.prepare('DELETE FROM note_tags WHERE note_id = ? AND note_type = ?').all(noteId, noteType);
+  d.prepare('DELETE FROM note_tags WHERE note_id = ? AND note_type = ?').run(noteId, noteType);
   for (const tid of tagIds) {
     d.prepare(
       'INSERT OR IGNORE INTO note_tags (note_id, note_type, tag_id) VALUES (?, ?, ?)'
-    ).all(noteId, noteType, tid);
+    ).run(noteId, noteType, tid);
   }
 }
 

@@ -1,0 +1,161 @@
+<!-- ═══════════════════════════════════════════
+   BADGES — Stardew Valley Achievement Style
+   ═══════════════════════════════════════════ -->
+
+<%
+// 稀有度分配
+var rarityMap = {
+  'first-book': 'copper',
+  'bookworm': 'copper',
+  'reader': 'silver',
+  'deep-reader': 'silver',
+  'thinker': 'silver',
+  'streak': 'silver',
+  'night-owl': 'silver',
+  'early-bird': 'silver',
+  'year-star': 'silver',
+  'scholar': 'gold',
+  'collector': 'gold',
+  'highlight-hoarder': 'gold',
+  'streak-30': 'gold',
+  'marathon': 'gold',
+  'master': 'iridium',
+  'time-lord': 'iridium',
+};
+var rarityNames = { copper: '普通', silver: '稀有', gold: '史诗', iridium: '传说' };
+var rarityColors = { copper: '#b87333', silver: '#c0c0c0', gold: '#ffd700', iridium: '#9b59b6' };
+
+// 分类
+var categories = [
+  { name: '📚 阅读量', ids: ['first-book', 'bookworm', 'reader', 'scholar', 'master'] },
+  { name: '📖 深度阅读', ids: ['deep-reader', 'thinker', 'highlight-hoarder', 'marathon'] },
+  { name: '🔥 坚持与习惯', ids: ['streak', 'streak-30', 'night-owl', 'early-bird'] },
+  { name: '🏆 收藏与成就', ids: ['collector', 'year-star', 'time-lord'] },
+];
+
+var badgeMap = {};
+badges.forEach(function(b) { badgeMap[b.id] = b; });
+%>
+
+<div class="sd-achievements">
+
+  <!-- 顶部状态栏 -->
+  <div class="sd-ach-header">
+    <div class="sd-ach-title">
+      <span class="sd-ach-icon">🏆</span>
+      <span>成就系统</span>
+    </div>
+    <div class="sd-ach-stats">
+      <div class="sd-ach-stat">
+        <span class="sd-ach-stat-num"><%= earnedCount %></span>
+        <span class="sd-ach-stat-label">已解锁</span>
+      </div>
+      <div class="sd-ach-stat">
+        <span class="sd-ach-stat-num"><%= totalBadges %></span>
+        <span class="sd-ach-stat-label">总数</span>
+      </div>
+      <div class="sd-ach-stat">
+        <span class="sd-ach-stat-num"><%= Math.round(earnedCount / totalBadges * 100) %>%</span>
+        <span class="sd-ach-stat-label">完成度</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 总进度条 -->
+  <div class="sd-ach-overall">
+    <div class="sd-ach-overall-bar">
+      <div class="sd-ach-overall-fill" style="width: <%= earnedCount / totalBadges * 100 %>%"></div>
+    </div>
+    <div class="sd-ach-overall-text"><%= earnedCount %> / <%= totalBadges %> 成就已解锁</div>
+  </div>
+
+  <% categories.forEach(function(cat) { %>
+  <!-- 分类 -->
+  <div class="sd-ach-category">
+    <div class="sd-ach-cat-title"><%= cat.name %></div>
+    <div class="sd-ach-grid">
+      <% cat.ids.forEach(function(bid) {
+        var badge = badgeMap[bid];
+        if (!badge) return;
+        var rarity = rarityMap[bid] || 'copper';
+        var pct = Math.min(100, Math.round(badge.progress / badge.target * 100));
+      %>
+      <div class="sd-ach-card <%= badge.earned ? 'unlocked' : 'locked' %> rarity-<%= rarity %>" onclick="showAchDetail('<%= bid %>')">
+        <!-- 木质卡片顶部 -->
+        <div class="sd-ach-card-top">
+          <div class="sd-ach-badge">
+            <% if (badge.earned) { %>
+              <div class="sd-ach-badge-icon"><%= badge.icon %></div>
+            <% } else { %>
+              <div class="sd-ach-badge-icon sd-ach-locked">?</div>
+            <% } %>
+            <div class="sd-ach-badge-frame"></div>
+          </div>
+          <div class="sd-ach-rarity"><%= rarityNames[rarity] %></div>
+        </div>
+        <!-- 卡片内容 -->
+        <div class="sd-ach-card-body">
+          <div class="sd-ach-name"><%= badge.earned ? badge.name : '???' %></div>
+          <div class="sd-ach-desc"><%= badge.desc %></div>
+          <!-- 进度条 -->
+          <div class="sd-ach-progress">
+            <div class="sd-ach-progress-bar">
+              <div class="sd-ach-progress-fill" style="width: <%= pct %>%"></div>
+            </div>
+            <div class="sd-ach-progress-text"><%= badge.progress %><%= badge.unit || '' %> / <%= badge.target %><%= badge.unit || '' %></div>
+          </div>
+        </div>
+        <!-- 解锁标记 -->
+        <% if (badge.earned) { %>
+        <div class="sd-ach-check">✓</div>
+        <% } %>
+      </div>
+      <% }); %>
+    </div>
+  </div>
+  <% }); %>
+
+</div>
+
+<!-- ═══ 成就详情弹窗 ═══ -->
+<div class="sd-modal" id="achModal" onclick="if(event.target===this)closeAchDetail()">
+  <div class="sd-modal-card">
+    <button class="sd-modal-close" onclick="closeAchDetail()">✕</button>
+    <div id="achModalContent"></div>
+  </div>
+</div>
+
+<script>
+var badgeData = <%- JSON.stringify(badges) %>;
+var rarityMap2 = <%- JSON.stringify(rarityMap) %>;
+var rarityNames2 = <%- JSON.stringify(rarityNames) %>;
+
+function showAchDetail(bid) {
+  var badge = badgeData.find(function(b) { return b.id === bid; });
+  if (!badge) return;
+  var rarity = rarityMap2[bid] || 'copper';
+  var pct = Math.min(100, Math.round(badge.progress / badge.target * 100));
+  var html = '';
+  html += '<div class="sd-modal-badge rarity-' + rarity + ' ' + (badge.earned ? 'unlocked' : 'locked') + '">';
+  html += '<div class="sd-modal-badge-icon">' + (badge.earned ? badge.icon : '?') + '</div>';
+  html += '<div class="sd-modal-badge-frame"></div>';
+  html += '</div>';
+  html += '<div class="sd-modal-name">' + (badge.earned ? badge.name : '???') + '</div>';
+  html += '<div class="sd-modal-rarity rarity-' + rarity + '">' + rarityNames2[rarity] + '成就</div>';
+  html += '<div class="sd-modal-desc">' + badge.desc + '</div>';
+  html += '<div class="sd-modal-progress">';
+  html += '<div class="sd-modal-progress-bar"><div class="sd-modal-progress-fill" style="width:' + pct + '%"></div></div>';
+  html += '<div class="sd-modal-progress-text">' + badge.progress + (badge.unit || '') + ' / ' + badge.target + (badge.unit || '') + '</div>';
+  html += '</div>';
+  if (badge.earned) {
+    html += '<div class="sd-modal-unlocked">🎉 已解锁！</div>';
+  } else {
+    html += '<div class="sd-modal-locked">🔒 尚未解锁</div>';
+  }
+  document.getElementById('achModalContent').innerHTML = html;
+  document.getElementById('achModal').style.display = 'flex';
+}
+function closeAchDetail() {
+  document.getElementById('achModal').style.display = 'none';
+}
+</script>

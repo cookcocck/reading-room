@@ -13,6 +13,14 @@ const PORT: number = Number(process.env.PORT) || 3000;
 // ─── Compression ───
 app.use(compression());
 
+// No Cache: prevent stale pages after deployments
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  next();
+});
+
 // ─── EJS Layout ───
 app.use(expressLayouts);
 app.use(express.json());
@@ -48,9 +56,7 @@ app.use(express.static(path.join(__dirname, '..', 'public'), {
   maxAge: '1d',
   etag: true,
   setHeaders(res: Response, filePath: string) {
-    if (filePath.match(/\.(css|js)$/)) {
-      res.setHeader('Cache-Control', 'public, max-age=86400, immutable');
-    }
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
   },
 }));
 
