@@ -6326,7 +6326,7 @@ h3 {
 .cw-overlay-badge { position: absolute; top: 8px; right: 8px; background: var(--accent); color: #fff; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
 .cw-item.finished::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); }
 
-/* ─── Badges (Deluxe Medal Style) ─── */
+/* ─── Badges (Classic Round Medal Style) ─── */
 .bg-container { max-width: 1200px; margin: 0 auto; padding: 48px 32px 80px; }
 .bg-hero { display: flex; align-items: center; justify-content: center; gap: 24px; margin-bottom: 56px; }
 .bg-laurel { width: 52px; height: 80px; flex-shrink: 0; color: var(--accent); }
@@ -6336,110 +6336,106 @@ h3 {
 .bg-hero-title { font-family: 'Noto Serif SC', serif; font-size: 32px; font-weight: 700; color: var(--ink); margin: 0; letter-spacing: 0.02em; }
 .bg-hero-count { color: var(--accent); font-size: 48px; font-weight: 800; }
 .bg-hero-total { color: var(--ink-faint); font-size: 22px; font-weight: 400; }
-.bg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 56px 32px; }
+.bg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 64px 36px; }
 
 /* ═══ 勋章项 ═══ */
 .bg-medal-item { text-align: center; cursor: pointer; position: relative; transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
 .bg-medal-item:hover { transform: translateY(-8px) scale(1.03); }
-.bg-medal-item:hover .bg-medal { filter: drop-shadow(0 14px 32px rgba(184,148,63,0.4)); }
-.bg-medal-item:hover .bg-medal-shine { animation: shineSweep 0.8s ease; }
-.bg-medal-item.earned .bg-medal { animation: breathe 3s ease-in-out infinite; }
-@keyframes breathe { 0%,100% { filter: drop-shadow(0 6px 16px rgba(184,148,63,0.2)); } 50% { filter: drop-shadow(0 8px 24px rgba(184,148,63,0.35)); } }
-@keyframes shineSweep { 0% { transform: translateX(-120%) skewX(-20deg); opacity: 0; } 30% { opacity: 0.7; } 100% { transform: translateX(120%) skewX(-20deg); opacity: 0; } }
+.bg-medal-item:hover .bg-medal { filter: drop-shadow(0 18px 36px rgba(80,60,15,0.35)); }
+.bg-medal-item:hover .bg-medal-shine { animation: shineSweep 0.9s ease; }
+.bg-medal-item.earned .bg-medal { animation: breathe 3.2s ease-in-out infinite; }
+@keyframes breathe { 0%,100% { filter: drop-shadow(0 6px 16px rgba(140,105,25,0.22)); } 50% { filter: drop-shadow(0 10px 28px rgba(140,105,25,0.38)); } }
+@keyframes shineSweep { 0% { transform: translateX(-140%) skewX(-18deg); opacity: 0; } 30% { opacity: 0.75; } 100% { transform: translateX(140%) skewX(-18deg); opacity: 0; } }
 
-/* ═══ 绶带 ═══ */
-.bg-medal-ribbon { width: 90px; height: 56px; margin: 0 auto -8px; position: relative; z-index: 1; }
-.bg-medal-ribbon::before, .bg-medal-ribbon::after { content: ''; position: absolute; top: 0; width: 38px; height: 56px; }
-.bg-medal-ribbon::before { left: 6px; background: linear-gradient(90deg, var(--ribbon-dark), var(--ribbon-mid)); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%); transform: skewY(8deg); }
-.bg-medal-ribbon::after { right: 6px; background: linear-gradient(90deg, var(--ribbon-mid), var(--ribbon-light)); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%); transform: skewY(-8deg); }
-.bg-medal-ribbon-fold { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 20px; height: 24px; background: linear-gradient(180deg, var(--ribbon-light), var(--ribbon-dark)); border-radius: 0 0 8px 8px; z-index: 2; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+/* ═══ 缎带 ═══ */
+.bg-medal-ribbon { width: 106px; height: 60px; margin: 0 auto -4px; position: relative; z-index: 1; }
+.bg-medal-ribbon::before, .bg-medal-ribbon::after { content: ''; position: absolute; top: 0; width: 44px; height: 60px; }
+.bg-medal-ribbon::before { left: 9px; background: linear-gradient(180deg, var(--ribbon-mid) 0%, var(--ribbon-dark) 100%); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 72%, 0 100%); transform: skewY(9deg); box-shadow: inset -3px 0 4px rgba(0,0,0,0.18); }
+.bg-medal-ribbon::after { right: 9px; background: linear-gradient(180deg, var(--ribbon-mid) 0%, var(--ribbon-dark) 100%); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 72%, 0 100%); transform: skewY(-9deg); box-shadow: inset 3px 0 4px rgba(0,0,0,0.18); }
+.bg-medal-ribbon-fold { position: absolute; top: -4px; left: 50%; transform: translateX(-50%); width: 24px; height: 26px; background: linear-gradient(180deg, var(--ribbon-light) 0%, var(--ribbon-mid) 55%, var(--ribbon-dark) 100%); border-radius: 0 0 7px 7px; z-index: 2; box-shadow: 0 3px 9px rgba(0,0,0,0.28); }
 
-/* ═══ 勋章主体 ═══ */
-.bg-medal { width: 224px; height: 256px; margin: 0 auto 16px; position: relative; transition: filter 0.4s; }
+/* ═══ 勋章主体（圆形奖章） ═══ */
+.bg-medal { width: 218px; height: 238px; margin: 0 auto 16px; position: relative; transition: filter 0.4s; }
 
-/* 外圈金属 */
-.bg-medal-outer { position: absolute; inset: 0;
-  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-  background: linear-gradient(145deg, #fae8a8 0%, #e8c84a 12%, #d4af37 30%, #b8942f 48%, #a07d28 52%, #d4af37 70%, #f5e1a0 88%, #e8c84a 100%);
-  box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.2);
+/* 外圈金属环：环绕高光 */
+.bg-medal-outer { position: absolute; inset: 0; border-radius: 50%;
+  background: conic-gradient(from 210deg, #8a6420 0%, #d4af37 18%, #f6e6a4 34%, #fff6cf 44%, #e8c84a 55%, #a87d2e 72%, #c9a13a 84%, #8a6420 100%);
+  box-shadow: 0 12px 30px rgba(110,80,15,0.32), inset 0 2px 3px rgba(255,255,255,0.75), inset 0 -5px 10px rgba(0,0,0,0.32);
 }
 /* 内圈金属 */
-.bg-medal-inner { position: absolute; inset: 10px;
-  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-  background: linear-gradient(145deg, #e8c84a 0%, #d4af37 25%, #b8942f 50%, #d4af37 75%, #e8c84a 100%);
-  box-shadow: inset 0 1px 2px rgba(255,255,255,0.3), inset 0 -1px 2px rgba(0,0,0,0.15);
+.bg-medal-inner { position: absolute; inset: 8px; border-radius: 50%;
+  background: conic-gradient(from 30deg, #9a7126 0%, #d4af37 20%, #f2dc90 45%, #b8942f 70%, #8a6420 88%, #9a7126 100%);
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.55), inset 0 -3px 5px rgba(0,0,0,0.28);
 }
-/* 珠点纹 */
-.bg-medal-studs { position: absolute; inset: 14px;
-  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-  background: radial-gradient(circle, rgba(255,240,200,0.9) 2px, transparent 2.5px);
-  background-size: 12px 12px;
-  -webkit-mask: radial-gradient(circle, transparent 58%, black 59%);
-  mask: radial-gradient(circle, transparent 58%, black 59%);
-  opacity: 0.7;
+/* 珠点纹环 */
+.bg-medal-studs { position: absolute; inset: 13px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,244,205,0.95) 2px, transparent 2.6px);
+  background-size: 13px 13px;
+  -webkit-mask: radial-gradient(circle, transparent 51%, black 52%);
+  mask: radial-gradient(circle, transparent 51%, black 52%);
+  opacity: 0.85;
 }
-
-/* 彩色核心 */
-.bg-medal-core { position: absolute; inset: 22px; border-radius: 50%;
+/* 珐琅核心 */
+.bg-medal-core { position: absolute; inset: 21px; border-radius: 50%;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   overflow: hidden;
-  box-shadow: inset 0 2px 8px rgba(255,255,255,0.3), inset 0 -4px 12px rgba(0,0,0,0.25), 0 0 0 2px rgba(212,175,55,0.5);
+  box-shadow: inset 0 4px 12px rgba(255,255,255,0.42), inset 0 -9px 20px rgba(0,0,0,0.38), 0 0 0 2px rgba(212,175,55,0.55), 0 0 26px rgba(212,175,55,0.22);
 }
-/* 中心高光 */
+/* 顶部高光 */
 .bg-medal-glow { position: absolute; inset: 0; border-radius: 50%;
-  background: radial-gradient(ellipse at 32% 22%, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.2) 25%, transparent 55%);
+  background: radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.16) 28%, transparent 56%);
   pointer-events: none;
 }
 /* 光泽扫过 */
-.bg-medal-shine { position: absolute; inset: 22px; border-radius: 50%;
+.bg-medal-shine { position: absolute; inset: 21px; border-radius: 50%;
   background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.5) 50%, transparent 70%);
-  pointer-events: none; transform: translateX(-120%) skewX(-20deg); opacity: 0;
+  pointer-events: none; transform: translateX(-140%) skewX(-18deg); opacity: 0;
 }
-.bg-medal-icon { font-size: 64px; margin-bottom: 6px; position: relative; z-index: 1;
-  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4)) drop-shadow(0 0 12px rgba(255,255,255,0.15));
+.bg-medal-icon { font-size: 60px; margin-bottom: 5px; position: relative; z-index: 1;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.42)) drop-shadow(0 0 14px rgba(255,255,255,0.18));
   transform: translateY(-2px);
 }
-.bg-medal-target { font-family: 'Noto Serif SC', serif; font-size: 30px; font-weight: 800; position: relative; z-index: 1;
-  color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5), 0 0 16px rgba(255,255,255,0.2); letter-spacing: 0.02em;
+.bg-medal-target { font-family: 'Noto Serif SC', serif; font-size: 29px; font-weight: 800; position: relative; z-index: 1;
+  color: #fff; text-shadow: 0 2px 5px rgba(0,0,0,0.5), 0 0 18px rgba(255,255,255,0.22); letter-spacing: 0.02em;
 }
-.bg-medal-number { position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
-  font-family: 'Georgia', serif; font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.7);
-  letter-spacing: 0.1em; z-index: 1; text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+.bg-medal-number { position: absolute; bottom: 13px; left: 50%; transform: translateX(-50%);
+  font-family: 'Georgia', serif; font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.75);
+  letter-spacing: 0.12em; z-index: 1; text-shadow: 0 1px 3px rgba(0,0,0,0.45);
 }
 .bg-medal-name { font-size: 20px; color: var(--ink); font-weight: 700; margin-top: 6px; letter-spacing: 0.03em; font-family: 'Noto Serif SC', serif; }
-.bg-medal-lock { position: absolute; top: 120px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.8); z-index: 3;
-  background: rgba(0,0,0,0.3); border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
-  backdrop-filter: blur(4px);
+.bg-medal-lock { position: absolute; top: 112px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.85); z-index: 3;
+  background: rgba(0,0,0,0.35); border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.25);
 }
 
-/* 6种颜色主题 - 核心 + 绶带 */
-.theme-0 { --ribbon-light: #8cc8f5; --ribbon-mid: #4a90d9; --ribbon-dark: #2a6ba8; }
-.theme-0 .bg-medal-core { background: radial-gradient(circle at 32% 28%, #8cc8f5 0%, #4a90d9 40%, #2a6ba8 75%, #1a4a78 100%); }
-.theme-1 { --ribbon-light: #7ee0c8; --ribbon-mid: #2fa892; --ribbon-dark: #1a7a68; }
-.theme-1 .bg-medal-core { background: radial-gradient(circle at 32% 28%, #7ee0c8 0%, #2fa892 40%, #1a7a68 75%, #0f5a48 100%); }
-.theme-2 { --ribbon-light: #f5b078; --ribbon-mid: #d4723a; --ribbon-dark: #a85020; }
-.theme-2 .bg-medal-core { background: radial-gradient(circle at 32% 28%, #f5b078 0%, #d4723a 40%, #a85020 75%, #783810 100%); }
-.theme-3 { --ribbon-light: #cfa0f5; --ribbon-mid: #8c5cd4; --ribbon-dark: #5e35a8; }
-.theme-3 .bg-medal-core { background: radial-gradient(circle at 32% 28%, #cfa0f5 0%, #8c5cd4 40%, #5e35a8 75%, #3e2078 100%); }
-.theme-4 { --ribbon-light: #f58c9f; --ribbon-mid: #d43d5f; --ribbon-dark: #a82040; }
-.theme-4 .bg-medal-core { background: radial-gradient(circle at 32% 28%, #f58c9f 0%, #d43d5f 40%, #a82040 75%, #781028 100%); }
-.theme-5 { --ribbon-light: #9cccf5; --ribbon-mid: #5a9ad4; --ribbon-dark: #3068a8; }
-.theme-5 .bg-medal-core { background: radial-gradient(circle at 32% 28%, #9cccf5 0%, #5a9ad4 40%, #3068a8 75%, #1a4878 100%); }
+/* 6 种珐琅主题色 */
+.theme-0 { --ribbon-light: #a9c4e4; --ribbon-mid: #4a6f9e; --ribbon-dark: #2b4363; }
+.theme-0 .bg-medal-core { background: radial-gradient(circle at 30% 26%, #7fa3cc 0%, #3f6391 46%, #243f61 100%); }
+.theme-1 { --ribbon-light: #93d9bd; --ribbon-mid: #2f8a6b; --ribbon-dark: #1a5a44; }
+.theme-1 .bg-medal-core { background: radial-gradient(circle at 30% 26%, #6fc3a0 0%, #2a7f62 46%, #174a38 100%); }
+.theme-2 { --ribbon-light: #e8a18c; --ribbon-mid: #b04a34; --ribbon-dark: #77291a; }
+.theme-2 .bg-medal-core { background: radial-gradient(circle at 30% 26%, #d8785d 0%, #a63a2b 46%, #6e2017 100%); }
+.theme-3 { --ribbon-light: #c3a5de; --ribbon-mid: #7a4fa3; --ribbon-dark: #4c2c6e; }
+.theme-3 .bg-medal-core { background: radial-gradient(circle at 30% 26%, #a985c8 0%, #6b4a8e 46%, #41245f 100%); }
+.theme-4 { --ribbon-light: #ecd08a; --ribbon-mid: #c09630; --ribbon-dark: #866516; }
+.theme-4 .bg-medal-core { background: radial-gradient(circle at 30% 26%, #d9b85e 0%, #a67c1f 46%, #6b4c10 100%); }
+.theme-5 { --ribbon-light: #9db3da; --ribbon-mid: #4a5d8e; --ribbon-dark: #2a3a63; }
+.theme-5 .bg-medal-core { background: radial-gradient(circle at 30% 26%, #7f96c4 0%, #44598a 46%, #28345e 100%); }
 
-/* 未获得 - 灰化 */
-.bg-medal-item.locked .bg-medal-ribbon::before { background: linear-gradient(90deg, #888, #aaa); }
-.bg-medal-item.locked .bg-medal-ribbon::after { background: linear-gradient(90deg, #aaa, #ccc); }
-.bg-medal-item.locked .bg-medal-ribbon-fold { background: linear-gradient(180deg, #ccc, #888); }
-.bg-medal-item.locked .bg-medal-outer { background: linear-gradient(145deg, #ccc, #aaa, #999, #aaa, #ccc); }
-.bg-medal-item.locked .bg-medal-inner { background: linear-gradient(145deg, #bbb, #999, #888, #999, #bbb); }
-.bg-medal-item.locked .bg-medal-studs { opacity: 0.3; }
-.bg-medal-item.locked .bg-medal-core { background: radial-gradient(circle at 32% 28%, #bbb, #999, #777); opacity: 0.55; box-shadow: inset 0 2px 8px rgba(255,255,255,0.2), inset 0 -4px 12px rgba(0,0,0,0.2), 0 0 0 2px rgba(150,150,150,0.4); }
-.bg-medal-item.locked .bg-medal-icon { filter: grayscale(1) opacity(0.45) drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+/* 未获得 - 磨砂灰 */
+.bg-medal-item.locked .bg-medal-ribbon::before { background: linear-gradient(180deg, #8f8f8f, #6d6d6d); }
+.bg-medal-item.locked .bg-medal-ribbon::after { background: linear-gradient(180deg, #8f8f8f, #6d6d6d); }
+.bg-medal-item.locked .bg-medal-ribbon-fold { background: linear-gradient(180deg, #b8b8b8, #888, #6d6d6d); }
+.bg-medal-item.locked .bg-medal-outer { background: conic-gradient(from 210deg, #8a8a8a 0%, #b5b5b5 18%, #d8d8d8 34%, #e8e8e8 44%, #c2c2c2 55%, #939393 72%, #ababab 84%, #8a8a8a 100%); box-shadow: 0 12px 30px rgba(0,0,0,0.16), inset 0 2px 3px rgba(255,255,255,0.6), inset 0 -5px 10px rgba(0,0,0,0.22); }
+.bg-medal-item.locked .bg-medal-inner { background: conic-gradient(from 30deg, #9e9e9e 0%, #bcbcbc 20%, #d5d5d5 45%, #b0b0b0 70%, #939393 88%, #9e9e9e 100%); }
+.bg-medal-item.locked .bg-medal-studs { opacity: 0.35; }
+.bg-medal-item.locked .bg-medal-core { background: radial-gradient(circle at 30% 26%, #bdbdbd 0%, #979797 46%, #6e6e6e 100%); opacity: 0.5; box-shadow: inset 0 4px 12px rgba(255,255,255,0.25), inset 0 -9px 20px rgba(0,0,0,0.25), 0 0 0 2px rgba(150,150,150,0.4); }
+.bg-medal-item.locked .bg-medal-icon { filter: grayscale(1) opacity(0.4) drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
 .bg-medal-item.locked .bg-medal-target { color: rgba(255,255,255,0.5); text-shadow: none; }
 .bg-medal-item.locked .bg-medal-number { color: rgba(255,255,255,0.4); }
 .bg-medal-item.locked .bg-medal-name { color: var(--ink-faint); }
 .bg-medal-item.locked .bg-medal { animation: none; }
-.bg-medal-item.locked:hover .bg-medal { filter: drop-shadow(0 6px 16px rgba(0,0,0,0.15)); }
+.bg-medal-item.locked:hover .bg-medal { filter: drop-shadow(0 6px 16px rgba(0,0,0,0.16)); }
 
 /* ═══ 弹窗 ═══ */
 .bg-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(8px); animation: bgFadeIn 0.25s ease; }
@@ -6448,45 +6444,47 @@ h3 {
 @keyframes bgCardIn { from { opacity: 0; transform: translateY(28px) scale(0.92); } to { opacity: 1; transform: translateY(0) scale(1); } }
 .bg-modal-close { position: absolute; top: 18px; right: 18px; background: var(--bg); border: none; color: var(--ink-faint); font-size: 18px; cursor: pointer; width: 40px; height: 40px; border-radius: 50%; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
 .bg-modal-close:hover { background: var(--border); color: var(--ink); }
-.bg-modal-ribbon { width: 110px; height: 68px; margin: 0 auto -10px; position: relative; z-index: 1; }
-.bg-modal-ribbon::before, .bg-modal-ribbon::after { content: ''; position: absolute; top: 0; width: 46px; height: 68px; }
-.bg-modal-ribbon::before { left: 8px; background: linear-gradient(90deg, var(--ribbon-dark), var(--ribbon-mid)); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%); transform: skewY(8deg); }
-.bg-modal-ribbon::after { right: 8px; background: linear-gradient(90deg, var(--ribbon-mid), var(--ribbon-light)); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%); transform: skewY(-8deg); }
-.bg-modal-medal { width: 300px; height: 342px; margin: 0 auto 28px; position: relative; z-index: 2;
-  filter: drop-shadow(0 16px 40px rgba(184,148,63,0.4));
+.bg-modal-ribbon { width: 116px; height: 72px; margin: 0 auto -6px; position: relative; z-index: 1; }
+.bg-modal-ribbon::before, .bg-modal-ribbon::after { content: ''; position: absolute; top: 0; width: 48px; height: 72px; }
+.bg-modal-ribbon::before { left: 10px; background: linear-gradient(180deg, var(--ribbon-mid), var(--ribbon-dark)); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 72%, 0 100%); transform: skewY(9deg); box-shadow: inset -3px 0 4px rgba(0,0,0,0.18); }
+.bg-modal-ribbon::after { right: 10px; background: linear-gradient(180deg, var(--ribbon-mid), var(--ribbon-dark)); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 72%, 0 100%); transform: skewY(-9deg); box-shadow: inset 3px 0 4px rgba(0,0,0,0.18); }
+.bg-modal-medal { width: 290px; height: 314px; margin: 0 auto 28px; position: relative; z-index: 2;
+  filter: drop-shadow(0 16px 40px rgba(110,80,15,0.4));
 }
-.bg-modal-outer { position: absolute; inset: 0; clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-  background: linear-gradient(145deg, #fae8a8 0%, #e8c84a 12%, #d4af37 30%, #b8942f 48%, #a07d28 52%, #d4af37 70%, #f5e1a0 88%, #e8c84a 100%);
+.bg-modal-outer { position: absolute; inset: 0; border-radius: 50%;
+  background: conic-gradient(from 210deg, #8a6420 0%, #d4af37 18%, #f6e6a4 34%, #fff6cf 44%, #e8c84a 55%, #a87d2e 72%, #c9a13a 84%, #8a6420 100%);
+  box-shadow: 0 12px 30px rgba(110,80,15,0.3), inset 0 2px 3px rgba(255,255,255,0.75), inset 0 -5px 10px rgba(0,0,0,0.3);
 }
-.bg-modal-inner { position: absolute; inset: 14px; clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-  background: linear-gradient(145deg, #e8c84a, #d4af37, #b8942f, #d4af37, #e8c84a);
+.bg-modal-inner { position: absolute; inset: 10px; border-radius: 50%;
+  background: conic-gradient(from 30deg, #9a7126 0%, #d4af37 20%, #f2dc90 45%, #b8942f 70%, #8a6420 88%, #9a7126 100%);
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.5), inset 0 -3px 5px rgba(0,0,0,0.25);
 }
-.bg-modal-studs { position: absolute; inset: 18px; clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-  background: radial-gradient(circle, rgba(255,240,200,0.9) 2.5px, transparent 3px);
-  background-size: 14px 14px;
-  -webkit-mask: radial-gradient(circle, transparent 58%, black 59%);
-  mask: radial-gradient(circle, transparent 58%, black 59%);
-  opacity: 0.7;
+.bg-modal-studs { position: absolute; inset: 16px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,244,205,0.95) 2.5px, transparent 3.2px);
+  background-size: 15px 15px;
+  -webkit-mask: radial-gradient(circle, transparent 51%, black 52%);
+  mask: radial-gradient(circle, transparent 51%, black 52%);
+  opacity: 0.85;
 }
-.bg-modal-core { position: absolute; inset: 30px; border-radius: 50%;
+.bg-modal-core { position: absolute; inset: 27px; border-radius: 50%;
   display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden;
-  box-shadow: inset 0 3px 10px rgba(255,255,255,0.3), inset 0 -6px 16px rgba(0,0,0,0.25), 0 0 0 3px rgba(212,175,55,0.5);
+  box-shadow: inset 0 5px 14px rgba(255,255,255,0.42), inset 0 -11px 24px rgba(0,0,0,0.38), 0 0 0 3px rgba(212,175,55,0.55), 0 0 30px rgba(212,175,55,0.22);
 }
 .bg-modal-glow { position: absolute; inset: 0; border-radius: 50%;
-  background: radial-gradient(ellipse at 32% 22%, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.2) 25%, transparent 55%);
+  background: radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.16) 28%, transparent 56%);
 }
-.bg-modal-medal.theme-0 .bg-modal-core { background: radial-gradient(circle at 32% 28%, #8cc8f5, #4a90d9, #2a6ba8, #1a4a78); }
-.bg-modal-medal.theme-1 .bg-modal-core { background: radial-gradient(circle at 32% 28%, #7ee0c8, #2fa892, #1a7a68, #0f5a48); }
-.bg-modal-medal.theme-2 .bg-modal-core { background: radial-gradient(circle at 32% 28%, #f5b078, #d4723a, #a85020, #783810); }
-.bg-modal-medal.theme-3 .bg-modal-core { background: radial-gradient(circle at 32% 28%, #cfa0f5, #8c5cd4, #5e35a8, #3e2078); }
-.bg-modal-medal.theme-4 .bg-modal-core { background: radial-gradient(circle at 32% 28%, #f58c9f, #d43d5f, #a82040, #781028); }
-.bg-modal-medal.theme-5 .bg-modal-core { background: radial-gradient(circle at 32% 28%, #9cccf5, #5a9ad4, #3068a8, #1a4878); }
-.bg-modal-medal.locked .bg-modal-outer { background: linear-gradient(145deg, #ccc, #aaa, #999, #aaa, #ccc); }
-.bg-modal-medal.locked .bg-modal-inner { background: linear-gradient(145deg, #bbb, #999, #888, #999, #bbb); }
-.bg-modal-medal.locked .bg-modal-core { background: radial-gradient(circle at 32% 28%, #bbb, #999, #777); opacity: 0.55; }
-.bg-modal-icon { font-size: 88px; margin-bottom: 8px; position: relative; z-index: 1; filter: drop-shadow(0 3px 8px rgba(0,0,0,0.4)); }
+.bg-modal-medal.theme-0 .bg-modal-core { background: radial-gradient(circle at 30% 26%, #7fa3cc 0%, #3f6391 46%, #243f61 100%); }
+.bg-modal-medal.theme-1 .bg-modal-core { background: radial-gradient(circle at 30% 26%, #6fc3a0 0%, #2a7f62 46%, #174a38 100%); }
+.bg-modal-medal.theme-2 .bg-modal-core { background: radial-gradient(circle at 30% 26%, #d8785d 0%, #a63a2b 46%, #6e2017 100%); }
+.bg-modal-medal.theme-3 .bg-modal-core { background: radial-gradient(circle at 30% 26%, #a985c8 0%, #6b4a8e 46%, #41245f 100%); }
+.bg-modal-medal.theme-4 .bg-modal-core { background: radial-gradient(circle at 30% 26%, #d9b85e 0%, #a67c1f 46%, #6b4c10 100%); }
+.bg-modal-medal.theme-5 .bg-modal-core { background: radial-gradient(circle at 30% 26%, #7f96c4 0%, #44598a 46%, #28345e 100%); }
+.bg-modal-medal.locked .bg-modal-outer { background: conic-gradient(from 210deg, #8a8a8a 0%, #b5b5b5 18%, #d8d8d8 34%, #e8e8e8 44%, #c2c2c2 55%, #939393 72%, #ababab 84%, #8a8a8a 100%); }
+.bg-modal-medal.locked .bg-modal-inner { background: conic-gradient(from 30deg, #9e9e9e 0%, #bcbcbc 20%, #d5d5d5 45%, #b0b0b0 70%, #939393 88%, #9e9e9e 100%); }
+.bg-modal-medal.locked .bg-modal-core { background: radial-gradient(circle at 30% 26%, #bdbdbd 0%, #979797 46%, #6e6e6e 100%); opacity: 0.5; }
+.bg-modal-icon { font-size: 84px; margin-bottom: 8px; position: relative; z-index: 1; filter: drop-shadow(0 3px 8px rgba(0,0,0,0.42)); }
 .bg-modal-target { font-family: 'Noto Serif SC', serif; font-size: 40px; font-weight: 800; position: relative; z-index: 1; color: #fff; text-shadow: 0 2px 6px rgba(0,0,0,0.5); }
-.bg-modal-number { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); font-family: 'Georgia', serif; font-size: 16px; font-weight: 700; color: rgba(255,255,255,0.7); letter-spacing: 0.1em; z-index: 1; }
+.bg-modal-number { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); font-family: 'Georgia', serif; font-size: 15px; font-weight: 700; color: rgba(255,255,255,0.75); letter-spacing: 0.12em; z-index: 1; }
 .bg-modal-title { font-family: 'Noto Serif SC', serif; font-size: 28px; font-weight: 700; color: var(--ink); margin: 0 0 10px; }
 .modal-desc { font-size: 15px; color: var(--ink-secondary); margin: 0 0 26px; line-height: 1.6; }
 .bg-modal-progress { margin-bottom: 22px; }
@@ -6498,21 +6496,21 @@ h3 {
 .bg-modal-status.locked { background: var(--bg); color: var(--ink-faint); border: 1px solid var(--border); }
 
 @media (max-width: 768px) {
-  .bg-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 40px 20px; }
-  .bg-medal { width: 164px; height: 188px; }
-  .bg-medal-ribbon { width: 66px; height: 42px; }
-  .bg-medal-ribbon::before, .bg-medal-ribbon::after { width: 28px; height: 42px; }
-  .bg-medal-ribbon::before { left: 5px; } .bg-medal-ribbon::after { right: 5px; }
-  .bg-medal-ribbon-fold { width: 16px; height: 18px; }
-  .bg-medal-inner { inset: 7px; }
-  .bg-medal-studs { inset: 10px; background-size: 9px 9px; }
-  .bg-medal-core { inset: 16px; }
-  .bg-medal-shine { inset: 16px; }
-  .bg-medal-icon { font-size: 48px; }
-  .bg-medal-target { font-size: 22px; }
-  .bg-medal-number { font-size: 10px; bottom: 10px; }
+  .bg-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 48px 20px; }
+  .bg-medal { width: 158px; height: 172px; }
+  .bg-medal-ribbon { width: 74px; height: 42px; }
+  .bg-medal-ribbon::before, .bg-medal-ribbon::after { width: 30px; height: 42px; }
+  .bg-medal-ribbon::before { left: 7px; } .bg-medal-ribbon::after { right: 7px; }
+  .bg-medal-ribbon-fold { width: 17px; height: 19px; }
+  .bg-medal-inner { inset: 6px; }
+  .bg-medal-studs { inset: 9px; background-size: 9px 9px; }
+  .bg-medal-core { inset: 15px; }
+  .bg-medal-shine { inset: 15px; }
+  .bg-medal-icon { font-size: 44px; }
+  .bg-medal-target { font-size: 21px; }
+  .bg-medal-number { font-size: 9px; bottom: 9px; }
   .bg-medal-name { font-size: 15px; }
-  .bg-medal-lock { top: 88px; width: 36px; height: 36px; }
+  .bg-medal-lock { top: 82px; width: 34px; height: 34px; }
   .bg-hero-title { font-size: 24px; }
   .bg-hero-count { font-size: 36px; }
   .bg-laurel { width: 38px; height: 58px; }
