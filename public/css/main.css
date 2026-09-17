@@ -6326,7 +6326,7 @@ h3 {
 .cw-overlay-badge { position: absolute; top: 8px; right: 8px; background: var(--accent); color: #fff; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
 .cw-item.finished::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); }
 
-/* ─── Badges (Bookplate Editorial Style) ─── */
+/* ─── Badges (Etching Engraving Style) ─── */
 .bg-container { max-width: 1200px; margin: 0 auto; padding: 48px 32px 80px; }
 .bg-hero { display: flex; align-items: center; justify-content: center; gap: 24px; margin-bottom: 56px; }
 .bg-laurel { width: 52px; height: 80px; flex-shrink: 0; color: var(--accent); }
@@ -6336,96 +6336,116 @@ h3 {
 .bg-hero-title { font-family: 'Noto Serif SC', serif; font-size: 32px; font-weight: 700; color: var(--ink); margin: 0; letter-spacing: 0.02em; }
 .bg-hero-count { color: var(--accent); font-size: 48px; font-weight: 800; }
 .bg-hero-total { color: var(--ink-faint); font-size: 22px; font-weight: 400; }
-.bg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 44px 32px; }
+.bg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 48px 32px; }
 
 /* ═══ 勋章项 ═══ */
 .bg-medal-item { text-align: center; cursor: pointer; position: relative; transition: transform 0.35s ease; }
 .bg-medal-item:hover { transform: translateY(-6px); }
-.bg-medal-item:hover .bg-medal { box-shadow: 0 12px 28px rgba(90,70,30,0.12); }
+.bg-medal-item:hover .bg-medal { box-shadow: 0 14px 30px rgba(70,55,25,0.14); }
 .bg-medal-item.earned .bg-medal { animation: breathe 3.6s ease-in-out infinite; }
-@keyframes breathe { 0%,100% { box-shadow: 0 2px 10px rgba(90,70,30,0.06); } 50% { box-shadow: 0 6px 20px rgba(90,70,30,0.12); } }
+@keyframes breathe { 0%,100% { box-shadow: 0 2px 8px rgba(70,55,25,0.06); } 50% { box-shadow: 0 6px 20px rgba(70,55,25,0.13); } }
 
-/* ═══ 卡片本体（藏书票） ═══ */
+/* ═══ 卡片本体（蚀刻藏书票） ═══ */
 .bg-medal-ribbon { display: none; }
-.bg-medal { width: 208px; height: 252px; margin: 0 auto 14px; position: relative;
+.bg-medal { width: 212px; height: 258px; margin: 0 auto 14px; position: relative;
   background: var(--card);
-  border-radius: 12px;
-  border: 1px solid var(--line-soft);
-  box-shadow: 0 2px 10px rgba(90,70,30,0.06);
+  border-radius: 10px;
+  border: 1px solid var(--ink-line);
+  box-shadow: 0 2px 8px rgba(70,55,25,0.06);
   transition: box-shadow 0.3s ease;
 }
-/* 外线框 */
-.bg-medal-outer { position: absolute; inset: 7px; border-radius: 8px;
+/* 蚀刻外线框 + 四角花饰 */
+.bg-medal-outer { position: absolute; inset: 7px; border-radius: 7px;
   border: 1px solid var(--line);
   background: transparent;
 }
-/* 内线框 */
-.bg-medal-inner { position: absolute; inset: 11px; border-radius: 6px;
+.bg-medal-outer::before, .bg-medal-outer::after { content: '❦'; position: absolute; font-size: 13px; line-height: 1; color: var(--ink-line); }
+.bg-medal-outer::before { top: -8px; left: 12px; }
+.bg-medal-outer::after { bottom: -8px; right: 12px; }
+/* 内线框 + 对角花饰 */
+.bg-medal-inner { position: absolute; inset: 12px; border-radius: 5px;
   border: 1px solid var(--line-faint);
   background: transparent;
 }
-/* 背景点阵（印刷网点） */
-.bg-medal-studs { position: absolute; inset: 0; border-radius: 12px;
-  background: radial-gradient(var(--dot) 1.1px, transparent 1.6px);
-  background-size: 14px 14px;
-  opacity: 0.55;
+.bg-medal-inner::before, .bg-medal-inner::after { content: '❧'; position: absolute; font-size: 12px; line-height: 1; color: var(--line); }
+.bg-medal-inner::before { top: -7px; right: 14px; }
+.bg-medal-inner::after { bottom: -7px; left: 14px; }
+/* 印刷网点 */
+.bg-medal-studs { position: absolute; inset: 0; border-radius: 10px;
+  background: radial-gradient(var(--dot) 1px, transparent 1.5px);
+  background-size: 15px 15px;
+  opacity: 0.5;
   pointer-events: none;
 }
-/* 中心圆章 */
+/* 中心蚀刻圆章 */
 .bg-medal-core { position: absolute; top: 26px; left: 50%; transform: translateX(-50%);
-  width: 126px; height: 126px; border-radius: 50%;
+  width: 132px; height: 132px; border-radius: 50%;
   background: var(--tint);
-  border: 1.5px solid var(--line);
+  border: 1px solid var(--line);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   box-sizing: border-box;
 }
-/* 圆章内淡晕 */
-.bg-medal-glow { position: absolute; inset: 0; border-radius: 50%;
-  background: radial-gradient(circle at 50% 34%, var(--glow) 0%, transparent 62%);
+/* 雕版放射蚀刻环带 */
+.bg-medal-glow { position: absolute; inset: -3px; border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, var(--etch) 0deg 1.1deg, transparent 1.1deg 2.8deg);
+  -webkit-mask: radial-gradient(circle, transparent 52%, black 53%, black 74%, transparent 75%);
+  mask: radial-gradient(circle, transparent 52%, black 53%, black 74%, transparent 75%);
+  pointer-events: none;
+  opacity: 0.75;
+}
+.bg-medal-sheen { position: absolute; inset: 12px; border-radius: 50%;
+  border: 1px solid var(--line-faint);
   pointer-events: none;
 }
-.bg-medal-sheen { display: none; }
 .bg-medal-shine { display: none; }
-.bg-medal-icon { font-size: 46px; margin-bottom: 2px; position: relative; z-index: 1; line-height: 1; }
-.bg-medal-target { font-family: 'Noto Serif SC', serif; font-size: 26px; font-weight: 700; position: relative; z-index: 1;
-  color: var(--ink); letter-spacing: 0.04em; line-height: 1.2;
+.bg-medal-icon { font-size: 50px; margin-bottom: 2px; position: relative; z-index: 1; line-height: 1.1; }
+.bg-medal-target { font-family: 'Noto Serif SC', serif; font-size: 25px; font-weight: 700; position: relative; z-index: 1;
+  color: var(--ink); letter-spacing: 0.06em; line-height: 1.3;
 }
-.bg-medal-number { position: absolute; top: 158px; left: 50%; transform: translateX(-50%);
+.bg-medal-target::before, .bg-medal-target::after { content: ''; display: block; width: 34px; height: 1px; margin: 5px auto; background: var(--line); }
+.bg-medal-number { position: absolute; top: 162px; left: 50%; transform: translateX(-50%);
   font-family: 'Georgia', serif; font-size: 11px; font-weight: 600; color: var(--ink-faint);
-  letter-spacing: 0.22em; z-index: 1;
+  letter-spacing: 0.24em; z-index: 1; white-space: nowrap;
 }
-.bg-medal-name { display: inline-block; font-size: 19px; color: var(--ink); font-weight: 700; margin-top: 2px;
+.bg-medal-name { display: inline-block; font-size: 19px; color: var(--ink); font-weight: 700; margin-top: 4px;
   letter-spacing: 0.05em; font-family: 'Noto Serif SC', serif;
-  border-bottom: 1px solid var(--line-soft); padding-bottom: 6px;
+  border-bottom: 1px solid var(--line-soft); padding: 0 14px 7px;
 }
+.bg-medal-name::before { content: '❧'; color: var(--accent); font-size: 12px; margin-right: 7px; vertical-align: 1px; }
+.bg-medal-name::after { content: '❧'; color: var(--accent); font-size: 12px; margin-left: 7px; vertical-align: 1px; }
 .bg-medal-lock { position: absolute; top: 96px; left: 50%; transform: translateX(-50%); color: var(--ink-faint); z-index: 3;
-  background: var(--card); border: 1px solid var(--line-soft); border-radius: 50%; width: 40px; height: 40px;
+  background: var(--card); border: 1px solid var(--ink-line); border-radius: 50%; width: 40px; height: 40px;
   display: flex; align-items: center; justify-content: center;
 }
 
-/* 6 种文学主题色（平面细线点缀） */
-.theme-0 { --line-soft: rgba(120,95,35,0.2); --line: rgba(90,126,168,0.55); --line-faint: rgba(90,126,168,0.22); --dot: rgba(90,126,168,0.4); --tint: rgba(90,126,168,0.08); --glow: rgba(90,126,168,0.18); }
-.theme-1 { --line-soft: rgba(120,95,35,0.2); --line: rgba(77,138,110,0.55); --line-faint: rgba(77,138,110,0.22); --dot: rgba(77,138,110,0.4); --tint: rgba(77,138,110,0.08); --glow: rgba(77,138,110,0.18); }
-.theme-2 { --line-soft: rgba(120,95,35,0.2); --line: rgba(160,90,72,0.55); --line-faint: rgba(160,90,72,0.22); --dot: rgba(160,90,72,0.4); --tint: rgba(160,90,72,0.08); --glow: rgba(160,90,72,0.18); }
-.theme-3 { --line-soft: rgba(120,95,35,0.2); --line: rgba(125,93,158,0.55); --line-faint: rgba(125,93,158,0.22); --dot: rgba(125,93,158,0.4); --tint: rgba(125,93,158,0.08); --glow: rgba(125,93,158,0.18); }
-.theme-4 { --line-soft: rgba(120,95,35,0.2); --line: rgba(176,141,69,0.55); --line-faint: rgba(176,141,69,0.22); --dot: rgba(176,141,69,0.4); --tint: rgba(176,141,69,0.08); --glow: rgba(176,141,69,0.18); }
-.theme-5 { --line-soft: rgba(120,95,35,0.2); --line: rgba(92,111,150,0.55); --line-faint: rgba(92,111,150,0.22); --dot: rgba(92,111,150,0.4); --tint: rgba(92,111,150,0.08); --glow: rgba(92,111,150,0.18); }
+/* 6 种文学蚀刻色（墨色线条 + 淡色点缀） */
+.theme-0 { --line-soft: rgba(120,95,35,0.22); --ink-line: rgba(74,106,138,0.6); --line: rgba(74,106,138,0.45); --line-faint: rgba(74,106,138,0.18); --dot: rgba(74,106,138,0.35); --tint: rgba(74,106,138,0.06); --etch: rgba(74,106,138,0.5); }
+.theme-1 { --line-soft: rgba(120,95,35,0.22); --ink-line: rgba(63,122,94,0.6); --line: rgba(63,122,94,0.45); --line-faint: rgba(63,122,94,0.18); --dot: rgba(63,122,94,0.35); --tint: rgba(63,122,94,0.06); --etch: rgba(63,122,94,0.5); }
+.theme-2 { --line-soft: rgba(120,95,35,0.22); --ink-line: rgba(138,74,58,0.6); --line: rgba(138,74,58,0.45); --line-faint: rgba(138,74,58,0.18); --dot: rgba(138,74,58,0.35); --tint: rgba(138,74,58,0.06); --etch: rgba(138,74,58,0.5); }
+.theme-3 { --line-soft: rgba(120,95,35,0.22); --ink-line: rgba(106,74,138,0.6); --line: rgba(106,74,138,0.45); --line-faint: rgba(106,74,138,0.18); --dot: rgba(106,74,138,0.35); --tint: rgba(106,74,138,0.06); --etch: rgba(106,74,138,0.5); }
+.theme-4 { --line-soft: rgba(120,95,35,0.22); --ink-line: rgba(138,106,46,0.6); --line: rgba(138,106,46,0.45); --line-faint: rgba(138,106,46,0.18); --dot: rgba(138,106,46,0.35); --tint: rgba(138,106,46,0.06); --etch: rgba(138,106,46,0.5); }
+.theme-5 { --line-soft: rgba(120,95,35,0.22); --ink-line: rgba(74,90,122,0.6); --line: rgba(74,90,122,0.45); --line-faint: rgba(74,90,122,0.18); --dot: rgba(74,90,122,0.35); --tint: rgba(74,90,122,0.06); --etch: rgba(74,90,122,0.5); }
 
-/* 未获得 - 纸灰 */
-.bg-medal-item.locked .bg-medal { border-color: rgba(140,140,140,0.28); }
-.bg-medal-item.locked .bg-medal-outer { border-color: rgba(140,140,140,0.4); }
-.bg-medal-item.locked .bg-medal-inner { border-color: rgba(140,140,140,0.18); }
-.bg-medal-item.locked .bg-medal-studs { opacity: 0.25; }
-.bg-medal-item.locked .bg-medal-core { background: rgba(140,140,140,0.06); border-color: rgba(140,140,140,0.4); }
-.bg-medal-item.locked .bg-medal-glow { opacity: 0; }
-.bg-medal-item.locked .bg-medal-icon { filter: grayscale(1) opacity(0.45); }
-.bg-medal-item.locked .bg-medal-target { color: var(--ink-faint); }
-.bg-medal-item.locked .bg-medal-number { color: rgba(140,140,140,0.6); }
-.bg-medal-item.locked .bg-medal-name { color: var(--ink-faint); border-bottom-color: rgba(140,140,140,0.2); }
+/* 未获得 - 褪色印刷 */
+.bg-medal-item.locked .bg-medal { border-color: rgba(130,125,115,0.4); }
+.bg-medal-item.locked .bg-medal-outer { border-color: rgba(130,125,115,0.3); }
+.bg-medal-item.locked .bg-medal-outer::before, .bg-medal-item.locked .bg-medal-outer::after { color: rgba(130,125,115,0.5); }
+.bg-medal-item.locked .bg-medal-inner { border-color: rgba(130,125,115,0.16); }
+.bg-medal-item.locked .bg-medal-inner::before, .bg-medal-item.locked .bg-medal-inner::after { color: rgba(130,125,115,0.3); }
+.bg-medal-item.locked .bg-medal-studs { opacity: 0.2; }
+.bg-medal-item.locked .bg-medal-core { background: rgba(130,125,115,0.05); border-color: rgba(130,125,115,0.35); }
+.bg-medal-item.locked .bg-medal-glow { opacity: 0.2; }
+.bg-medal-item.locked .bg-medal-sheen { border-color: rgba(130,125,115,0.14); }
+.bg-medal-item.locked .bg-medal-icon { filter: grayscale(1) opacity(0.4); }
+.bg-medal-item.locked .bg-medal-target { color: rgba(130,125,115,0.7); }
+.bg-medal-item.locked .bg-medal-target::before, .bg-medal-item.locked .bg-medal-target::after { background: rgba(130,125,115,0.35); }
+.bg-medal-item.locked .bg-medal-number { color: rgba(130,125,115,0.55); }
+.bg-medal-item.locked .bg-medal-name { color: rgba(130,125,115,0.75); border-bottom-color: rgba(130,125,115,0.18); }
+.bg-medal-item.locked .bg-medal-name::before, .bg-medal-item.locked .bg-medal-name::after { color: rgba(130,125,115,0.4); }
 .bg-medal-item.locked .bg-medal { animation: none; }
 .bg-medal-item.locked:hover .bg-medal { box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
 
-/* ═══ 弹窗（同风格平面卡片） ═══ */
+/* ═══ 弹窗（同风格蚀刻圆章） ═══ */
 .bg-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(6px); animation: bgFadeIn 0.25s ease; }
 @keyframes bgFadeIn { from { opacity: 0; } to { opacity: 1; } }
 .bg-modal-card { background: var(--card); border-radius: 20px; padding: 48px 40px 36px; max-width: 420px; width: 90%; text-align: center; position: relative; border: 1px solid var(--border); box-shadow: 0 28px 70px rgba(0,0,0,0.28); animation: bgCardIn 0.35s ease; }
@@ -6433,40 +6453,44 @@ h3 {
 .bg-modal-close { position: absolute; top: 16px; right: 16px; background: var(--bg); border: none; color: var(--ink-faint); font-size: 17px; cursor: pointer; width: 38px; height: 38px; border-radius: 50%; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
 .bg-modal-close:hover { background: var(--border); color: var(--ink); }
 .bg-modal-ribbon { display: none; }
-.bg-modal-medal { width: 168px; height: 168px; margin: 0 auto 24px; position: relative; z-index: 2;
+.bg-modal-medal { width: 172px; height: 172px; margin: 0 auto 24px; position: relative; z-index: 2;
   border-radius: 50%;
   background: var(--tint);
-  border: 1.5px solid var(--line);
-  box-shadow: 0 6px 24px rgba(90,70,30,0.1);
+  border: 1px solid var(--line);
+  box-shadow: 0 6px 24px rgba(70,55,25,0.1);
 }
 .bg-modal-outer { position: absolute; inset: 8px; border-radius: 50%; border: 1px solid var(--line-faint); background: transparent; }
 .bg-modal-inner { position: absolute; inset: 13px; border-radius: 50%; border: 1px solid var(--line-faint); background: transparent; }
 .bg-modal-studs { position: absolute; inset: 0; border-radius: 50%;
-  background: radial-gradient(var(--dot) 1.3px, transparent 1.8px);
+  background: radial-gradient(var(--dot) 1.2px, transparent 1.7px);
   background-size: 15px 15px;
-  opacity: 0.5; pointer-events: none;
+  opacity: 0.45; pointer-events: none;
 }
 .bg-modal-core { position: absolute; inset: 0; border-radius: 50%;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
 }
-.bg-modal-glow { position: absolute; inset: 0; border-radius: 50%;
-  background: radial-gradient(circle at 50% 34%, var(--glow) 0%, transparent 62%);
+.bg-modal-glow { position: absolute; inset: -3px; border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, var(--etch) 0deg 1.1deg, transparent 1.1deg 2.8deg);
+  -webkit-mask: radial-gradient(circle, transparent 52%, black 53%, black 76%, transparent 77%);
+  mask: radial-gradient(circle, transparent 52%, black 53%, black 76%, transparent 77%);
+  opacity: 0.7; pointer-events: none;
 }
 .bg-modal-sheen { display: none; }
-.bg-modal-medal.theme-0 { --line: rgba(90,126,168,0.55); --line-faint: rgba(90,126,168,0.22); --dot: rgba(90,126,168,0.4); --tint: rgba(90,126,168,0.08); --glow: rgba(90,126,168,0.18); }
-.bg-modal-medal.theme-1 { --line: rgba(77,138,110,0.55); --line-faint: rgba(77,138,110,0.22); --dot: rgba(77,138,110,0.4); --tint: rgba(77,138,110,0.08); --glow: rgba(77,138,110,0.18); }
-.bg-modal-medal.theme-2 { --line: rgba(160,90,72,0.55); --line-faint: rgba(160,90,72,0.22); --dot: rgba(160,90,72,0.4); --tint: rgba(160,90,72,0.08); --glow: rgba(160,90,72,0.18); }
-.bg-modal-medal.theme-3 { --line: rgba(125,93,158,0.55); --line-faint: rgba(125,93,158,0.22); --dot: rgba(125,93,158,0.4); --tint: rgba(125,93,158,0.08); --glow: rgba(125,93,158,0.18); }
-.bg-modal-medal.theme-4 { --line: rgba(176,141,69,0.55); --line-faint: rgba(176,141,69,0.22); --dot: rgba(176,141,69,0.4); --tint: rgba(176,141,69,0.08); --glow: rgba(176,141,69,0.18); }
-.bg-modal-medal.theme-5 { --line: rgba(92,111,150,0.55); --line-faint: rgba(92,111,150,0.22); --dot: rgba(92,111,150,0.4); --tint: rgba(92,111,150,0.08); --glow: rgba(92,111,150,0.18); }
-.bg-modal-medal.locked { background: rgba(140,140,140,0.06); border-color: rgba(140,140,140,0.4); }
-.bg-modal-medal.locked .bg-modal-outer { border-color: rgba(140,140,140,0.2); }
-.bg-modal-medal.locked .bg-modal-inner { border-color: rgba(140,140,140,0.2); }
-.bg-modal-medal.locked .bg-modal-glow { opacity: 0; }
-.bg-modal-medal.locked .bg-modal-studs { opacity: 0.2; }
-.bg-modal-icon { font-size: 64px; margin-bottom: 6px; position: relative; z-index: 1; line-height: 1; }
-.bg-modal-target { font-family: 'Noto Serif SC', serif; font-size: 32px; font-weight: 700; position: relative; z-index: 1; color: var(--ink); letter-spacing: 0.04em; }
-.bg-modal-number { position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%); font-family: 'Georgia', serif; font-size: 12px; font-weight: 600; color: var(--ink-faint); letter-spacing: 0.22em; z-index: 1; white-space: nowrap; }
+.bg-modal-medal.theme-0 { --line: rgba(74,106,138,0.45); --line-faint: rgba(74,106,138,0.18); --dot: rgba(74,106,138,0.35); --tint: rgba(74,106,138,0.06); --etch: rgba(74,106,138,0.5); }
+.bg-modal-medal.theme-1 { --line: rgba(63,122,94,0.45); --line-faint: rgba(63,122,94,0.18); --dot: rgba(63,122,94,0.35); --tint: rgba(63,122,94,0.06); --etch: rgba(63,122,94,0.5); }
+.bg-modal-medal.theme-2 { --line: rgba(138,74,58,0.45); --line-faint: rgba(138,74,58,0.18); --dot: rgba(138,74,58,0.35); --tint: rgba(138,74,58,0.06); --etch: rgba(138,74,58,0.5); }
+.bg-modal-medal.theme-3 { --line: rgba(106,74,138,0.45); --line-faint: rgba(106,74,138,0.18); --dot: rgba(106,74,138,0.35); --tint: rgba(106,74,138,0.06); --etch: rgba(106,74,138,0.5); }
+.bg-modal-medal.theme-4 { --line: rgba(138,106,46,0.45); --line-faint: rgba(138,106,46,0.18); --dot: rgba(138,106,46,0.35); --tint: rgba(138,106,46,0.06); --etch: rgba(138,106,46,0.5); }
+.bg-modal-medal.theme-5 { --line: rgba(74,90,122,0.45); --line-faint: rgba(74,90,122,0.18); --dot: rgba(74,90,122,0.35); --tint: rgba(74,90,122,0.06); --etch: rgba(74,90,122,0.5); }
+.bg-modal-medal.locked { background: rgba(130,125,115,0.05); border-color: rgba(130,125,115,0.35); }
+.bg-modal-medal.locked .bg-modal-outer { border-color: rgba(130,125,115,0.2); }
+.bg-modal-medal.locked .bg-modal-inner { border-color: rgba(130,125,115,0.2); }
+.bg-modal-medal.locked .bg-modal-glow { opacity: 0.2; }
+.bg-modal-medal.locked .bg-modal-studs { opacity: 0.18; }
+.bg-modal-icon { font-size: 64px; margin-bottom: 6px; position: relative; z-index: 1; line-height: 1.1; }
+.bg-modal-target { font-family: 'Noto Serif SC', serif; font-size: 31px; font-weight: 700; position: relative; z-index: 1; color: var(--ink); letter-spacing: 0.06em; }
+.bg-modal-target::before, .bg-modal-target::after { content: ''; display: block; width: 40px; height: 1px; margin: 6px auto; background: var(--line); }
+.bg-modal-number { position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%); font-family: 'Georgia', serif; font-size: 12px; font-weight: 600; color: var(--ink-faint); letter-spacing: 0.24em; z-index: 1; white-space: nowrap; }
 .bg-modal-title { font-family: 'Noto Serif SC', serif; font-size: 27px; font-weight: 700; color: var(--ink); margin: 34px 0 10px; }
 .modal-desc { font-size: 15px; color: var(--ink-secondary); margin: 0 0 26px; line-height: 1.6; }
 .bg-modal-progress { margin-bottom: 22px; }
@@ -6478,14 +6502,15 @@ h3 {
 .bg-modal-status.locked { background: var(--bg); color: var(--ink-faint); border: 1px solid var(--border); }
 
 @media (max-width: 768px) {
-  .bg-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 32px 16px; }
-  .bg-medal { width: 150px; height: 182px; }
+  .bg-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 34px 16px; }
+  .bg-medal { width: 152px; height: 186px; }
   .bg-medal-outer { inset: 5px; }
-  .bg-medal-inner { inset: 8px; }
-  .bg-medal-core { top: 18px; width: 92px; height: 92px; }
-  .bg-medal-number { top: 114px; font-size: 9px; }
-  .bg-medal-icon { font-size: 34px; }
-  .bg-medal-target { font-size: 20px; }
+  .bg-medal-inner { inset: 9px; }
+  .bg-medal-core { top: 18px; width: 96px; height: 96px; }
+  .bg-medal-number { top: 116px; font-size: 9px; }
+  .bg-medal-icon { font-size: 36px; }
+  .bg-medal-target { font-size: 19px; }
+  .bg-medal-target::before, .bg-medal-target::after { width: 26px; }
   .bg-medal-name { font-size: 15px; }
   .bg-medal-lock { top: 70px; width: 32px; height: 32px; }
   .bg-hero-title { font-size: 24px; }
