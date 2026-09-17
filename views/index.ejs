@@ -1,85 +1,17 @@
 <!-- ═══════════════════════════════════════════
-   HOME — Editorial Dashboard
+   HOME — Literary Magazine Dashboard
+   杂志式精选首页：只保留有“当下感”的内容，统计详情全部下沉到读书纪
    ═══════════════════════════════════════════ -->
 
-<%
-// Parse heatmap data for rendering
-var heatmapData = typeof heatmap === 'string' ? JSON.parse(heatmap) : (heatmap || []);
-var heatmapMap = {};
-heatmapData.forEach(function(d) { heatmapMap[d.date] = d.seconds; });
-
-function heatmapLevel(seconds) {
-  if (!seconds || seconds <= 0) return 0;
-  if (seconds < 600) return 1;
-  if (seconds < 1800) return 2;
-  if (seconds < 3600) return 3;
-  return 4;
-}
-
-// Parse monthly 2025 data
-var monthly2025Data = typeof monthly2025 === 'string' ? JSON.parse(monthly2025) : (monthly2025 || []);
-
-// Build heatmap grid
-var MONTHS = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-var WEEKD = ['一','二','三','四','五','六','日'];
-var year = 2026;
-var startDate = new Date(year, 0, 1);
-var startDow = startDate.getDay();
-var mondayOffset = startDow === 0 ? -6 : 1 - startDow;
-var gridStart = new Date(year, 0, 1 + mondayOffset);
-var today = new Date();
-var todayStr = today.toISOString().slice(0, 10);
-
-var totalWeeks = 53;
-var cells = [];
-var monthPositions = {};
-
-for (var w = 0; w < totalWeeks; w++) {
-  for (var d = 0; d < 7; d++) {
-    var cellDate = new Date(gridStart);
-    cellDate.setDate(gridStart.getDate() + w * 7 + d);
-    var dateStr = cellDate.toISOString().slice(0, 10);
-    var month = cellDate.getMonth();
-    var inYear = cellDate.getFullYear() === year;
-    var isAfter = dateStr > todayStr;
-    var seconds = heatmapMap[dateStr] || 0;
-
-    if (inYear && !(month in monthPositions) && d === 0) {
-      monthPositions[month] = w;
-    }
-
-    cells.push({
-      date: dateStr, dow: d, week: w, month: month,
-      inYear: inYear, isAfter: isAfter, seconds: seconds,
-      level: typeof heatmapLevel === 'function' ? heatmapLevel(seconds) : 0
-    });
-  }
-}
-
-// Month label row
-var monthLabelRow = [];
-for (var w = 0; w < totalWeeks; w++) { monthLabelRow[w] = null; }
-for (var m = 0; m < 12; m++) {
-  if (monthPositions[m] !== undefined) monthLabelRow[monthPositions[m]] = MONTHS[m];
-}
-
-// Totals
-var total2026Seconds = heatmapData.reduce(function(sum, d) { return sum + (d.seconds || 0); }, 0);
-var total2026Hours = Math.round(total2026Seconds / 3600);
-var readingDays2026 = heatmapData.filter(function(d) { return d.seconds > 0; }).length;
-var maxDaySeconds = Math.max.apply(null, heatmapData.map(function(d) { return d.seconds || 0; }));
-var maxDayStr = maxDaySeconds > 0 ? formatTime(maxDaySeconds) : '0m';
-var maxWeekday = Math.max.apply(null, weekdayCounts) || 1;
-%>
-
-<!-- ═══ Hero ═══ -->
 <div class="container-wide">
-  <div class="hero">
+  <div class="hero hero--magazine">
+    <p class="hero-lede">READING ROOM · 阅读书房</p>
     <h1 class="hero-title">有之以为利，无之以为用。</h1>
+    <p class="hero-sub"><%= summary.totalBooks %> 册藏书 · <%= summary.finishedCount %> 册已读完 · <%= summary.totalNoteCount.toLocaleString() %> 条笔记</p>
   </div>
 </div>
 
-<!-- ═══ Quick Stats + Streak ═══ -->
+<!-- ═══ 快速状态 ═══ -->
 <div class="container-wide">
   <div class="quick-stats">
     <div class="qstat-card">
@@ -115,173 +47,15 @@ var maxWeekday = Math.max.apply(null, weekdayCounts) || 1;
   <% } %>
 </div>
 
-<!-- ═══ Stats Strip ═══ -->
-<div class="container-wide">
-  <div class="stats-hed">
-    <div class="stat-item">
-      <div class="stat-number"><%= summary.totalBooks %></div>
-      <div class="stat-label">册藏书</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-number"><%= summary.finishedCount %></div>
-      <div class="stat-label">已读完</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-number"><%= summary.totalNoteCount.toLocaleString() %></div>
-      <div class="stat-label">条笔记</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-number"><%= Math.round((overall.totalReadTimeSec || 0) / 3600).toLocaleString() %><span class="unit">h</span></div>
-      <div class="stat-label">累计阅读</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-number"><%= (overall.readDays || 0).toLocaleString() %></div>
-      <div class="stat-label">天在读书</div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ Heatmap ═══ -->
-<div class="container-wide">
-  <div class="heatmap-container">
-    <div class="heatmap-title"><%= year %> 年阅读热力图</div>
-    <div class="heatmap-summary">
-      累计 <strong><%= total2026Hours %>h</strong> · <%= readingDays2026 %> 天在读书 · 最长单日 <strong><%= maxDayStr %></strong>
-    </div>
-
-    <!-- Month labels -->
-    <div style="display: flex; gap: 3px; margin-bottom: 4px; padding-left: 28px;">
-      <% for (var w = 0; w < totalWeeks; w++) { %>
-        <% if (monthLabelRow[w]) { %>
-          <span class="heatmap-month-label" style="width: 11px; text-align: left; white-space: nowrap; position: relative; left: -4px;"><%= monthLabelRow[w] %></span>
-        <% } else { %>
-          <div style="width: 11px;"></div>
-        <% } %>
-      <% } %>
-    </div>
-
-    <!-- Grid: 7 rows × 53 columns -->
-    <div class="heatmap-grid">
-      <% for (var d = 0; d < 7; d++) { %>
-        <div style="display: flex; gap: 3px; align-items: center; height: 13px;">
-          <span style="width: 20px; text-align: right; font-size: 9px; color: var(--ink-muted); flex-shrink: 0; margin-right: 5px;"><%= WEEKD[d] %></span>
-          <% for (var w = 0; w < totalWeeks; w++) {
-            var idx = w * 7 + d;
-            var cell = cells[idx];
-            if (!cell || !cell.inYear || cell.isAfter) { %>
-              <div class="heatmap-cell level-0" style="visibility: hidden;"></div>
-            <% } else { %>
-              <div class="heatmap-cell level-<%= cell.level %>" data-date="<%= cell.date %>">
-                <div class="heatmap-tooltip"><%= cell.date %> · <%= cell.seconds > 0 ? helpers.formatTime(cell.seconds) : '未阅读' %></div>
-              </div>
-            <% } %>
-          <% } %>
-        </div>
-      <% } %>
-    </div>
-
-    <!-- Legend -->
-    <div class="heatmap-legend" style="margin-top: 8px; padding-left: 28px;">
-      <span style="font-size: 10px;">少</span>
-      <div class="dot level-0"></div>
-      <div class="dot level-1"></div>
-      <div class="dot level-2"></div>
-      <div class="dot level-3"></div>
-      <div class="dot level-4"></div>
-      <div class="dot level-5"></div>
-      <span style="font-size: 10px;">多</span>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ 2026 at a Glance ═══ -->
-<div class="container-wide">
-  <hr class="section-rule">
-  <div class="section-kicker">I. 年度概览</div>
-
-  <div class="year-marker">
-    <svg viewBox="0 0 120 120" width="120" height="120">
-      <circle cx="60" cy="60" r="54" fill="none" stroke="var(--rule-thin)" stroke-width="3"/>
-      <circle cx="60" cy="60" r="54" fill="none" stroke="var(--accent)" stroke-width="3"
-        stroke-dasharray="339.292"
-        stroke-dashoffset="<%= Math.round(339.292 * (1 - yearProgress / 100)) %>"
-        stroke-linecap="round"
-        transform="rotate(-90 60 60)"/>
-    </svg>
-    <div class="year-marker-text">
-      <div class="year-marker-number"><%= yearProgress %>%</div>
-      <div class="year-marker-label"><%= year %> 已过 <%= dayOfYear %>/<%= daysInYear %> 天</div>
-    </div>
-  </div>
-
-  <!-- Trend cards -->
-  <div class="trend-grid">
-    <div class="trend-card">
-      <div class="trend-month">年度总时长</div>
-      <div class="trend-value"><%= total2026Hours %>h</div>
-      <div class="trend-detail"><%= helpers.formatTime(total2026Seconds) %></div>
-    </div>
-    <div class="trend-card">
-      <div class="trend-month">阅读天数</div>
-      <div class="trend-value"><%= readingDays2026 %></div>
-      <div class="trend-detail">占今年 <%= Math.round(readingDays2026 / dayOfYear * 100) %>%</div>
-    </div>
-    <div class="trend-card">
-      <div class="trend-month">日均阅读</div>
-      <div class="trend-value"><%= helpers.formatTime(Math.round(total2026Seconds / Math.max(readingDays2026, 1))) %></div>
-      <div class="trend-detail">有效阅读日平均</div>
-    </div>
-  </div>
-
-  <!-- Weekday bars -->
-  <div class="chart-title" style="margin-top: var(--space-6);">阅读偏好星期</div>
-  <div class="weekday-row">
-    <% for (var di = 0; di < 7; di++) {
-      var pct = Math.max((weekdayCounts[di] / maxWeekday * 100), 4); %>
-      <div class="weekday-col">
-        <div class="weekday-bar" style="height: <%= Math.round(pct / 100 * 48) %>px; min-height: 2px; background: var(--accent);"></div>
-        <span class="bar-label">周<%= weekdayMap[di] %></span>
-      </div>
-    <% } %>
-  </div>
-</div>
-
-<!-- ═══ 2025 Monthly Trend ═══ -->
-<% if (monthly2025Data.length > 0) { %>
-<div class="container-wide">
-  <hr class="section-rule">
-  <div class="section-kicker">II. 月度趋势 · 2025</div>
-
-  <div class="trend-grid">
-    <% monthly2025Data.forEach(function(m) {
-      var hours = Math.round(m.totalSeconds / 3600 * 10) / 10;
-      var days = m.readDays;
-      var isPeak = m.totalSeconds / maxMonthly > 0.75;
-    %>
-    <div class="trend-card <%= isPeak ? 'peak' : '' %>">
-      <div class="trend-month"><%= m.month %>月</div>
-      <div class="trend-value"><%= hours %>h</div>
-      <div class="trend-detail"><%= days %> 天阅读</div>
-      <div class="trend-sparkline">
-        <% for (var si = 0; si < 12; si++) { %>
-          <div class="trend-sparkline-bar" style="height: <%= Math.max((m.totalSeconds / maxMonthly * 100) * (si + 1) / 12, 4) %>%"></div>
-        <% } %>
-      </div>
-    </div>
-    <% }); %>
-  </div>
-</div>
-<% } %>
-
-<!-- ═══ Currently Reading ═══ -->
+<!-- ═══ I. 正在阅读 ═══ -->
 <% if (currentlyReading && currentlyReading.length > 0) { %>
 <div class="container-wide">
   <hr class="section-rule">
-  <div class="section-kicker">III. 正在阅读</div>
+  <div class="section-kicker">I. 正在阅读</div>
 
   <div class="reading-now-list">
     <% currentlyReading.forEach(function(b) { %>
-    <div class="reading-item">
+    <a class="reading-item" href="/book/<%= b.id %>">
       <div class="reading-item-cover">
         <% if (b.cover) { %><img src="<%= b.cover %>" alt="" loading="lazy" onerror="this.style.display='none'"><% } else { %>📖<% } %>
       </div>
@@ -290,25 +64,25 @@ var maxWeekday = Math.max.apply(null, weekdayCounts) || 1;
         <div class="reading-item-author"><%= b.author %></div>
         <% if (b.progress && b.progress > 0) { %><div class="reading-item-progress"><%= b.progress %>% completed</div><% } %>
       </div>
-    </div>
+    </a>
     <% }); %>
   </div>
 </div>
 <% } %>
 
-<!-- ═══ Highlights ═══ -->
+<!-- ═══ II. 珠玉集锦 ═══ -->
 <% if (recentHighlights && recentHighlights.length > 0) { %>
 <div class="container-wide">
   <hr class="section-rule">
-  <div class="section-head">
-    <div class="section-kicker">IV. 阅读摘录</div>
-    <button class="bd-shuffle-btn hm-shuffle-btn" title="随机换一批" data-n="8">
+  <div class="hm-section-head">
+    <div class="section-kicker">II. 珠玉集锦</div>
+    <button class="bd-shuffle-btn hm-shuffle-btn" title="随机换一批" data-n="5">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
     </button>
   </div>
 
   <div class="highlights-list" id="home-highlights">
-    <% recentHighlights.slice(0, 8).forEach(function(h) { %>
+    <% recentHighlights.slice(0, 5).forEach(function(h) { %>
     <div class="highlight-block">
       <div class="highlight-text"><%= h.markText || h.content || '' %></div>
       <div class="highlight-source">
@@ -329,14 +103,18 @@ var maxWeekday = Math.max.apply(null, weekdayCounts) || 1;
 </div>
 <% } %>
 
-<!-- ═══ Top Books ═══ -->
-<% if (annual.topBooks && annual.topBooks.length > 0) { %>
+<!-- ═══ III. 年度之书 ═══ -->
+<% var homeTopBooks = (annual.topBooks && annual.topBooks.length) ? annual.topBooks : ((overall.topBooks && overall.topBooks.length) ? overall.topBooks : []); %>
+<% if (homeTopBooks.length > 0) { %>
 <div class="container-wide">
   <hr class="section-rule">
-  <div class="section-kicker">V. 年度之书</div>
+  <div class="hm-section-head">
+    <div class="section-kicker">III. 年度之书</div>
+    <a class="section-more" href="/bookshelf">全部藏书 →</a>
+  </div>
 
   <div class="book-card-grid">
-    <% annual.topBooks.slice(0, 8).forEach(function(b) { %>
+    <% homeTopBooks.slice(0, 4).forEach(function(b) { %>
     <div class="book-card" onclick="window.location.href='/bookshelf'">
       <div class="book-card-cover">
         <% if (b.cover) { %><img src="<%= b.cover %>" alt="" loading="lazy" onerror="this.style.display='none'"><% } else { %>📖<% } %>
@@ -355,50 +133,91 @@ var maxWeekday = Math.max.apply(null, weekdayCounts) || 1;
 </div>
 <% } %>
 
-<!-- ═══ Authors ═══ -->
-<% if (annual.preferAuthors && annual.preferAuthors.length > 0) { %>
+<!-- ═══ IV. 书房一瞥 ═══ -->
 <div class="container-wide">
   <hr class="section-rule">
-  <div class="section-kicker">VI. 偏好作者</div>
+  <div class="section-kicker">IV. 书房一瞥</div>
 
-  <div class="author-list">
-    <% annual.preferAuthors.forEach(function(a) { %>
-    <div class="author-item">
-      <span class="author-name"><%= a.name %></span>
-      <span class="author-stats"><%= a.count %> 册 · <%= a.readTime %></span>
-    </div>
-    <% }); %>
+  <div class="library-index">
+    <a class="lib-entry" href="/bookshelf">
+      <span class="lib-entry-icon">📚</span>
+      <span class="lib-entry-body">
+        <span class="lib-entry-name">万卷楼</span>
+        <span class="lib-entry-desc"><%= summary.totalBooks %> 册藏书 · 分类筛选</span>
+      </span>
+      <span class="lib-entry-arrow">→</span>
+    </a>
+    <a class="lib-entry" href="/notebooks">
+      <span class="lib-entry-icon">✍️</span>
+      <span class="lib-entry-body">
+        <span class="lib-entry-name">札记</span>
+        <span class="lib-entry-desc"><%= summary.totalNoteCount.toLocaleString() %> 条笔记与想法</span>
+      </span>
+      <span class="lib-entry-arrow">→</span>
+    </a>
+    <a class="lib-entry" href="/quotes">
+      <span class="lib-entry-icon">💎</span>
+      <span class="lib-entry-body">
+        <span class="lib-entry-name">珠玉集</span>
+        <span class="lib-entry-desc">全部摘录 · 无限滚动</span>
+      </span>
+      <span class="lib-entry-arrow">→</span>
+    </a>
+    <a class="lib-entry" href="/stats">
+      <span class="lib-entry-icon">📊</span>
+      <span class="lib-entry-body">
+        <span class="lib-entry-name">读书纪</span>
+        <span class="lib-entry-desc">全年数据 · 深度统计</span>
+      </span>
+      <span class="lib-entry-arrow">→</span>
+    </a>
+    <a class="lib-entry" href="/timeline">
+      <span class="lib-entry-icon">🌳</span>
+      <span class="lib-entry-body">
+        <span class="lib-entry-name">阅读年轮</span>
+        <span class="lib-entry-desc">读完的每一本书，都长出一圈年轮</span>
+      </span>
+      <span class="lib-entry-arrow">→</span>
+    </a>
+    <a class="lib-entry" href="/authors">
+      <span class="lib-entry-icon">👥</span>
+      <span class="lib-entry-body">
+        <span class="lib-entry-name">文友录</span>
+        <span class="lib-entry-desc">与作者的相遇</span>
+      </span>
+      <span class="lib-entry-arrow">→</span>
+    </a>
+    <a class="lib-entry" href="/booklists">
+      <span class="lib-entry-icon">📋</span>
+      <span class="lib-entry-body">
+        <span class="lib-entry-name">书单卷</span>
+        <span class="lib-entry-desc">自己整理的主题书单</span>
+      </span>
+      <span class="lib-entry-arrow">→</span>
+    </a>
+    <a class="lib-entry" href="/badges">
+      <span class="lib-entry-icon">🏅</span>
+      <span class="lib-entry-body">
+        <span class="lib-entry-name">功勋录</span>
+        <span class="lib-entry-desc">阅读历程的勋章</span>
+      </span>
+      <span class="lib-entry-arrow">→</span>
+    </a>
+    <a class="lib-entry" href="/covers">
+      <span class="lib-entry-icon">🖼️</span>
+      <span class="lib-entry-body">
+        <span class="lib-entry-name">书衣墙</span>
+        <span class="lib-entry-desc"><%= summary.totalBooks %> 册封面画廊</span>
+      </span>
+      <span class="lib-entry-arrow">→</span>
+    </a>
+    <a class="lib-entry" href="/report">
+      <span class="lib-entry-icon">📜</span>
+      <span class="lib-entry-body">
+        <span class="lib-entry-name">年度报告</span>
+        <span class="lib-entry-desc">一年的阅读叙事</span>
+      </span>
+      <span class="lib-entry-arrow">→</span>
+    </a>
   </div>
 </div>
-<% } %>
-
-<!-- ═══ Categories ═══ -->
-<% if (summary.categories && summary.categories.length > 0) { %>
-<div class="container-wide">
-  <hr class="section-rule">
-  <div class="section-kicker">VII. 藏书门类</div>
-
-  <div class="category-cloud">
-    <% summary.categories.slice(0, 12).forEach(function(c) { %>
-    <a href="/bookshelf?category=<%= encodeURIComponent(c.name) %>" class="category-tag"><%= c.name %></a>
-    <% }); %>
-  </div>
-</div>
-<% } %>
-
-<!-- ═══ Archives ═══ -->
-<% if (summary.archives && summary.archives.length > 0) { %>
-<div class="container-wide">
-  <hr class="section-rule">
-  <div class="section-kicker">VIII. 书单合集</div>
-
-  <div class="archive-grid">
-    <% summary.archives.forEach(function(arc) { %>
-    <div class="archive-item">
-      <div class="archive-name"><%= arc.name %></div>
-      <div class="archive-count"><%= arc.count %> 册</div>
-    </div>
-    <% }); %>
-  </div>
-</div>
-<% } %>

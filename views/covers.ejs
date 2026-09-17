@@ -1,5 +1,6 @@
 <!-- ═══════════════════════════════════════════
    COVER WALL — Book Cover Gallery
+   书衣墙 = 封面画廊（视觉优先） / 万卷楼 = 管理书架（信息优先）
    ═══════════════════════════════════════════ -->
 
 <div class="cw-container">
@@ -15,7 +16,16 @@
     <div class="cw-hero-rule"></div>
   </header>
 
-  <div class="cw-grid">
+  <!-- 画廊工具条：纯封面索引，不承担筛选进度等管理职责 -->
+  <div class="cw-toolbar">
+    <p class="cw-toolbar-note">以封面为索引，一眼望尽整座书房。</p>
+    <div class="cw-filter" id="cw-filter">
+      <button class="cw-filter-tag active" data-f="all">全部 <span class="cw-filter-count"><%= total %></span></button>
+      <button class="cw-filter-tag" data-f="finished">已读完 <span class="cw-filter-count"><%= finished %></span></button>
+    </div>
+  </div>
+
+  <div class="cw-grid" id="cw-grid">
     <% books.forEach(function(book) { %>
     <div class="cw-item <%= book.finished ? 'finished' : '' %>">
       <a href="/book/<%= book.id %>" class="cw-cover-link">
@@ -36,3 +46,20 @@
   </div>
 
 </div>
+
+<script>
+(function() {
+  var filter = document.getElementById('cw-filter');
+  if (!filter) return;
+  filter.addEventListener('click', function(e) {
+    var btn = e.target.closest('.cw-filter-tag');
+    if (!btn) return;
+    filter.querySelectorAll('.cw-filter-tag').forEach(function(t) { t.classList.remove('active'); });
+    btn.classList.add('active');
+    var f = btn.dataset.f;
+    document.querySelectorAll('.cw-item').forEach(function(item) {
+      item.style.display = (f === 'all' || (f === 'finished' && item.classList.contains('finished'))) ? '' : 'none';
+    });
+  });
+})();
+</script>
