@@ -6362,8 +6362,8 @@ h3 {
 .bg-seal-dots::before, .bg-seal-dots::after { content: ''; width: 3px; height: 3px; border-radius: 50%; background: var(--ink-c); opacity: 0.65; }
 .bg-seal-dots-t { top: 24%; }
 .bg-seal-dots-b { bottom: 24%; }
-.bg-seal-symbol { width: 52%; height: 52%; color: var(--ink-c); }
-.bg-seal-symbol svg path, .bg-seal-symbol svg circle, .bg-seal-symbol svg rect { stroke-width: 1.7; }
+.bg-seal-symbol { width: 60%; height: 60%; color: var(--ink-c); }
+.bg-seal-symbol svg path, .bg-seal-symbol svg circle, .bg-seal-symbol svg rect { stroke-width: 2; }
 .bg-seal-symbol svg { width: 100%; height: 100%; display: block; }
 .bg-seal-no {
   position: absolute; bottom: 9%; left: 50%; transform: translateX(-50%);
@@ -6429,8 +6429,8 @@ h3 {
 .bg-modal-close:hover { background: var(--rule-thin); color: var(--ink); }
 .bg-seal-modal { width: 168px; height: 168px; margin: 0 auto 26px; }
 .bg-seal-modal .bg-seal-paper { width: 100%; height: 100%; }
-.bg-seal-modal .bg-seal-symbol { width: 48%; height: 48%; }
-.bg-seal-modal .bg-seal-symbol svg path, .bg-seal-modal .bg-seal-symbol svg circle, .bg-seal-modal .bg-seal-symbol svg rect { stroke-width: 1.8; }
+.bg-seal-modal .bg-seal-symbol { width: 54%; height: 54%; }
+.bg-seal-modal .bg-seal-symbol svg path, .bg-seal-modal .bg-seal-symbol svg circle, .bg-seal-modal .bg-seal-symbol svg rect { stroke-width: 2.1; }
 .bg-modal-title { font-family: 'Noto Serif SC', serif; font-size: 25px; font-weight: 700; color: var(--ink); margin: 0 0 10px; letter-spacing: 0.04em; }
 .modal-desc { font-size: 14.5px; color: var(--ink-secondary); margin: 0 0 24px; line-height: 1.7; }
 .bg-modal-progress { margin-bottom: 22px; }
