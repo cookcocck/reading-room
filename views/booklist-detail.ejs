@@ -1,7 +1,7 @@
 <div class="bl-container">
 
   <!-- Breadcrumb -->
-  <nav class="bl-breadcrumb"><a href="/booklists">← 书单推荐</a></nav>
+  <nav class="bl-breadcrumb"><a href="/booklists">← 书单卷</a></nav>
 
   <!-- Header -->
   <header class="bl-detail-head">
@@ -23,7 +23,7 @@
   <!-- Book list -->
   <% if (list.items.length === 0) { %>
   <div class="bl-empty">
-    <div class="bl-empty-icon">📚</div>
+    <div class="bl-empty-icon">❦</div>
     <p>这个书单还没有书</p>
     <p class="bl-empty-sub">从上方选择书籍添加</p>
   </div>
@@ -37,7 +37,7 @@
         <% if (item.cover) { %>
         <img src="<%= item.cover %>" alt="<%= item.title %>" loading="lazy" />
         <% } else { %>
-        <div class="bl-cover-fallback">📖</div>
+        <div class="bl-cover-fallback">册</div>
         <% } %>
       </a>
       <div class="bl-item-body">

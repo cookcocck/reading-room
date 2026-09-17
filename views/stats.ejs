@@ -190,7 +190,7 @@
     <a href="/book/<%= d.id %>" class="deep-think-item">
       <span class="deep-rank"><%= idx + 1 %></span>
       <span class="deep-cover">
-        <% if (d.cover) { %><img src="<%= d.cover %>" alt="" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='📖'"><% } else { %>📖<% } %>
+        <% if (d.cover) { %><img src="<%= d.cover %>" alt="" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='书'"><% } else { %>书<% } %>
       </span>
       <span class="deep-info">
         <span class="deep-title"><%= d.title %></span>
@@ -213,7 +213,7 @@
     <% overall.topBooks.slice(0, 8).forEach(function(b) { %>
     <div class="book-list-item">
       <div class="book-list-cover">
-        <% if (b.cover) { %><img src="<%= b.cover %>" alt="" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='📖'"><% } else { %>📖<% } %>
+        <% if (b.cover) { %><img src="<%= b.cover %>" alt="" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='书'"><% } else { %>书<% } %>
       </div>
       <div>
         <div class="book-list-title"><%= b.title %></div>

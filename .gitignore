@@ -19,3 +19,6 @@ scripts/migrate_reviews_progress.json
 /backups/
 # TypeScript build output
 dist/
+
+# Artifact preview cache
+.preview/

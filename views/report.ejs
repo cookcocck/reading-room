@@ -1,5 +1,5 @@
 <!-- ═══════════════════════════════════════════
-   ANNUAL REPORT — Year in Reading
+   ANNUAL REPORT — Year in Reading (Editorial Narrative)
    ═══════════════════════════════════════════ -->
 
 <div class="rp-container">
@@ -10,11 +10,17 @@
       <a href="/report?year=<%= y %>" class="rp-year-link <%= y === year ? 'active' : '' %>"><%= y %></a>
       <% }); %>
     </div>
-    <h1 class="rp-title"><%= year %> 年度阅读报告</h1>
+    <p class="rp-kicker">ANNUAL REPORT · 年度报告</p>
+    <h1 class="rp-title"><%= year %> 年，与书为伴</h1>
+    <p class="rp-lead">
+      <%= stats.readDays %> 天有书为伴，读完 <%= stats.bookCount %> 本，
+      留下 <%= stats.highlightCount %> 条划线、<%= stats.reviewCount %> 条想法。
+      这是书房里安静又丰盛的一年。
+    </p>
     <div class="rp-hero-rule"></div>
   </header>
 
-  <!-- ═══ 核心数据 ═══ -->
+  <!-- ═══ I. 年度数字 ═══ -->
   <section class="rp-stats">
     <div class="rp-stat-card">
       <div class="rp-stat-num"><%= stats.bookCount %></div>
@@ -38,9 +44,10 @@
     </div>
   </section>
 
-  <!-- ═══ 月度趋势 ═══ -->
+  <!-- ═══ II. 月度节奏 ═══ -->
   <section class="rp-section">
-    <h2 class="rp-section-title">月度阅读节奏</h2>
+    <h2 class="rp-section-title">月度节奏</h2>
+    <p class="rp-section-sub">一年十二个月，哪几个月读得最密？</p>
     <div class="rp-bars">
       <% monthlyData.forEach(function(m) { %>
       <div class="rp-bar-col">
@@ -51,7 +58,7 @@
     </div>
   </section>
 
-  <!-- ═══ 最爱作者 + 分类 ═══ -->
+  <!-- ═══ III. 这一年，与谁同行 ═══ -->
   <div class="rp-two-col">
     <section class="rp-section">
       <h2 class="rp-section-title">最爱作者</h2>
@@ -67,7 +74,7 @@
     </section>
 
     <section class="rp-section">
-      <h2 class="rp-section-title">分类分布</h2>
+      <h2 class="rp-section-title">偏爱门类</h2>
       <div class="rp-cat-list">
         <% categories.slice(0, 8).forEach(function(c) { %>
         <div class="rp-cat-item">
@@ -80,67 +87,30 @@
     </section>
   </div>
 
-  <!-- ═══ 阅读习惯 ═══ -->
-  <div class="rp-two-col">
-    <section class="rp-section">
-      <h2 class="rp-section-title">时段分布</h2>
-      <div class="rp-hour-grid">
-        <% hourData.forEach(function(cnt, h) { %>
-        <div class="rp-hour-cell" style="opacity: <%= 0.15 + (cnt / maxHour) * 0.85 %>" title="<%= h %>时: <%= cnt %>条">
-          <span class="rp-hour-num"><%= h %></span>
-        </div>
-        <% }); %>
-      </div>
-      <div class="rp-hour-legend">
-        <span>少</span>
-        <div class="rp-hour-legend-bars">
-          <span style="opacity:0.15"></span>
-          <span style="opacity:0.35"></span>
-          <span style="opacity:0.55"></span>
-          <span style="opacity:0.75"></span>
-          <span style="opacity:1"></span>
-        </div>
-        <span>多</span>
-      </div>
-    </section>
-
-    <section class="rp-section">
-      <h2 class="rp-section-title">星期分布</h2>
-      <div class="rp-weekday-bars">
-        <% weekdayData.forEach(function(d) { %>
-        <div class="rp-weekday-col">
-          <div class="rp-weekday-bar" style="height: <%= Math.max(4, Math.round(d.count / Math.max.apply(null, weekdayData.map(function(x){return x.count;}) || [1]) * 100)) %>%"></div>
-          <div class="rp-weekday-label"><%= d.name %></div>
-        </div>
-        <% }); %>
-      </div>
-    </section>
-  </div>
-
-  <!-- ═══ 之最 ═══ -->
+  <!-- ═══ IV. 年度之最 ═══ -->
   <section class="rp-section">
     <h2 class="rp-section-title">年度之最</h2>
     <div class="rp-superlatives">
       <% if (longestDay) { %>
       <div class="rp-super-card">
-        <div class="rp-super-label">最长单日</div>
+        <div class="rp-super-label">最沉浸的一天</div>
         <div class="rp-super-value"><%= longestDay.d %></div>
-        <div class="rp-super-sub"><%= longestDay.cnt %> 条标记</div>
+        <div class="rp-super-sub">当天留下 <%= longestDay.cnt %> 条标记</div>
       </div>
       <% } %>
       <% if (longestBook) { %>
       <div class="rp-super-card">
-        <div class="rp-super-label">耗时最久</div>
+        <div class="rp-super-label">耗时最久的一本</div>
         <div class="rp-super-value"><%= longestBook.title %></div>
-        <div class="rp-super-sub"><%= helpers.formatTime(longestBook.read_time) %></div>
+        <div class="rp-super-sub"><%= longestBook.author || '' %> · <%= helpers.formatTime(longestBook.read_time) %></div>
       </div>
       <% } %>
     </div>
   </section>
 
-  <!-- ═══ 书单 ═══ -->
+  <!-- ═══ V. 年度书单 ═══ -->
   <section class="rp-section">
-    <h2 class="rp-section-title">年度书单</h2>
+    <h2 class="rp-section-title">这一年读过的书</h2>
     <div class="rp-book-grid">
       <% books.forEach(function(book) { %>
       <a href="/book/<%= book.id %>" class="rp-book-item">
@@ -152,5 +122,10 @@
       <% }); %>
     </div>
   </section>
+
+  <footer class="rp-colophon">
+    <span class="rp-colophon-mark">❦</span>
+    <p>阅读是一件小事，也是一件大事。<br>期待与下一年的书相遇。</p>
+  </footer>
 
 </div>

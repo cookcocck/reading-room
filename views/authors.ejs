@@ -2,7 +2,7 @@
 
   <!-- Hero -->
   <header class="au-hero">
-    <p class="au-hero-kicker">作者图谱</p>
+    <p class="au-hero-kicker">AUTHORS · 以文会友</p>
     <h1 class="au-hero-title">文友录</h1>
     <div class="au-hero-stats">
       <span class="au-hero-stat"><strong><%= totalAuthors %></strong> 位作者</span>
@@ -37,7 +37,7 @@
           <div class="au-collage-cell"><img src="<%= b.cover %>" alt="<%= b.title %>" loading="lazy" /></div>
           <% }); %>
           <% for (var i = covers.length; i < Math.min(4, author.books.length > 1 ? 4 : 1); i++) { %>
-          <div class="au-collage-cell au-collage-placeholder">📖</div>
+          <div class="au-collage-cell au-collage-placeholder">书</div>
           <% } %>
         </div>
       </div>
