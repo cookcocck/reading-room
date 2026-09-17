@@ -6326,196 +6326,128 @@ h3 {
 .cw-overlay-badge { position: absolute; top: 8px; right: 8px; background: var(--accent); color: #fff; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
 .cw-item.finished::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); }
 
-/* ─── Badges (Etching Engraving Style) ─── */
+/* ─── Badges (Ex Libris Seal Style · 藏书票圆章) ─── */
 .bg-container { max-width: 1200px; margin: 0 auto; padding: 48px 32px 80px; }
-.bg-hero { display: flex; align-items: center; justify-content: center; gap: 24px; margin-bottom: 56px; }
-.bg-laurel { width: 52px; height: 80px; flex-shrink: 0; color: var(--accent); }
-.bg-laurel svg { width: 100%; height: 100%; }
-.bg-hero-text { text-align: center; }
-.bg-hero-sub { font-size: 11px; color: var(--ink-faint); letter-spacing: 0.4em; margin-bottom: 10px; font-weight: 600; text-transform: uppercase; }
-.bg-hero-title { font-family: 'Noto Serif SC', serif; font-size: 32px; font-weight: 700; color: var(--ink); margin: 0; letter-spacing: 0.02em; }
-.bg-hero-count { color: var(--accent); font-size: 48px; font-weight: 800; }
-.bg-hero-total { color: var(--ink-faint); font-size: 22px; font-weight: 400; }
-.bg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 48px 32px; }
 
-/* ═══ 勋章项 ═══ */
-.bg-medal-item { text-align: center; cursor: pointer; position: relative; transition: transform 0.35s ease; }
-.bg-medal-item:hover { transform: translateY(-6px); }
-.bg-medal-item:hover .bg-medal { box-shadow: 0 14px 30px rgba(70,55,25,0.14); }
-.bg-medal-item.earned .bg-medal { animation: breathe 3.6s ease-in-out infinite; }
-@keyframes breathe { 0%,100% { box-shadow: 0 2px 8px rgba(70,55,25,0.06); } 50% { box-shadow: 0 6px 20px rgba(70,55,25,0.13); } }
+/* ═══ Hero：一张大藏书票（左圆章 + 右竖排） ═══ */
+.bg-hero-plate { display: flex; align-items: center; justify-content: center; gap: 44px; margin-bottom: 64px; padding: 24px 0 8px; }
+.bg-hero-vertical { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.bg-hero-vdot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); opacity: 0.8; }
+.bg-hero-vtext { writing-mode: vertical-rl; font-family: 'Noto Serif SC', serif; font-size: 42px; font-weight: 700; letter-spacing: 0.22em; color: var(--ink); text-indent: 0.22em; }
+.bg-hero-vsub { writing-mode: vertical-rl; font-family: Georgia, 'Times New Roman', serif; font-size: 13px; letter-spacing: 0.32em; color: var(--ink-faint); }
 
-/* ═══ 卡片本体（蚀刻藏书票） ═══ */
-.bg-medal-ribbon { display: none; }
-.bg-medal { width: 212px; height: 258px; margin: 0 auto 14px; position: relative;
-  background: var(--card);
-  border-radius: 10px;
-  border: 1px solid var(--ink-line);
-  box-shadow: 0 2px 8px rgba(70,55,25,0.06);
-  transition: box-shadow 0.3s ease;
-}
-/* 蚀刻外线框 + 四角花饰 */
-.bg-medal-outer { position: absolute; inset: 7px; border-radius: 7px;
-  border: 1px solid var(--line);
-  background: transparent;
-}
-.bg-medal-outer::before, .bg-medal-outer::after { content: '❦'; position: absolute; font-size: 13px; line-height: 1; color: var(--ink-line); }
-.bg-medal-outer::before { top: -8px; left: 12px; }
-.bg-medal-outer::after { bottom: -8px; right: 12px; }
-/* 内线框 + 对角花饰 */
-.bg-medal-inner { position: absolute; inset: 12px; border-radius: 5px;
-  border: 1px solid var(--line-faint);
-  background: transparent;
-}
-.bg-medal-inner::before, .bg-medal-inner::after { content: '❧'; position: absolute; font-size: 12px; line-height: 1; color: var(--line); }
-.bg-medal-inner::before { top: -7px; right: 14px; }
-.bg-medal-inner::after { bottom: -7px; left: 14px; }
-/* 印刷网点 */
-.bg-medal-studs { position: absolute; inset: 0; border-radius: 10px;
-  background: radial-gradient(var(--dot) 1px, transparent 1.5px);
-  background-size: 15px 15px;
-  opacity: 0.5;
-  pointer-events: none;
-}
-/* 中心蚀刻圆章 */
-.bg-medal-core { position: absolute; top: 26px; left: 50%; transform: translateX(-50%);
-  width: 132px; height: 132px; border-radius: 50%;
-  background: var(--tint);
-  border: 1px solid var(--line);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  box-sizing: border-box;
-}
-/* 雕版放射蚀刻环带 */
-.bg-medal-glow { position: absolute; inset: -3px; border-radius: 50%;
-  background: repeating-conic-gradient(from 0deg, var(--etch) 0deg 1.1deg, transparent 1.1deg 2.8deg);
-  -webkit-mask: radial-gradient(circle, transparent 52%, black 53%, black 74%, transparent 75%);
-  mask: radial-gradient(circle, transparent 52%, black 53%, black 74%, transparent 75%);
-  pointer-events: none;
-  opacity: 0.75;
-}
-.bg-medal-sheen { position: absolute; inset: 12px; border-radius: 50%;
-  border: 1px solid var(--line-faint);
-  pointer-events: none;
-}
-.bg-medal-shine { display: none; }
-.bg-medal-icon { font-size: 50px; margin-bottom: 2px; position: relative; z-index: 1; line-height: 1.1; }
-.bg-medal-target { font-family: 'Noto Serif SC', serif; font-size: 25px; font-weight: 700; position: relative; z-index: 1;
-  color: var(--ink); letter-spacing: 0.06em; line-height: 1.3;
-}
-.bg-medal-target::before, .bg-medal-target::after { content: ''; display: block; width: 34px; height: 1px; margin: 5px auto; background: var(--line); }
-.bg-medal-number { position: absolute; top: 162px; left: 50%; transform: translateX(-50%);
-  font-family: 'Georgia', serif; font-size: 11px; font-weight: 600; color: var(--ink-faint);
-  letter-spacing: 0.24em; z-index: 1; white-space: nowrap;
-}
-.bg-medal-name { display: inline-block; font-size: 19px; color: var(--ink); font-weight: 700; margin-top: 4px;
-  letter-spacing: 0.05em; font-family: 'Noto Serif SC', serif;
-  border-bottom: 1px solid var(--line-soft); padding: 0 14px 7px;
-}
-.bg-medal-name::before { content: '❧'; color: var(--accent); font-size: 12px; margin-right: 7px; vertical-align: 1px; }
-.bg-medal-name::after { content: '❧'; color: var(--accent); font-size: 12px; margin-left: 7px; vertical-align: 1px; }
-.bg-medal-lock { position: absolute; top: 96px; left: 50%; transform: translateX(-50%); color: var(--ink-faint); z-index: 3;
-  background: var(--card); border: 1px solid var(--ink-line); border-radius: 50%; width: 40px; height: 40px;
+/* ═══ 圆章基础（同心环 + 刻度 + 中心符号 + 圆点） ═══ */
+.bg-seal { --ink-c: var(--ink); position: relative; }
+.bg-seal-paper {
+  position: relative; border-radius: 50%; box-sizing: border-box;
+  background:
+    repeating-radial-gradient(circle at 50% 50%, rgba(120,95,35,0.055) 0 1px, transparent 1px 5px),
+    radial-gradient(circle at 32% 28%, rgba(255,255,255,0.75), transparent 55%),
+    var(--paper-warm);
+  border: 1px solid var(--rule);
+  box-shadow: inset 0 0 0 4px var(--card), inset 0 0 0 5px var(--rule-thin), 0 2px 10px rgba(70,55,25,0.07);
   display: flex; align-items: center; justify-content: center;
 }
+.bg-seal-ticks {
+  position: absolute; inset: 7%; border-radius: 50%;
+  background: repeating-conic-gradient(var(--ink-c) 0deg 1.1deg, transparent 1.1deg 6deg);
+  -webkit-mask: radial-gradient(circle, transparent 68%, black 69%, black 76%, transparent 77%);
+  mask: radial-gradient(circle, transparent 68%, black 69%, black 76%, transparent 77%);
+  opacity: 0.32; pointer-events: none;
+}
+.bg-seal-ring { position: absolute; border-radius: 50%; border: 1px solid var(--ink-c); pointer-events: none; }
+.bg-seal-r1 { inset: 13%; opacity: 0.5; }
+.bg-seal-r2 { inset: 18%; opacity: 0.28; }
+.bg-seal-dots { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 5px; pointer-events: none; }
+.bg-seal-dots::before, .bg-seal-dots::after { content: ''; width: 3px; height: 3px; border-radius: 50%; background: var(--ink-c); opacity: 0.65; }
+.bg-seal-dots-t { top: 24%; }
+.bg-seal-dots-b { bottom: 24%; }
+.bg-seal-symbol { width: 40%; height: 40%; color: var(--ink-c); }
+.bg-seal-symbol svg { width: 100%; height: 100%; display: block; }
+.bg-seal-no {
+  position: absolute; bottom: 9%; left: 50%; transform: translateX(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-size: 8.5px; letter-spacing: 0.22em;
+  color: var(--ink-c); opacity: 0.55; white-space: nowrap; pointer-events: none;
+}
 
-/* 6 种文学蚀刻色（墨色线条 + 淡色点缀） */
-.theme-0 { --line-soft: rgba(120,95,35,0.22); --ink-line: rgba(74,106,138,0.6); --line: rgba(74,106,138,0.45); --line-faint: rgba(74,106,138,0.18); --dot: rgba(74,106,138,0.35); --tint: rgba(74,106,138,0.06); --etch: rgba(74,106,138,0.5); }
-.theme-1 { --line-soft: rgba(120,95,35,0.22); --ink-line: rgba(63,122,94,0.6); --line: rgba(63,122,94,0.45); --line-faint: rgba(63,122,94,0.18); --dot: rgba(63,122,94,0.35); --tint: rgba(63,122,94,0.06); --etch: rgba(63,122,94,0.5); }
-.theme-2 { --line-soft: rgba(120,95,35,0.22); --ink-line: rgba(138,74,58,0.6); --line: rgba(138,74,58,0.45); --line-faint: rgba(138,74,58,0.18); --dot: rgba(138,74,58,0.35); --tint: rgba(138,74,58,0.06); --etch: rgba(138,74,58,0.5); }
-.theme-3 { --line-soft: rgba(120,95,35,0.22); --ink-line: rgba(106,74,138,0.6); --line: rgba(106,74,138,0.45); --line-faint: rgba(106,74,138,0.18); --dot: rgba(106,74,138,0.35); --tint: rgba(106,74,138,0.06); --etch: rgba(106,74,138,0.5); }
-.theme-4 { --line-soft: rgba(120,95,35,0.22); --ink-line: rgba(138,106,46,0.6); --line: rgba(138,106,46,0.45); --line-faint: rgba(138,106,46,0.18); --dot: rgba(138,106,46,0.35); --tint: rgba(138,106,46,0.06); --etch: rgba(138,106,46,0.5); }
-.theme-5 { --line-soft: rgba(120,95,35,0.22); --ink-line: rgba(74,90,122,0.6); --line: rgba(74,90,122,0.45); --line-faint: rgba(74,90,122,0.18); --dot: rgba(74,90,122,0.35); --tint: rgba(74,90,122,0.06); --etch: rgba(74,90,122,0.5); }
+/* Hero 大圆章（钢笔笔尖，呼应藏书票主视觉） */
+.bg-seal-hero { width: 240px; height: 240px; }
+.bg-seal-hero .bg-seal-paper { width: 100%; height: 100%; }
+.bg-seal-hero .bg-seal-nib { width: 72%; height: 72%; color: var(--accent); }
+.bg-seal-hero .bg-seal-no { display: none; }
 
-/* 未获得 - 褪色印刷 */
-.bg-medal-item.locked .bg-medal { border-color: rgba(130,125,115,0.4); }
-.bg-medal-item.locked .bg-medal-outer { border-color: rgba(130,125,115,0.3); }
-.bg-medal-item.locked .bg-medal-outer::before, .bg-medal-item.locked .bg-medal-outer::after { color: rgba(130,125,115,0.5); }
-.bg-medal-item.locked .bg-medal-inner { border-color: rgba(130,125,115,0.16); }
-.bg-medal-item.locked .bg-medal-inner::before, .bg-medal-item.locked .bg-medal-inner::after { color: rgba(130,125,115,0.3); }
-.bg-medal-item.locked .bg-medal-studs { opacity: 0.2; }
-.bg-medal-item.locked .bg-medal-core { background: rgba(130,125,115,0.05); border-color: rgba(130,125,115,0.35); }
-.bg-medal-item.locked .bg-medal-glow { opacity: 0.2; }
-.bg-medal-item.locked .bg-medal-sheen { border-color: rgba(130,125,115,0.14); }
-.bg-medal-item.locked .bg-medal-icon { filter: grayscale(1) opacity(0.4); }
-.bg-medal-item.locked .bg-medal-target { color: rgba(130,125,115,0.7); }
-.bg-medal-item.locked .bg-medal-target::before, .bg-medal-item.locked .bg-medal-target::after { background: rgba(130,125,115,0.35); }
-.bg-medal-item.locked .bg-medal-number { color: rgba(130,125,115,0.55); }
-.bg-medal-item.locked .bg-medal-name { color: rgba(130,125,115,0.75); border-bottom-color: rgba(130,125,115,0.18); }
-.bg-medal-item.locked .bg-medal-name::before, .bg-medal-item.locked .bg-medal-name::after { color: rgba(130,125,115,0.4); }
-.bg-medal-item.locked .bg-medal { animation: none; }
-.bg-medal-item.locked:hover .bg-medal { box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
+/* ═══ 勋章网格：藏书票卡片（左圆章 + 右竖排） ═══ */
+.bg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(248px, 1fr)); gap: 34px 26px; }
+.bg-plate { cursor: pointer; transition: transform 0.3s ease; }
+.bg-plate:hover { transform: translateY(-5px); }
+.bg-plate:hover .bg-plate-inner { box-shadow: 0 10px 26px rgba(70,55,25,0.12); }
+.bg-plate-inner {
+  display: flex; align-items: center; gap: 20px;
+  padding: 20px 18px 20px 16px; background: var(--card);
+  border: 1px solid var(--rule);
+  box-shadow: 0 2px 8px rgba(70,55,25,0.05);
+  transition: box-shadow 0.3s ease;
+}
+.bg-plate .bg-seal { width: 118px; height: 118px; flex-shrink: 0; }
+.bg-plate .bg-seal-paper { width: 100%; height: 100%; }
+.bg-plate .bg-seal-symbol { width: 40%; height: 40%; }
+.bg-plate-side { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; min-width: 0; }
+.bg-plate-name { writing-mode: vertical-rl; font-family: 'Noto Serif SC', serif; font-size: 21px; font-weight: 700; letter-spacing: 0.22em; color: var(--ink); text-indent: 0.22em; line-height: 1.25; }
+.bg-plate-target { font-size: 12.5px; color: var(--ink-faint); letter-spacing: 0.1em; font-family: Georgia, serif; white-space: nowrap; }
+.bg-plate-lock { color: var(--ink-faint); margin-top: 4px; opacity: 0.8; }
 
-/* ═══ 弹窗（同风格蚀刻圆章） ═══ */
+/* 6 种文学墨色（细线印章配色） */
+.bg-plate.theme-0, .bg-seal.theme-0 { --ink-c: rgba(74,106,138,0.92); }
+.bg-plate.theme-1, .bg-seal.theme-1 { --ink-c: rgba(63,122,94,0.92); }
+.bg-plate.theme-2, .bg-seal.theme-2 { --ink-c: rgba(138,74,58,0.92); }
+.bg-plate.theme-3, .bg-seal.theme-3 { --ink-c: rgba(106,74,138,0.92); }
+.bg-plate.theme-4, .bg-seal.theme-4 { --ink-c: rgba(150,112,38,0.95); }
+.bg-plate.theme-5, .bg-seal.theme-5 { --ink-c: rgba(74,90,122,0.92); }
+
+/* ═══ 已获得 / 未获得 ═══ */
+.bg-plate.earned .bg-seal-paper { border-color: var(--ink-c); }
+.bg-plate.earned .bg-seal-ticks { opacity: 0.42; }
+.bg-plate.earned .bg-seal-symbol { opacity: 1; }
+.bg-plate.locked .bg-seal-paper { border-color: rgba(130,125,115,0.4); }
+.bg-plate.locked .bg-seal-ticks { opacity: 0.12; }
+.bg-plate.locked .bg-seal-r1, .bg-plate.locked .bg-seal-r2 { opacity: 0.18; }
+.bg-plate.locked .bg-seal-dots::before, .bg-plate.locked .bg-seal-dots::after { opacity: 0.22; }
+.bg-plate.locked .bg-seal-symbol { opacity: 0.3; }
+.bg-plate.locked .bg-seal-no { opacity: 0.3; }
+.bg-plate.locked .bg-plate-name { color: rgba(130,125,115,0.8); }
+.bg-plate.locked .bg-plate-target { color: rgba(130,125,115,0.55); }
+
+/* ═══ 弹窗（藏书票圆章） ═══ */
 .bg-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(6px); animation: bgFadeIn 0.25s ease; }
 @keyframes bgFadeIn { from { opacity: 0; } to { opacity: 1; } }
-.bg-modal-card { background: var(--card); border-radius: 20px; padding: 48px 40px 36px; max-width: 420px; width: 90%; text-align: center; position: relative; border: 1px solid var(--border); box-shadow: 0 28px 70px rgba(0,0,0,0.28); animation: bgCardIn 0.35s ease; }
+.bg-modal-card { background: var(--card); border-radius: 2px; padding: 44px 40px 36px; max-width: 400px; width: 90%; text-align: center; position: relative; border: 1px solid var(--rule); box-shadow: 0 28px 70px rgba(0,0,0,0.28); animation: bgCardIn 0.35s ease; }
 @keyframes bgCardIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-.bg-modal-close { position: absolute; top: 16px; right: 16px; background: var(--bg); border: none; color: var(--ink-faint); font-size: 17px; cursor: pointer; width: 38px; height: 38px; border-radius: 50%; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
-.bg-modal-close:hover { background: var(--border); color: var(--ink); }
-.bg-modal-ribbon { display: none; }
-.bg-modal-medal { width: 172px; height: 172px; margin: 0 auto 24px; position: relative; z-index: 2;
-  border-radius: 50%;
-  background: var(--tint);
-  border: 1px solid var(--line);
-  box-shadow: 0 6px 24px rgba(70,55,25,0.1);
-}
-.bg-modal-outer { position: absolute; inset: 8px; border-radius: 50%; border: 1px solid var(--line-faint); background: transparent; }
-.bg-modal-inner { position: absolute; inset: 13px; border-radius: 50%; border: 1px solid var(--line-faint); background: transparent; }
-.bg-modal-studs { position: absolute; inset: 0; border-radius: 50%;
-  background: radial-gradient(var(--dot) 1.2px, transparent 1.7px);
-  background-size: 15px 15px;
-  opacity: 0.45; pointer-events: none;
-}
-.bg-modal-core { position: absolute; inset: 0; border-radius: 50%;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-}
-.bg-modal-glow { position: absolute; inset: -3px; border-radius: 50%;
-  background: repeating-conic-gradient(from 0deg, var(--etch) 0deg 1.1deg, transparent 1.1deg 2.8deg);
-  -webkit-mask: radial-gradient(circle, transparent 52%, black 53%, black 76%, transparent 77%);
-  mask: radial-gradient(circle, transparent 52%, black 53%, black 76%, transparent 77%);
-  opacity: 0.7; pointer-events: none;
-}
-.bg-modal-sheen { display: none; }
-.bg-modal-medal.theme-0 { --line: rgba(74,106,138,0.45); --line-faint: rgba(74,106,138,0.18); --dot: rgba(74,106,138,0.35); --tint: rgba(74,106,138,0.06); --etch: rgba(74,106,138,0.5); }
-.bg-modal-medal.theme-1 { --line: rgba(63,122,94,0.45); --line-faint: rgba(63,122,94,0.18); --dot: rgba(63,122,94,0.35); --tint: rgba(63,122,94,0.06); --etch: rgba(63,122,94,0.5); }
-.bg-modal-medal.theme-2 { --line: rgba(138,74,58,0.45); --line-faint: rgba(138,74,58,0.18); --dot: rgba(138,74,58,0.35); --tint: rgba(138,74,58,0.06); --etch: rgba(138,74,58,0.5); }
-.bg-modal-medal.theme-3 { --line: rgba(106,74,138,0.45); --line-faint: rgba(106,74,138,0.18); --dot: rgba(106,74,138,0.35); --tint: rgba(106,74,138,0.06); --etch: rgba(106,74,138,0.5); }
-.bg-modal-medal.theme-4 { --line: rgba(138,106,46,0.45); --line-faint: rgba(138,106,46,0.18); --dot: rgba(138,106,46,0.35); --tint: rgba(138,106,46,0.06); --etch: rgba(138,106,46,0.5); }
-.bg-modal-medal.theme-5 { --line: rgba(74,90,122,0.45); --line-faint: rgba(74,90,122,0.18); --dot: rgba(74,90,122,0.35); --tint: rgba(74,90,122,0.06); --etch: rgba(74,90,122,0.5); }
-.bg-modal-medal.locked { background: rgba(130,125,115,0.05); border-color: rgba(130,125,115,0.35); }
-.bg-modal-medal.locked .bg-modal-outer { border-color: rgba(130,125,115,0.2); }
-.bg-modal-medal.locked .bg-modal-inner { border-color: rgba(130,125,115,0.2); }
-.bg-modal-medal.locked .bg-modal-glow { opacity: 0.2; }
-.bg-modal-medal.locked .bg-modal-studs { opacity: 0.18; }
-.bg-modal-icon { font-size: 64px; margin-bottom: 6px; position: relative; z-index: 1; line-height: 1.1; }
-.bg-modal-target { font-family: 'Noto Serif SC', serif; font-size: 31px; font-weight: 700; position: relative; z-index: 1; color: var(--ink); letter-spacing: 0.06em; }
-.bg-modal-target::before, .bg-modal-target::after { content: ''; display: block; width: 40px; height: 1px; margin: 6px auto; background: var(--line); }
-.bg-modal-number { position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%); font-family: 'Georgia', serif; font-size: 12px; font-weight: 600; color: var(--ink-faint); letter-spacing: 0.24em; z-index: 1; white-space: nowrap; }
-.bg-modal-title { font-family: 'Noto Serif SC', serif; font-size: 27px; font-weight: 700; color: var(--ink); margin: 34px 0 10px; }
-.modal-desc { font-size: 15px; color: var(--ink-secondary); margin: 0 0 26px; line-height: 1.6; }
+.bg-modal-close { position: absolute; top: 14px; right: 14px; background: transparent; border: none; color: var(--ink-faint); font-size: 16px; cursor: pointer; width: 34px; height: 34px; border-radius: 50%; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+.bg-modal-close:hover { background: var(--rule-thin); color: var(--ink); }
+.bg-seal-modal { width: 168px; height: 168px; margin: 0 auto 26px; }
+.bg-seal-modal .bg-seal-paper { width: 100%; height: 100%; }
+.bg-seal-modal .bg-seal-symbol { width: 42%; height: 42%; }
+.bg-modal-title { font-family: 'Noto Serif SC', serif; font-size: 25px; font-weight: 700; color: var(--ink); margin: 0 0 10px; letter-spacing: 0.04em; }
+.modal-desc { font-size: 14.5px; color: var(--ink-secondary); margin: 0 0 24px; line-height: 1.7; }
 .bg-modal-progress { margin-bottom: 22px; }
-.bg-modal-progress-track { height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; margin-bottom: 12px; }
-.bg-modal-progress-fill { height: 100%; background: var(--line); border-radius: 4px; transition: width 0.6s ease; }
+.bg-modal-progress-track { height: 6px; background: var(--rule-thin); overflow: hidden; margin-bottom: 12px; }
+.bg-modal-progress-fill { height: 100%; background: var(--accent); transition: width 0.6s ease; }
 .bg-modal-progress-text { font-size: 13px; color: var(--ink-faint); font-weight: 500; }
-.bg-modal-status { display: inline-block; padding: 9px 28px; border-radius: 24px; font-size: 14px; font-weight: 600; letter-spacing: 0.03em; }
-.bg-modal-status.earned { background: rgba(212,175,55,0.1); color: #9c7a26; border: 1px solid rgba(212,175,55,0.35); }
-.bg-modal-status.locked { background: var(--bg); color: var(--ink-faint); border: 1px solid var(--border); }
+.bg-modal-status { display: inline-block; padding: 8px 26px; font-size: 13.5px; font-weight: 600; letter-spacing: 0.04em; }
+.bg-modal-status.earned { background: rgba(212,175,55,0.12); color: #9c7a26; border: 1px solid rgba(212,175,55,0.35); }
+.bg-modal-status.locked { background: var(--bg); color: var(--ink-faint); border: 1px solid var(--rule); }
 
 @media (max-width: 768px) {
-  .bg-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 34px 16px; }
-  .bg-medal { width: 152px; height: 186px; }
-  .bg-medal-outer { inset: 5px; }
-  .bg-medal-inner { inset: 9px; }
-  .bg-medal-core { top: 18px; width: 96px; height: 96px; }
-  .bg-medal-number { top: 116px; font-size: 9px; }
-  .bg-medal-icon { font-size: 36px; }
-  .bg-medal-target { font-size: 19px; }
-  .bg-medal-target::before, .bg-medal-target::after { width: 26px; }
-  .bg-medal-name { font-size: 15px; }
-  .bg-medal-lock { top: 70px; width: 32px; height: 32px; }
-  .bg-hero-title { font-size: 24px; }
-  .bg-hero-count { font-size: 36px; }
-  .bg-laurel { width: 38px; height: 58px; }
+  .bg-hero-plate { gap: 26px; }
+  .bg-hero-vtext { font-size: 30px; }
+  .bg-seal-hero { width: 170px; height: 170px; }
+  .bg-grid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 26px 16px; }
+  .bg-plate-inner { gap: 14px; padding: 16px 12px; }
+  .bg-plate .bg-seal { width: 88px; height: 88px; }
+  .bg-plate-name { font-size: 17px; }
+  .bg-plate-target { font-size: 11px; }
+  .bg-seal-dots-t { top: 21%; }
+  .bg-seal-dots-b { bottom: 21%; }
 }
 
 /* ─── Timeline ─── */

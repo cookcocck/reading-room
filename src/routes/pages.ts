@@ -436,22 +436,22 @@ router.get('/badges', (_req: Request, res: Response) => {
   const yearFinished = allBooks.filter(b => b.finished && (b.last_read_time || 0) >= yearStart).length;
 
   const badges = [
-    { id: 'first-book', icon: '📖', name: '初读者', desc: '读完第一本书', earned: finishedCount >= 1, progress: Math.min(finishedCount, 1), target: 1 },
-    { id: 'bookworm', icon: '🐛', name: '书虫', desc: '读完 10 本书', earned: finishedCount >= 10, progress: Math.min(finishedCount, 10), target: 10 },
-    { id: 'reader', icon: '📚', name: '阅读达人', desc: '读完 30 本书', earned: finishedCount >= 30, progress: Math.min(finishedCount, 30), target: 30 },
-    { id: 'scholar', icon: '🎓', name: '博览群书', desc: '读完 50 本书', earned: finishedCount >= 50, progress: Math.min(finishedCount, 50), target: 50 },
-    { id: 'master', icon: '🏆', name: '学富五车', desc: '读完 80 本书', earned: finishedCount >= 80, progress: Math.min(finishedCount, 80), target: 80 },
-    { id: 'collector', icon: '📦', name: '藏书家', desc: '藏书超过 100 本', earned: totalBooks >= 100, progress: Math.min(totalBooks, 100), target: 100 },
-    { id: 'deep-reader', icon: '✍️', name: '深度读者', desc: '单本书划线超 30 条', earned: maxHlPerBook >= 30, progress: Math.min(maxHlPerBook, 30), target: 30 },
-    { id: 'thinker', icon: '💭', name: '思想家', desc: '发表 30 条想法', earned: rvCount >= 30, progress: Math.min(rvCount, 30), target: 30 },
-    { id: 'highlight-hoarder', icon: '🔖', name: '金句收藏家', desc: '划线超过 1000 条', earned: hlCount >= 1000, progress: Math.min(hlCount, 1000), target: 1000 },
-    { id: 'streak', icon: '🔥', name: '坚持不懈', desc: '连续阅读 7 天', earned: maxStreak >= 7, progress: Math.min(maxStreak, 7), target: 7 },
-    { id: 'streak-30', icon: '⚡', name: '持之以恒', desc: '连续阅读 30 天', earned: maxStreak >= 30, progress: Math.min(maxStreak, 30), target: 30 },
-    { id: 'marathon', icon: '🏃', name: '阅读马拉松', desc: '单本书阅读超 20 小时', earned: maxReadTime >= 72000, progress: Math.min(Math.round(maxReadTime / 3600), 20), target: 20, unit: 'h' },
-    { id: 'night-owl', icon: '🦉', name: '夜猫子', desc: '凌晨划线超 50 条', earned: nightHl >= 50, progress: Math.min(nightHl, 50), target: 50 },
-    { id: 'early-bird', icon: '🐦', name: '早起鸟', desc: '清晨划线超 100 条', earned: morningHl >= 100, progress: Math.min(morningHl, 100), target: 100 },
-    { id: 'year-star', icon: '⭐', name: '年度之星', desc: '本年度读完 10 本', earned: yearFinished >= 10, progress: Math.min(yearFinished, 10), target: 10 },
-    { id: 'time-lord', icon: '⏰', name: '时间领主', desc: '累计阅读超 500 小时', earned: totalReadTime >= 1800000, progress: Math.min(Math.round(totalReadTime / 3600), 500), target: 500, unit: 'h' },
+    { id: 'first-book', icon: '📖', svg: '<path d="M12 5c-2-1.5-4.5-2-7-2v14c2.5 0 5 .5 7 2 2-1.5 4.5-2 7-2V3c-2.5 0-5 .5-7 2z"/><path d="M12 5v14"/>', name: '初读者', desc: '读完第一本书', earned: finishedCount >= 1, progress: Math.min(finishedCount, 1), target: 1 },
+    { id: 'bookworm', icon: '🐛', svg: '<path d="M3 18c4-2.5 6-2 8-4s4.5-4.5 8.5-4"/><path d="M18.5 10.5c.8-.5 1.5-.3 2-.8"/><circle cx="3" cy="18.5" r="1.2"/>', name: '书虫', desc: '读完 10 本书', earned: finishedCount >= 10, progress: Math.min(finishedCount, 10), target: 10 },
+    { id: 'reader', icon: '📚', svg: '<path d="M4 4v16"/><path d="M4 4c2.2-1 3.8-1 6 0v16c-2.2-1-3.8-1-6 0z"/><path d="M10 4c2.2-1 3.8-1 6 0v16c-2.2-1-3.8-1-6 0z"/><path d="M16 4c2.2-1 3.8-1 6 0v16c-2.2-1-3.8-1-6 0z"/><path d="M22 4v16"/>', name: '阅读达人', desc: '读完 30 本书', earned: finishedCount >= 30, progress: Math.min(finishedCount, 30), target: 30 },
+    { id: 'scholar', icon: '🎓', svg: '<path d="M12 4 2 9l10 5 10-5L12 4z"/><path d="M6 11.5V16c0 1.6 2.7 3 6 3s6-1.4 6-3v-4.5"/><path d="M22 9v6"/>', name: '博览群书', desc: '读完 50 本书', earned: finishedCount >= 50, progress: Math.min(finishedCount, 50), target: 50 },
+    { id: 'master', icon: '🏆', svg: '<path d="M12 3 4 7l8 4 8-4-8-4z"/><path d="M4 11l8 4 8-4"/><path d="M4 15l8 4 8-4"/>', name: '学富五车', desc: '读完 80 本书', earned: finishedCount >= 80, progress: Math.min(finishedCount, 80), target: 80 },
+    { id: 'collector', icon: '📦', svg: '<rect x="4" y="3" width="16" height="18"/><path d="M4 9h16M4 15h16"/><path d="M9 3v6M14 9v6"/>', name: '藏书家', desc: '藏书超过 100 本', earned: totalBooks >= 100, progress: Math.min(totalBooks, 100), target: 100 },
+    { id: 'deep-reader', icon: '✍️', svg: '<path d="M12 3 5 21h14L12 3z"/><path d="M9.5 21 12 9l2.5 12"/>', name: '深度读者', desc: '单本书划线超 30 条', earned: maxHlPerBook >= 30, progress: Math.min(maxHlPerBook, 30), target: 30 },
+    { id: 'thinker', icon: '💭', svg: '<path d="M12 4a8 8 0 0 1 8 8c0 4.1-3.6 7-8 7-.9 0-1.8-.1-2.6-.3L4 20l1-3.1A7.6 7.6 0 0 1 4 12a8 8 0 0 1 8-8z"/><path d="M9 10.5h6M9 13.5h4"/>', name: '思想家', desc: '发表 30 条想法', earned: rvCount >= 30, progress: Math.min(rvCount, 30), target: 30 },
+    { id: 'highlight-hoarder', icon: '🔖', svg: '<path d="M9.3 6.5C7 8.2 6 10 6 12.5V17h4.5v-4.5H7.9c.1-1.6.9-2.8 2.2-3.7L9.3 6.5z"/><path d="M19.3 6.5c-2.3 1.7-3.3 3.5-3.3 6V17h4.5v-4.5h-2.6c.1-1.6.9-2.8 2.2-3.7L19.3 6.5z"/>', name: '金句收藏家', desc: '划线超过 1000 条', earned: hlCount >= 1000, progress: Math.min(hlCount, 1000), target: 1000 },
+    { id: 'streak', icon: '🔥', svg: '<path d="M12 3c.8 2.6 4 4.3 4 8a4 4 0 0 1-8 0c0-2 .9-3.4 2-4.6.1 1.4.8 2.2 1.5 2.8C11.7 8.3 11.8 5.8 12 3z"/>', name: '坚持不懈', desc: '连续阅读 7 天', earned: maxStreak >= 7, progress: Math.min(maxStreak, 7), target: 7 },
+    { id: 'streak-30', icon: '⚡', svg: '<path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/>', name: '持之以恒', desc: '连续阅读 30 天', earned: maxStreak >= 30, progress: Math.min(maxStreak, 30), target: 30 },
+    { id: 'marathon', icon: '🏃', svg: '<path d="M6 3v18"/><path d="M6 4h11l-2.5 3.5L17 11H6"/>', name: '阅读马拉松', desc: '单本书阅读超 20 小时', earned: maxReadTime >= 72000, progress: Math.min(Math.round(maxReadTime / 3600), 20), target: 20, unit: 'h' },
+    { id: 'night-owl', icon: '🦉', svg: '<path d="M20 13.5A8 8 0 1 1 10.5 4 6.5 6.5 0 0 0 20 13.5z"/>', name: '夜猫子', desc: '凌晨划线超 50 条', earned: nightHl >= 50, progress: Math.min(nightHl, 50), target: 50 },
+    { id: 'early-bird', icon: '🐦', svg: '<circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"/>', name: '早起鸟', desc: '清晨划线超 100 条', earned: morningHl >= 100, progress: Math.min(morningHl, 100), target: 100 },
+    { id: 'year-star', icon: '⭐', svg: '<path d="M12 2l2.9 6.3 6.6.7-5 4.4 1.4 6.6L12 16.8 6.1 20l1.4-6.6-5-4.4 6.6-.7L12 2z"/>', name: '年度之星', desc: '本年度读完 10 本', earned: yearFinished >= 10, progress: Math.min(yearFinished, 10), target: 10 },
+    { id: 'time-lord', icon: '⏰', svg: '<path d="M6 3h12M6 21h12"/><path d="M7 3c0 5 4 6 5 9-1 3-5 4-5 9M17 3c0 5-4 6-5 9 1 3 5 4 5 9"/>', name: '时间领主', desc: '累计阅读超 500 小时', earned: totalReadTime >= 1800000, progress: Math.min(Math.round(totalReadTime / 3600), 500), target: 500, unit: 'h' },
   ];
 
   const earnedCount = badges.filter(b => b.earned).length;
