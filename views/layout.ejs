@@ -3,19 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="<%= typeof summary !== 'undefined' ? summary.totalBooks : 0 %> 册藏书路 <%= typeof summary !== 'undefined' ? summary.finishedCount : 0 %> 册已读完">
-  <title><%= title %> —阅读书房</title>
+  <meta name="description" content="<%= typeof summary !== 'undefined' ? summary.totalBooks : 0 %> 册藏书 · <%= typeof summary !== 'undefined' ? summary.finishedCount : 0 %> 册已读完">
+  <title><%= title %> — 阅读书房</title>
   <!-- Preconnect to external origins -->
-  <link rel="preconnect" href="https://fonts.loli.net">
-  <link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdn.weread.qq.com" crossorigin>
-  <!-- Fonts: 只用星露谷风格需要的3个像素字体-->
-  <link rel="stylesheet" href="https://fonts.loli.net/css2?family=Press+Start+2P&family=VT323&family=ZCOOL+KuaiLe&display=swap">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <!-- Preload critical fonts -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
   <!-- Main stylesheet -->
-  <link rel="stylesheet" href="/css/main.css?v=70">
+  <link rel="stylesheet" href="/css/main.css?v=71">
+  <!-- Classics pages stylesheet -->
+  <link rel="stylesheet" href="/css/classics.css?v=1">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='2' fill='%231a2744'/><text x='16' y='22' text-anchor='middle' font-size='16' fill='white'>读</text></svg>">
 </head>
-<body class="pixel-theme">
+<body>
   <!-- Page Loader -->
   <div class="page-loader" id="page-loader">
     <div class="loader-ring"></div>
@@ -33,17 +38,17 @@
         <div class="nav-links">
           <a href="/bookshelf" class="nav-link <%= path === '/bookshelf' ? 'active' : '' %>">书架</a>
           <a href="/authors" class="nav-link <%= path === '/authors' ? 'active' : '' %>">作者</a>
-          <a href="/notebooks" class="nav-link <%= path === '/notebooks' ? 'active' : '' %>">笔记</a>
+          <a href="/notebooks" class="nav-link <%= path === '/notebooks' ? 'active' : '' %>">笔记</a>
           <a href="/quotes" class="nav-link <%= path === '/quotes' ? 'active' : '' %>">金句</a>
           <a href="/booklists" class="nav-link <%= path === '/booklists' ? 'active' : '' %>">书单</a>
           <a href="/cards" class="nav-link <%= path === '/cards' ? 'active' : '' %>">卡片</a>
-          <a href="/stats" class="nav-link <%= path === '/stats' ? 'active' : '' %>">统计</a>
+          <a href="/stats" class="nav-link <%= path === '/stats' ? 'active' : '' %>">统计</a>
           <a href="/covers" class="nav-link <%= path === '/covers' ? 'active' : '' %>">封面</a>
           <a href="/badges" class="nav-link <%= path === '/badges' ? 'active' : '' %>">勋章</a>
           <a href="/timeline" class="nav-link <%= path === '/timeline' ? 'active' : '' %>">时间线</a>
           <a href="/report" class="nav-link <%= path === '/report' ? 'active' : '' %>">报告</a>
           <a href="/search" class="nav-link <%= path === '/search' ? 'active' : '' %>" title="搜索">🔍</a>
-          <button id="theme-toggle" class="theme-toggle" aria-label="切换主题">☾</button>
+          <button id="theme-toggle" class="theme-toggle" aria-label="切换主题">◐</button>
         </div>
       </div>
     </nav>
@@ -54,12 +59,12 @@
     </main>
 
     <!-- Back to Top -->
-    <button class="back-to-top" id="back-to-top" aria-label="鍥炲埌椤堕儴">鈫?/button>
+    <button class="back-to-top" id="back-to-top" aria-label="回到顶部">↑</button>
 
     <!-- Footer -->
     <footer class="footer">
       <div class="footer-inner">
-        <span>鏁版嵁鏉ヨ嚜 <a href="https://weread.qq.com" target="_blank" rel="noopener">寰俊阅读</a></span>
+        <span>数据来自 <a href="https://weread.qq.com" target="_blank" rel="noopener">微信读书</a></span>
         <span>阅读书房 &copy; <%= new Date().getFullYear() %></span>
       </div>
     </footer>
@@ -73,20 +78,20 @@
     <div class="share-modal-backdrop"></div>
     <div class="share-modal-body">
       <div class="share-modal-header">
-        <span class="share-modal-title">鍒嗕韩鍗＄墖棰勮</span>
-        <button class="share-modal-close" id="share-modal-close" aria-label="鍏抽棴">&times;</button>
+        <span class="share-modal-title">分享卡片预览</span>
+        <button class="share-modal-close" id="share-modal-close" aria-label="关闭">&times;</button>
       </div>
       <div class="share-modal-preview">
-        <img id="share-preview-img" src="" alt="鍒嗕韩鍗＄墖棰勮">
+        <img id="share-preview-img" src="" alt="分享卡片预览">
       </div>
       <div class="share-modal-actions">
-        <button class="share-modal-btn" id="share-download-btn">涓嬭浇鍥剧墖</button>
-        <button class="share-modal-btn share-modal-btn-outline" id="share-copy-btn">澶嶅埗鍥剧墖</button>
+        <button class="share-modal-btn" id="share-download-btn">下载图片</button>
+        <button class="share-modal-btn share-modal-btn-outline" id="share-copy-btn">复制图片</button>
       </div>
     </div>
   </div>
 
-  <script src="/js/main.js?v=11" defer></script>
+  <script src="/js/main.js?v=12" defer></script>
   <% if (typeof needsHtml2Canvas !== 'undefined' && needsHtml2Canvas) { %>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
   <% } %>
