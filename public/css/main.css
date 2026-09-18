@@ -6934,7 +6934,7 @@ h3 {
 }
 .qstat-icon svg { display: block; margin: 0 auto; color: var(--accent); }
 .lib-entry-icon { display: inline-flex; align-items: center; justify-content: center; }
-/* ═══ 札记：笺纸手札墙 (v90) ═══ */
+/* ═══ 札记：墨线手稿卡 (v91) ═══ */
 .nt-note {
   font-family: var(--font-body);
   font-size: var(--text-subhead);
@@ -6958,19 +6958,28 @@ h3 {
 .nt-slip {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 20px 22px 16px;
-  background-color: var(--paper);
-  background-image: repeating-linear-gradient(to bottom, transparent 0 30px, rgba(26, 39, 68, 0.08) 30px 31px);
-  border-left: 2px solid rgba(224, 122, 95, 0.6);
-  box-shadow: 0 0 0 1px var(--rule), 3px 3px 0 0 rgba(26, 39, 68, 0.05);
+  gap: 14px;
+  padding: 26px 28px 20px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent-bright);
+  border-radius: 12px;
+  box-shadow:
+    0 1px 3px rgba(44, 82, 130, 0.05),
+    0 4px 16px rgba(0, 0, 0, 0.03);
   text-decoration: none;
   animation: ntSlipIn 0.5s var(--ease-out) both;
-  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease);
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-left-color 0.25s var(--ease);
 }
 .nt-slip:hover {
-  transform: translateY(-3px) rotate(-0.4deg);
-  box-shadow: 0 0 0 1px var(--ink-faint), 5px 6px 0 0 rgba(26, 39, 68, 0.07);
+  transform: translateY(-3px);
+  border-left-color: var(--accent);
+  box-shadow:
+    0 4px 12px rgba(44, 82, 130, 0.1),
+    0 12px 32px rgba(0, 0, 0, 0.07);
 }
 @keyframes ntSlipIn {
   from { opacity: 0; transform: translateY(14px); }
@@ -6978,10 +6987,10 @@ h3 {
 }
 .nt-slip-head {
   font-family: var(--font-display);
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--ink);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   line-height: 1.5;
   white-space: nowrap;
   overflow: hidden;
@@ -6992,18 +7001,19 @@ h3 {
   background: var(--rule);
 }
 .nt-slip-text {
-  font-family: var(--font-body);
-  font-size: 14.5px;
-  line-height: 30px;
-  color: var(--ink);
-  max-height: 270px;
+  font-family: var(--font-cjk);
+  font-size: 15px;
+  line-height: 1.9;
+  color: var(--ink-soft);
+  text-indent: 2em;
+  max-height: 285px;
   overflow: hidden;
 }
 .nt-slip-foot {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-top: 6px;
+  gap: 12px;
+  margin-top: 2px;
 }
 .nt-slip-seal {
   font-family: var(--font-display);
@@ -7015,10 +7025,20 @@ h3 {
   padding: 4px 7px 3px;
   letter-spacing: 0.1em;
   opacity: 0.9;
+  flex: none;
 }
 .nt-slip:hover .nt-slip-seal {
   background: var(--accent-secondary);
   color: var(--paper);
+}
+.nt-slip-chapter {
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  color: var(--ink-faint);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .nt-slip-author {
   font-family: var(--font-body);
@@ -7028,29 +7048,43 @@ h3 {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 55%;
+  margin-left: auto;
+  flex: none;
 }
 @media (max-width: 768px) {
   .nt-wall { gap: 18px; }
   .nt-col { gap: 18px; }
-  .nt-slip { padding: 16px 14px 14px; }
+  .nt-slip { padding: 20px 18px 18px; }
   .nt-slip-text {
     writing-mode: vertical-rl;
     font-size: 13.5px;
-    line-height: 1.5;
-    letter-spacing: 0.1em;
-    max-height: 260px;
+    line-height: 1.6;
+    letter-spacing: 0.12em;
+    text-indent: 0;
+    max-height: 240px;
     margin: 0 auto;
   }
   .nt-slip-head {
     writing-mode: vertical-rl;
-    max-height: 120px;
+    max-height: 110px;
     white-space: normal;
+    text-overflow: clip;
   }
+  .nt-slip-hairline { display: none; }
   .nt-slip-foot {
     writing-mode: vertical-rl;
     flex-direction: column-reverse;
     gap: 10px;
   }
-  .nt-slip-author { max-width: none; }
+  .nt-slip-author { margin-left: 0; }
 }
+[data-theme="dark"] .nt-slip {
+  background: var(--paper-warm);
+  border-color: var(--rule);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+[data-theme="dark"] .nt-slip:hover {
+  border-left-color: var(--accent-bright);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35), 0 12px 32px rgba(0, 0, 0, 0.25);
+}
+

@@ -29,6 +29,7 @@
         <span class="nt-slip-text"><% if (nb.note_text) { %><%= nb.note_text.length > 150 ? nb.note_text.substring(0, 150) + '…' : nb.note_text %><% } else { %>此书有笔记 <%= nb.total_notes %> 则，暂未落成文字。<% } %></span>
         <span class="nt-slip-foot">
           <span class="nt-slip-seal"><%= nb.total_notes %> 则</span>
+          <% if (nb.note_chapter) { %><span class="nt-slip-chapter"><%= nb.note_chapter %></span><% } %>
           <span class="nt-slip-author"><%= nb.author || '佚名' %></span>
         </span>
       </a>
