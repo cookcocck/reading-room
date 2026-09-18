@@ -127,17 +127,6 @@ router.post('/note-tags', (req: Request, res: Response) => {
   res.json({ ok: true });
 });
 
-// ─── API: Load more quotes (pagination) ───
-router.get('/quotes', (req: Request, res: Response) => {
-  const bookId = (req.query.book as string) || null;
-  const offset = parseInt(req.query.offset as string) || 0;
-  const limit = parseInt(req.query.limit as string) || 40;
-
-  const highlights = getHighlightsPaged(limit, offset, bookId);
-  const total = getHighlightsTotal(bookId);
-  res.json({ highlights, total, hasMore: offset + highlights.length < total });
-});
-
 // ─── Booklists API ───
 router.post('/booklists', (req: Request, res: Response) => {
   const { name, description } = req.body;

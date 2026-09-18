@@ -298,24 +298,6 @@ router.get('/authors', (_req: Request, res: Response) => {
     path: '/authors',
   });
 });
-// ─── Quotes ───
-router.get('/quotes', (req: Request, res: Response) => {
-  const bookId = (req.query.book as string) || null;
-  const PAGE = 40;
-
-  const total = getHighlightsTotal(bookId);
-  const highlights = getHighlightsPaged(PAGE, 0, bookId);
-  const allBooks = getAllBooks().map((b: Book) => ({ id: b.id, title: b.title }));
-
-  res.render('quotes', {
-    title: '金句墙',
-    highlights, total, page: 1, perPage: PAGE,
-    bookId: bookId || '', allBooks,
-    helpers: { formatTime, formatTimestamp },
-    path: '/quotes',
-  });
-});
-
 // ─── Booklists ───
 router.get('/booklists', (_req: Request, res: Response) => {
   const lists = getAllBooklists();

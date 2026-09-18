@@ -70,46 +70,13 @@
 </div>
 <% } %>
 
-<!-- ═══ II. 珠玉集锦 ═══ -->
-<% if (recentHighlights && recentHighlights.length > 0) { %>
-<div class="container-wide">
-  <hr class="section-rule">
-  <div class="hm-section-head">
-    <div class="section-kicker">II. 珠玉集锦</div>
-    <button class="bd-shuffle-btn hm-shuffle-btn" title="随机换一批" data-n="5">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-    </button>
-  </div>
-
-  <div class="highlights-list" id="home-highlights">
-    <% recentHighlights.slice(0, 5).forEach(function(h) { %>
-    <div class="highlight-block">
-      <div class="highlight-text"><%= h.markText || h.content || '' %></div>
-      <div class="highlight-source">
-        <%= h.bookTitle || '未知书名' %>
-        <button class="bd-share-btn highlight-share-btn"
-          data-text="<%= (h.markText || h.content || '').replace(/"/g, '&quot;') %>"
-          data-chapter="<%= (h.chapter_title || '').replace(/"/g, '&quot;') %>"
-          data-book-title="<%= (h.bookTitle || '未知书名').replace(/"/g, '&quot;') %>"
-          data-book-author="<%= (h.bookAuthor || '').replace(/"/g, '&quot;') %>"
-          title="生成分享图" aria-label="生成分享图"
-          style="display:inline-flex;vertical-align:middle;margin-left:6px;">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-        </button>
-      </div>
-    </div>
-    <% }); %>
-  </div>
-</div>
-<% } %>
-
 <!-- ═══ III. 年度之书 ═══ -->
 <% var homeTopBooks = (annual.topBooks && annual.topBooks.length) ? annual.topBooks : ((overall.topBooks && overall.topBooks.length) ? overall.topBooks : []); %>
 <% if (homeTopBooks.length > 0) { %>
 <div class="container-wide">
   <hr class="section-rule">
   <div class="hm-section-head">
-    <div class="section-kicker">III. 年度之书</div>
+    <div class="section-kicker">II. 年度之书</div>
     <a class="section-more" href="/bookshelf">全部藏书 →</a>
   </div>
 
@@ -136,7 +103,7 @@
 <!-- ═══ IV. 书房一瞥 ═══ -->
 <div class="container-wide">
   <hr class="section-rule">
-  <div class="section-kicker">IV. 书房一瞥</div>
+  <div class="section-kicker">III. 书房一瞥</div>
 
   <div class="library-index">
     <a class="lib-entry" href="/bookshelf">
@@ -152,14 +119,6 @@
       <span class="lib-entry-body">
         <span class="lib-entry-name">札记</span>
         <span class="lib-entry-desc"><%= summary.totalNoteCount.toLocaleString() %> 条笔记与想法</span>
-      </span>
-      <span class="lib-entry-arrow">→</span>
-    </a>
-    <a class="lib-entry" href="/quotes">
-      <span class="lib-entry-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M2 9h20M12 3l-3 6 3 12 3-12-3-6z"/></svg></span>
-      <span class="lib-entry-body">
-        <span class="lib-entry-name">珠玉集</span>
-        <span class="lib-entry-desc">全部摘录 · 无限滚动</span>
       </span>
       <span class="lib-entry-arrow">→</span>
     </a>
