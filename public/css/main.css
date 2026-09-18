@@ -6934,3 +6934,166 @@ h3 {
 }
 .qstat-icon svg { display: block; margin: 0 auto; color: var(--accent); }
 .lib-entry-icon { display: inline-flex; align-items: center; justify-content: center; }
+/* ═══════════════════════════════════════════════════════════
+   Art Enhancement Layer (v88)
+   藏书票 · 版画 · 文人细节 —— 叠加于编辑风之上
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── 纸张颗粒：全站极淡网点 ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(26, 39, 68, 0.035) 1px, transparent 1.3px);
+  background-size: 20px 20px;
+}
+
+/* ── Hero 标题：下方「线—菱—线」装饰（排除首页大标语与书详情页） ── */
+[class$="hero-title"]:not(.hero-title):not(.bd-hero-title) {
+  position: relative;
+  padding-bottom: 26px;
+}
+[class$="hero-title"]:not(.hero-title):not(.bd-hero-title)::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 112px;
+  height: 12px;
+  background-image:
+    linear-gradient(to right, transparent 0 36%, var(--ink-faint) 36% 43%, transparent 43% 57%, var(--ink-faint) 57% 64%, transparent 64% 100%),
+    radial-gradient(circle, var(--ink) 1.6px, transparent 2.1px);
+  background-position: top 6px, center;
+  background-size: 100% 1px, 6px 6px;
+  background-repeat: no-repeat, no-repeat;
+  opacity: 0.55;
+}
+
+/* ── Hero kicker：两侧细线（排除书详情页） ── */
+[class$="hero-kicker"]:not(.bd-hero-kicker) {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  letter-spacing: 0.22em;
+  text-indent: 0.22em;
+}
+[class$="hero-kicker"]:not(.bd-hero-kicker)::before,
+[class$="hero-kicker"]:not(.bd-hero-kicker)::after {
+  content: '';
+  width: 26px;
+  height: 1px;
+  background: var(--ink-faint);
+  opacity: 0.7;
+}
+
+/* ── Hero 统计数字：衬线 + 深蓝 ── */
+[class$="hero-stat"] strong,
+.an-hero-stat strong {
+  font-family: var(--font-display);
+  font-size: 1.35em;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+}
+
+/* ── Hero 短金线：升级为「线—菱—线」 ── */
+.nb-hero-rule,
+.bs-hero-rule {
+  width: 104px;
+  height: 12px;
+  background:
+    linear-gradient(to right, transparent 0 38%, var(--accent) 38% 43%, transparent 43% 57%, var(--accent) 57% 62%, transparent 62% 100%) center / 100% 1px no-repeat,
+    radial-gradient(circle, var(--accent) 2px, transparent 2.6px) center / 6px 6px no-repeat;
+  opacity: 0.5;
+}
+
+/* ── 卡片：藏书票双线框（书单卷为封面色块设计，排除） ── */
+.nb-card,
+.bs-card,
+.qt-card,
+.au-card,
+.book-card,
+.search-book-card {
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  box-shadow:
+    inset 0 0 0 3px var(--paper),
+    inset 0 0 0 4px var(--rule-thin);
+  transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+.nb-card:hover,
+.bs-card:hover,
+.qt-card:hover,
+.au-card:hover,
+.book-card:hover,
+.search-book-card:hover {
+  border-color: var(--accent-dim);
+  box-shadow:
+    inset 0 0 0 3px var(--paper),
+    inset 0 0 0 4px var(--accent-dim);
+}
+
+/* ── 卡片标题：衬线化 ── */
+.nb-card-title,
+.bs-card-title,
+.au-card-name,
+.bl-card-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+/* ── 摘录卡（珠玉集）：引号水印 + 左侧墨线 ── */
+.qt-card {
+  position: relative;
+  padding: 24px 24px 24px 36px;
+}
+.qt-card::before {
+  content: '\201C';
+  position: absolute;
+  top: -4px;
+  left: 6px;
+  font-family: var(--font-display);
+  font-size: 56px;
+  line-height: 1;
+  color: var(--rule);
+  opacity: 0.8;
+  pointer-events: none;
+  user-select: none;
+}
+.qt-card::after {
+  content: '';
+  position: absolute;
+  left: 14px;
+  top: 12px;
+  bottom: 12px;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--accent-dim), transparent 82%);
+}
+
+/* ── 区块标题：菱形序号感 ── */
+[class$="-section-title"] {
+  position: relative;
+  padding-left: 20px;
+}
+[class$="-section-title"]::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  opacity: 0.55;
+}
+
+/* ── 导航 active：墨线加深为 2px ── */
+.nav-link.active::after {
+  height: 2px;
+  background: var(--accent);
+}
