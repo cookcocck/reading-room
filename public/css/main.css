@@ -6455,6 +6455,24 @@ h3 {
   .bg-seal-dots-b { bottom: 21%; }
 }
 
+/* ─── 全局移动端适配（<768px） ─── */
+@media (max-width: 768px) {
+  .nav-inner { padding: 0 14px; gap: 10px; }
+  .nav-links {
+    flex: 1;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 18px;
+  }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-link { white-space: nowrap; flex-shrink: 0; font-size: 14px; }
+  .nav-brand { font-size: 1rem; flex-shrink: 0; }
+  .bg-container { padding: 32px 20px 64px; }
+  .cw-container { padding: 32px 20px 64px; }
+  .tl-container { padding: 32px 20px 64px; }
+}
+
 /* ─── Timeline ─── */
 .tl-container { max-width: 900px; margin: 0 auto; padding: 48px 32px 80px; }
 .tl-hero { text-align: center; margin-bottom: 48px; position: relative; }
