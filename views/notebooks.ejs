@@ -18,16 +18,19 @@
 
   <!-- ── Books with Notes Grid ── -->
   <section class="nb-books-section">
-    <h2 class="nb-section-title">有笔记的藏书</h2>
+    <h2 class="nb-section-title">读书手札</h2>
     <% if (notebooks.length > 0) { %>
-    <p class="nt-note">以书签为记，一笔一画，皆是读过的痕迹。</p>
+    <p class="nt-note">一纸一墨，皆是读过的痕迹。</p>
     <div class="nt-wall" id="nt-wall">
       <% notebooks.forEach(function(nb, i) { %>
       <a class="nt-slip" href="/book/<%= nb.book_id %>" title="<%= nb.title %>" style="animation-delay: <%= Math.min(i * 30, 600) %>ms">
-        <span class="nt-slip-seal"><%= nb.total_notes %> 则</span>
-        <span class="nt-slip-title"><%= nb.title %></span>
-        <span class="nt-slip-rule"></span>
-        <span class="nt-slip-author"><%= nb.author || '佚名' %></span>
+        <span class="nt-slip-head"><%= nb.title %></span>
+        <span class="nt-slip-hairline"></span>
+        <span class="nt-slip-text"><% if (nb.note_text) { %><%= nb.note_text.length > 150 ? nb.note_text.substring(0, 150) + '…' : nb.note_text %><% } else { %>此书有笔记 <%= nb.total_notes %> 则，暂未落成文字。<% } %></span>
+        <span class="nt-slip-foot">
+          <span class="nt-slip-seal"><%= nb.total_notes %> 则</span>
+          <span class="nt-slip-author"><%= nb.author || '佚名' %></span>
+        </span>
       </a>
       <% }); %>
     </div>

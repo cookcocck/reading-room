@@ -5,7 +5,7 @@ import {
   getAllBooks, getAllCategories, getBookReadTimes, getBooksSorted,
   getBookById, getBookHighlights, getBookReviews, getBookMonthlyActivity,
   getBookChapterActivity, getBookIntro, getBookAllNotes, getBookRating,
-  getAllNotebooks, getRecentNotes, searchAll,
+  getNotebookPreviews, getRecentNotes, searchAll,
   getDeepThinking, getBookTimeline, getYearlyIntensity, getMilestones,
   getAuthorStats, getReadingStats,
   getAnnualBooks, getAnnualYears,
@@ -171,7 +171,7 @@ router.get('/stats', (_req: Request, res: Response) => {
 
 // ─── Notebooks ───
 router.get('/notebooks', (_req: Request, res: Response) => {
-  const notebooks = getAllNotebooks();
+  const notebooks = getNotebookPreviews();
   const recentNotes = getRecentNotes(30);
   const summary = getSummary();
 

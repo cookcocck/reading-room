@@ -171,6 +171,33 @@ export function getAllNotebooks() {
   `).all();
 }
 
+export function getNotebookPreviews() {
+  const d = getDb()!;
+  return d.prepare(`
+    SELECT
+      n.book_id, b.title, b.author, b.cover, n.total_notes, n.sort,
+      COALESCE(
+        (SELECT h.mark_text FROM highlights h
+          WHERE h.book_id = n.book_id AND h.mark_text IS NOT NULL AND h.mark_text != ''
+          ORDER BY h.create_time DESC LIMIT 1),
+        (SELECT r.content FROM reviews r
+          WHERE r.book_id = n.book_id AND r.content IS NOT NULL AND r.content != ''
+          ORDER BY r.create_time DESC LIMIT 1)
+      ) AS note_text,
+      COALESCE(
+        (SELECT h.chapter_title FROM highlights h
+          WHERE h.book_id = n.book_id AND h.mark_text IS NOT NULL AND h.mark_text != ''
+          ORDER BY h.create_time DESC LIMIT 1),
+        (SELECT r.chapter_name FROM reviews r
+          WHERE r.book_id = n.book_id AND r.content IS NOT NULL AND r.content != ''
+          ORDER BY r.create_time DESC LIMIT 1)
+      ) AS note_chapter
+    FROM notebooks n
+    LEFT JOIN books b ON n.book_id = b.id
+    ORDER BY n.sort DESC
+  `).all() as { book_id: string; title: string; author: string | null; cover: string | null; total_notes: number; sort: number; note_text: string | null; note_chapter: string | null }[];
+}
+
 export function getNotebooks(page = 1, perPage = 30) {
   const d = getDb()!;
   const offset = (page - 1) * perPage;
