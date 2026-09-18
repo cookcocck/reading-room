@@ -20,32 +20,47 @@
   <section class="nb-books-section">
     <h2 class="nb-section-title">有笔记的藏书</h2>
     <% if (notebooks.length > 0) { %>
-    <div class="nb-grid">
+    <p class="nt-note">以书签为记，一笔一画，皆是读过的痕迹。</p>
+    <div class="nt-wall" id="nt-wall">
       <% notebooks.forEach(function(nb, i) { %>
-      <article class="nb-card" style="animation-delay: <%= Math.min(i * 40, 800) %>ms">
-        <a class="nb-card-cover" href="/book/<%= nb.book_id %>" aria-label="<%= nb.title %>">
-          <% if (nb.cover) { %>
-            <img src="<%= nb.cover %>" alt="" loading="lazy"
-                 onerror="this.style.display='none';this.parentElement.innerHTML='<span class=nb-card-cover-fallback>&#128218;</span>'">
-          <% } else { %>
-            <span class="nb-card-cover-fallback">书</span>
-          <% } %>
-        </a>
-        <div class="nb-card-body">
-          <h3 class="nb-card-title">
-            <a href="/book/<%= nb.book_id %>"><%= nb.title %></a>
-          </h3>
-          <p class="nb-card-author"><%= nb.author || '佚名' %></p>
-          <div class="nb-card-foot">
-            <span class="nb-card-count">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-              <%= nb.total_notes %> 条笔记
-            </span>
-          </div>
-        </div>
-      </article>
+      <a class="nt-slip" href="/book/<%= nb.book_id %>" title="<%= nb.title %>" style="animation-delay: <%= Math.min(i * 30, 600) %>ms">
+        <span class="nt-slip-seal"><%= nb.total_notes %> 则</span>
+        <span class="nt-slip-title"><%= nb.title %></span>
+        <span class="nt-slip-rule"></span>
+        <span class="nt-slip-author"><%= nb.author || '佚名' %></span>
+      </a>
       <% }); %>
     </div>
+    <script>
+    (function() {
+      var wall = document.getElementById('nt-wall');
+      if (!wall) return;
+      var slips = Array.prototype.slice.call(wall.children);
+      function colCount() { return window.innerWidth <= 768 ? 2 : 4; }
+      function build() {
+        var n = colCount();
+        if (wall.dataset.cols == n) return;
+        wall.dataset.cols = n;
+        wall.innerHTML = '';
+        for (var c = 0; c < n; c++) {
+          var col = document.createElement('div');
+          col.className = 'nt-col';
+          wall.appendChild(col);
+        }
+        var cols = wall.children;
+        function shortest() {
+          var m = 0;
+          for (var i = 1; i < cols.length; i++) {
+            if (cols[i].offsetHeight < cols[m].offsetHeight) m = i;
+          }
+          return m;
+        }
+        slips.forEach(function(s) { cols[shortest()].appendChild(s); });
+      }
+      build();
+      window.addEventListener('resize', build);
+    })();
+    </script>
     <% } else { %>
     <div class="nb-empty">
       <div class="nb-empty-icon">—</div>

@@ -6934,3 +6934,95 @@ h3 {
 }
 .qstat-icon svg { display: block; margin: 0 auto; color: var(--accent); }
 .lib-entry-icon { display: inline-flex; align-items: center; justify-content: center; }
+/* ═══ 札记：文人书签墙 (v89) ═══ */
+.nt-note {
+  font-family: var(--font-body);
+  font-size: var(--text-subhead);
+  color: var(--ink-muted);
+  letter-spacing: 0.08em;
+  margin: -8px 0 26px;
+  font-style: italic;
+}
+.nt-wall {
+  display: flex;
+  align-items: flex-start;
+  gap: 26px;
+}
+.nt-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+.nt-slip {
+  break-inside: avoid;
+  margin-bottom: 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px 18px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  box-shadow: inset 0 0 0 3px var(--paper), inset 0 0 0 4px var(--rule-thin);
+  text-decoration: none;
+  animation: ntSlipIn 0.5s var(--ease-out) both;
+  transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease), transform 0.3s var(--ease-out);
+}
+.nt-slip:hover {
+  border-color: var(--ink-faint);
+  box-shadow: inset 0 0 0 3px var(--paper), inset 0 0 0 4px var(--accent-dim);
+  transform: translateY(-3px);
+}
+@keyframes ntSlipIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.nt-slip-seal {
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--accent-secondary);
+  border: 1.5px solid currentColor;
+  padding: 4px 8px 3px;
+  letter-spacing: 0.12em;
+  margin-bottom: 18px;
+  opacity: 0.9;
+}
+.nt-slip:hover .nt-slip-seal {
+  background: var(--accent-secondary);
+  color: var(--paper);
+}
+.nt-slip-title {
+  writing-mode: vertical-rl;
+  font-family: var(--font-display);
+  font-size: 25px;
+  font-weight: 900;
+  color: var(--ink);
+  letter-spacing: 0.12em;
+  line-height: 1.3;
+  max-height: 290px;
+  overflow: hidden;
+}
+.nt-slip-rule {
+  width: 1px;
+  height: 22px;
+  background: var(--rule);
+  margin: 16px 0 14px;
+}
+.nt-slip-author {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--ink-muted);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (max-width: 768px) {
+  .nt-wall { gap: 18px; }
+  .nt-col { gap: 18px; }
+  .nt-slip-title { font-size: 21px; max-height: 240px; }
+}
