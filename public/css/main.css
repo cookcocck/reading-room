@@ -6327,7 +6327,7 @@ h3 {
 .cw-item.finished::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); }
 
 /* ─── Badges (Ex Libris Seal Style · 藏书票圆章) ─── */
-.bg-container { max-width: 1200px; margin: 0 auto; padding: 48px 32px 80px; }
+.bg-container { max-width: 1380px; margin: 0 auto; padding: 48px 32px 80px; }
 
 /* ═══ Hero：一张大藏书票（左圆章 + 右竖排） ═══ */
 .bg-hero-plate { display: flex; align-items: center; justify-content: center; gap: 44px; margin-bottom: 64px; padding: 24px 0 8px; }
@@ -6378,26 +6378,27 @@ h3 {
 .bg-seal-hero .bg-seal-no { display: none; }
 
 /* ═══ 勋章网格：藏书票卡片（左圆章 + 右竖排） ═══ */
-.bg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(248px, 1fr)); gap: 34px 26px; }
+.bg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(252px, 1fr)); gap: 36px 28px; }
 .bg-plate { cursor: pointer; transition: transform 0.3s ease; }
 .bg-plate:hover { transform: translateY(-5px); }
 .bg-plate:hover .bg-plate-inner { box-shadow: 0 10px 26px rgba(70,55,25,0.12); }
 .bg-plate { position: relative; }
 .bg-plate-inner {
-  display: flex; align-items: center; justify-content: flex-start; gap: 20px;
-  height: 158px; box-sizing: border-box;
-  padding: 20px 18px 20px 16px; background: var(--card);
+  display: flex; align-items: center; justify-content: flex-start; gap: 12px;
+  height: 226px; box-sizing: border-box;
+  padding: 22px 16px 20px; background: var(--card);
   border: 1px solid var(--rule);
   box-shadow: 0 2px 8px rgba(70,55,25,0.05);
   transition: box-shadow 0.3s ease;
+  flex-direction: column;
 }
 .bg-plate .bg-seal { width: 118px; height: 118px; flex-shrink: 0; }
 .bg-plate .bg-seal-paper { width: 100%; height: 100%; }
 .bg-plate .bg-seal-symbol { width: 62%; height: 62%; }
-.bg-plate-side { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 8px; min-width: 0; height: 100%; }
-.bg-plate-name { writing-mode: vertical-rl; font-family: 'Noto Serif SC', serif; font-size: 17px; font-weight: 700; letter-spacing: 0.16em; color: var(--ink); text-indent: 0.16em; line-height: 1.15; max-height: 96px; overflow: hidden; }
+.bg-plate-side { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-width: 0; height: auto; }
+.bg-plate-name { font-family: 'Noto Serif SC', serif; font-size: 18px; font-weight: 700; letter-spacing: 0.1em; color: var(--ink); line-height: 1.35; white-space: nowrap; }
 .bg-plate-target { font-size: 12.5px; color: var(--ink-faint); letter-spacing: 0.1em; font-family: Georgia, serif; white-space: nowrap; }
-.bg-plate-lock { position: absolute; bottom: 10px; right: 10px; color: var(--ink-faint); opacity: 0.85; }
+.bg-plate-lock { position: absolute; top: 12px; right: 12px; color: var(--ink-faint); opacity: 0.85; }
 
 /* 6 种文学墨色（细线印章配色） */
 .bg-plate.theme-0, .bg-seal.theme-0 { --ink-c: rgba(74,106,138,0.92); }
@@ -6446,7 +6447,7 @@ h3 {
   .bg-hero-vtext { font-size: 30px; }
   .bg-seal-hero { width: 170px; height: 170px; }
   .bg-grid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 26px 16px; }
-  .bg-plate-inner { gap: 14px; padding: 16px 12px; }
+  .bg-plate-inner { gap: 10px; padding: 14px 10px; height: 178px; }
   .bg-plate .bg-seal { width: 88px; height: 88px; }
   .bg-plate-name { font-size: 17px; }
   .bg-plate-target { font-size: 11px; }
